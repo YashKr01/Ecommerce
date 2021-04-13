@@ -1,8 +1,10 @@
-package com.shopping.bloom;
+package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.shopping.bloom.R;
 
 public class MainActivity extends AppCompatActivity {
 
