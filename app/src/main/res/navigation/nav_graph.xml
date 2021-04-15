@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/shopFragment"
-        android:name="com.shopping.bloom.activities.fragments.ShopFragment"
+        android:name="com.shopping.bloom.fragment.ShopFragment"
         android:label="@string/shop"
         tools:layout="@layout/fragment_shop" />
     <fragment
         android:id="@+id/categoryFragment"
-        android:name="com.shopping.bloom.activities.fragments.CategoryFragment"
+        android:name="com.shopping.bloom.fragment.CategoryFragment"
         android:label="@string/category"
         tools:layout="@layout/fragment_category" />
     <fragment
         android:id="@+id/newTrendFragment"
-        android:name="com.shopping.bloom.activities.fragments.NewTrendFragment"
+        android:name="com.shopping.bloom.fragment.NewTrendFragment"
         android:label="@string/new_"
         tools:layout="@layout/fragment_new_trend" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.shopping.bloom.activities.fragments.ProfileFragment"
+        android:name="com.shopping.bloom.fragment.ProfileFragment"
         android:label="@string/me"
         tools:layout="@layout/fragment_profile" />
 </navigation>
