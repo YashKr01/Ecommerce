@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/shopFragment">
+
+    <fragment
+        android:id="@+id/shopFragment"
+        android:name="com.shopping.bloom.activities.fragments.ShopFragment"
+        android:label="@string/shop"
+        tools:layout="@layout/fragment_shop" />
+    <fragment
+        android:id="@+id/categoryFragment"
+        android:name="com.shopping.bloom.activities.fragments.CategoryFragment"
+        android:label="@string/category"
+        tools:layout="@layout/fragment_category" />
+    <fragment
+        android:id="@+id/newTrendFragment"
+        android:name="com.shopping.bloom.activities.fragments.NewTrendFragment"
+        android:label="@string/new_"
+        tools:layout="@layout/fragment_new_trend" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.shopping.bloom.activities.fragments.ProfileFragment"
+        android:label="@string/me"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
