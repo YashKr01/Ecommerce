@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.fragments;
+package com.shopping.bloom.fragment;
 
 import android.os.Bundle;
 
