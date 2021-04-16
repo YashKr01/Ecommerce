@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        setSupportActionBar(binding.mainToolbar);
+        getSupportActionBar().setTitle("");
+
         NavController navController = Navigation.findNavController(this, R.id.home_fragment);
         NavigationUI.setupWithNavController(binding.bottomNavigationView, navController);
 
