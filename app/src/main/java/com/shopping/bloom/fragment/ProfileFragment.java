@@ -60,6 +60,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
 
