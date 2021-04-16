@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="8dp"
+        app:labelVisibilityMode="labeled"
         android:theme="@style/BottomNavigationTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
