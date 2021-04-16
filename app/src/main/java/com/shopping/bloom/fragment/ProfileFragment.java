@@ -34,6 +34,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -42,7 +43,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         binding = FragmentProfileBinding.inflate(inflater, container, false);
-        setHasOptionsMenu(true);
+        getActivity().invalidateOptionsMenu();
 
         // Setup ViewPager Adapter
         viewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());
@@ -60,6 +61,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
+        Log.d(TAG, "onCreateOptionsMenu: profile" + menu.getItem(0).getTitle());
     }
 
 
