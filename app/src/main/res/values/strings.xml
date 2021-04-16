@@ -13,4 +13,19 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="what_new">What\'s new</string>
+    <string name="shop_by_category">Shop by Category</string>
+    <string name="what_on_sell">See what\'s on sale</string>
+    <string name="hint_search">Search</string>
+
+    <string name="desc_favourites">Favorites</string>
+    <string name="desc_mail">Notification</string>
+    <string name="desc_cart">Cart</string>
+    <string name="desc_category_image">Product category image</string>
+    <string name="desc_offer">Offer</string>
+    <string name="desc_setting">setting</string>
+
+
 </resources>
