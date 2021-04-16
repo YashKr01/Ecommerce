@@ -14,33 +14,33 @@
 
         <ImageView
             android:id="@+id/imgMail"
-            android:layout_width="25dp"
+            android:layout_width="27dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+            android:layout_marginLeft="@dimen/sb_size_7"
+            android:layout_marginRight="@dimen/sb_size_7"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/ic_cart" />
+            app:srcCompat="@drawable/ic_mail" />
 
         <ImageView
             android:id="@+id/imgFavourites"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_marginLeft="@dimen/sb_size_5"
+            android:layout_marginRight="@dimen/sb_size_5"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/ic_cart" />
+            app:srcCompat="@drawable/ic_fav" />
 
 
         <EditText
             android:id="@+id/tv_header_title"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="@dimen/sb_size_35"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="2dp"
             android:layout_marginStart="8dp"
             android:hint="@string/hint_search"
             android:inputType="text"
-            android:layout_marginEnd="45dp"
+            android:layout_marginEnd="@dimen/sb_size_45"
             android:focusedByDefault="false"
             android:gravity="center_horizontal|center_vertical"
             android:background="@drawable/bg_search_bar" />
@@ -62,7 +62,7 @@
 
         <RelativeLayout
             android:id="@+id/notification_holder"
-            android:layout_width="50dp"
+            android:layout_width="@dimen/sb_size_50"
             android:layout_height="match_parent"
             android:layout_gravity="end">
 
