@@ -39,7 +39,8 @@
                     android:paddingVertical="@dimen/sb_size_8"
                     android:text="@string/what_new"
                     android:textColor="@color/grey_900"
-                    android:textSize="@dimen/sb_text_size_20"
+                    android:gravity="center"
+                    android:textSize="@dimen/sb_text_size_22"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/vpHeaderImages"
@@ -53,6 +54,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dummyText"
                     tools:visibility="visible"
+                    android:src="@drawable/ic_new_arrival"
                     android:contentDescription="@string/desc_offer" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -74,7 +76,7 @@
                     android:paddingVertical="@dimen/sb_size_12"
                     android:text="@string/shop_by_category"
                     android:textColor="@color/grey_900"
-                    android:textSize="@dimen/sb_text_size_20"
+                    android:textSize="@dimen/sb_text_size_22"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rvSuggestedProduct"
@@ -98,7 +100,7 @@
                     android:paddingVertical="@dimen/sb_size_12"
                     android:text="@string/what_on_sell"
                     android:textColor="@color/grey_900"
-                    android:textSize="@dimen/sb_text_size_20"
+                    android:textSize="@dimen/sb_text_size_22"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rvProductsCategory"
@@ -121,7 +123,7 @@
                         android:layout_marginStart="@dimen/sb_size_20"
                         android:layout_marginEnd="@dimen/sb_size_10"
                         android:layout_weight="1"
-                        android:background="@color/grey_900"
+                        android:background="@color/pink_500"
                         android:contentDescription="@string/desc_offer" />
 
                     <ImageView
@@ -132,7 +134,7 @@
                         android:layout_marginStart="@dimen/sb_size_10"
                         android:layout_marginEnd="@dimen/sb_size_20"
                         android:layout_weight="1"
-                        android:background="@color/grey_900"
+                        android:background="@color/pink_500"
                         android:contentDescription="@string/desc_offer" />
 
                 </LinearLayout>
@@ -154,7 +156,7 @@
                         android:layout_marginStart="@dimen/sb_size_20"
                         android:layout_marginEnd="@dimen/sb_size_10"
                         android:layout_weight="1"
-                        android:background="@color/grey_900"
+                        android:background="@color/pink_500"
                         android:contentDescription="@string/desc_offer" />
 
                     <ImageView
@@ -165,7 +167,7 @@
                         android:layout_marginStart="@dimen/sb_size_10"
                         android:layout_marginEnd="@dimen/sb_size_20"
                         android:layout_weight="1"
-                        android:background="@color/grey_900"
+                        android:background="@color/pink_500"
                         android:contentDescription="@string/desc_offer" />
                 </LinearLayout>
 

@@ -23,8 +23,7 @@
             android:orientation="vertical"
             android:paddingVertical="@dimen/sb_size_20"
             android:paddingTop="@dimen/sb_size_20"
-            android:paddingBottom="200dp"
-            tools:listitem="@layout/item_category_products" />
+            android:paddingBottom="200dp" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
