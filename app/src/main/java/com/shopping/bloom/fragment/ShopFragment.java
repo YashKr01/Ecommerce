@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
-import com.shopping.bloom.models.MainScreenImageModel;
+import com.shopping.bloom.model.MainScreenImageModel;
 
 public class ShopFragment extends Fragment {
     private static final String TAG = "ShopFragment";
