@@ -14,22 +14,33 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.models.Product;
+import com.shopping.bloom.models.SubProduct;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
+import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModel.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends Fragment implements ProductClickListener {
 
     private static final String TAG = CategoryFragment.class.getName();
 
     private CategoryViewModel viewModel;
     private FragmentCategoryBinding mainBinding;
+    private CategoryAdapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private List<Product> productList;
+
     private int PAGE_NO = 0;
     private final int START_PAGE = 0;
 
@@ -57,36 +68,44 @@ public class CategoryFragment extends Fragment {
         getActivity().invalidateOptionsMenu();
 
         viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        initRecyclerView();
 
+        checkNetworkAndFetchData();
+        mainBinding.swipeRefreshLayout.setOnRefreshListener(swipeRefreshListener);
+    }
+
+    private void initRecyclerView() {
+        productList = new ArrayList<>();
+        adapter = new CategoryAdapter(getContext(), productList, this);
+        layoutManager = new LinearLayoutManager(getContext());
+        mainBinding.rvCategory.setLayoutManager(layoutManager);
+        mainBinding.rvCategory.setHasFixedSize(true);
+        mainBinding.rvCategory.setAdapter(adapter);
+    }
+
+    private final SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = this::checkNetworkAndFetchData;
+
+    private void checkNetworkAndFetchData() {
+        PAGE_NO = START_PAGE;
         if (NetworkCheck.isConnect(getContext())) {
-            getCategoryData();
+            viewModel.setResponseListener(responseListener);
+            viewModel.fetchData("1", 20, PAGE_NO, "");
+            noInternetAvailable(false);
         } else {
+            Log.d(TAG, "checkNetworkAndFetchData: No internet Available");
+            mainBinding.swipeRefreshLayout.setRefreshing(false);
             noInternetAvailable(true);
         }
-
-        mainBinding.swipeRefreshLayout.setOnRefreshListener(() -> {
-            if (NetworkCheck.isConnect(getContext())) {
-                noInternetAvailable(false);
-                getCategoryData();
-            } else {
-                mainBinding.swipeRefreshLayout.setRefreshing(false);
-                noInternetAvailable(true);
-                Log.d(TAG, "onRefresh: No internet available");
-            }
-        });
-
     }
 
-    private void getCategoryData() {
-        viewModel.setResponseListener(responseListener);
-        viewModel.fetchData("1", 20, PAGE_NO, "");
-    }
-
-    private CategoryResponseListener responseListener = new CategoryResponseListener() {
+    private final CategoryResponseListener responseListener = new CategoryResponseListener() {
         @Override
         public void onSuccess(List<Product> product) {
+            Log.d(TAG, "onSuccess: productSize " + product);
+            Log.d(TAG, "onSuccess: productSize " + product.size());
+            adapter.updateProductList(product);
             mainBinding.swipeRefreshLayout.setRefreshing(false);
-            Log.d(TAG, "onSuccess: product " + product);
+            noInternetAvailable(false);
         }
 
         @Override
@@ -98,6 +117,25 @@ public class CategoryFragment extends Fragment {
             }
         }
     };
+
+
+    //when product header/category is clicked
+    @Override
+    public void onProductClick(Product productCategory) {
+        Log.d(TAG, "onProductClick: product clicked " + productCategory.toString());
+        if(getContext() != null) {
+            Toast.makeText(getContext(), productCategory.getCategory_name(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //When particular product image is clicked
+    @Override
+    public void onSubProductClick(SubProduct product) {
+        Log.d(TAG, "onSubProductClick: "+ product.toString());
+        if(getContext() != null) {
+            Toast.makeText(getContext(), product.getCategory_name(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -112,7 +150,7 @@ public class CategoryFragment extends Fragment {
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
     }
 
-    //Show the no internet image
+    //set NO INTERNET Image to visible
     private void noInternetAvailable(boolean visible) {
         if (visible) {
             mainBinding.vsEmptyScreen.setVisibility(View.VISIBLE);

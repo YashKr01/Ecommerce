@@ -1,6 +1,6 @@
 package com.shopping.bloom.models;
 
-class SubProduct {
+public class SubProduct {
     private int id;
     private String parent_id;
     private String category_name;

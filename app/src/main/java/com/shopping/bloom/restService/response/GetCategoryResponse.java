@@ -10,7 +10,7 @@ public class GetCategoryResponse {
     @SerializedName("success")
     private boolean success;
 
-    @SerializedName("date")
+    @SerializedName("data")
     private List<Product> data;
 
     @SerializedName("message")

@@ -1,9 +1,11 @@
 package com.shopping.bloom.database.repository;
 
+import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
+import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
-import com.shopping.bloom.restService.api.CategoryApi;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.utils.Const;
@@ -25,12 +27,12 @@ public class CategoryRepository {
         return repository;
     }
 
-    public void getCategory(String mainCategory, int limit, int pageNo, String categoryName, CategoryResponseListener responseListener) {
+    public void getCategory(String mainCategory, int limit, int pageNo, String categoryName, Application context, CategoryResponseListener responseListener) {
         Log.d(TAG, "getCategory: mainCategory=" + mainCategory + " limit=" + limit + " pageNo=" + pageNo + " categoryName=" + categoryName);
 
-        CategoryApi api = RetrofitBuilder.getInstance(Const.GET_CATEGORY_DATA).create(CategoryApi.class);
+        ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
 
-        Call<GetCategoryResponse> responseCall = api.getCategory(
+        Call<GetCategoryResponse> responseCall = apiInterface.getCategory(
                 mainCategory, limit, pageNo, categoryName
         );
 
@@ -47,6 +49,7 @@ public class CategoryRepository {
                     }
 
                     if(response.body() != null) {
+                        Log.d(TAG, "onResponse: response body"+ response.body().toString());
                         GetCategoryResponse categoryResponse = response.body();
                         Log.d(TAG, "onResponse: categoryResponse "+ categoryResponse.toString());
                         responseListener.onSuccess(categoryResponse.getData());

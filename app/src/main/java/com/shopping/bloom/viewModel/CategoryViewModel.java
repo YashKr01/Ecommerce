@@ -12,17 +12,14 @@ import com.shopping.bloom.restService.callback.CategoryResponseListener;
 
 public class CategoryViewModel extends AndroidViewModel {
 
-    Context context;
+    Application context;
     CategoryRepository repository;
     CategoryResponseListener responseListener;
 
     public CategoryViewModel(@NonNull Application context){
         super(context);
-        repository = CategoryRepository.getInstance();
-    }
-
-    public void setContext(Context context) {
         this.context = context;
+        repository = CategoryRepository.getInstance();
     }
 
     public void setResponseListener(CategoryResponseListener responseListener) {
@@ -30,7 +27,7 @@ public class CategoryViewModel extends AndroidViewModel {
     }
 
     public void fetchData(String mainCategory, int limit, int pageNo, String categoryName) {
-        repository.getCategory(mainCategory, limit, pageNo, categoryName, responseListener);
+        repository.getCategory(mainCategory, limit, pageNo, categoryName, context, responseListener);
     }
 
 }
