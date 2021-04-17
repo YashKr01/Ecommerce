@@ -1,11 +1,6 @@
 package com.shopping.bloom.fragment;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,12 +8,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.databinding.FragmentCategoryBinding;
+import com.shopping.bloom.model.Product;
+import com.shopping.bloom.restService.callback.CategoryResponseListener;
+import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewModel.CategoryViewModel;
+
+import java.util.List;
 
 public class CategoryFragment extends Fragment {
 
     private static final String TAG = CategoryFragment.class.getName();
+
+    private CategoryViewModel viewModel;
+    private FragmentCategoryBinding mainBinding;
+    private int PAGE_NO = 0;
+    private final int START_PAGE = 0;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -34,14 +48,58 @@ public class CategoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category, container, false);
+        mainBinding = FragmentCategoryBinding.inflate(inflater, container, false);
+        return mainBinding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
+
+        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        if (NetworkCheck.isConnect(getContext())) {
+            getCategoryData();
+        } else {
+            showNoInternet(true);
+        }
+
+        mainBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (NetworkCheck.isConnect(getContext())) {
+                    showNoInternet(false);
+                    getCategoryData();
+                } else {
+                    showNoInternet(true);
+                    Log.d(TAG, "onRefresh: No internet available");
+                }
+            }
+        });
+
     }
+
+    private void getCategoryData() {
+        viewModel.setResponseListener(responseListener);
+        viewModel.fetchData("1", 20, PAGE_NO, "");
+    }
+
+    private CategoryResponseListener responseListener = new CategoryResponseListener() {
+        @Override
+        public void onSuccess(List<Product> product) {
+            mainBinding.swipeRefreshLayout.setRefreshing(false);
+            Log.d(TAG, "onSuccess: product " + product);
+        }
+
+        @Override
+        public void onFailure(int errorCode, String errorMessage) {
+            Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
+            mainBinding.swipeRefreshLayout.setRefreshing(false);
+            if (getContext() != null) {
+                Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -54,6 +112,14 @@ public class CategoryFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
+    }
+
+    private void showNoInternet(boolean visible) {
+        if (visible) {
+            mainBinding.vsEmptyScreen.setVisibility(View.VISIBLE);
+        } else {
+            mainBinding.vsEmptyScreen.setVisibility(View.GONE);
+        }
     }
 
 }
