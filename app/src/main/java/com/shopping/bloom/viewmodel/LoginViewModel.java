@@ -35,13 +35,13 @@ public class LoginViewModel extends ViewModel {
                     String message = response.body().getMessage();
 
                     if (success.equals("true")) {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(context, OtpActivity.class);
                         intent.putExtra("mobile_no", loginModel.getMobile_no());
                         context.startActivity(intent);
                         context.finish();
                     } else {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                     }
                 }
             }
