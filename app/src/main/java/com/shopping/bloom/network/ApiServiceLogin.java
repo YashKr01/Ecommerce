@@ -10,8 +10,7 @@ import retrofit2.http.POST;
 
 public interface ApiServiceLogin {
 
-    @Headers("Content-Type: application/json")
+//    @Headers("Content-Type: application/json")
 
-    @POST("api/auth/customerLoginWithOtp")
-    Call<LoginResponseModel> sendLoginData(@Body LoginModel loginModel);
+
 }

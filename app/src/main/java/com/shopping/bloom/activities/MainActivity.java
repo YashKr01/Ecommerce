@@ -1,10 +1,15 @@
 package com.shopping.bloom.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -65,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSearchBar(Boolean show) {
-        if(show) {
+        if (show) {
             mainView.layoutToolbar.tvTitle.setVisibility(View.GONE);
             mainView.layoutToolbar.etSearch.setVisibility(View.VISIBLE);
         } else {
@@ -73,4 +78,30 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menu_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.menu_cart) {
+            Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+
+//        switch (id){
+//            case R.id.menu_settings:
+//                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+//                return true;
+//            case R.id.menu_cart:
+//                Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+    }
 }

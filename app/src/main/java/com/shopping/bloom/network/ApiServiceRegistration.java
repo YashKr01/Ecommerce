@@ -9,10 +9,9 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiServiceRegistration {
-    @Headers({
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "Content-Type:application/json"
+//    })
 
-    @POST("api/auth/customerRegistration")
-    Call<RegisterResponseModel> sendRegisterData(@Body RegistrationModel registrationModel);
+
 }

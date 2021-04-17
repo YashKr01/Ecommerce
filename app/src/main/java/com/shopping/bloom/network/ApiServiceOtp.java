@@ -12,13 +12,9 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiServiceOtp {
-    @Headers({
-            "Content-Type:application/json"
-    })
+//    @Headers({
+//            "Content-Type:application/json"
+//    })
 
-    @POST("api/auth/verifyMobileOtp")
-    Call<OtpResponseModel> sendOtp(@Body OtpModel otpModel);
 
-    @POST("api/auth/resendOtp")
-    Call<LoginResponseModel> resendOtp(@Body LoginModel loginModel);
 }

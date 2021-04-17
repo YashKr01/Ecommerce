@@ -66,8 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         else{
             RegistrationModel registrationModel = new RegistrationModel("demo",email, number, "abc");
-            registerViewModel.makeApiCall(registrationModel, this);
-
+            registerViewModel.makeApiCall(registrationModel, getApplication(), this);
         }
     }
 

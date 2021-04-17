@@ -1,16 +1,20 @@
 package com.shopping.bloom.viewmodel;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 
+import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.activities.OtpActivity;
+import com.shopping.bloom.activities.RegisterActivity;
+import com.shopping.bloom.restService.ApiInterface;
+import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.model.RegistrationModel;
-import com.shopping.bloom.network.ApiServiceRegistration;
-import com.shopping.bloom.network.RetroInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,8 +26,8 @@ public class RegisterViewModel extends ViewModel {
 
     }
 
-    public void makeApiCall(RegistrationModel registrationModel, Context context){
-        ApiServiceRegistration apiService = RetroInstance.getRetrofitClient().create(ApiServiceRegistration.class);
+    public void makeApiCall(RegistrationModel registrationModel, Application application, Activity context){
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<RegisterResponseModel> call = apiService.sendRegisterData(registrationModel);
         call.enqueue(new Callback<RegisterResponseModel>() {
             @Override
@@ -35,12 +39,16 @@ public class RegisterViewModel extends ViewModel {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent( context, OtpActivity.class);
                         intent.putExtra("mobile_no",registrationModel.getMobile_no());
+                        intent.putExtra("activityName", "RegisterActivity");
                         context.startActivity(intent);
                     }
                     else{
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
                 }else{
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    context.startActivity(intent);
+                    context.finish();
                     Toast.makeText(context, "Number or Email already been taken", Toast.LENGTH_LONG).show();
                 }
             }

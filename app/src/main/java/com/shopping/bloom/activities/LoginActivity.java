@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             showToast.showToast("Number length should be 10");
         } else {
             LoginModel loginModel = new LoginModel(mobile_no);
-            loginViewModel.makeApiCall(loginModel, this);
+            loginViewModel.makeApiCall(loginModel, getApplication(), this);
         }
 
     }

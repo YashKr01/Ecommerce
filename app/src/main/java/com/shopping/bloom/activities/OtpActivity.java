@@ -52,7 +52,7 @@ public class OtpActivity extends AppCompatActivity {
             showToast.showToast("Number is Empty");
         } else {
             LoginModel loginModel = new LoginModel(mobile_no);
-            otpViewModel.makeApiCallResendOtp(loginModel, this);
+            otpViewModel.makeApiCallResendOtp(loginModel, getApplication(), this);
         }
     }
 
@@ -63,7 +63,7 @@ public class OtpActivity extends AppCompatActivity {
             showToast.showToast("Number is Empty");
         } else {
             OtpModel otpModel = new OtpModel(getIntent().getStringExtra("mobile_no"), otp);
-            otpViewModel.makeApiCallVerifyOtp(otpModel, this);
+            otpViewModel.makeApiCallVerifyOtp(otpModel, getApplication(),this, getIntent().getStringExtra("activityName"));
         }
     }
 

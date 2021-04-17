@@ -1,19 +1,21 @@
 package com.shopping.bloom.viewmodel;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 
+import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.activities.MainActivity;
 import com.shopping.bloom.model.LoginModel;
+import com.shopping.bloom.restService.ApiInterface;
+import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
-import com.shopping.bloom.network.ApiServiceOtp;
-import com.shopping.bloom.network.RetroInstance;
 import com.shopping.bloom.utils.LoginManager;
 
 import retrofit2.Call;
@@ -24,12 +26,13 @@ public class OtpViewModel extends ViewModel {
 
     LoginManager loginManager;
 
-    public OtpViewModel(){ }
+    public OtpViewModel() {
+    }
 
 
-    public void makeApiCallVerifyOtp(OtpModel otpModel, Activity context) {
+    public void makeApiCallVerifyOtp(OtpModel otpModel, Application application, Activity context, String ActivityName) {
         loginManager = new LoginManager(context);
-        ApiServiceOtp apiService = RetroInstance.getRetrofitClient().create(ApiServiceOtp.class);
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<OtpResponseModel> call = apiService.sendOtp(otpModel);
         call.enqueue(new Callback<OtpResponseModel>() {
             @Override
@@ -37,7 +40,7 @@ public class OtpViewModel extends ViewModel {
                 if (response.isSuccessful()) {
                     String success = response.body().getSuccess();
                     String message = response.body().getMessage();
-                    if(success.equals("true")) {
+                    if (success.equals("true")) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                         loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
@@ -45,12 +48,17 @@ public class OtpViewModel extends ViewModel {
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
                         loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
 
-                        Intent intent = new Intent(context, MainActivity.class);
+                        Intent intent;
+                        if (ActivityName.equals("RegisterActivity")) {
+                            intent = new Intent(context, LoginActivity.class);
+                        } else {
+                            intent = new Intent(context, MainActivity.class);
+                        }
                         context.startActivity(intent);
                         context.finish();
 
                         loginManager.SetLoginStatus(false);
-                    }else {
+                    } else {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -66,8 +74,8 @@ public class OtpViewModel extends ViewModel {
 
     }
 
-    public void makeApiCallResendOtp(LoginModel loginModel, Context context) {
-        ApiServiceOtp apiService = RetroInstance.getRetrofitClient().create(ApiServiceOtp.class);
+    public void makeApiCallResendOtp(LoginModel loginModel, Application application, Activity context) {
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<LoginResponseModel> call = apiService.resendOtp(loginModel);
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
