@@ -1,4 +1,4 @@
-package com.shopping.bloom.model;
+package com.shopping.bloom.models;
 
 class SubProduct {
     private int id;

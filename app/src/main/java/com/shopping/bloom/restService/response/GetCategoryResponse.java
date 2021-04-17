@@ -1,8 +1,7 @@
 package com.shopping.bloom.restService.response;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.models.Product;
 
 import java.util.List;
 

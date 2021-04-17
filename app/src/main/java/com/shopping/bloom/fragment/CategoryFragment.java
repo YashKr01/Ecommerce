@@ -14,11 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.models.Product;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModel.CategoryViewModel;
@@ -58,22 +57,21 @@ public class CategoryFragment extends Fragment {
         getActivity().invalidateOptionsMenu();
 
         viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+
         if (NetworkCheck.isConnect(getContext())) {
             getCategoryData();
         } else {
-            showNoInternet(true);
+            noInternetAvailable(true);
         }
 
-        mainBinding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (NetworkCheck.isConnect(getContext())) {
-                    showNoInternet(false);
-                    getCategoryData();
-                } else {
-                    showNoInternet(true);
-                    Log.d(TAG, "onRefresh: No internet available");
-                }
+        mainBinding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (NetworkCheck.isConnect(getContext())) {
+                noInternetAvailable(false);
+                getCategoryData();
+            } else {
+                mainBinding.swipeRefreshLayout.setRefreshing(false);
+                noInternetAvailable(true);
+                Log.d(TAG, "onRefresh: No internet available");
             }
         });
 
@@ -114,7 +112,8 @@ public class CategoryFragment extends Fragment {
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
     }
 
-    private void showNoInternet(boolean visible) {
+    //Show the no internet image
+    private void noInternetAvailable(boolean visible) {
         if (visible) {
             mainBinding.vsEmptyScreen.setVisibility(View.VISIBLE);
         } else {
