@@ -2,21 +2,15 @@ package com.shopping.bloom.viewmodel;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.activities.OtpActivity;
-import com.shopping.bloom.model.RegisterResponseModel;
+import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.network.ApiServiceRegistration;
 import com.shopping.bloom.network.RetroInstance;
-
-import java.util.logging.Logger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,15 +36,18 @@ public class RegisterViewModel extends ViewModel {
                         Intent intent = new Intent( context, OtpActivity.class);
                         intent.putExtra("mobile_no",registrationModel.getMobile_no());
                         context.startActivity(intent);
-                    }else{
+                    }
+                    else{
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(context, "Number or Email already been taken", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<RegisterResponseModel> call, Throwable t) {
-
+                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

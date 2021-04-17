@@ -6,17 +6,11 @@ import android.widget.Toast;
 
 import androidx.lifecycle.ViewModel;
 
-import com.google.gson.JsonObject;
 import com.shopping.bloom.activities.OtpActivity;
 import com.shopping.bloom.model.LoginModel;
-import com.shopping.bloom.model.LoginResponseModel;
+import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.network.ApiServiceLogin;
 import com.shopping.bloom.network.RetroInstance;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;

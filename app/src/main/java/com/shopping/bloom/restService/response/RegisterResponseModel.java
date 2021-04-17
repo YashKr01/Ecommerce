@@ -1,36 +1,24 @@
-package com.shopping.bloom.model;
+package com.shopping.bloom.restService.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.shopping.bloom.model.RegisterData;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class OtpResponseModel {
+public class RegisterResponseModel {
+
     @SerializedName("success")
     @Expose
     String success;
-
-    @SerializedName("data")
-    @Expose
-    Data data;
 
     @SerializedName("message")
     @Expose
     String message;
 
-//    @SerializedName("data")
-//    @Expose
-//    List<Data> data;
-
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
-    }
+    @SerializedName("data")
+    @Expose
+    RegisterData data;
 
     public String getSuccess() {
         return success;
@@ -48,11 +36,11 @@ public class OtpResponseModel {
         this.message = message;
     }
 
-//    public List<Data> getData() {
-//        return data;
-//    }
-//
-//    public void setData(List<Data> data) {
-//        this.data = data;
-//    }
+    public RegisterData getData() {
+        return data;
+    }
+
+    public void setData(RegisterData data) {
+        this.data = data;
+    }
 }

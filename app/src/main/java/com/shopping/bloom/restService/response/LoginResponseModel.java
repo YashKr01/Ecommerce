@@ -1,4 +1,4 @@
-package com.shopping.bloom.model;
+package com.shopping.bloom.restService.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -14,18 +14,6 @@ public class LoginResponseModel {
     @SerializedName("message")
     @Expose
     String message;
-
-//    @SerializedName("data")
-//    @Expose
-//    ArrayList<Data> data;
-//
-//    public ArrayList<Data> getData() {
-//        return data;
-//    }
-//
-//    public void setData(ArrayList<Data> data) {
-//        this.data = data;
-//    }
 
     public String getSuccess() {
         return success;
