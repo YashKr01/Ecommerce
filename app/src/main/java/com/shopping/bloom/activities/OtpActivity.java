@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.chaos.view.PinView;
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewmodel.OtpViewModel;
@@ -43,12 +44,13 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     public void resendOtp(View view) {
-        otp = pinView.getText().toString().trim();
+        String mobile_no = getIntent().getStringExtra("mobile_no");
 
-        if (otp == null || otp.isEmpty()) {
+        if (mobile_no == null || mobile_no.isEmpty()) {
             showToast.showToast("Number is Empty");
         } else {
-            otpViewModel.makeApiCallResendOtp(otp);
+            LoginModel loginModel = new LoginModel(mobile_no);
+            otpViewModel.makeApiCallResendOtp(loginModel, this);
         }
     }
 
@@ -59,7 +61,7 @@ public class OtpActivity extends AppCompatActivity {
             showToast.showToast("Number is Empty");
         } else {
             OtpModel otpModel = new OtpModel(getIntent().getStringExtra("mobile_no"), otp);
-            otpViewModel.makeApiCallVerifyOtp(otpModel);
+            otpViewModel.makeApiCallVerifyOtp(otpModel, this);
         }
     }
 }

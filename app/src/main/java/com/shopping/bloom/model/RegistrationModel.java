@@ -1,7 +1,25 @@
 package com.shopping.bloom.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class RegistrationModel {
-    String name, email, mobile_no, firebase_token;
+
+    @SerializedName("name")
+    @Expose
+    String name;
+
+    @SerializedName("email")
+    @Expose
+    String email;
+
+    @SerializedName("mobile_no")
+    @Expose
+    String mobile_no;
+
+    @SerializedName("firebase_token")
+    @Expose
+    String firebase_token;
 
     public RegistrationModel(String name, String email, String mobile_no, String firebase_token) {
         this.name = name;

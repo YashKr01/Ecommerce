@@ -6,16 +6,29 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.R;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewmodel.RegisterViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText, numberEditText;
@@ -38,14 +51,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         registerViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         button.setOnClickListener(v -> {
-            signIn();
+            String email = emailEditText.getText().toString().trim();
+            String password = passwordEditText.getText().toString().trim();
+            String number = numberEditText.getText().toString().trim();
+            signIn(email, number, password);
         });
     }
 
-    public void signIn() {
-        String email = emailEditText.getText().toString().trim();
-        String password = passwordEditText.getText().toString().trim();
-        String number = numberEditText.getText().toString().trim();
+    public void signIn(String email, String number, String password) {
+
         if (email == null || email.isEmpty()) {
             showToast.showToast("Enter email address.");
         }
@@ -68,8 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
             showToast.showToast("Number length should be 10");
         }
         else{
-            RegistrationModel registrationModel = new RegistrationModel("demo",email, number, "demo_token");
-            registerViewModel.makeApiCall(registrationModel);
+            RegistrationModel registrationModel = new RegistrationModel("demo",email, number, "abc");
+            registerViewModel.makeApiCall(registrationModel, this);
+
         }
     }
 

@@ -3,18 +3,18 @@ package com.shopping.bloom.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class OtpModel {
+import java.io.Serializable;
+
+public class LoginModel{
+
     @SerializedName("mobile_no")
     @Expose
-    String mobile_no;
+    private String mobile_no;
 
-    @SerializedName("otp")
-    @Expose
-    String otp;
+    public LoginModel(){};
 
-    public OtpModel(String mobile_no, String otp) {
+    public LoginModel(String mobile_no) {
         this.mobile_no = mobile_no;
-        this.otp = otp;
     }
 
     public String getMobile_no() {
@@ -23,13 +23,5 @@ public class OtpModel {
 
     public void setMobile_no(String mobile_no) {
         this.mobile_no = mobile_no;
-    }
-
-    public String getOtp() {
-        return otp;
-    }
-
-    public void setOtp(String otp) {
-        this.otp = otp;
     }
 }

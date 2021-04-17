@@ -1,6 +1,8 @@
 package com.shopping.bloom.network;
 
 
+import com.shopping.bloom.model.LoginModel;
+import com.shopping.bloom.model.LoginResponseModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.OtpResponseModel;
 
@@ -14,9 +16,9 @@ public interface ApiServiceOtp {
             "Content-Type:application/json"
     })
 
-    @POST("auth/customerLoginWithOtp")
+    @POST("auth/verifyMobileOtp")
     Call<OtpResponseModel> sendOtp(@Body OtpModel otpModel);
 
     @POST("auth/resendOtp")
-    Call<OtpResponseModel> resendOtp(@Body String number);
+    Call<LoginResponseModel> resendOtp(@Body LoginModel loginModel);
 }

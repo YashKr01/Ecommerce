@@ -4,22 +4,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewmodel.LoginViewModel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText mobileNoEditText;
     ShowToast showToast;
     LoginViewModel loginViewModel;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +48,14 @@ public class LoginActivity extends AppCompatActivity {
         showToast = new ShowToast(this);
 
         mobileNoEditText = findViewById(R.id.mobileNoEditText);
+        button = findViewById(R.id.signInButton);
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+
+        button.setOnClickListener(v -> {
+            String mobile_no = mobileNoEditText.getText().toString().trim();
+            signIn(mobile_no);
+        });
 
     }
 
@@ -39,18 +64,14 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void signIn(View view) {
-        String mobile_no = mobileNoEditText.getText().toString().trim();
-
+    public void signIn(String mobile_no) {
         if (mobile_no == null || mobile_no.isEmpty()) {
             showToast.showToast("Number is Empty");
         } else if (!numberLength(mobile_no)) {
             showToast.showToast("Number length should be 10");
-        }else{
-            loginViewModel.makeApiCall(mobile_no);
-//            Intent intent = new Intent(this, OtpActivity.class);
-//            intent.putExtra("mobile_no", mobile_no);
-//            startActivity(intent);
+        } else {
+                LoginModel loginModel = new LoginModel(mobile_no);
+                loginViewModel.makeApiCall(loginModel,this);
         }
 
     }
