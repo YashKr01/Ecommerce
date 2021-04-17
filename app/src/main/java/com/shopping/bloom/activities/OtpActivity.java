@@ -15,8 +15,8 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewmodel.OtpViewModel;
-import com.shopping.bloom.viewmodel.RegisterViewModel;
+import com.shopping.bloom.viewModel.OtpViewModel;
+
 
 public class OtpActivity extends AppCompatActivity {
 
