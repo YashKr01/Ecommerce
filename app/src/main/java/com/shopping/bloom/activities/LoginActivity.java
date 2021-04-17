@@ -9,6 +9,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
+import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewmodel.LoginViewModel;
 
@@ -32,6 +33,18 @@ public class LoginActivity extends AppCompatActivity {
     ShowToast showToast;
     LoginViewModel loginViewModel;
     Button button;
+    LoginManager loginManager;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loginManager = new LoginManager(this);
+        if (!loginManager.isLoggedIn()) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         } else if (!numberLength(mobile_no)) {
             showToast.showToast("Number length should be 10");
         } else {
-                LoginModel loginModel = new LoginModel(mobile_no);
-                loginViewModel.makeApiCall(loginModel,this);
+            LoginModel loginModel = new LoginModel(mobile_no);
+            loginViewModel.makeApiCall(loginModel, this);
         }
 
     }

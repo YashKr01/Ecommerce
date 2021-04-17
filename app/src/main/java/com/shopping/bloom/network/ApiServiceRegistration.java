@@ -13,6 +13,6 @@ public interface ApiServiceRegistration {
             "Content-Type:application/json"
     })
 
-    @POST("auth/customerRegistration")
+    @POST("api/auth/customerRegistration")
     Call<RegisterResponseModel> sendRegisterData(@Body RegistrationModel registrationModel);
 }

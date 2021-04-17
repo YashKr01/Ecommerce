@@ -12,6 +12,6 @@ public interface ApiServiceLogin {
 
     @Headers("Content-Type: application/json")
 
-    @POST("auth/customerLoginWithOtp")
+    @POST("api/auth/customerLoginWithOtp")
     Call<LoginResponseModel> sendLoginData(@Body LoginModel loginModel);
 }

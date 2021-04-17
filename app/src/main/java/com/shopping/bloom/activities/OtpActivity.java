@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -63,5 +65,13 @@ public class OtpActivity extends AppCompatActivity {
             OtpModel otpModel = new OtpModel(getIntent().getStringExtra("mobile_no"), otp);
             otpViewModel.makeApiCallVerifyOtp(otpModel, this);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

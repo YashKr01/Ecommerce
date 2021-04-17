@@ -16,9 +16,9 @@ public interface ApiServiceOtp {
             "Content-Type:application/json"
     })
 
-    @POST("auth/verifyMobileOtp")
+    @POST("api/auth/verifyMobileOtp")
     Call<OtpResponseModel> sendOtp(@Body OtpModel otpModel);
 
-    @POST("auth/resendOtp")
+    @POST("api/auth/resendOtp")
     Call<LoginResponseModel> resendOtp(@Body LoginModel loginModel);
 }

@@ -1,5 +1,6 @@
 package com.shopping.bloom.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -26,7 +27,7 @@ public class OtpViewModel extends ViewModel {
     public OtpViewModel(){ }
 
 
-    public void makeApiCallVerifyOtp(OtpModel otpModel, Context context) {
+    public void makeApiCallVerifyOtp(OtpModel otpModel, Activity context) {
         loginManager = new LoginManager(context);
         ApiServiceOtp apiService = RetroInstance.getRetrofitClient().create(ApiServiceOtp.class);
         Call<OtpResponseModel> call = apiService.sendOtp(otpModel);
@@ -46,6 +47,9 @@ public class OtpViewModel extends ViewModel {
 
                         Intent intent = new Intent(context, MainActivity.class);
                         context.startActivity(intent);
+                        context.finish();
+
+                        loginManager.SetLoginStatus(false);
                     }else {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }

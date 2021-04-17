@@ -1,5 +1,6 @@
 package com.shopping.bloom.viewmodel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -22,28 +23,26 @@ public class LoginViewModel extends ViewModel {
 
     }
 
-    public void makeApiCall(LoginModel loginModel, Context context) {
+    public void makeApiCall(LoginModel loginModel, Activity context) {
         ApiServiceLogin apiService = RetroInstance.getRetrofitClient().create(ApiServiceLogin.class);
         Call<LoginResponseModel> call = apiService.sendLoginData(loginModel);
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        String success = response.body().getSuccess();
-                        String message = response.body().getMessage();
+                System.out.println(response);
+                if (response.isSuccessful()) {
+                    String success = response.body().getSuccess();
+                    String message = response.body().getMessage();
 
-                        if (success.equals("true")) {
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(context, OtpActivity.class);
-                            intent.putExtra("mobile_no", loginModel.getMobile_no());
-                            context.startActivity(intent);
-                        }else{
-                            Toast.makeText(context, message,Toast.LENGTH_SHORT).show();
-                        }
+                    if (success.equals("true")) {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, OtpActivity.class);
+                        intent.putExtra("mobile_no", loginModel.getMobile_no());
+                        context.startActivity(intent);
+                        context.finish();
+                    } else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
                 }
             }
 
