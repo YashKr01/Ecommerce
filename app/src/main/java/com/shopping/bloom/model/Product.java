@@ -1,6 +1,10 @@
-package com.shopping.bloom.models;
+package com.shopping.bloom.model;
 
-public class SubProduct {
+import java.util.List;
+
+/* Product category with list of product item*/
+
+public class Product {
     private int id;
     private String parent_id;
     private String category_name;
@@ -10,11 +14,11 @@ public class SubProduct {
     private String type;
     private String created_at;
     private String updated_at;
+    private List<SubProduct> sub_category;
 
-    public SubProduct(int id, String parent_id, String category_name,
-                      String category_thumbnail, String is_bigthumbnail_show,
-                      String big_thumbnail, String type,
-                      String created_at, String updated_at) {
+    public Product(int id, String parent_id, String category_name, String category_thumbnail,
+                   String is_bigthumbnail_show, String big_thumbnail, String type, String created_at,
+                   String updated_at, List<SubProduct> sub_category) {
         this.id = id;
         this.parent_id = parent_id;
         this.category_name = category_name;
@@ -24,6 +28,7 @@ public class SubProduct {
         this.type = type;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.sub_category = sub_category;
     }
 
     public int getId() {
@@ -98,9 +103,17 @@ public class SubProduct {
         this.updated_at = updated_at;
     }
 
+    public List<SubProduct> getSub_category() {
+        return sub_category;
+    }
+
+    public void setSub_category(List<SubProduct> sub_category) {
+        this.sub_category = sub_category;
+    }
+
     @Override
     public String toString() {
-        return "SubProduct{" +
+        return "Product{" +
                 "id=" + id +
                 ", parent_id='" + parent_id + '\'' +
                 ", category_name='" + category_name + '\'' +
@@ -110,6 +123,7 @@ public class SubProduct {
                 ", type='" + type + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
+                ", sub_category=" + sub_category +
                 '}';
     }
 }

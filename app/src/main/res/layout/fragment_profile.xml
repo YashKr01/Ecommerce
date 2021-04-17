@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+   android:layout_margin="@dimen/sb_size_8"
     tools:context=".fragment.ProfileFragment">
 
     <!--- TODO : Fixing Nested ScrollView -->
