@@ -11,7 +11,8 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewmodel.LoginViewModel;
+import com.shopping.bloom.viewModel.LoginViewModel;
+
 
 import android.content.Intent;
 import android.os.Bundle;

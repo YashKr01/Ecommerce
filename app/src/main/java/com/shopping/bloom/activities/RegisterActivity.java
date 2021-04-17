@@ -11,7 +11,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewmodel.RegisterViewModel;
+import com.shopping.bloom.viewModel.RegisterViewModel;
+
 
 public class RegisterActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText, numberEditText;
