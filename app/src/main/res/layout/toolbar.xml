@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:elevation="@dimen/sb_size_16"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:focusableInTouchMode="true"
+            android:background="@color/white">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imgMail"
+                    android:layout_width="27dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_mail"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/desc_mail"/>
+
+                <ImageView
+                    android:id="@+id/imgFavourites"
+                    android:layout_width="@dimen/sb_size_25"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sb_size_16"
+                    app:srcCompat="@drawable/ic_favourites"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgMail"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/desc_favourites" />
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_"
+                    android:textColor="@color/blue_grey_900"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/sb_size_38"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginHorizontal="@dimen/sb_size_16"
+                    android:layout_marginVertical="@dimen/sb_size_8"
+                    android:background="@drawable/bg_search_bar"
+                    android:hint="@string/hint_search"
+                    android:focusedByDefault="false"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:paddingHorizontal="@dimen/sb_size_8"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imgFavourites"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:inputType="text" />
+
+                <!--Right side icon is not needed since they can be inflated with
+                        onOptionMenuCreated -->
+
+                <!--<ImageView
+                    android:id="@+id/imgSetting"
+                    android:layout_width="@dimen/sb_size_24"
+                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_marginEnd="@dimen/sb_size_16"
+                    android:src="@drawable/ic_setting"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/imgCart"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/desc_setting"/>
+
+                <ImageView
+                    android:id="@+id/imgCart"
+                    android:layout_width="@dimen/sb_size_24"
+                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_marginEnd="@dimen/sb_size_16"
+                    android:src="@drawable/ic_cart"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/desc_cart"/>-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
