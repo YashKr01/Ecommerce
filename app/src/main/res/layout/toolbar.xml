@@ -27,9 +27,9 @@
 
                 <ImageView
                     android:id="@+id/imgMail"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
-                    android:src="@drawable/ic_mail"
+                    android:layout_width="27dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_mail"
                     android:scaleType="fitCenter"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -38,10 +38,10 @@
 
                 <ImageView
                     android:id="@+id/imgFavourites"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
+                    android:layout_width="@dimen/sb_size_25"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/sb_size_16"
-                    android:src="@drawable/ic_favourites"
+                    app:srcCompat="@drawable/ic_favourites"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/imgMail"
                     app:layout_constraintTop_toTopOf="parent"
