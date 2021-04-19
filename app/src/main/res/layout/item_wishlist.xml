@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clProductRootView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvDummy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/sb_size_6"
+        app:cardCornerRadius="@dimen/sb_size_8"
+        app:cardElevation="@dimen/sb_size_0"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:viewBindingIgnore="false">
+
+        <ImageView
+            android:id="@+id/imgCategoryImage"
+            android:layout_width="120dp"
+            android:layout_height="165dp"
+            tools:src="@color/deep_orange_600" />
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tvProductPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/sb_size_8"
+        android:text="1234 $"
+        android:textColor="@color/grey_900"
+        android:textSize="@dimen/sb_text_size_15"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cvDummy"
+        app:layout_constraintStart_toStartOf="@id/cvDummy"
+        app:layout_constraintTop_toBottomOf="@id/cvDummy" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cvDummy"
+        app:layout_constraintStart_toStartOf="@id/cvDummy"
+        app:layout_constraintTop_toBottomOf="@id/cvDummy"
+        android:id="@+id/imgProductImage"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

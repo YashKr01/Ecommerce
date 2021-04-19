@@ -34,8 +34,7 @@ import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
-import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModel.CategoryViewModel;
+import com.shopping.bloom.utils.NetworkCheck;;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class ShopFragment extends Fragment {
     private ImageView imgHeaderImage;
     private LinearLayout vpIndicator;
 
-    private CategoryViewModel viewModel;
+    private com.shopping.bloom.viewmodel.CategoryViewModel viewModel;
 
     private RecyclerView rvCategoryImages;          //At Top Product suggestion Horizontal Scroll
     private RecyclerView rvTopProductSuggestion;    //Categories
@@ -112,7 +111,7 @@ public class ShopFragment extends Fragment {
         rvCategoryImages = view.findViewById(R.id.rvProductsCategory);                 //Categories
         rvBottomProductSuggestion = view.findViewById(R.id.rvBottomProductSuggestion);  //At bottom Product suggestion
 
-        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        viewModel = new ViewModelProvider(this).get(com.shopping.bloom.viewmodel.CategoryViewModel.class);
 
         viewpagerAdapter = new ViewpagerAdapter(mainScreenConfig.getViewpager_image(), getContext(), imageModel -> {
             Log.d(TAG, "initViews: viewpager clicked " + imageModel.getImagepath() +
