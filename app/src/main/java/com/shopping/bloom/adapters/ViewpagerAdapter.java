@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.models.MainScreenImageModel;
+import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.restService.callback.ViewPagerClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 

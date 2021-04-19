@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
-import com.shopping.bloom.models.SubProduct;
+import com.shopping.bloom.model.SubProduct;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 

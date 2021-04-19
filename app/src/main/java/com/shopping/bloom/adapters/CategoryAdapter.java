@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.models.Product;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 
 import java.util.ArrayList;

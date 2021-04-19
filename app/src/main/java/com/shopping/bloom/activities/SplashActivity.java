@@ -18,6 +18,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void gotoMainScreen() {
+        //removing intent to login
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);

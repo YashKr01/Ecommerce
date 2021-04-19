@@ -9,8 +9,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
 
 import com.shopping.bloom.BuildConfig
-import com.shopping.bloom.firebaseConfig.RemoteConfigDefaults.Companion.MAINSCREEN_CONFIG
-import com.shopping.bloom.models.MainScreenConfig
+import com.shopping.bloom.model.MainScreenConfig
 import com.shopping.bloom.utils.CommonUtils
 
 open class RemoteConfig {

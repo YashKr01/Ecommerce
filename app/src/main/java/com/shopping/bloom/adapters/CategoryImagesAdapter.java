@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.models.Product;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.CategoryImageClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 

@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.databinding.ActivityMainBinding;
+import com.shopping.bloom.utils.LoginManager;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
