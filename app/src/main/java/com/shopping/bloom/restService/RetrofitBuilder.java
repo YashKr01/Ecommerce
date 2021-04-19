@@ -85,7 +85,7 @@ public class RetrofitBuilder {
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(okHttpClient)
+                //.client(okHttpClient)
                 .build();
 
     }

@@ -10,6 +10,7 @@ public class SubProduct {
     private String type;
     private String created_at;
     private String updated_at;
+    public String square_thumbnail;
 
     public SubProduct(int id, String parent_id, String category_name,
                       String category_thumbnail, String is_bigthumbnail_show,
@@ -96,6 +97,14 @@ public class SubProduct {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getSquare_thumbnail() {
+        return square_thumbnail;
+    }
+
+    public void setSquare_thumbnail(String square_thumbnail) {
+        this.square_thumbnail = square_thumbnail;
     }
 
     @Override

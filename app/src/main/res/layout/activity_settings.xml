@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SettingsActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:titleTextColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:title="Settings" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/sb_size_60"
+        android:background="@color/grey_200"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_200"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_10"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/sb_size_25"
+                android:paddingVertical="@dimen/sb_text_size_18">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/sb_size_6"
+                    android:text="Freecode.hello"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_18"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="freecode.hello@gmail.com"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_15"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_10"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/sb_size_5">
+
+                <TextView
+                    android:id="@+id/addressBookTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_15"
+                    android:text="Address Book"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/myPaymentOptionsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_18"
+                    android:text="My Payment Options"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/accountSecurityTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_15"
+                    android:text="Account Security"
+                    android:textColor="@color/black"
+                    android:onClick="accountSecurityIntent"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_10"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/sb_size_5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/countryTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center|start"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_15"
+                        android:text="Country / Region"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/setCountryTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|start"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_15"
+                        android:text="IN"
+                        android:drawablePadding="@dimen/sb_size_10"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/currencyTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|start"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_20"
+                        android:text="Currency"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/setCurrencyTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|start"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_15"
+                        android:text="INR"
+                        android:drawablePadding="@dimen/sb_size_10"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/notificationTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:layout_weight="1"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_15"
+                        android:text="Notification"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/setNotificationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center|start"
+                        android:paddingHorizontal="@dimen/sb_size_25"
+                        android:paddingVertical="@dimen/sb_size_15"
+                        android:text="ON"
+                        android:drawablePadding="@dimen/sb_size_10"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_10"
+                android:layout_marginBottom="@dimen/sb_size_10"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/sb_size_5">
+
+                <TextView
+                    android:id="@+id/ratingTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_15"
+                    android:text="Rating &amp; Feedback"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/connectTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_20"
+                    android:text="Connect to us"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_2"
+                    android:background="@color/grey_300" />
+
+                <TextView
+                    android:id="@+id/aboutTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:paddingHorizontal="@dimen/sb_size_25"
+                    android:paddingVertical="@dimen/sb_size_15"
+                    android:text="About"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:drawableEndCompat="@drawable/ic_baseline_right_24" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item_wishlist
                 , parent, false));
     }
 

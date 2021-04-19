@@ -26,15 +26,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     ArrayList<Product> products;
     ProductClickListener mListener;
 
-    public CategoryAdapter(Context context, List<Product> productList, ProductClickListener mListener) {
+    public CategoryAdapter(Context context, ProductClickListener mListener) {
         this.context = context;
-        this.products = new ArrayList<>(productList);
         this.mListener = mListener;
+        products = new ArrayList<>();
     }
 
     public void updateProductList(List<Product> productList){
-        products.clear();
-        products.addAll(productList);
+        if(products == null) {
+            products = new ArrayList<>(productList);
+        } else {
+            products.clear();
+            products.addAll(productList);
+        }
         notifyDataSetChanged();
     }
 
@@ -50,6 +54,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         Product product = getItemAt(position);
         Log.d(TAG, "onBindViewHolder: productDetail " + product);
         holder.tvProductCategory.setText(product.getCategory_name());
+
         NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, product.getSub_category(), mListener);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
         holder.rvSubProduct.setLayoutManager(layoutManager);
@@ -58,7 +63,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         //attach the click listener to the product category
         holder.tvProductCategory.setOnClickListener((view -> mListener.onProductClick(product)));
-
     }
 
     private Product getItemAt(int position) {
