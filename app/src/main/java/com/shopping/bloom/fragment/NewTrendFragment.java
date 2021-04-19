@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,13 +16,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.NewTrendAdapter;
 import com.shopping.bloom.databinding.FragmentNewTrendBinding;
+import com.shopping.bloom.model.NewTrends;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NewTrendFragment extends Fragment {
     private static final String TAG = NewTrendFragment.class.getName();
 
     private FragmentNewTrendBinding binding;
+    private NewTrendAdapter adapter;
+    private List<NewTrends> list;
 
     public NewTrendFragment() {
         // Required empty public constructor
@@ -47,8 +55,34 @@ public class NewTrendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
+        initRecyclerView();
+        initList(list);
 
+        binding.recyclerView.setAdapter(adapter);
 
+    }
+
+    private void initRecyclerView() {
+        list = new ArrayList<>();
+        adapter = new NewTrendAdapter(list, getContext());
+        binding.recyclerView.setHasFixedSize(true);
+        binding.recyclerView.setNestedScrollingEnabled(false);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    private void initList(List<NewTrends> newTrends) {
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
+                , "New in Dresses", "Hooded, over sized, Graphic"));
     }
 
     @Override
@@ -69,4 +103,5 @@ public class NewTrendFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
+
 }
