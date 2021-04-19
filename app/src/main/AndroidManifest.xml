@@ -16,8 +16,7 @@
         android:theme="@style/Theme.Ecommerce">
         <activity android:name=".activities.AccountSecurityActivity"></activity>
         <activity
-            android:name=".activities.SettingsActivity"
-            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+            android:name=".activities.SettingsActivity" />
         <activity
             android:name=".activities.RegisterActivity"
             android:theme="@style/Theme.Ecommerce.NoActionBar"

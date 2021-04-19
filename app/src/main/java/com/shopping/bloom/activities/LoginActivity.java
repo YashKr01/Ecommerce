@@ -2,7 +2,9 @@ package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonIOException;
@@ -10,14 +12,16 @@ import com.google.gson.JsonObject;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.utils.LoginManager;
+import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewModel.LoginViewModel;
+import com.shopping.bloom.viewmodel.LoginViewModel;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -34,6 +38,9 @@ public class LoginActivity extends AppCompatActivity {
     ShowToast showToast;
     LoginViewModel loginViewModel;
     Button button;
+    ConstraintLayout constraintLayout;
+    ViewStub viewStub;
+    SwipeRefreshLayout swipeRefreshLayout;
     LoginManager loginManager;
 
     @Override
@@ -56,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mobileNoEditText = findViewById(R.id.mobileNoEditText);
         button = findViewById(R.id.signInButton);
+        viewStub = findViewById(R.id.vsEmptyScreen);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        constraintLayout = findViewById(R.id.constrainLayout);
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
@@ -63,6 +73,22 @@ public class LoginActivity extends AppCompatActivity {
             String mobile_no = mobileNoEditText.getText().toString().trim();
             signIn(mobile_no);
         });
+
+        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
+        checkNetworkConnectivity();
+
+    }
+
+    private void checkNetworkConnectivity() {
+
+        if(!NetworkCheck.isConnect(this)){
+            viewStub.setVisibility(View.VISIBLE);
+            constraintLayout.setVisibility(View.GONE);
+        }else{
+            viewStub.setVisibility(View.GONE);
+            constraintLayout.setVisibility(View.VISIBLE);
+        }
+        swipeRefreshLayout.setRefreshing(false);
 
     }
 
@@ -72,13 +98,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void signIn(String mobile_no) {
+
         if (mobile_no == null || mobile_no.isEmpty()) {
             showToast.showToast("Number is Empty");
         } else if (!numberLength(mobile_no)) {
             showToast.showToast("Number length should be 10");
         } else {
-            LoginModel loginModel = new LoginModel(mobile_no);
-            loginViewModel.makeApiCall(loginModel, getApplication(), this);
+            if(NetworkCheck.isConnect(this)){
+                LoginModel loginModel = new LoginModel(mobile_no);
+                loginViewModel.makeApiCall(loginModel, getApplication(), this);
+            }else{
+                viewStub.setVisibility(View.VISIBLE);
+                constraintLayout.setVisibility(View.GONE);
+            }
         }
 
     }

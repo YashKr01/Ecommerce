@@ -10,9 +10,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.activities.MainActivity;
+import com.shopping.bloom.activities.SettingsActivity;
+import com.shopping.bloom.model.EmailOtpModel;
+import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
@@ -37,6 +41,7 @@ public class OtpViewModel extends ViewModel {
         call.enqueue(new Callback<OtpResponseModel>() {
             @Override
             public void onResponse(Call<OtpResponseModel> call, Response<OtpResponseModel> response) {
+                System.out.println(response);
                 if (response.isSuccessful()) {
                     String success = response.body().getSuccess();
                     String message = response.body().getMessage();
@@ -51,13 +56,53 @@ public class OtpViewModel extends ViewModel {
                         Intent intent;
                         if (ActivityName.equals("RegisterActivity")) {
                             intent = new Intent(context, LoginActivity.class);
-                        } else {
+                        }
+                        else {
                             intent = new Intent(context, MainActivity.class);
+                            loginManager.SetLoginStatus(false);
                         }
                         context.startActivity(intent);
                         context.finish();
 
-                        loginManager.SetLoginStatus(false);
+                    } else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "Otp Verification Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OtpResponseModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void makeApiCallVerifyEmailOtp(EmailOtpModel otpModel, Application application, Activity context, String ActivityName) {
+        loginManager = new LoginManager(context);
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<OtpResponseModel> call = apiService.verifyEmailOtp(otpModel);
+        call.enqueue(new Callback<OtpResponseModel>() {
+            @Override
+            public void onResponse(Call<OtpResponseModel> call, Response<OtpResponseModel> response) {
+                System.out.println(response);
+                if (response.isSuccessful()) {
+                    String success = response.body().getSuccess();
+                    String message = response.body().getMessage();
+                    if (success.equals("true")) {
+                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+
+                        loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
+                        loginManager.setname(response.body().getData().getUserInfo().getName());
+                        loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
+                        loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
+
+                        Intent intent = new Intent(context, SettingsActivity.class);
+                        context.startActivity(intent);
+                        context.finish();
+
                     } else {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                     }
@@ -89,6 +134,27 @@ public class OtpViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    public void makeApiCallResendEmailOtp(EmailVerificationModel emailVerificationModel, Application application, Activity context) {
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<EmailVerificationResponse> call = apiService.sendEmailVerifyData(emailVerificationModel);
+        call.enqueue(new Callback<EmailVerificationResponse>() {
+            @Override
+            public void onResponse(Call<EmailVerificationResponse> call, Response<EmailVerificationResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EmailVerificationResponse> call, Throwable t) {
 
             }
         });

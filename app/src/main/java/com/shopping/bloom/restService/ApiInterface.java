@@ -1,5 +1,8 @@
 package com.shopping.bloom.restService;
 
+import com.shopping.bloom.model.EmailOtpModel;
+import com.shopping.bloom.model.EmailVerificationModel;
+import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.RegistrationModel;
@@ -41,4 +44,12 @@ public interface ApiInterface {
     @POST("auth/customerLoginWithOtp")
     @Headers("Content-type: application/json")
     Call<LoginResponseModel> sendLoginData(@Body LoginModel loginModel);
+
+    @POST("auth/resendEmailOtp")
+    @Headers("Content-type: application/json")
+    Call<EmailVerificationResponse> sendEmailVerifyData(@Body EmailVerificationModel emailOtpModel);
+
+    @POST("auth/verifyEmailOtp")
+    @Headers("Content-type: application/json")
+    Call<OtpResponseModel> verifyEmailOtp(@Body EmailOtpModel emailOtpModel);
 }

@@ -47,7 +47,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setNavigationIcon() {
         toolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 }

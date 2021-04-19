@@ -26,7 +26,7 @@ import com.shopping.bloom.model.SubProduct;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModel.CategoryViewModel;
+import com.shopping.bloom.viewmodel.CategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

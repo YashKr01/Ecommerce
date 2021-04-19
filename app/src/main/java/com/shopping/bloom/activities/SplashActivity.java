@@ -18,8 +18,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void gotoMainScreen() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

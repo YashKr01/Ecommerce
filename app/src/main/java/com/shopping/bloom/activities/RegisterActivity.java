@@ -2,23 +2,31 @@ package com.shopping.bloom.activities;
 
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.RegistrationModel;
+import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewModel.RegisterViewModel;
+import com.shopping.bloom.viewmodel.RegisterViewModel;
 
 
 public class RegisterActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText, numberEditText;
     ShowToast showToast;
     Button button;
+    ConstraintLayout constraintLayout;
+    ViewStub viewStub;
     RegisterViewModel registerViewModel;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         numberEditText = findViewById(R.id.numberEditText);
+        viewStub = findViewById(R.id.vsEmptyScreen);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        constraintLayout = findViewById(R.id.constrainLayout);
 
         button = findViewById(R.id.signInButton);
 
@@ -40,6 +51,9 @@ public class RegisterActivity extends AppCompatActivity {
             String number = numberEditText.getText().toString().trim();
             signIn(email, number, password);
         });
+
+        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
+        checkNetworkConnectivity();
     }
 
     public void signIn(String email, String number, String password) {
@@ -66,8 +80,13 @@ public class RegisterActivity extends AppCompatActivity {
             showToast.showToast("Number length should be 10");
         }
         else{
-            RegistrationModel registrationModel = new RegistrationModel("demo",email, number, "abc");
-            registerViewModel.makeApiCall(registrationModel, getApplication(), this);
+            if(NetworkCheck.isConnect(this)){
+                RegistrationModel registrationModel = new RegistrationModel("demo",email, number, "abc");
+                registerViewModel.makeApiCall(registrationModel, getApplication(), this);
+            }else{
+                viewStub.setVisibility(View.VISIBLE);
+                constraintLayout.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -81,5 +100,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean numberLength(String number) {
         return number.length() == 10;
+    }
+
+    private void checkNetworkConnectivity() {
+
+        if(!NetworkCheck.isConnect(this)){
+            viewStub.setVisibility(View.VISIBLE);
+            constraintLayout.setVisibility(View.GONE);
+        }else{
+            viewStub.setVisibility(View.GONE);
+            constraintLayout.setVisibility(View.VISIBLE);
+        }
+        swipeRefreshLayout.setRefreshing(false);
+
     }
 }
