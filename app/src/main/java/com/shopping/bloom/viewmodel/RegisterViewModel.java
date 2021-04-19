@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewmodel;
+package com.shopping.bloom.viewModel;
 
 import android.content.Context;
 import android.content.Intent;
