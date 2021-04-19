@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
 
+
 import java.util.List;
 
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder> {

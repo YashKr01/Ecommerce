@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   android:layout_margin="@dimen/sb_size_8"
+    android:layout_margin="@dimen/sb_size_8"
     tools:context=".fragment.ProfileFragment">
 
-    <!--- TODO : Fixing Nested ScrollView -->
+    <!--- TODO : Fixing Nested ScrollView added static height of view pager for now -->
     <!--  TODO: Tried android:nestedScrollingEnabled="true"-->
     <androidx.core.widget.NestedScrollView
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="0dp"
-        android:fillViewport="true"
+        android:id="@+id/nestscrollview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -508,11 +508,21 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/profile_view_pager"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="1500dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/profile_tab_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/text_more_services" />
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:src="@drawable/screen_end"
+                app:layout_constraintTop_toBottomOf="@id/profile_view_pager"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -17,6 +17,8 @@ import com.shopping.bloom.adapters.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
 import com.shopping.bloom.model.Product;
 
+import com.shopping.bloom.model.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -14,6 +14,7 @@ public class Product {
     private String type;
     private String created_at;
     private String updated_at;
+    public Object square_thumbnail;
     private List<SubProduct> sub_category;
 
     public Product(int id, String parent_id, String category_name, String category_thumbnail,
@@ -81,6 +82,14 @@ public class Product {
 
     public String getType() {
         return type;
+    }
+
+    public Object getSquare_thumbnail() {
+        return square_thumbnail;
+    }
+
+    public void setSquare_thumbnail(Object square_thumbnail) {
+        this.square_thumbnail = square_thumbnail;
     }
 
     public void setType(String type) {
