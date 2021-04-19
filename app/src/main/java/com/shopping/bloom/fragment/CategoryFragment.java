@@ -28,7 +28,6 @@ import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModel.CategoryViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragment extends Fragment implements ProductClickListener {
@@ -37,9 +36,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
 
     private CategoryViewModel viewModel;
     private FragmentCategoryBinding mainBinding;
-    private CategoryAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    private List<Product> productList;
+    private CategoryAdapter categoryImagesAdapter;
 
     private int PAGE_NO = 0;
     private final int START_PAGE = 0;
@@ -75,12 +72,11 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     }
 
     private void initRecyclerView() {
-        productList = new ArrayList<>();
-        adapter = new CategoryAdapter(getContext(), productList, this);
-        layoutManager = new LinearLayoutManager(getContext());
+        categoryImagesAdapter = new CategoryAdapter(getContext(), this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         mainBinding.rvCategory.setLayoutManager(layoutManager);
         mainBinding.rvCategory.setHasFixedSize(true);
-        mainBinding.rvCategory.setAdapter(adapter);
+        mainBinding.rvCategory.setAdapter(categoryImagesAdapter);
     }
 
     private final SwipeRefreshLayout.OnRefreshListener swipeRefreshListener = this::checkNetworkAndFetchData;
@@ -103,7 +99,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         public void onSuccess(List<Product> product) {
             Log.d(TAG, "onSuccess: productSize " + product);
             Log.d(TAG, "onSuccess: productSize " + product.size());
-            adapter.updateProductList(product);
+            categoryImagesAdapter.updateProductList(product);
             mainBinding.swipeRefreshLayout.setRefreshing(false);
             noInternetAvailable(false);
         }

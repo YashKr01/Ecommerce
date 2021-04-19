@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imgProductImage"
+            android:id="@+id/imgCategoryImage"
             android:layout_width="120dp"
             android:layout_height="165dp"
             tools:src="@color/deep_orange_600" />

@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.models.SubProduct;
 import com.shopping.bloom.restService.callback.ProductClickListener;
+import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +46,11 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
         SubProduct subProduct = getItemAt(position);
         holder.productPrice.setText(subProduct.getCategory_name());
 
-        Glide.with(context)
-                .load(subProduct.getCategory_thumbnail())
-                .into(holder.productImage);
+        String imageUrl = "http://bloomapp.in" + subProduct.getCategory_thumbnail();
+        Log.d(TAG, "onBindViewHolder: imageURL "+ imageUrl);
+        CommonUtils.loadImageWithGlide(context, imageUrl, holder.productImage, false);
 
-        //Attach ClickListenerTo product image
+        //Attach ClickListener To product image
         holder.rootView.setOnClickListener((view -> mListener.onSubProductClick(subProduct)));
     }
 
@@ -59,7 +60,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
         ConstraintLayout rootView;
         public NestedProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImage = itemView.findViewById(R.id.imgProductImage);
+            productImage = itemView.findViewById(R.id.imgCategoryImage);
             productPrice = itemView.findViewById(R.id.tvProductPrice);
             rootView = itemView.findViewById(R.id.clProductRootView);
         }
@@ -76,5 +77,4 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
         }
         return subProducts.get(position);
     }
-
 }

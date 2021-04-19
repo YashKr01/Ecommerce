@@ -64,6 +64,7 @@
                     android:id="@+id/imgNewArrival"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
+                    android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dummyText"
@@ -72,7 +73,7 @@
                     android:contentDescription="@string/desc_offer" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvSuggestedProduct"
+                    android:id="@+id/rvTopProductSuggestion"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:maxHeight="240dp"
@@ -93,25 +94,26 @@
                     android:textSize="@dimen/sb_text_size_22"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rvSuggestedProduct"
+                    app:layout_constraintTop_toBottomOf="@id/rvTopProductSuggestion"
                     tools:viewBindingIgnore="false" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvProductsCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_margin="@dimen/sb_size_4"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintTop_toBottomOf="@+id/dummyText2"
-                    app:spanCount="2"
-                    tools:listitem="@layout/item_category_image"
-                    tools:visibility="visible" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:listitem="@layout/item_category_image" />
 
                 <TextView
                     android:id="@+id/dummyText3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="@dimen/sb_size_12"
+                    android:paddingVertical="@dimen/sb_size_16"
                     android:text="@string/what_on_sell"
                     android:textColor="@color/grey_900"
                     android:textSize="@dimen/sb_text_size_22"
@@ -186,15 +188,15 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rvProductSuggestion"
+                    android:id="@+id/rvBottomProductSuggestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/sb_size_30"
+                    android:layout_marginTop="@dimen/sb_size_12"
                     app:layout_constraintTop_toBottomOf="@id/ll_Offer2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.core.widget.NestedScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

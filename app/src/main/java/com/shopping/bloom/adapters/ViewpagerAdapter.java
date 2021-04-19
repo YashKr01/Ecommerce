@@ -10,10 +10,10 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.models.MainScreenImageModel;
 import com.shopping.bloom.restService.callback.ViewPagerClickListener;
+import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +44,7 @@ public class ViewpagerAdapter extends RecyclerView.Adapter<ViewpagerAdapter.View
     public void onBindViewHolder(@NonNull ViewPagerViewHolder holder, int position) {
         MainScreenImageModel imageModel = getItemAtPosition(position);
 
-        Glide.with(mContext)
-                .load(imageModel.getImagepath())
-                .into(holder.imgCard);
-
+        CommonUtils.loadImageWithGlide(mContext, imageModel.getImagepath(), holder.imgCard, false);
         holder.imgCard.setOnClickListener((view -> mListener.onClick(imageModel)));
     }
 
