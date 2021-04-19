@@ -15,10 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.databinding.FragmentNewTrendBinding;
 
 
 public class NewTrendFragment extends Fragment {
     private static final String TAG = NewTrendFragment.class.getName();
+
+    private FragmentNewTrendBinding binding;
 
     public NewTrendFragment() {
         // Required empty public constructor
@@ -34,13 +37,18 @@ public class NewTrendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_trend, container, false);
+        binding = FragmentNewTrendBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
+
+
+
     }
 
     @Override
@@ -56,4 +64,9 @@ public class NewTrendFragment extends Fragment {
         Log.d(TAG, "onCreateOptionsMenu: new" + menu.getItem(0).getTitle());
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

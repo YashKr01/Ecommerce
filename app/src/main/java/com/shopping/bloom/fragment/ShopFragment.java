@@ -36,9 +36,9 @@ public class ShopFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
 
-      MainScreenImageModel mainScreenImageModel  =  RemoteConfig.getMainScreenConfig(getContext()).getViewpager_image().get(0) ;
-        Log.d(TAG , mainScreenImageModel.getImagepath() + "\n " +  mainScreenImageModel.getId() + "\n " + mainScreenImageModel.getOrder() + "\n "  );
-        Log.d(TAG , RemoteConfig.getMainScreenConfig(getContext()).getSaleimagepath() );
+        MainScreenImageModel mainScreenImageModel = RemoteConfig.getMainScreenConfig(getContext()).getViewpager_image().get(0);
+        Log.d(TAG, mainScreenImageModel.getImagepath() + "\n " + mainScreenImageModel.getId() + "\n " + mainScreenImageModel.getOrder() + "\n ");
+        Log.d(TAG, RemoteConfig.getMainScreenConfig(getContext()).getSaleimagepath());
 
         return inflater.inflate(R.layout.fragment_shop, container, false);
     }
