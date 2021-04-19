@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.tabs.TabLayout;
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.AutoheightFragmentPagerAdapter;
 import com.shopping.bloom.adapters.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
 
@@ -44,6 +45,10 @@ public class ProfileFragment extends Fragment {
         Log.d(TAG, "onCreateView: ");
         binding = FragmentProfileBinding.inflate(inflater, container, false);
         getActivity().invalidateOptionsMenu();
+
+
+       binding.nestscrollview.setNestedScrollingEnabled(true);
+
 
         // Setup ViewPager Adapter
         viewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());

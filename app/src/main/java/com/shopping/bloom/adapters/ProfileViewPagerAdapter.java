@@ -1,15 +1,20 @@
 package com.shopping.bloom.adapters;
 
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.shopping.bloom.utils.CustomPager;
+
 import java.util.ArrayList;
 
 public class ProfileViewPagerAdapter extends FragmentPagerAdapter {
+    private int mCurrentPosition = -1;
 
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     private ArrayList<String> titleList = new ArrayList<>();
@@ -28,6 +33,8 @@ public class ProfileViewPagerAdapter extends FragmentPagerAdapter {
         fragmentList.add(fragment);
         titleList.add(title);
     }
+
+
 
     @NonNull
     @Override
