@@ -77,8 +77,8 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
 
         public NestedProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImage = itemView.findViewById(R.id.imgCategoryImage);
-            productPrice = itemView.findViewById(R.id.tvProductPrice);
+            productImage = itemView.findViewById(R.id.img_wishlist);
+            productPrice = itemView.findViewById(R.id.txt_wishlist_name);
             rootView = itemView.findViewById(R.id.clProductRootView);
         }
 

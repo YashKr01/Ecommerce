@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.NewTrendAdapter;
+import com.shopping.bloom.adapters.newfragment.NewTrendAdapter;
 import com.shopping.bloom.databinding.FragmentNewTrendBinding;
-import com.shopping.bloom.model.NewTrends;
+import com.shopping.bloom.model.fragmentnew.NewTrends;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,18 +71,14 @@ public class NewTrendFragment extends Fragment {
     }
 
     private void initList(List<NewTrends> newTrends) {
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
-        newTrends.add(new NewTrends("https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , "New in Dresses", "Hooded, over sized, Graphic"));
+        newTrends.add(new NewTrends(null,"New In Sweatshirts",
+                "Hooded, Graphic, tie dye",R.color.blue_400));
+        newTrends.add(new NewTrends(null,"New In Sweatshirts",
+                "Hooded, Graphic, tie dye",R.color.blue_400));
+        newTrends.add(new NewTrends(null,"New In Sweatshirts",
+                "Hooded, Graphic, tie dye",R.color.blue_400));
+        newTrends.add(new NewTrends(null,"New In Sweatshirts",
+                "Hooded, Graphic, tie dye",R.color.blue_400));
     }
 
     @Override

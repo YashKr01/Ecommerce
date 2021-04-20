@@ -1,4 +1,4 @@
-package com.shopping.bloom.adapters;
+package com.shopping.bloom.adapters.profilefragment;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,16 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.fragmentshop.RecentlyViewed;
 
 
 import java.util.List;
 
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyViewHolder> {
 
-    private List<Product> productList;
+    private List<RecentlyViewed> productList;
     private Context context;
 
-    public WishListAdapter(List<Product> productList, Context context) {
+    public WishListAdapter(List<RecentlyViewed> productList, Context context) {
         this.productList = productList;
         this.context = context;
     }
@@ -36,10 +37,10 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Product curr = productList.get(position);
-        holder.textView.setText(curr.getUpdated_at());
-        Glide.with(context).load(curr.getBig_thumbnail())
-                .centerCrop().into(holder.imageView);
+
+        RecentlyViewed curr = productList.get(position);
+        holder.textView.setText(String.valueOf(curr.getPrice()));
+        holder.imageView.setBackgroundResource(curr.getBackground());
     }
 
     @Override
@@ -55,9 +56,8 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.imgProductImage);
-            textView = itemView.findViewById(R.id.tvProductPrice);
-
+            imageView = itemView.findViewById(R.id.img_wish_list);
+            textView = itemView.findViewById(R.id.txt_wish_list_name);
         }
     }
 }
