@@ -46,7 +46,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/sb_size_6"
-                    android:text="Freecode.hello"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sb_text_size_18"
                     android:textStyle="bold" />
@@ -55,7 +54,6 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="freecode.hello@gmail.com"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sb_text_size_15"
                     android:textStyle="bold" />
@@ -74,6 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
+                    android:onClick="addressBookIntent"
                     android:paddingHorizontal="@dimen/sb_size_25"
                     android:paddingVertical="@dimen/sb_size_15"
                     android:text="Address Book"
@@ -269,6 +268,7 @@
                     android:paddingHorizontal="@dimen/sb_size_25"
                     android:paddingVertical="@dimen/sb_size_20"
                     android:text="Connect to us"
+                    android:onClick="connectIntent"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:drawableEndCompat="@drawable/ic_baseline_right_24" />
