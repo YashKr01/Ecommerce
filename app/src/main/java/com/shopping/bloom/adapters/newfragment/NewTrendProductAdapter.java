@@ -11,38 +11,43 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.fragmentnew.Child;
+import com.shopping.bloom.model.Product;
+import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
-public class NewTrendChildAdapter extends RecyclerView.Adapter<NewTrendChildAdapter.ChildViewHolder> {
+public class NewTrendProductAdapter extends RecyclerView.Adapter<NewTrendProductAdapter.ChildViewHolder> {
 
     private Context context;
-    private List<Child> childList;
+    private List<Product> productList;
 
-    public NewTrendChildAdapter(Context context, List<Child> childList) {
+    public NewTrendProductAdapter(Context context, List<Product> productList) {
         this.context = context;
-        this.childList = childList;
+        this.productList = productList;
     }
 
     @NonNull
     @Override
     public ChildViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChildViewHolder(LayoutInflater.from(context).inflate(R.layout.item_new_trend_child
+        return new ChildViewHolder(LayoutInflater.from(context).inflate(R.layout.item_new_trend_product
                 , parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
 
-        holder.imageView.setBackgroundResource(childList.get(position).getBackground());
-        holder.textView.setText(String.valueOf(childList.get(position).getPrice()));
+        // get current product list
+        Product currentItem = productList.get(position);
+
+        CommonUtils.loadImageWithGlide(context, currentItem.getBig_thumbnail()
+                , holder.imageView, false);
+        holder.textView.setText(currentItem.getType());
 
     }
 
     @Override
     public int getItemCount() {
-        return childList.size();
+        return productList.size();
     }
 
     public class ChildViewHolder extends RecyclerView.ViewHolder {

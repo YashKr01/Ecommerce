@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.newfragment.NewTrendAdapter;
 import com.shopping.bloom.databinding.FragmentNewTrendBinding;
-import com.shopping.bloom.model.fragmentnew.Child;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.fragmentnew.NewTrends;
 
 import java.util.ArrayList;
@@ -32,9 +32,7 @@ public class NewTrendFragment extends Fragment {
     private NewTrendAdapter adapter;
     private List<NewTrends> list;
 
-    private List<Child> list1;
-    private List<Child> list2;
-    private List<Child> list3;
+    public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     public NewTrendFragment() {
         // Required empty public constructor
@@ -51,7 +49,6 @@ public class NewTrendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentNewTrendBinding.inflate(inflater, container, false);
-
         return binding.getRoot();
     }
 
@@ -60,48 +57,38 @@ public class NewTrendFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
+        list = new ArrayList<>();
+        initList(list);
         initRecyclerView();
 
-
-        list1 = new ArrayList<>();
-        list1.add(new Child(null, R.color.blue_400, 1999));
-        list1.add(new Child(null, R.color.red_200, 499));
-        list1.add(new Child(null, R.color.grey_200, 1999));
-        list1.add(new Child(null, R.color.orange_100, 299));
-
-        list2 = new ArrayList<>();
-        list2.add(new Child(null, R.color.blue_400, 2000));
-        list2.add(new Child(null, R.color.yellow_600, 400));
-        list2.add(new Child(null, R.color.blue_400, 2009));
-        list2.add(new Child(null, R.color.green_600, 200));
-
-        list3 = new ArrayList<>();
-        list3.add(new Child(null, R.color.black, 200));
-        list3.add(new Child(null, R.color.blue_600, 4900));
-        list3.add(new Child(null, R.color.yellow_300, 2070));
-        list3.add(new Child(null, R.color.orange_500, 200));
-
-        initList(list);
-
         binding.recyclerView.setAdapter(adapter);
-
     }
 
     private void initRecyclerView() {
-        list = new ArrayList<>();
         adapter = new NewTrendAdapter(list, getContext());
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setNestedScrollingEnabled(false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    private List<Product> getMockData() {
+        List<Product> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(new Product(1, null, null, null,
+                    null, IMAGE_URL, "1999", null, null
+                    , null));
+        }
+        return list;
+    }
+
     private void initList(List<NewTrends> newTrends) {
+
         newTrends.add(new NewTrends(null, "New In Kurtis", "Printed, Graphic"
-                , R.color.yellow_200, list1));
+                , R.color.yellow_200, getMockData()));
         newTrends.add(new NewTrends(null, "New In SweatShirts", "Hooded, Cotton"
-                , R.color.orange_100, list2));
+                , R.color.orange_100, getMockData()));
         newTrends.add(new NewTrends(null, "New In Jeans", "Washable, Graphic"
-                , R.color.red_100, list3));
+                , R.color.red_100, getMockData()));
     }
 
     @Override

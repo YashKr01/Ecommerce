@@ -12,8 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.fragmentnew.Child;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.fragmentnew.NewTrends;
+import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
@@ -27,11 +28,6 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
         this.context = context;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -42,8 +38,10 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.setNewData(list.get(position), context);
-        setChildRecyclerView(holder.recyclerView, list.get(position).getChildList());
+        NewTrends currentItem = list.get(position);
+
+        holder.setNewData(currentItem, context);
+        setChildRecyclerView(holder.recyclerView, currentItem.getProductList());
     }
 
     @Override
@@ -66,7 +64,7 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
         }
 
         void setNewData(NewTrends data, Context context) {
-            //CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
+            CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
             imageView.setBackgroundResource(data.getBackground());
             title.setText(data.getTitle());
             description.setText(data.getDescription());
@@ -74,15 +72,13 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
 
     }
 
-    private void setChildRecyclerView(RecyclerView recyclerView, List<Child> childList) {
+    private void setChildRecyclerView(RecyclerView recyclerView, List<Product> productList) {
 
-        NewTrendChildAdapter newTrendChildAdapter = new NewTrendChildAdapter(context, childList);
+        NewTrendProductAdapter newTrendProductAdapter = new NewTrendProductAdapter(context, productList);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context, RecyclerView.HORIZONTAL, false
         ));
-        recyclerView.setAdapter(newTrendChildAdapter);
-
-
+        recyclerView.setAdapter(newTrendProductAdapter);
     }
 
 }

@@ -1,5 +1,7 @@
 package com.shopping.bloom.model.fragmentnew;
 
+import com.shopping.bloom.model.Product;
+
 import java.util.List;
 
 public class NewTrends {
@@ -8,25 +10,25 @@ public class NewTrends {
     private String title;
     private String description;
     private int background;
-    private List<Child> childList;
+    private List<Product> productList;
 
     public NewTrends() {
     }
 
-    public NewTrends(String imageUrl, String title, String description, int background, List<Child> childList) {
+    public NewTrends(String imageUrl, String title, String description, int background, List<Product> productList) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
         this.background = background;
-        this.childList = childList;
+        this.productList = productList;
     }
 
-    public List<Child> getChildList() {
-        return childList;
+    public List<Product> getProductList() {
+        return productList;
     }
 
-    public void setChildList(List<Child> childList) {
-        this.childList = childList;
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 
     public int getBackground() {
