@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.SubProduct;
 import com.shopping.bloom.restService.callback.ProductClickListener;
@@ -60,8 +59,8 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
         ConstraintLayout rootView;
         public NestedProductViewHolder(@NonNull View itemView) {
             super(itemView);
-            productImage = itemView.findViewById(R.id.imgCategoryImage);
-            productPrice = itemView.findViewById(R.id.tvProductPrice);
+            productImage = itemView.findViewById(R.id.img_wishlist);
+            productPrice = itemView.findViewById(R.id.txt_wishlist_name);
             rootView = itemView.findViewById(R.id.clProductRootView);
         }
     }

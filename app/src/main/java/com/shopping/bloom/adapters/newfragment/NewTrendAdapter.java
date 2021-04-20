@@ -1,4 +1,4 @@
-package com.shopping.bloom.adapters;
+package com.shopping.bloom.adapters.newfragment;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.NewTrends;
-import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.model.fragmentnew.NewTrends;
 
 import java.util.List;
 
@@ -57,7 +56,8 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.Holder
         }
 
         void setNewData(NewTrends data, Context context) {
-            CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
+            //CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
+            imageView.setBackgroundColor(data.getBackground());
             title.setText(data.getTitle());
             description.setText(data.getDescription());
         }

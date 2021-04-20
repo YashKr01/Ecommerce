@@ -76,7 +76,7 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
 
         public CategoryImageViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgCategoryImage = itemView.findViewById(R.id.imgCategoryImage);
+            imgCategoryImage = itemView.findViewById(R.id.img_wishlist);
         }
     }
 

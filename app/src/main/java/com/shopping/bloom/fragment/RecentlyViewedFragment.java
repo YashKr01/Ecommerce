@@ -13,11 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.WishListAdapter;
+import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
 import com.shopping.bloom.model.Product;
-
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.fragmentshop.RecentlyViewed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ import java.util.List;
 public class RecentlyViewedFragment extends Fragment {
 
     private FragmentRecentlyViewedBinding binding;
-    private List<Product> productList;
+    private List<RecentlyViewed> productList;
     private WishListAdapter adapter;
 
     @Override
@@ -55,28 +54,15 @@ public class RecentlyViewedFragment extends Fragment {
         binding.recentlyViewedRecyclerView.setAdapter(adapter);
     }
 
-    private void initList(List<Product> list) {
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
-        list.add(new Product(0, null, null, null,
-                null, "https://img.faballey.com/Images/Product/SWT00080Z/3.jpg"
-                , null, null, "1000", null));
+    private void initList(List<RecentlyViewed> list) {
+
+        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 300));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 349));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 899));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 229));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 1999));
+        list.add(new RecentlyViewed(null, R.color.grey_300, 1900));
 
     }
 
