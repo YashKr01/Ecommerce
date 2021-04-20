@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.ProfileViewPagerAdapter;
+import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
 
 

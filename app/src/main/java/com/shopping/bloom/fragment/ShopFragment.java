@@ -26,7 +26,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
-import com.shopping.bloom.adapters.profilefragment.ViewpagerAdapter;
+import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.*;
