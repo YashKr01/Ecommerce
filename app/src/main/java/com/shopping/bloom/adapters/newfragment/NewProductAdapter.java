@@ -16,12 +16,12 @@ import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
-public class NewTrendProductAdapter extends RecyclerView.Adapter<NewTrendProductAdapter.ChildViewHolder> {
+public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.ChildViewHolder> {
 
     private Context context;
     private List<Product> productList;
 
-    public NewTrendProductAdapter(Context context, List<Product> productList) {
+    public NewProductAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
     }
@@ -29,7 +29,7 @@ public class NewTrendProductAdapter extends RecyclerView.Adapter<NewTrendProduct
     @NonNull
     @Override
     public ChildViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChildViewHolder(LayoutInflater.from(context).inflate(R.layout.item_new_trend_product
+        return new ChildViewHolder(LayoutInflater.from(context).inflate(R.layout.item_new_product
                 , parent, false));
     }
 

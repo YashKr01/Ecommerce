@@ -1,7 +1,6 @@
 package com.shopping.bloom.fragment;
 
 import android.content.Context;
-import android.net.Network;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,27 +19,33 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.newfragment.NewTrendAdapter;
-import com.shopping.bloom.databinding.FragmentNewTrendBinding;
+import com.shopping.bloom.adapters.newfragment.NewAdapter;
+import com.shopping.bloom.databinding.FragmentNewBinding;
+import com.shopping.bloom.firebaseConfig.RemoteConfig;
+import com.shopping.bloom.model.MainScreenConfig;
+import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.fragmentnew.NewTrends;
+import com.shopping.bloom.model.fragmentnew.NewTrend;
+import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
-    private static final String TAG = NewTrendFragment.class.getName();
+public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = NewFragment.class.getName();
 
-    private FragmentNewTrendBinding binding;
-    private NewTrendAdapter adapter;
-    private List<NewTrends> list;
+    private FragmentNewBinding binding;
+    private NewAdapter adapter;
+    private List<NewTrend> list;
+
+    private MainScreenConfig mainScreenConfig;
 
     // URL for loading temporary image
     public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
-    public NewTrendFragment() {
+    public NewFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +59,32 @@ public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentNewTrendBinding.inflate(inflater, container, false);
+        binding = FragmentNewBinding.inflate(inflater, container, false);
+
+        // REMOTE CONFIG
+        mainScreenConfig = RemoteConfig.getMainScreenConfig(getContext());
 
         // swipe refresh listener
         binding.newTrendsSwipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
+    }
+
+    // loading images from remote config
+    private void loadRemoteConfigImages() {
+
+        if (getContext() == null || mainScreenConfig == null) return;
+
+        if (mainScreenConfig.getOfferImages().size() >= 2) {
+
+            CommonUtils.loadImageWithGlide(getContext(),
+                    mainScreenConfig.getOfferImages().get(0).getImagepath(),
+                    binding.image1, true);
+
+            CommonUtils.loadImageWithGlide(getContext(),
+                    mainScreenConfig.getOfferImages().get(1).getImagepath(),
+                    binding.image2, true);
+        }
+
     }
 
     @Override
@@ -69,6 +95,8 @@ public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnR
         list = new ArrayList<>();
         initList(list);
         initRecyclerView();
+
+        loadRemoteConfigImages();
 
         binding.recyclerView.setAdapter(adapter);
     }
@@ -87,7 +115,7 @@ public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     // initialise recycler view
     private void initRecyclerView() {
-        adapter = new NewTrendAdapter(list, getContext());
+        adapter = new NewAdapter(list, getContext());
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setNestedScrollingEnabled(false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -105,13 +133,13 @@ public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     // initialise list
-    private void initList(List<NewTrends> newTrends) {
+    private void initList(List<NewTrend> newTrends) {
 
-        newTrends.add(new NewTrends(null, "New In Kurtis", "Printed, Graphic"
+        newTrends.add(new NewTrend(null, "New In Kurtis", "Printed, Graphic"
                 , R.color.yellow_200, getMockData()));
-        newTrends.add(new NewTrends(null, "New In SweatShirts", "Hooded, Cotton"
+        newTrends.add(new NewTrend(null, "New In SweatShirts", "Hooded, Cotton"
                 , R.color.orange_100, getMockData()));
-        newTrends.add(new NewTrends(null, "New In Jeans", "Washable, Graphic"
+        newTrends.add(new NewTrend(null, "New In Jeans", "Washable, Graphic"
                 , R.color.red_100, getMockData()));
     }
 
@@ -142,7 +170,7 @@ public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnR
             initList(list);
             adapter.notifyDataSetChanged();
         } else {
-            Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
         }
 
         binding.newTrendsSwipeRefresh.setRefreshing(false);

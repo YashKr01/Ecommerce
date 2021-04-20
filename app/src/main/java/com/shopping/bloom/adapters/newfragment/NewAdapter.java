@@ -13,17 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.fragmentnew.NewTrends;
+import com.shopping.bloom.model.fragmentnew.NewTrend;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
-public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyViewHolder> {
+public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
-    private List<NewTrends> list;
+    private List<NewTrend> list;
     private Context context;
 
-    public NewTrendAdapter(List<NewTrends> list, Context context) {
+    public NewAdapter(List<NewTrend> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -32,13 +32,13 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyViewHolder(LayoutInflater.from(context).inflate(
-                R.layout.item_container_new_trends, parent, false
+                R.layout.item_container_new, parent, false
         ));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        NewTrends currentItem = list.get(position);
+        NewTrend currentItem = list.get(position);
 
         holder.setNewData(currentItem, context);
         setChildRecyclerView(holder.recyclerView, currentItem.getProductList());
@@ -63,7 +63,7 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
             recyclerView = itemView.findViewById(R.id.child_recycler_view);
         }
 
-        void setNewData(NewTrends data, Context context) {
+        void setNewData(NewTrend data, Context context) {
             CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, false);
             imageView.setBackgroundResource(data.getBackground());
             title.setText(data.getTitle());
@@ -74,11 +74,11 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
 
     private void setChildRecyclerView(RecyclerView recyclerView, List<Product> productList) {
 
-        NewTrendProductAdapter newTrendProductAdapter = new NewTrendProductAdapter(context, productList);
+        NewProductAdapter newProductAdapter = new NewProductAdapter(context, productList);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context, RecyclerView.HORIZONTAL, false
         ));
-        recyclerView.setAdapter(newTrendProductAdapter);
+        recyclerView.setAdapter(newProductAdapter);
     }
 
 }

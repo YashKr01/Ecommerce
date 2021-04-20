@@ -4,7 +4,7 @@ import com.shopping.bloom.model.Product;
 
 import java.util.List;
 
-public class NewTrends {
+public class NewTrend {
 
     private String imageUrl;
     private String title;
@@ -12,10 +12,10 @@ public class NewTrends {
     private int background;
     private List<Product> productList;
 
-    public NewTrends() {
+    public NewTrend() {
     }
 
-    public NewTrends(String imageUrl, String title, String description, int background, List<Product> productList) {
+    public NewTrend(String imageUrl, String title, String description, int background, List<Product> productList) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;

@@ -5,7 +5,7 @@
     android:id="@+id/new_trends_swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.NewTrendFragment">
+    tools:context=".fragment.NewFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -24,6 +24,7 @@
                 android:layout_marginEnd="4dp"
                 android:background="@color/grey_300"
                 android:contentDescription="@string/new_arrivals"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +38,7 @@
                 android:layout_marginEnd="4dp"
                 android:background="@color/grey_300"
                 android:contentDescription="@string/new_arrivals"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image1" />
@@ -52,7 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image2"
-                tools:listitem="@layout/item_container_new_trends" />
+                tools:listitem="@layout/item_container_new" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
