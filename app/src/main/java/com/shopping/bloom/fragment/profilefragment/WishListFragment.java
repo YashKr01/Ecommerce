@@ -12,10 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
-import com.shopping.bloom.model.fragmentshop.RecentlyViewed;
+import com.shopping.bloom.model.Product;
 
 
 import java.util.ArrayList;
@@ -24,8 +23,10 @@ import java.util.List;
 public class WishListFragment extends Fragment {
 
     private FragmentWishListBinding binding;
-    private List<RecentlyViewed> productList;
+    private List<Product> productList;
     private WishListAdapter adapter;
+
+    public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     public WishListFragment() {
         // Required empty public constructor
@@ -49,25 +50,24 @@ public class WishListFragment extends Fragment {
 
     private void initRecyclerView() {
         productList = new ArrayList<>();
-        initList(productList);
+        getMockData();
         adapter = new WishListAdapter(productList, getContext());
         binding.wishListRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2
                 , RecyclerView.VERTICAL, false));
         binding.wishListRecyclerView.setHasFixedSize(true);
         binding.wishListRecyclerView.setNestedScrollingEnabled(false);
         binding.wishListRecyclerView.setAdapter(adapter);
-
     }
 
     // adding dummy data to recycler view
-    private void initList(List<RecentlyViewed> list) {
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
+    private List<Product> getMockData() {
+
+        for (int i = 0; i < 10; i++) {
+            productList.add(new Product(1, null, null, null,
+                    null, IMAGE_URL, "1999", null, null
+                    , null));
+        }
+        return productList;
     }
 
     @Override
