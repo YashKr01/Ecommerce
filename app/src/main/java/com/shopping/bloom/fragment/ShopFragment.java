@@ -1,6 +1,7 @@
 package com.shopping.bloom.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,15 +27,19 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
-import com.shopping.bloom.adapters.profilefragment.ViewpagerAdapter;
+import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.MainScreenConfig;
-import com.shopping.bloom.model.*;
 import com.shopping.bloom.model.MainScreenImageModel;
+import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.SubProduct;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
+import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
-import com.shopping.bloom.utils.NetworkCheck;;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
+import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewmodel.CategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +54,8 @@ public class ShopFragment extends Fragment {
     private ViewpagerAdapter viewpagerAdapter;
     private ImageView imgHeaderImage;
     private LinearLayout vpIndicator;
+    private Runnable runnable;
+    private Handler handler = new Handler();
 
     private com.shopping.bloom.viewmodel.CategoryViewModel viewModel;
 
@@ -59,6 +66,10 @@ public class ShopFragment extends Fragment {
     private CategoryImagesAdapter categoryImagesAdapter;
     private NestedProductAdapter topProductSuggestionAdapter;
     private NestedProductAdapter bottomProductSuggestionAdapter;
+    ImageView offerImage1;
+    ImageView offerImage2;
+    ImageView offerImage3;
+    ImageView offerImage4;
 
     public ShopFragment() {
         // Required empty public constructor
@@ -89,15 +100,14 @@ public class ShopFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
         initViews(view);
-        loadViewPager();
+        setUpViewPager();
         setUpRecyclerView();
 
-        //Header image
-        CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getSaleimagepath(), imgHeaderImage, false);
+        //Load banner and Offer images
+        loadBannerAndOfferImages();
 
         checkNetworkAndFetchData();
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkAndFetchData);
-
     }
 
     private void initViews(View view) {
@@ -106,21 +116,32 @@ public class ShopFragment extends Fragment {
         imgHeaderImage = view.findViewById(R.id.imgNewArrival);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
-        //below are the three recyclerView
+        //below are the three recyclerView used in shop fragment
         rvTopProductSuggestion = view.findViewById(R.id.rvTopProductSuggestion);        //At Top Product suggestion Horizontal Scroll
-        rvCategoryImages = view.findViewById(R.id.rvProductsCategory);                 //Categories
+        rvCategoryImages = view.findViewById(R.id.rvProductsCategory);                  //Categories
         rvBottomProductSuggestion = view.findViewById(R.id.rvBottomProductSuggestion);  //At bottom Product suggestion
+        offerImage1 = view.findViewById(R.id.imgOffer1);
+        offerImage2 = view.findViewById(R.id.imgOffer2);
+        offerImage3 = view.findViewById(R.id.imgOffer3);
+        offerImage4 = view.findViewById(R.id.imgOffer4);
 
-        viewModel = new ViewModelProvider(this).get(com.shopping.bloom.viewmodel.CategoryViewModel.class);
+        offerImage1.setOnClickListener(offerClickListener);
+        offerImage2.setOnClickListener(offerClickListener);
+        offerImage3.setOnClickListener(offerClickListener);
+        offerImage4.setOnClickListener(offerClickListener);
 
-        viewpagerAdapter = new ViewpagerAdapter(mainScreenConfig.getViewpager_image(), getContext(), imageModel -> {
-            Log.d(TAG, "initViews: viewpager clicked " + imageModel.getImagepath() +
-                    " ID: " + imageModel.getId());
-        });
-        setUpIndicator();   //View pager Indicators
+        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
     }
 
-    private void loadViewPager() {
+    private void setUpViewPager() {
+        viewpagerAdapter = new ViewpagerAdapter(mainScreenConfig.getViewpager_image(), getContext(), imageModel -> {
+            Log.d(TAG, "initViews: viewpager clicked " + imageModel.toString());
+        });
+
+        setUpIndicator();   //View pager Indicators
+
+        if(mainScreenConfig == null) { return; }
+
         if (!mainScreenConfig.getViewpager_image().isEmpty()) {
             vpHeaderImages.setAdapter(viewpagerAdapter);
             viewpagerAdapter.notifyDataSetChanged();
@@ -132,6 +153,7 @@ public class ShopFragment extends Fragment {
                 setCurrentIndicator(position);
             }
         });
+        startAutoSlider(mainScreenConfig.getViewpager_image().size());
     }
 
 
@@ -151,13 +173,28 @@ public class ShopFragment extends Fragment {
 
         rvTopProductSuggestion.setHasFixedSize(true);
         rvTopProductSuggestion.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        topProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener);
+        topProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener, loadMoreItems);
         rvTopProductSuggestion.setAdapter(topProductSuggestionAdapter);
 
         rvBottomProductSuggestion.setHasFixedSize(true);
         rvBottomProductSuggestion.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener);
+        bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener, null);
         rvBottomProductSuggestion.setAdapter(bottomProductSuggestionAdapter);
+    }
+
+    private void loadBannerAndOfferImages() {
+        int OFFER_IMAGES_COUNT = 4;
+        if (getContext() == null || mainScreenConfig == null) return;
+
+        if (mainScreenConfig.getSaleimagepath() != null) {
+            CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getSaleimagepath(), imgHeaderImage, false);
+        }
+        if (mainScreenConfig.getOfferImages().size() == OFFER_IMAGES_COUNT) {
+            CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getOfferImages().get(0).getImagepath(), offerImage1, false);
+            CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getOfferImages().get(1).getImagepath(), offerImage2, false);
+            CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getOfferImages().get(2).getImagepath(), offerImage3, false);
+            CommonUtils.loadImageWithGlide(getContext(), mainScreenConfig.getOfferImages().get(3).getImagepath(), offerImage4, false);
+        }
     }
 
     private void checkNetworkAndFetchData() {
@@ -189,15 +226,19 @@ public class ShopFragment extends Fragment {
         }
     };
 
+    private final LoadMoreItems loadMoreItems = () -> {
+        Log.d(TAG, "loadMoreItems: ");
+    };
+
     private void noInternetToast(boolean show) {
         //TODO: show No Internet error screen
         String error_text = "";
-        if(show) {
+        if (show) {
             error_text = getString(R.string.no_internet_connected);
         } else {
             error_text = getString(R.string.something_went_wrong);
         }
-        if(getContext() != null) {
+        if (getContext() != null) {
             Toast.makeText(getContext(), error_text,
                     Toast.LENGTH_SHORT).show();
         }
@@ -212,6 +253,19 @@ public class ShopFragment extends Fragment {
         @Override
         public void onSubProductClick(SubProduct product) {
             Log.d(TAG, "onSubProductClick: " + product);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        if (runnable != null) handler.removeCallbacks(runnable);
+        super.onDestroy();
+    }
+
+    private final DebouncedOnClickListener offerClickListener = new DebouncedOnClickListener(150) {
+        @Override
+        public void onDebouncedClick(View v) {
+            Log.d(TAG, "onDebouncedClick: viewId " + v.getId());
         }
     };
 
@@ -230,7 +284,19 @@ public class ShopFragment extends Fragment {
         }
     }
 
+    private void startAutoSlider(final int count) {
+        runnable = () -> {
+            int pos = vpHeaderImages.getCurrentItem();
+            pos = pos + 1;
+            if (pos >= count) pos = 0;
+            vpHeaderImages.setCurrentItem(pos, true);
+            handler.postDelayed(runnable, 4500);
+        };
+        handler.postDelayed(runnable, 5000);
+    }
+
     private void setCurrentIndicator(int position) {
+        if (getContext() == null) return;
         int childViewCount = vpIndicator.getChildCount();
         for (int i = 0; i < childViewCount; i++) {
             ImageView imageView = (ImageView) vpIndicator.getChildAt(i);
@@ -266,6 +332,9 @@ public class ShopFragment extends Fragment {
                     , "", "", "", "");
             list.add(subProduct);
         }
+        SubProduct dummyItem = new SubProduct(-1, "", "", thumbNail, ""
+                , "", "", "", "");
+        list.add(dummyItem);
         return list;
     }
 

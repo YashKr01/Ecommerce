@@ -3,6 +3,7 @@ package com.shopping.bloom.utils
 import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.shopping.bloom.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -36,6 +37,7 @@ class CommonUtils {
             val builder = Glide.with(context)
             if (showPlaceHolder) {
                 builder.load(url)
+                        .placeholder(R.drawable.ic_placeholder_product)
                         .thumbnail(0.3f)
                         .into(imageView)
             } else {

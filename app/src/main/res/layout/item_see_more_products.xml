@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clProductRootView"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/sb_size_6"
+        android:background="@color/grey_300"
         app:cardCornerRadius="@dimen/sb_size_8"
         app:cardElevation="@dimen/sb_size_0"
         app:cardUseCompatPadding="true"
@@ -19,27 +20,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:viewBindingIgnore="false">
 
-        <ImageView
-            android:id="@+id/img_wish_list"
+        <TextView
+            android:id="@+id/tvSeeMore"
             android:layout_width="120dp"
             android:layout_height="165dp"
-            android:src="@color/grey_300" />
-
+            android:layout_gravity="center"
+            android:background="@color/grey_300"
+            android:gravity="center"
+            android:text="@string/see_more"
+            android:textColor="@color/grey_800"
+            android:textSize="@dimen/sb_text_size_15"
+            android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
-
-    <TextView
-        android:id="@+id/txt_wish_list_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/sb_size_8"
-        android:fontFamily="@font/gotham_font"
-        android:text="1234 $"
-        android:textColor="@color/grey_900"
-        android:textSize="@dimen/sb_text_size_15"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cvDummy"
-        app:layout_constraintStart_toStartOf="@id/cvDummy"
-        app:layout_constraintTop_toBottomOf="@id/cvDummy" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
