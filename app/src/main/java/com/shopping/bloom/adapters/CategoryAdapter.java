@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.SubProduct;
+import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 
 import java.util.ArrayList;
@@ -53,14 +55,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Product product = getItemAt(position);
         Log.d(TAG, "onBindViewHolder: productDetail " + product);
-        holder.tvProductCategory.setText(product.getCategory_name());
 
-        NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, product.getSub_category(), mListener);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
-        holder.rvSubProduct.setLayoutManager(layoutManager);
-        holder.rvSubProduct.setAdapter(nestedProductAdapter);
-        nestedProductAdapter.notifyDataSetChanged();
-
+        holder.setUpData(context, product, mListener, null);
         //attach the click listener to the product category
         holder.tvProductCategory.setOnClickListener((view -> mListener.onProductClick(product)));
     }
@@ -75,10 +71,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     static class CategoryViewHolder extends RecyclerView.ViewHolder {
         TextView tvProductCategory;
         RecyclerView rvSubProduct;
+
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
             tvProductCategory = itemView.findViewById(R.id.tvProductCategory);
             rvSubProduct = itemView.findViewById(R.id.rv_Products);
+        }
+
+        public void setUpData(Context context, Product product, ProductClickListener mListener, LoadMoreItems listener) {
+            tvProductCategory.setText(product.getCategory_name());
+
+            NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, product.getSub_category(),
+                    mListener, null);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
+            rvSubProduct.setLayoutManager(layoutManager);
+            rvSubProduct.setAdapter(nestedProductAdapter);
+            nestedProductAdapter.notifyDataSetChanged();
         }
     }
 

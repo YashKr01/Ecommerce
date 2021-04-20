@@ -1,6 +1,7 @@
 package com.shopping.bloom.adapters;
 
 import android.content.Context;
+import android.support.v4.media.session.IMediaControllerCallback;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.CategoryImageClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
     private ArrayList<Product> products;
     private Context mContext;
     private CategoryImageClickListener mListener;
+    private int LARGE_IMAGE = -1;
 
     public CategoryImagesAdapter(Context mContext, CategoryImageClickListener mListener) {
         this.mContext = mContext;
@@ -34,19 +38,45 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
     @NonNull
     @Override
     public CategoryImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_image, parent, false);
+        View view;
+        LayoutInflater inflater =  LayoutInflater.from(parent.getContext());
+        if(viewType == LARGE_IMAGE){
+            view = inflater.inflate(R.layout.item_category_large_image, parent, false);
+        } else {
+            view = inflater.inflate(R.layout.item_category_image, parent, false);
+        }
         return new CategoryImageViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull CategoryImageViewHolder holder, int position) {
         Product product = getItemAt(position);
+        String IMAGE_URL = "http://bloomapp.in";
 
-        String IMAGE_URL = "http://bloomapp.in" + product.getCategory_thumbnail();
-        Log.d(TAG, "onBindViewHolder: imageURL "+ IMAGE_URL);
-        CommonUtils.loadImageWithGlide(mContext, IMAGE_URL, holder.imgCategoryImage, true);
+        if(getItemViewType(position) == LARGE_IMAGE) {
+            IMAGE_URL = IMAGE_URL + product.getBig_thumbnail();
+        } else {
+            IMAGE_URL = IMAGE_URL + product.getSquare_thumbnail();
+        }
+
+        holder.setUpData(mContext, IMAGE_URL);
 
         holder.imgCategoryImage.setOnClickListener((view -> mListener.onClick(product)));
+    }
+
+    static class CategoryImageViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgCategoryImage;
+
+        public CategoryImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imgCategoryImage = itemView.findViewById(R.id.imgCategoryImage);
+        }
+
+        public void setUpData(Context context,String imageUrl) {
+            Log.d(TAG, "onBindViewHolder: imageURL "+ imageUrl);
+            CommonUtils.loadImageWithGlide(context, imageUrl, imgCategoryImage, true);
+        }
+
     }
 
     private Product getItemAt(int position) {
@@ -71,13 +101,11 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
         notifyDataSetChanged();
     }
 
-    static class CategoryImageViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgCategoryImage;
-
-        public CategoryImageViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imgCategoryImage = itemView.findViewById(R.id.img_wishlist);
-        }
+    @Override
+    public int getItemViewType(int position) {
+        Product product = getItemAt(position);
+        String isLargeIcon = product.getIs_bigthumbnail_show();
+        if(isLargeIcon.equals("1")) return LARGE_IMAGE;
+        return super.getItemViewType(position);
     }
-
 }

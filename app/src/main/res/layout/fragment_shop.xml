@@ -27,6 +27,7 @@
                     android:id="@+id/vpHeaderImages"
                     android:layout_width="match_parent"
                     android:layout_height="170dp"
+                    android:layout_marginTop="@dimen/sb_size_4"
                     android:background="@color/blue_600"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -38,22 +39,22 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
+                    android:elevation="18dp"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:padding="15dp"
-                    android:gravity="center"
-                    android:elevation="18dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/vpHeaderImages"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="@+id/vpHeaderImages" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/dummyText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:paddingVertical="@dimen/sb_size_8"
                     android:text="@string/what_new"
                     android:textColor="@color/grey_900"
-                    android:gravity="center"
                     android:textSize="@dimen/sb_text_size_22"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -64,20 +65,20 @@
                     android:id="@+id/imgNewArrival"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
+                    android:contentDescription="@string/desc_offer"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_new_arrival"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dummyText"
-                    tools:visibility="visible"
-                    android:src="@drawable/ic_new_arrival"
-                    android:contentDescription="@string/desc_offer" />
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvTopProductSuggestion"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
-                    android:maxHeight="240dp"
                     android:layout_marginTop="@dimen/sb_size_8"
+                    android:maxHeight="240dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imgNewArrival"
@@ -104,9 +105,9 @@
                     android:layout_margin="@dimen/sb_size_4"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintTop_toBottomOf="@+id/dummyText2"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/dummyText2"
                     tools:listitem="@layout/item_category_image" />
 
                 <TextView
@@ -140,7 +141,8 @@
                         android:layout_marginEnd="@dimen/sb_size_10"
                         android:layout_weight="1"
                         android:background="@color/pink_500"
-                        android:contentDescription="@string/desc_offer" />
+                        android:contentDescription="@string/desc_offer"
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:id="@+id/imgOffer2"
@@ -151,7 +153,8 @@
                         android:layout_marginEnd="@dimen/sb_size_20"
                         android:layout_weight="1"
                         android:background="@color/pink_500"
-                        android:contentDescription="@string/desc_offer" />
+                        android:contentDescription="@string/desc_offer"
+                        android:scaleType="centerCrop" />
 
                 </LinearLayout>
 
@@ -173,7 +176,8 @@
                         android:layout_marginEnd="@dimen/sb_size_10"
                         android:layout_weight="1"
                         android:background="@color/pink_500"
-                        android:contentDescription="@string/desc_offer" />
+                        android:contentDescription="@string/desc_offer"
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:id="@+id/imgOffer4"
@@ -184,16 +188,17 @@
                         android:layout_marginEnd="@dimen/sb_size_20"
                         android:layout_weight="1"
                         android:background="@color/pink_500"
-                        android:contentDescription="@string/desc_offer" />
+                        android:contentDescription="@string/desc_offer"
+                        android:scaleType="centerCrop" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvBottomProductSuggestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/sb_size_12"
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/sb_size_30"
-                    android:layout_marginTop="@dimen/sb_size_12"
                     app:layout_constraintTop_toBottomOf="@id/ll_Offer2" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
