@@ -64,7 +64,7 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyView
         }
 
         void setNewData(NewTrends data, Context context) {
-            CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
+            CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, false);
             imageView.setBackgroundResource(data.getBackground());
             title.setText(data.getTitle());
             description.setText(data.getDescription());

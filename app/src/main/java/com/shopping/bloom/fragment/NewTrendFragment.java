@@ -1,11 +1,14 @@
 package com.shopping.bloom.fragment;
 
+import android.content.Context;
+import android.net.Network;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,24 +17,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.newfragment.NewTrendAdapter;
 import com.shopping.bloom.databinding.FragmentNewTrendBinding;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.fragmentnew.NewTrends;
+import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewTrendFragment extends Fragment {
+public class NewTrendFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = NewTrendFragment.class.getName();
 
     private FragmentNewTrendBinding binding;
     private NewTrendAdapter adapter;
     private List<NewTrends> list;
 
+    // URL for loading temporary image
     public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     public NewTrendFragment() {
@@ -49,6 +55,9 @@ public class NewTrendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentNewTrendBinding.inflate(inflater, container, false);
+
+        // swipe refresh listener
+        binding.newTrendsSwipeRefresh.setOnRefreshListener(this);
         return binding.getRoot();
     }
 
@@ -64,6 +73,19 @@ public class NewTrendFragment extends Fragment {
         binding.recyclerView.setAdapter(adapter);
     }
 
+    // check device connection
+    private boolean isConnectionEnabled(Context context) {
+        if (NetworkCheck.isConnect(context)) {
+            Log.d(TAG, "isConnectionEnabled: " + " TRUE");
+            return true;
+        } else {
+            Log.d(TAG, "isConnectionEnabled: " + " FALSE");
+            Toast.makeText(context, R.string.no_internet_connected, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    // initialise recycler view
     private void initRecyclerView() {
         adapter = new NewTrendAdapter(list, getContext());
         binding.recyclerView.setHasFixedSize(true);
@@ -71,6 +93,7 @@ public class NewTrendFragment extends Fragment {
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    // function for getting mock data
     private List<Product> getMockData() {
         List<Product> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -81,6 +104,7 @@ public class NewTrendFragment extends Fragment {
         return list;
     }
 
+    // initialise list
     private void initList(List<NewTrends> newTrends) {
 
         newTrends.add(new NewTrends(null, "New In Kurtis", "Printed, Graphic"
@@ -108,6 +132,20 @@ public class NewTrendFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onRefresh() {
+
+        if (isConnectionEnabled(getContext())) {
+            list.clear();
+            initList(list);
+            adapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+        }
+
+        binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
 }

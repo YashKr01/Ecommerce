@@ -1,4 +1,4 @@
-package com.shopping.bloom.fragment;
+package com.shopping.bloom.fragment.profilefragment;
 
 import android.os.Bundle;
 

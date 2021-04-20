@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_new_trend" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.shopping.bloom.fragment.ProfileFragment"
+        android:name="com.shopping.bloom.fragment.profilefragment.ProfileFragment"
         android:label="@string/me"
         tools:layout="@layout/fragment_profile" />
 </navigation>

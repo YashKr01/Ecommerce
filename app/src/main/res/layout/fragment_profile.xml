@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/sb_size_8"
-    tools:context=".fragment.ProfileFragment">
+    tools:context=".fragment.profilefragment.ProfileFragment">
 
     <!--- TODO : Fixing Nested ScrollView added static height of view pager for now -->
     <!--  TODO: Tried android:nestedScrollingEnabled="true"-->

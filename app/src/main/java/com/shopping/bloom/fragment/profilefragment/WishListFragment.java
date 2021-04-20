@@ -1,4 +1,4 @@
-package com.shopping.bloom.fragment;
+package com.shopping.bloom.fragment.profilefragment;
 
 import android.os.Bundle;
 
@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
-import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.fragmentshop.RecentlyViewed;
 
 
