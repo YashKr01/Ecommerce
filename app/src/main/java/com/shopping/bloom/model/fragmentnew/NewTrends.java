@@ -1,20 +1,32 @@
 package com.shopping.bloom.model.fragmentnew;
 
+import java.util.List;
+
 public class NewTrends {
 
     private String imageUrl;
     private String title;
     private String description;
     private int background;
+    private List<Child> childList;
 
     public NewTrends() {
     }
 
-    public NewTrends(String imageUrl, String title, String description, int background) {
+    public NewTrends(String imageUrl, String title, String description, int background, List<Child> childList) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
         this.background = background;
+        this.childList = childList;
+    }
+
+    public List<Child> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<Child> childList) {
+        this.childList = childList;
     }
 
     public int getBackground() {

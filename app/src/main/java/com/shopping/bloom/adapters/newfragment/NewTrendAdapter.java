@@ -8,14 +8,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.fragmentnew.Child;
 import com.shopping.bloom.model.fragmentnew.NewTrends;
 
 import java.util.List;
 
-public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.Holder1> {
+public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.MyViewHolder> {
 
     private List<NewTrends> list;
     private Context context;
@@ -25,17 +27,23 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.Holder
         this.context = context;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
     @NonNull
     @Override
-    public Holder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new Holder1(LayoutInflater.from(context).inflate(
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MyViewHolder(LayoutInflater.from(context).inflate(
                 R.layout.item_container_new_trends, parent, false
         ));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Holder1 holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.setNewData(list.get(position), context);
+        setChildRecyclerView(holder.recyclerView, list.get(position).getChildList());
     }
 
     @Override
@@ -43,24 +51,37 @@ public class NewTrendAdapter extends RecyclerView.Adapter<NewTrendAdapter.Holder
         return list.size();
     }
 
-    static class Holder1 extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView title, description;
+        RecyclerView recyclerView;
 
-        public Holder1(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.background_image);
             title = itemView.findViewById(R.id.new_text_view);
             description = itemView.findViewById(R.id.new_text_description);
+            recyclerView = itemView.findViewById(R.id.child_recycler_view);
         }
 
         void setNewData(NewTrends data, Context context) {
             //CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, true);
-            imageView.setBackgroundColor(data.getBackground());
+            imageView.setBackgroundResource(data.getBackground());
             title.setText(data.getTitle());
             description.setText(data.getDescription());
         }
+
+    }
+
+    private void setChildRecyclerView(RecyclerView recyclerView, List<Child> childList) {
+
+        NewTrendChildAdapter newTrendChildAdapter = new NewTrendChildAdapter(context, childList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                context, RecyclerView.HORIZONTAL, false
+        ));
+        recyclerView.setAdapter(newTrendChildAdapter);
+
 
     }
 
