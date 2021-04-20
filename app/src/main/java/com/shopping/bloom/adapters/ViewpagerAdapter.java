@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.MainScreenImageModel;
@@ -20,7 +21,6 @@ import java.util.List;
 
 public class ViewpagerAdapter extends RecyclerView.Adapter<ViewpagerAdapter.ViewPagerViewHolder> {
     private static final String TAG = ViewpagerAdapter.class.getName();
-
 
     ArrayList<MainScreenImageModel> imageModels;
     ViewPagerClickListener mListener;
@@ -44,15 +44,22 @@ public class ViewpagerAdapter extends RecyclerView.Adapter<ViewpagerAdapter.View
     public void onBindViewHolder(@NonNull ViewPagerViewHolder holder, int position) {
         MainScreenImageModel imageModel = getItemAtPosition(position);
 
-        CommonUtils.loadImageWithGlide(mContext, imageModel.getImagepath(), holder.imgCard, false);
+        String imageURL = imageModel.getImagepath();
+        holder.setUpData(mContext, imageURL);
+
         holder.imgCard.setOnClickListener((view -> mListener.onClick(imageModel)));
     }
 
     static class ViewPagerViewHolder extends RecyclerView.ViewHolder {
         ImageView imgCard;
+
         public ViewPagerViewHolder(@NonNull View itemView) {
             super(itemView);
             imgCard = itemView.findViewById(R.id.imgCard);
+        }
+
+        public void setUpData(Context context, String imageURL) {
+            CommonUtils.loadImageWithGlide(context, imageURL, imgCard, false);
         }
     }
 

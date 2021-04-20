@@ -13,7 +13,7 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginTop="124dp"
-        android:background="@color/blue_grey_900"
+        app:srcCompat="@drawable/ic_no_internet"
         android:contentDescription="@string/no_internet_connected"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
