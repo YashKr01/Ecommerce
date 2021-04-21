@@ -19,6 +19,9 @@ import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAdapter.CategoryImageViewHolder> {
@@ -34,6 +37,11 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
         this.mListener = mListener;
         products = new ArrayList<>();
     }
+
+    /*Below comparator is used to sort the list to lift the Large screen thumbnails*/
+    private final Comparator<Product> COMP = (product, t1) -> {
+        return t1.getIs_bigthumbnail_show().compareTo(product.getIs_bigthumbnail_show());
+    };
 
     @NonNull
     @Override
@@ -91,7 +99,14 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
         return products.size();
     }
 
-    public void updateList(List<Product> productList) {
+    /*
+    *   @params sort is used to lift the Large thumbnail at top
+    *       like in home screen Shop Fragment.
+    * */
+    public void updateList(List<Product> productList, boolean sort) {
+        if (sort) {
+            Collections.sort(productList, COMP);
+        }
         if(products == null) {
             products = new ArrayList<>(productList);
         } else {
