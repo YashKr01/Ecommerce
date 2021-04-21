@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.fragmentnew.NewTrend;
+import com.shopping.bloom.model.newfragment.NewTrend;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;

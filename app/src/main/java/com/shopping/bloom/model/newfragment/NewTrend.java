@@ -1,4 +1,4 @@
-package com.shopping.bloom.model.fragmentnew;
+package com.shopping.bloom.model.newfragment;
 
 import com.shopping.bloom.model.Product;
 
