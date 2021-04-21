@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.ReviewsFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/sb_size_8"
+            android:background="@color/grey_200"
+            android:elevation="@dimen/sb_size_0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="@dimen/sb_size_140"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="@dimen/sb_size_16"
+            android:layout_marginEnd="28dp"
+            android:background="@color/grey_200"
+            android:contentDescription="@string/review_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/review_layout"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="@dimen/sb_size_0"
+            app:layout_constraintBottom_toBottomOf="@id/imageView"
+            app:layout_constraintEnd_toEndOf="@id/imageView"
+            app:layout_constraintStart_toStartOf="@id/imageView"
+            app:layout_constraintTop_toTopOf="@id/imageView">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.35" />
+
+            <RatingBar
+                android:id="@+id/review_rating_bar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:theme="@style/RatingBarTheme"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txt_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="4.5"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sb_text_size_28"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@id/review_rating_bar"
+                app:layout_constraintStart_toStartOf="@id/review_rating_bar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="@string/did_the_item_sell_well"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sb_text_size_12"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="Small"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/textView8"
+                app:layout_constraintStart_toStartOf="@+id/guideline2" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gotham_font"
+                android:text="True to size"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/textView7"
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                app:layout_constraintVertical_bias="0.42000002" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.87" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="Large"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_small"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:progressBackgroundTint="@android:color/transparent"
+                android:progressTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/progress_bar_size"
+                app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_size"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:max="100"
+                android:progress="0"
+                android:progressBackgroundTint="@android:color/transparent"
+                android:progressTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/textView8"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintStart_toEndOf="@+id/textView8"
+                app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_large"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:progressBackgroundTint="@android:color/transparent"
+                android:progressTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintStart_toStartOf="@+id/progress_bar_size"
+                app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+            <TextView
+                android:id="@+id/txt_value_small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="31%"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/progress_bar_small"
+                app:layout_constraintStart_toStartOf="@+id/guideline_end"
+                app:layout_constraintTop_toTopOf="@+id/progress_bar_small" />
+
+            <TextView
+                android:id="@+id/txt_value_true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="93%"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/progress_bar_size"
+                app:layout_constraintStart_toStartOf="@+id/guideline_end"
+                app:layout_constraintTop_toTopOf="@+id/progress_bar_size" />
+
+            <TextView
+                android:id="@+id/txt_value_large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/gotham_font"
+                android:text="4%"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/progress_bar_large"
+                app:layout_constraintStart_toStartOf="@+id/guideline_end"
+                app:layout_constraintTop_toTopOf="@+id/progress_bar_large" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviews_recycler_view"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="@dimen/sb_size_0"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/review_layout"
+            app:layout_constraintStart_toStartOf="@id/review_layout"
+            app:layout_constraintTop_toBottomOf="@id/review_layout"
+            tools:listitem="@layout/item_review" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:contentDescription="@string/add_review"
+        android:focusable="true"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/black"
+        app:fabSize="mini"
+        app:maxImageSize="@dimen/sb_size_20"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

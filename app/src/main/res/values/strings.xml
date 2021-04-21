@@ -49,6 +49,15 @@
     <string name="sub_product">Sub Product</string>
     <string name="desc_see_more">See more item</string>
     <string name="see_more">See more</string>
+    <string name="loren_ipsum_placeholder_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <string name="review_image">review image</string>
+    <string name="add_review">Add Review</string>
+    <string name="did_the_item_sell_well">Did the item sell well?</string>
+    <string name="read_more">Read More</string>
+    <string name="read_less">Read Less</string>
+    <string name="cancel">CANCEL</string>
+    <string name="customer_services">Customer Services</string>
+    <string name="submit">SUBMIT</string>
 
 
 </resources>
