@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class ShopFragment extends Fragment {
 
     private ViewPager2 vpHeaderImages;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout srlNoInternet;
     private MainScreenConfig mainScreenConfig;
     private ViewpagerAdapter viewpagerAdapter;
     private ImageView imgHeaderImage;
@@ -66,6 +68,7 @@ public class ShopFragment extends Fragment {
     private CategoryImagesAdapter categoryImagesAdapter;
     private NestedProductAdapter topProductSuggestionAdapter;
     private NestedProductAdapter bottomProductSuggestionAdapter;
+    private ViewStub vsEmptyScreen;
     ImageView offerImage1;
     ImageView offerImage2;
     ImageView offerImage3;
@@ -108,6 +111,7 @@ public class ShopFragment extends Fragment {
 
         checkNetworkAndFetchData();
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkAndFetchData);
+        srlNoInternet.setOnRefreshListener(this::checkNetworkAndFetchData);
     }
 
     private void initViews(View view) {
@@ -115,6 +119,7 @@ public class ShopFragment extends Fragment {
         vpIndicator = view.findViewById(R.id.vpIndicator);
         imgHeaderImage = view.findViewById(R.id.imgNewArrival);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        srlNoInternet = view.findViewById(R.id.srlNoInternet);
 
         //below are the three recyclerView used in shop fragment
         rvTopProductSuggestion = view.findViewById(R.id.rvTopProductSuggestion);        //At Top Product suggestion Horizontal Scroll
@@ -203,8 +208,7 @@ public class ShopFragment extends Fragment {
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", 10, PAGE_NO, "");
         } else {
-            swipeRefreshLayout.setRefreshing(false);
-            noInternetToast(true);
+            setNoInternetLayout(true);
             Log.d(TAG, "onRefresh: NO INTERNET CONNECTION");
         }
     }
@@ -212,37 +216,21 @@ public class ShopFragment extends Fragment {
     private final CategoryResponseListener responseListener = new CategoryResponseListener() {
         @Override
         public void onSuccess(List<Product> product) {
-            //Log.d(TAG, "onSuccess: productSize " + product);
-            swipeRefreshLayout.setRefreshing(false);
-            categoryImagesAdapter.updateList(product);
+            setNoInternetLayout(false);
+            categoryImagesAdapter.updateList(product, true);
             Log.d(TAG, "onSuccess: productSize " + product.size());
         }
 
         @Override
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
-            swipeRefreshLayout.setRefreshing(false);
-            noInternetToast(false);
+            setNoInternetLayout(false);
         }
     };
 
     private final LoadMoreItems loadMoreItems = () -> {
         Log.d(TAG, "loadMoreItems: ");
     };
-
-    private void noInternetToast(boolean show) {
-        //TODO: show No Internet error screen
-        String error_text = "";
-        if (show) {
-            error_text = getString(R.string.no_internet_connected);
-        } else {
-            error_text = getString(R.string.something_went_wrong);
-        }
-        if (getContext() != null) {
-            Toast.makeText(getContext(), error_text,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private final ProductClickListener suggestedProductClickListener = new ProductClickListener() {
         @Override
@@ -321,6 +309,19 @@ public class ShopFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: shop" + menu.getItem(0).getTitle());
+    }
+
+    //set No internet layout to visible and hide the main layout
+    private void setNoInternetLayout(boolean visible) {
+        swipeRefreshLayout.setRefreshing(false);
+        srlNoInternet.setRefreshing(false);
+        if (visible) {
+            srlNoInternet.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        } else {
+            srlNoInternet.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private List<SubProduct> getDummyData() {
