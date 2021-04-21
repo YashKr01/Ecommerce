@@ -1,4 +1,4 @@
-package com.shopping.bloom.fragment;
+package com.shopping.bloom.fragment.profilefragment;
 
 import android.os.Bundle;
 
@@ -12,11 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
 import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.fragmentshop.RecentlyViewed;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +22,11 @@ import java.util.List;
 public class RecentlyViewedFragment extends Fragment {
 
     private FragmentRecentlyViewedBinding binding;
-    private List<RecentlyViewed> productList;
+    private List<Product> productList;
     private WishListAdapter adapter;
+
+    // URL for loading temporary image
+    public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +46,7 @@ public class RecentlyViewedFragment extends Fragment {
 
     private void initRecyclerView() {
         productList = new ArrayList<>();
-        initList(productList);
+        getMockData();
         adapter = new WishListAdapter(productList, getContext());
         binding.recentlyViewedRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2
                 , RecyclerView.VERTICAL, false));
@@ -54,16 +55,14 @@ public class RecentlyViewedFragment extends Fragment {
         binding.recentlyViewedRecyclerView.setAdapter(adapter);
     }
 
-    private void initList(List<RecentlyViewed> list) {
+    private List<Product> getMockData() {
 
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1000));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 300));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 349));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 899));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 229));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1999));
-        list.add(new RecentlyViewed(null, R.color.grey_300, 1900));
-
+        for (int i = 0; i < 10; i++) {
+            productList.add(new Product(1, null, null, null,
+                    null, IMAGE_URL, "1999", null, null
+                    , null));
+        }
+        return productList;
     }
 
     @Override

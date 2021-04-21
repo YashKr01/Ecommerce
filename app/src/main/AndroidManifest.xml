@@ -14,20 +14,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ecommerce">
-        <activity android:name=".activities.AccountSecurityActivity"></activity>
+        <activity android:name=".activities.AddShippingAddressActivity"
+            android:theme="@style/Theme.Ecommerce.Theme"/>
+        <activity android:name=".activities.MyAddressActivity" />
         <activity
-            android:name=".activities.SettingsActivity" />
+            android:name=".activities.ConnectToUsActivity"
+            android:theme="@style/Theme.Ecommerce.NoActionBar" />
+        <activity android:name=".activities.AccountSecurityActivity" />
+        <activity android:name=".activities.SettingsActivity" />
         <activity
             android:name=".activities.RegisterActivity"
-            android:theme="@style/Theme.Ecommerce.NoActionBar"
+            android:theme="@style/Theme.Ecommerce.Theme"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.OtpActivity"
-            android:theme="@style/Theme.Ecommerce.NoActionBar"
+            android:theme="@style/Theme.Ecommerce.Theme"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.LoginActivity"
-            android:theme="@style/Theme.Ecommerce.NoActionBar"
+            android:theme="@style/Theme.Ecommerce.Theme"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".activities.MainActivity"

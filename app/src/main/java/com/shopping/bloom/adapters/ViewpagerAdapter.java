@@ -1,4 +1,4 @@
-package com.shopping.bloom.adapters.profilefragment;
+package com.shopping.bloom.adapters;
 
 import android.content.Context;
 import android.util.Log;

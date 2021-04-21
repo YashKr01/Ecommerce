@@ -37,19 +37,29 @@ public class SettingsActivity extends AppCompatActivity {
         nameTextView.setText(name);
         emailTextView.setText(email);
 
-
     }
 
     public void accountSecurityIntent(View view) {
-        Intent intent = new Intent(this, AccountSecurityActivity.class);
-        startActivity(intent);
+        intent(AccountSecurityActivity.class);
     }
 
     private void setNavigationIcon() {
         toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            intent(MainActivity.class);
             finish();
         });
+    }
+
+    public void connectIntent(View view) {
+        intent(ConnectToUsActivity.class);
+    }
+
+    private void intent(Class<?> className){
+        Intent intent = new Intent( this, className);
+        startActivity(intent);
+    }
+
+    public void addressBookIntent(View view) {
+        intent(MyAddressActivity.class);
     }
 }

@@ -28,7 +28,6 @@
         android:gravity="center"
         android:padding="@dimen/sb_size_5"
         android:layout_marginTop="@dimen/sb_size_5"
-        android:text="rajanvishwa10@gmail.com"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_size_16"
         android:textStyle="bold"
