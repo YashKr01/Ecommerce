@@ -2,13 +2,20 @@ package com.shopping.bloom.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 public class ViewCategoryFragment extends Fragment {
 
@@ -19,6 +26,11 @@ public class ViewCategoryFragment extends Fragment {
 
     private String parentId;
     private String categoryTitle;
+
+    //views
+    private TextView tvSort, tvCategory;
+    private RelativeLayout rlFilter;
+    private RecyclerView rvProducts;
 
     public ViewCategoryFragment() {
         // Required empty public constructor
@@ -55,4 +67,57 @@ public class ViewCategoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_view_category, container, false);
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        initViews(view);
+    }
+
+    private void initViews(View view) {
+        tvSort = view.findViewById(R.id.tvSort);
+        tvCategory = view.findViewById(R.id.tvCategory);
+        rlFilter = view.findViewById(R.id.rlFilter);
+        rvProducts = view.findViewById(R.id.rvViewCategory);
+
+        //Attack Click Listeners
+        tvSort.setOnClickListener(optionsClickListener);
+        tvCategory.setOnClickListener(optionsClickListener);
+        rlFilter.setOnClickListener(optionsClickListener);
+
+
+
+    }
+
+    private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
+        @Override
+        public void onDebouncedClick(View v) {
+            if(v.getId() == R.id.tvSort){
+                Log.d(TAG, "onDebouncedClick: sort");
+            }
+            if(v.getId() == R.id.tvCategory){
+                Log.d(TAG, "onDebouncedClick: Category");
+            }
+            if(v.getId() == R.id.rlFilter){
+                Log.d(TAG, "onDebouncedClick: filter");
+            }
+        }
+    };
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

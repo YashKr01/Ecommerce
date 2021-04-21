@@ -49,6 +49,8 @@
     <string name="sub_product">Sub Product</string>
     <string name="desc_see_more">See more item</string>
     <string name="see_more">See more</string>
+    <string name="sort">Sort</string>
+    <string name="filter">Filter</string>
 
 
 </resources>

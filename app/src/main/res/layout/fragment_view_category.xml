@@ -6,16 +6,85 @@
     android:layout_height="match_parent"
     tools:context=".fragment.ViewCategoryFragment">
 
+    <LinearLayout
+        android:id="@+id/llFilterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvSort"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="32"
+            android:gravity="center"
+            android:text="@string/sort"
+            android:textColor="@color/blue_grey_900"
+            android:textSize="@dimen/sb_text_size_16" />
+
+        <TextView
+            android:id="@+id/tvCategory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="32"
+            android:gravity="center"
+            android:text="@string/category"
+            android:textColor="@color/blue_grey_900"
+            android:textSize="@dimen/sb_text_size_16" />
+
+        <RelativeLayout
+            android:id="@+id/rlFilter"
+            android:layout_width="@dimen/sb_size_0"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="36"
+            android:gravity="center_horizontal"
+            android:paddingVertical="@dimen/sb_size_8">
+
+            <TextView
+                android:id="@+id/tvDummyFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingEnd="@dimen/sb_size_16"
+                android:text="@string/filter"
+                android:textColor="@color/blue_grey_900"
+                android:textSize="@dimen/sb_text_size_16" />
+
+            <ImageView
+                android:layout_width="@dimen/sb_size_24"
+                android:layout_height="@dimen/sb_size_24"
+                android:layout_toEndOf="@+id/tvDummyFilter"
+                android:src="@drawable/ic_filter" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/viewSeparatorLine"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sb_size_1"
+        android:background="@color/grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="@dimen/sb_size_20"
+        app:layout_constraintTop_toBottomOf="@id/llFilterLayout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvViewCategory"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_view_category"/>
+        app:layout_constraintTop_toBottomOf="@id/viewSeparatorLine"
+        app:spanCount="2"
+        tools:listitem="@layout/item_view_category" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
