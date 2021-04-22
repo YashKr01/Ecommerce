@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -16,7 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.ReviewsAdapter;
+import com.shopping.bloom.adapters.reviewfragment.ReviewsAdapter;
 import com.shopping.bloom.databinding.FragmentReviewsBinding;
 import com.shopping.bloom.model.Review;
 

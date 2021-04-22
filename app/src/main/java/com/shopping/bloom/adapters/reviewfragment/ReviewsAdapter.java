@@ -1,7 +1,6 @@
-package com.shopping.bloom.adapters;
+package com.shopping.bloom.adapters.reviewfragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,23 +50,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
         holder.itemReview.setText(currentItem.getReview());
         holder.reviewRating.setRating(currentItem.getRating());
 
-        // TODO : One Test Case still left when text is not ellipsized
-        // setting read more read less at text review
-        holder.txtReadMore.setOnClickListener(v -> {
-
-            if (holder.txtReadMore.getText().toString().equals("Read More")) {
-                holder.itemReview.setMaxLines(Integer.MAX_VALUE);
-                holder.itemReview.setEllipsize(null);
-                holder.txtReadMore.setText(R.string.read_less);
-            } else {
-                holder.itemReview.setMaxLines(4);
-                holder.itemReview.setEllipsize(TextUtils.TruncateAt.END);
-                holder.txtReadMore.setText(R.string.read_more);
-            }
-
-        });
-
-
     }
 
     @Override
@@ -78,7 +60,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
 
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        TextView itemName, itemReview, txtReadMore;
+        TextView itemName, itemReview;
         RatingBar reviewRating;
 
         public ReviewViewHolder(@NonNull View itemView) {
@@ -87,7 +69,6 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
             itemName = itemView.findViewById(R.id.item_review_name);
             reviewRating = itemView.findViewById(R.id.item_rating);
             itemReview = itemView.findViewById(R.id.item_review);
-            txtReadMore = itemView.findViewById(R.id.txt_read_more);
 
         }
     }
