@@ -35,6 +35,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public void updateList(List<Product> products) {
         this.productList = products;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -98,8 +99,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void setUpData(Context context, Product product) {
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
+            Log.d(TAG, "setUpData: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
-            tvPrice.setText(product.getProduct_name()); //TODO: change it to getProductPrice
+            tvPrice.setText(product.getPrice()); //TODO: change it to getProductPrice
 
         }
 
@@ -120,7 +122,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 textView.setText(color);
                 textView.setTextColor(ContextCompat.getColor(context, R.color.blue_grey_900));
                 params.rightMargin = 12;
-                textView.setTextSize(14f);
+                textView.setTextSize(12f);
                 textView.setLayoutParams(params);
                 textView.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices));
                 textView.setOnClickListener(colorOptionSelected);
