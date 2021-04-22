@@ -1,8 +1,7 @@
-package com.shopping.bloom.viewModel;
+package com.shopping.bloom.viewModels;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 

@@ -21,12 +21,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
-import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.SubProduct;
+import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewmodel.CategoryViewModel;
+import com.shopping.bloom.viewModels.CategoryViewModel;
 
 import java.util.List;
 
@@ -96,10 +96,10 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
 
     private final CategoryResponseListener responseListener = new CategoryResponseListener() {
         @Override
-        public void onSuccess(List<Product> product) {
-            Log.d(TAG, "onSuccess: productSize " + product);
-            Log.d(TAG, "onSuccess: productSize " + product.size());
-            categoryImagesAdapter.updateProductList(product);
+        public void onSuccess(List<Category> category) {
+            Log.d(TAG, "onSuccess: productSize " + category);
+            Log.d(TAG, "onSuccess: productSize " + category.size());
+            categoryImagesAdapter.updateProductList(category);
             mainBinding.swipeRefreshLayout.setRefreshing(false);
             noInternetAvailable(false);
         }
@@ -117,16 +117,16 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
 
     //when product header/category is clicked
     @Override
-    public void onProductClick(Product productCategory) {
-        Log.d(TAG, "onProductClick: product clicked " + productCategory.toString());
+    public void onProductClick(Category categoryCategory) {
+        Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
         if(getContext() != null) {
-            Toast.makeText(getContext(), productCategory.getCategory_name(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), categoryCategory.getCategory_name(), Toast.LENGTH_SHORT).show();
         }
     }
 
     //When particular product image is clicked
     @Override
-    public void onSubProductClick(SubProduct product) {
+    public void onSubProductClick(SubCategory product) {
         Log.d(TAG, "onSubProductClick: "+ product.toString());
         if(getContext() != null) {
             Toast.makeText(getContext(), product.getCategory_name(), Toast.LENGTH_SHORT).show();

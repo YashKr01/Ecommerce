@@ -51,6 +51,8 @@
     <string name="see_more">See more</string>
     <string name="sort">Sort</string>
     <string name="filter">Filter</string>
+    <string name="cart">Cart</string>
+    <string name="search">Search</string>
 
 
 </resources>

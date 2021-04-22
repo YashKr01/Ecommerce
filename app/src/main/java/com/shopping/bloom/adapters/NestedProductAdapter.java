@@ -13,7 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.SubProduct;
+import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
@@ -25,14 +25,14 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
     private static final String TAG = NestedProductAdapter.class.getName();
 
     Context context;
-    ArrayList<SubProduct> subProducts;
+    ArrayList<SubCategory> subCategories;
     ProductClickListener mListener;
     LoadMoreItems loadMoreItems;
     private int LAST_ITEM = -1;
 
-    public NestedProductAdapter(Context context, List<SubProduct> subProducts, ProductClickListener mListener, LoadMoreItems loadMoreItems) {
+    public NestedProductAdapter(Context context, List<SubCategory> subCategories, ProductClickListener mListener, LoadMoreItems loadMoreItems) {
         this.context = context;
-        this.subProducts = new ArrayList<>(subProducts);
+        this.subCategories = new ArrayList<>(subCategories);
         this.mListener = mListener;
         this.loadMoreItems = loadMoreItems;
     }
@@ -51,22 +51,22 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
 
     @Override
     public int getItemViewType(int position) {
-        SubProduct product = subProducts.get(position);
+        SubCategory product = subCategories.get(position);
         if (product.getId() == LAST_ITEM && position == getItemCount()-1) return LAST_ITEM;
         return super.getItemViewType(position);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NestedProductViewHolder holder, int position) {
-        SubProduct subProduct = getItemAt(position);
+        SubCategory subCategory = getItemAt(position);
 
         if (getItemViewType(position) == LAST_ITEM) {
             if(loadMoreItems != null) {
                 holder.rootView.setOnClickListener((view -> loadMoreItems.loadMore()));
             }
         } else {
-            holder.setUpData(context, subProduct);
-            holder.rootView.setOnClickListener((view -> mListener.onSubProductClick(subProduct)));
+            holder.setUpData(context, subCategory);
+            holder.rootView.setOnClickListener((view -> mListener.onSubProductClick(subCategory)));
         }
     }
 
@@ -82,23 +82,23 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
             rootView = itemView.findViewById(R.id.clProductRootView);
         }
 
-        public void setUpData(Context context, SubProduct subProduct) {
-            productPrice.setText(subProduct.getCategory_name());
-            String imageUrl = "http://bloomapp.in" + subProduct.getCategory_thumbnail();
-            Log.d(TAG, "onBindViewHolder: imageURL " + imageUrl);
-            CommonUtils.loadImageWithGlide(context, imageUrl, productImage, false);
+        public void setUpData(Context context, SubCategory subCategory) {
+            productPrice.setText(subCategory.getCategory_name());
+            String imageURL = "http://bloomapp.in" + subCategory.getCategory_thumbnail();
+            Log.d(TAG, "onBindViewHolder: imageURL " + imageURL);
+            CommonUtils.loadImageWithGlide(context, imageURL, productImage, false);
         }
     }
 
     @Override
     public int getItemCount() {
-        return subProducts.size();
+        return subCategories.size();
     }
 
-    private SubProduct getItemAt(int position) {
-        if (position < 0 || position > subProducts.size()) {
+    private SubCategory getItemAt(int position) {
+        if (position < 0 || position > subCategories.size()) {
             Log.d(TAG, "getItemAt: INVALID POSITION");
         }
-        return subProducts.get(position);
+        return subCategories.get(position);
     }
 }

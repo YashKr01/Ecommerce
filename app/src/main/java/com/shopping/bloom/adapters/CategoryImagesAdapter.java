@@ -1,7 +1,6 @@
 package com.shopping.bloom.adapters;
 
 import android.content.Context;
-import android.support.v4.media.session.IMediaControllerCallback;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Product;
-import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.restService.callback.CategoryImageClickListener;
 import com.shopping.bloom.utils.CommonUtils;
-import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -27,7 +23,7 @@ import java.util.List;
 public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAdapter.CategoryImageViewHolder> {
     private static final String TAG = CategoryImagesAdapter.class.getName();
 
-    private ArrayList<Product> products;
+    private ArrayList<Category> categories;
     private Context mContext;
     private CategoryImageClickListener mListener;
     private int LARGE_IMAGE = -1;
@@ -35,11 +31,11 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
     public CategoryImagesAdapter(Context mContext, CategoryImageClickListener mListener) {
         this.mContext = mContext;
         this.mListener = mListener;
-        products = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 
     /*Below comparator is used to sort the list to lift the Large screen thumbnails*/
-    private final Comparator<Product> COMP = (product, t1) -> {
+    private final Comparator<Category> COMP = (product, t1) -> {
         return t1.getIs_bigthumbnail_show().compareTo(product.getIs_bigthumbnail_show());
     };
 
@@ -58,18 +54,18 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
 
     @Override
     public void onBindViewHolder(@NonNull CategoryImageViewHolder holder, int position) {
-        Product product = getItemAt(position);
+        Category category = getItemAt(position);
         String IMAGE_URL = "http://bloomapp.in";
 
         if(getItemViewType(position) == LARGE_IMAGE) {
-            IMAGE_URL = IMAGE_URL + product.getBig_thumbnail();
+            IMAGE_URL = IMAGE_URL + category.getBig_thumbnail();
         } else {
-            IMAGE_URL = IMAGE_URL + product.getSquare_thumbnail();
+            IMAGE_URL = IMAGE_URL + category.getSquare_thumbnail();
         }
 
         holder.setUpData(mContext, IMAGE_URL);
 
-        holder.imgCategoryImage.setOnClickListener((view -> mListener.onClick(product)));
+        holder.imgCategoryImage.setOnClickListener((view -> mListener.onClick(category)));
     }
 
     static class CategoryImageViewHolder extends RecyclerView.ViewHolder {
@@ -87,39 +83,39 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
 
     }
 
-    private Product getItemAt(int position) {
-        if(position < 0 || position > products.size()) {
+    private Category getItemAt(int position) {
+        if(position < 0 || position > categories.size()) {
             Log.d(TAG, "getItemAt: INVALID POSITION");
         }
-        return products.get(position);
+        return categories.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return categories.size();
     }
 
     /*
     *   @params sort is used to lift the Large thumbnail at top
     *       like in home screen Shop Fragment.
     * */
-    public void updateList(List<Product> productList, boolean sort) {
+    public void updateList(List<Category> categoryList, boolean sort) {
         if (sort) {
-            Collections.sort(productList, COMP);
+            Collections.sort(categoryList, COMP);
         }
-        if(products == null) {
-            products = new ArrayList<>(productList);
+        if(categories == null) {
+            categories = new ArrayList<>(categoryList);
         } else {
-            products.clear();
-            products.addAll(productList);
+            categories.clear();
+            categories.addAll(categoryList);
         }
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemViewType(int position) {
-        Product product = getItemAt(position);
-        String isLargeIcon = product.getIs_bigthumbnail_show();
+        Category category = getItemAt(position);
+        String isLargeIcon = category.getIs_bigthumbnail_show();
         if(isLargeIcon.equals("1")) return LARGE_IMAGE;
         return super.getItemViewType(position);
     }

@@ -1,35 +1,44 @@
 package com.shopping.bloom.model;
 
-import java.util.List;
-
-/* Product category with list of product item*/
 
 public class Product {
     private int id;
-    private String parent_id;
-    private String category_name;
-    private String category_thumbnail;
-    private String is_bigthumbnail_show;
-    private String big_thumbnail;
-    private String type;
+    private String product_name;
+    private String description;
+    private String price;
+    private String mrp;
+    private String available_sizes;
+    private String available_colors;
+    private String primary_image;
+    private String avg_rating;
+    private String is_on_sale;
+    private String sale_price;
+    private String sale_percentage;
+    private String is_new;
+    private String deleted_at;
     private String created_at;
     private String updated_at;
-    public Object square_thumbnail;
-    private List<SubProduct> sub_category;
 
-    public Product(int id, String parent_id, String category_name, String category_thumbnail,
-                   String is_bigthumbnail_show, String big_thumbnail, String type, String created_at,
-                   String updated_at, List<SubProduct> sub_category) {
+    public Product(int id, String product_name, String description, String price, String mrp,
+                   String available_sizes, String available_colors, String primary_image,
+                   String avg_rating, String is_on_sale, String sale_price, String sale_percentage,
+                   String is_new, String deleted_at, String created_at, String updated_at) {
         this.id = id;
-        this.parent_id = parent_id;
-        this.category_name = category_name;
-        this.category_thumbnail = category_thumbnail;
-        this.is_bigthumbnail_show = is_bigthumbnail_show;
-        this.big_thumbnail = big_thumbnail;
-        this.type = type;
+        this.product_name = product_name;
+        this.description = description;
+        this.price = price;
+        this.mrp = mrp;
+        this.available_sizes = available_sizes;
+        this.available_colors = available_colors;
+        this.primary_image = primary_image;
+        this.avg_rating = avg_rating;
+        this.is_on_sale = is_on_sale;
+        this.sale_price = sale_price;
+        this.sale_percentage = sale_percentage;
+        this.is_new = is_new;
+        this.deleted_at = deleted_at;
         this.created_at = created_at;
         this.updated_at = updated_at;
-        this.sub_category = sub_category;
     }
 
     public int getId() {
@@ -40,60 +49,108 @@ public class Product {
         this.id = id;
     }
 
-    public String getParent_id() {
-        return parent_id;
+    public String getProduct_name() {
+        return product_name;
     }
 
-    public void setParent_id(String parent_id) {
-        this.parent_id = parent_id;
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
     }
 
-    public String getCategory_name() {
-        return category_name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategory_name(String category_name) {
-        this.category_name = category_name;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getCategory_thumbnail() {
-        return category_thumbnail;
+    public String getPrice() {
+        return price;
     }
 
-    public void setCategory_thumbnail(String category_thumbnail) {
-        this.category_thumbnail = category_thumbnail;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
-    public String getIs_bigthumbnail_show() {
-        return is_bigthumbnail_show;
+    public String getMrp() {
+        return mrp;
     }
 
-    public void setIs_bigthumbnail_show(String is_bigthumbnail_show) {
-        this.is_bigthumbnail_show = is_bigthumbnail_show;
+    public void setMrp(String mrp) {
+        this.mrp = mrp;
     }
 
-    public String getBig_thumbnail() {
-        return big_thumbnail;
+    public String getAvailable_sizes() {
+        return available_sizes;
     }
 
-    public void setBig_thumbnail(String big_thumbnail) {
-        this.big_thumbnail = big_thumbnail;
+    public void setAvailable_sizes(String available_sizes) {
+        this.available_sizes = available_sizes;
     }
 
-    public String getType() {
-        return type;
+    public String getAvailable_colors() {
+        return available_colors;
     }
 
-    public Object getSquare_thumbnail() {
-        return square_thumbnail;
+    public void setAvailable_colors(String available_colors) {
+        this.available_colors = available_colors;
     }
 
-    public void setSquare_thumbnail(Object square_thumbnail) {
-        this.square_thumbnail = square_thumbnail;
+    public String getPrimary_image() {
+        return primary_image;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPrimary_image(String primary_image) {
+        this.primary_image = primary_image;
+    }
+
+    public String getAvg_rating() {
+        return avg_rating;
+    }
+
+    public void setAvg_rating(String avg_rating) {
+        this.avg_rating = avg_rating;
+    }
+
+    public String getIs_on_sale() {
+        return is_on_sale;
+    }
+
+    public void setIs_on_sale(String is_on_sale) {
+        this.is_on_sale = is_on_sale;
+    }
+
+    public String getSale_price() {
+        return sale_price;
+    }
+
+    public void setSale_price(String sale_price) {
+        this.sale_price = sale_price;
+    }
+
+    public String getSale_percentage() {
+        return sale_percentage;
+    }
+
+    public void setSale_percentage(String sale_percentage) {
+        this.sale_percentage = sale_percentage;
+    }
+
+    public String getIs_new() {
+        return is_new;
+    }
+
+    public void setIs_new(String is_new) {
+        this.is_new = is_new;
+    }
+
+    public String getDeleted_at() {
+        return deleted_at;
+    }
+
+    public void setDeleted_at(String deleted_at) {
+        this.deleted_at = deleted_at;
     }
 
     public String getCreated_at() {
@@ -112,27 +169,25 @@ public class Product {
         this.updated_at = updated_at;
     }
 
-    public List<SubProduct> getSub_category() {
-        return sub_category;
-    }
-
-    public void setSub_category(List<SubProduct> sub_category) {
-        this.sub_category = sub_category;
-    }
-
     @Override
     public String toString() {
         return "Product{" +
                 "id=" + id +
-                ", parent_id='" + parent_id + '\'' +
-                ", category_name='" + category_name + '\'' +
-                ", category_thumbnail='" + category_thumbnail + '\'' +
-                ", is_bigthumbnail_show='" + is_bigthumbnail_show + '\'' +
-                ", big_thumbnail='" + big_thumbnail + '\'' +
-                ", type='" + type + '\'' +
+                ", product_name='" + product_name + '\'' +
+                ", description='" + description + '\'' +
+                ", price='" + price + '\'' +
+                ", mrp='" + mrp + '\'' +
+                ", available_sizes='" + available_sizes + '\'' +
+                ", available_colors='" + available_colors + '\'' +
+                ", primary_image='" + primary_image + '\'' +
+                ", avg_rating='" + avg_rating + '\'' +
+                ", is_on_sale='" + is_on_sale + '\'' +
+                ", sale_price='" + sale_price + '\'' +
+                ", sale_percentage='" + sale_percentage + '\'' +
+                ", is_new='" + is_new + '\'' +
+                ", deleted_at='" + deleted_at + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
-                ", sub_category=" + sub_category +
                 '}';
     }
 }

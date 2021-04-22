@@ -21,12 +21,8 @@ import android.widget.Toast;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.newfragment.NewAdapter;
 import com.shopping.bloom.databinding.FragmentNewBinding;
-import com.shopping.bloom.firebaseConfig.RemoteConfig;
-import com.shopping.bloom.model.MainScreenConfig;
-import com.shopping.bloom.model.MainScreenImageModel;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.fragmentnew.NewTrend;
-import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.ArrayList;
@@ -118,10 +114,10 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     // function for getting mock data
-    private List<Product> getMockData() {
-        List<Product> list = new ArrayList<>();
+    private List<Category> getMockData() {
+        List<Category> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            list.add(new Product(1, null, null, null,
+            list.add(new Category(1, null, null, null,
                     null, IMAGE_URL, "1999", null, null
                     , null));
         }

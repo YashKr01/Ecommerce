@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 public class RecentlyViewedFragment extends Fragment {
 
     private FragmentRecentlyViewedBinding binding;
-    private List<Product> productList;
+    private List<Category> categoryList;
     private WishListAdapter adapter;
 
     // URL for loading temporary image
@@ -45,9 +45,9 @@ public class RecentlyViewedFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        productList = new ArrayList<>();
+        categoryList = new ArrayList<>();
         getMockData();
-        adapter = new WishListAdapter(productList, getContext());
+        adapter = new WishListAdapter(categoryList, getContext());
         binding.recentlyViewedRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2
                 , RecyclerView.VERTICAL, false));
         binding.recentlyViewedRecyclerView.setHasFixedSize(true);
@@ -55,14 +55,14 @@ public class RecentlyViewedFragment extends Fragment {
         binding.recentlyViewedRecyclerView.setAdapter(adapter);
     }
 
-    private List<Product> getMockData() {
+    private List<Category> getMockData() {
 
         for (int i = 0; i < 10; i++) {
-            productList.add(new Product(1, null, null, null,
+            categoryList.add(new Category(1, null, null, null,
                     null, IMAGE_URL, "1999", null, null
                     , null));
         }
-        return productList;
+        return categoryList;
     }
 
     @Override

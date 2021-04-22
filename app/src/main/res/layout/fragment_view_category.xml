@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".fragment.ViewCategoryFragment">
 
     <LinearLayout
@@ -12,7 +13,10 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingVertical="@dimen/sb_size_2"
+        android:layout_marginTop="@dimen/sb_size_4"
         android:weightSum="100"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,7 +29,7 @@
             android:gravity="center"
             android:text="@string/sort"
             android:textColor="@color/blue_grey_900"
-            android:textSize="@dimen/sb_text_size_16" />
+            android:textSize="@dimen/sb_text_size_18" />
 
         <TextView
             android:id="@+id/tvCategory"
@@ -35,7 +39,7 @@
             android:gravity="center"
             android:text="@string/category"
             android:textColor="@color/blue_grey_900"
-            android:textSize="@dimen/sb_text_size_16" />
+            android:textSize="@dimen/sb_text_size_18" />
 
         <RelativeLayout
             android:id="@+id/rlFilter"
@@ -54,15 +58,15 @@
                 android:paddingEnd="@dimen/sb_size_16"
                 android:text="@string/filter"
                 android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_16" />
+                android:textSize="@dimen/sb_text_size_18" />
 
             <ImageView
                 android:layout_width="@dimen/sb_size_24"
                 android:layout_height="@dimen/sb_size_24"
                 android:layout_toEndOf="@+id/tvDummyFilter"
                 android:src="@drawable/ic_filter" />
-
         </RelativeLayout>
+
     </LinearLayout>
 
     <View
@@ -79,6 +83,10 @@
         android:id="@+id/rvViewCategory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingVertical="@dimen/sb_size_8"
+        android:paddingHorizontal="@dimen/sb_size_4"
+        android:clipToPadding="false"
+        android:background="@color/white"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

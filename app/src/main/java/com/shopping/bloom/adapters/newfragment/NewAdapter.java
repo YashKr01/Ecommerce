@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.fragmentnew.NewTrend;
 import com.shopping.bloom.utils.CommonUtils;
 
@@ -41,7 +41,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
         NewTrend currentItem = list.get(position);
 
         holder.setNewData(currentItem, context);
-        setChildRecyclerView(holder.recyclerView, currentItem.getProductList());
+        setChildRecyclerView(holder.recyclerView, currentItem.getCategoryList());
     }
 
     @Override
@@ -72,9 +72,9 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
     }
 
-    private void setChildRecyclerView(RecyclerView recyclerView, List<Product> productList) {
+    private void setChildRecyclerView(RecyclerView recyclerView, List<Category> categoryList) {
 
-        NewProductAdapter newProductAdapter = new NewProductAdapter(context, productList);
+        NewProductAdapter newProductAdapter = new NewProductAdapter(context, categoryList);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context, RecyclerView.HORIZONTAL, false
         ));

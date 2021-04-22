@@ -16,7 +16,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewModel.RegisterViewModel;
+import com.shopping.bloom.viewModels.RegisterViewModel;
 
 
 public class RegisterActivity extends AppCompatActivity {

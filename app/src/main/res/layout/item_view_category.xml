@@ -8,8 +8,9 @@
         android:id="@+id/imgProductImage"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:layout_marginHorizontal="@dimen/sb_size_16"
-        android:layout_marginVertical="@dimen/sb_size_12"
+        android:layout_marginHorizontal="@dimen/sb_size_8"
+        android:layout_marginVertical="@dimen/sb_size_10"
+        android:scaleType="centerCrop"
         android:background="@color/blue_grey_900"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,18 +33,19 @@
         android:layout_marginTop="@dimen/sb_size_12"
         android:text="₹ 1000"
         android:textColor="@color/blue_grey_900"
-        android:textSize="@dimen/sb_text_size_18"
+        android:textSize="@dimen/sb_text_size_17"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imgProductImage"
         app:layout_constraintStart_toStartOf="@+id/imgProductImage"
         app:layout_constraintTop_toBottomOf="@+id/imgProductImage" />
 
-    <androidx.core.widget.NestedScrollView
+    <HorizontalScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sb_size_8"
-        android:layout_marginBottom="@dimen/sb_size_10"
-        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/sb_size_12"
+        android:layout_marginBottom="@dimen/sb_size_16"
+        android:scrollbars="none"
+        android:padding="@dimen/sb_size_4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imgProductImage"
         app:layout_constraintStart_toStartOf="@+id/tvProductPrice"
@@ -51,15 +53,14 @@
 
         <LinearLayout
             android:id="@+id/llColorOptions"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"
             android:gravity="start"
-            android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/sb_size_8"
-            android:paddingVertical="@dimen/sb_size_8">
-
+            android:orientation="horizontal">
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </HorizontalScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

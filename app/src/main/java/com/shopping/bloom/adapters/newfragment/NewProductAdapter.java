@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
 public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.ChildViewHolder> {
 
     private Context context;
-    private List<Product> productList;
+    private List<Category> categoryList;
 
-    public NewProductAdapter(Context context, List<Product> productList) {
+    public NewProductAdapter(Context context, List<Category> categoryList) {
         this.context = context;
-        this.productList = productList;
+        this.categoryList = categoryList;
     }
 
     @NonNull
@@ -37,7 +37,7 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
 
         // get current product list
-        Product currentItem = productList.get(position);
+        Category currentItem = categoryList.get(position);
 
         CommonUtils.loadImageWithGlide(context, currentItem.getBig_thumbnail()
                 , holder.imageView, false);
@@ -47,7 +47,7 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return categoryList.size();
     }
 
     public class ChildViewHolder extends RecyclerView.ViewHolder {

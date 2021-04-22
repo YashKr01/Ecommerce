@@ -7,6 +7,7 @@ import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
+import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
@@ -52,4 +53,11 @@ public interface ApiInterface {
     @POST("auth/verifyEmailOtp")
     @Headers("Content-type: application/json")
     Call<OtpResponseModel> verifyEmailOtp(@Body EmailOtpModel emailOtpModel);
+
+    @GET("/api/frontend/getProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetProductsResponse> getProducts(
+            @Query("sub_category_id") String subCategoryId,
+            @Query("limit") int limit
+    );
 }

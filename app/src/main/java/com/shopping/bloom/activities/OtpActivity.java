@@ -6,13 +6,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
-import android.widget.Toast;
 
 import com.chaos.view.PinView;
 import com.shopping.bloom.R;
@@ -22,7 +19,7 @@ import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewModel.OtpViewModel;
+import com.shopping.bloom.viewModels.OtpViewModel;
 
 
 public class OtpActivity extends AppCompatActivity {
