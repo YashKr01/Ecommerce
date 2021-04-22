@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewModel;
+package com.shopping.bloom.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
@@ -52,6 +52,11 @@ public class OtpViewModel extends ViewModel {
                         loginManager.setname(response.body().getData().getUserInfo().getName());
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
                         loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
+                        loginManager.SetLoginStatus(false);
+                        String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
+                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                            loginManager.setEmail_verified_at(true);
+                        }
 
                         Intent intent;
                         if (ActivityName.equals("RegisterActivity")) {
@@ -98,6 +103,10 @@ public class OtpViewModel extends ViewModel {
                         loginManager.setname(response.body().getData().getUserInfo().getName());
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
                         loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
+                        String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
+                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                            loginManager.setEmail_verified_at(true);
+                        }
 
                         Intent intent = new Intent(context, SettingsActivity.class);
                         context.startActivity(intent);

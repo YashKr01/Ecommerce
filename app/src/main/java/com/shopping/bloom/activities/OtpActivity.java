@@ -22,7 +22,7 @@ import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.viewModel.OtpViewModel;
+import com.shopping.bloom.viewmodel.OtpViewModel;
 
 
 public class OtpActivity extends AppCompatActivity {
@@ -31,7 +31,6 @@ public class OtpActivity extends AppCompatActivity {
     PinView pinView;
     String otp;
     OtpViewModel otpViewModel;
-    ShowToast showToast;
     String activityName;
     ConstraintLayout constraintLayout;
     ViewStub viewStub;
@@ -44,8 +43,6 @@ public class OtpActivity extends AppCompatActivity {
 
         activityName = getIntent().getStringExtra("activityName");
         System.out.println("ActivityName" + activityName);
-
-        showToast = new ShowToast(this);
 
         toolbar = findViewById(R.id.toolbar);
         setNavigationIcon();
@@ -68,7 +65,7 @@ public class OtpActivity extends AppCompatActivity {
         if (activityName.equals("EmailVerification")) {
             String email = getIntent().getStringExtra("email");
             if (email == null || email.isEmpty()) {
-                showToast.showToast("Email is Empty");
+                ShowToast.showToast(this,"Email is Empty");
             } else {
                 EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
                 otpViewModel.makeApiCallResendEmailOtp(emailVerificationModel, getApplication(), this);
@@ -76,7 +73,7 @@ public class OtpActivity extends AppCompatActivity {
         } else {
             String mobile_no = getIntent().getStringExtra("mobile_no");
             if (mobile_no == null || mobile_no.isEmpty()) {
-                showToast.showToast("Number is Empty");
+                ShowToast.showToast(this,"Number is Empty");
             } else {
                 if (NetworkCheck.isConnect(this)) {
                     LoginModel loginModel = new LoginModel(mobile_no);
@@ -95,7 +92,7 @@ public class OtpActivity extends AppCompatActivity {
         String activityName = getIntent().getStringExtra("activityName");
 
         if (otp == null || otp.isEmpty()) {
-            showToast.showToast("Number is Empty");
+            ShowToast.showToast(this,"Number is Empty");
         } else {
             if(NetworkCheck.isConnect(this)){
                 if (activityName.equals("EmailVerification")) {

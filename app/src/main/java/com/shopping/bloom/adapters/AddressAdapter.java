@@ -43,6 +43,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
         holder.addressLine1TextView.setText(address.getAddressLine1());
         holder.addressLine2TextView.setText(address.getAddressLine2());
 
+        holder.imageButton.setOnClickListener(v->{
+            addressList.remove(position);
+            notifyDataSetChanged();
+        });
+
         holder.radioButton.setChecked(lastSelectedPosition == position);
     }
 

@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -19,6 +20,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewmodel.AccountSecurityViewModel;
 
 public class AccountSecurityActivity extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class AccountSecurityActivity extends AppCompatActivity {
     LoginManager loginManager;
     LinearLayout linearLayout;
     ViewStub viewStub;
+    boolean is_email_verified;
     SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -46,6 +49,9 @@ public class AccountSecurityActivity extends AppCompatActivity {
         loginManager = new LoginManager(this);
 
         String email = loginManager.getEmailid();
+        is_email_verified = loginManager.is_email_verified();
+
+        System.out.println("email_verified_at" + is_email_verified);
 
         setNavigationIcon();
 
@@ -54,23 +60,34 @@ public class AccountSecurityActivity extends AppCompatActivity {
         emailVerificationTextView.setOnClickListener(v -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
             View bottomSheet = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_email, findViewById(R.id.bottomSheet));
-            bottomSheetDialog.setContentView(bottomSheet);
-            bottomSheetDialog.show();
+            TextView emailTextView = bottomSheet.findViewById(R.id.emailTextView);
+            emailTextView.setText(email);
             bottomSheet.findViewById(R.id.sendOtp).setOnClickListener(v1 -> {
                 if (!email.isEmpty()) {
-                    if(NetworkCheck.isConnect(this)){
-                        EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
-                        accountSecurityViewModel.verifyEmailApiCall(emailVerificationModel, getApplication(), this);
+                    if (!is_email_verified) {
+                        if (NetworkCheck.isConnect(this)) {
+                            EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
+                            accountSecurityViewModel.verifyEmailApiCall(emailVerificationModel, getApplication(), this);
+                        } else {
+                            bottomSheetDialog.dismiss();
+                            viewStub.setVisibility(View.VISIBLE);
+                            linearLayout.setVisibility(View.GONE);
+                        }
                     }else{
-                        bottomSheetDialog.dismiss();
-                        viewStub.setVisibility(View.VISIBLE);
-                        linearLayout.setVisibility(View.GONE);
+                        ShowToast.showToast(this, "Email Already Verified");
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                bottomSheetDialog.dismiss();
+                            }
+                        }, 1000);
                     }
                 } else {
                     Toast.makeText(this, "Create an Account to Verify", Toast.LENGTH_SHORT).show();
                 }
             });
-
+            bottomSheetDialog.setContentView(bottomSheet);
+            bottomSheetDialog.show();
         });
     }
 

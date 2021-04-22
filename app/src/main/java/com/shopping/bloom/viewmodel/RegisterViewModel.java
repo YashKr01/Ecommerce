@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewModel;
+package com.shopping.bloom.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
@@ -28,10 +28,6 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void makeApiCall(RegistrationModel registrationModel, Application application, Activity context){
-
-        if(NetworkCheck.isConnect(context)){
-
-        }
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<RegisterResponseModel> call = apiService.sendRegisterData(registrationModel);

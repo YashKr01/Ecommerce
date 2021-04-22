@@ -41,7 +41,7 @@
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="fontFamily">@font/gothamfont</item>
+        <item name="fontFamily">@font/gotham_font</item>
 
     </style>
 

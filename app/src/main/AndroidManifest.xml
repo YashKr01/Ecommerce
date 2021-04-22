@@ -14,8 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ecommerce">
-        <activity android:name=".activities.AddShippingAddressActivity"
-            android:theme="@style/Theme.Ecommerce.Theme"/>
+        <activity
+            android:name=".activities.LoginWithPassActivity"
+            android:theme="@style/Theme.Ecommerce.Theme"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name=".activities.AddShippingAddressActivity"
+            android:theme="@style/Theme.Ecommerce.Theme" />
         <activity android:name=".activities.MyAddressActivity" />
         <activity
             android:name=".activities.ConnectToUsActivity"
