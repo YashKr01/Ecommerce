@@ -15,6 +15,23 @@
         <item name="fontFamily">@font/gotham_font</item>
     </style>
 
+    <style name="TabLayoutText" parent="Theme.Ecommerce">
+        <item name="fontFamily">@font/gothammedium</item>
+        <item name="android:fontFamily">@font/gothammedium</item>
+        <item name="android:textSize">@dimen/sb_text_size_12</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BoldText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothamblack</item>
+        <item name="fontFamily">@font/gothamblack</item>
+    </style>
+
+    <style name="MediumText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothammedium</item>
+        <item name="fontFamily">@font/gothammedium</item>
+    </style>
+
     <style name="RatingBarTheme" parent="Theme.Ecommerce">
         <item name="colorControlNormal">@color/grey_600</item>
         <item name="colorControlActivated">@color/amber_400</item>

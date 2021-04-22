@@ -29,6 +29,7 @@
 
     <TextView
         android:id="@+id/txt_wish_list_name"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/sb_size_8"

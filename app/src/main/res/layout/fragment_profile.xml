@@ -10,9 +10,9 @@
     <!--- TODO : Fixing Nested ScrollView added static height of view pager for now -->
     <!--  TODO: Tried android:nestedScrollingEnabled="true"-->
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestscrollview"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="0dp"
-        android:id="@+id/nestscrollview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -505,6 +505,7 @@
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/profile_tab_layout"
+                style="@style/TabLayoutText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -529,11 +530,11 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:src="@drawable/screen_end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:src="@drawable/screen_end"
-                app:layout_constraintTop_toBottomOf="@id/profile_view_pager"/>
+                app:layout_constraintTop_toBottomOf="@id/profile_view_pager" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

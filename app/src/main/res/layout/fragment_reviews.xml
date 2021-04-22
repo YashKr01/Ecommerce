@@ -65,13 +65,14 @@
 
             <TextView
                 android:id="@+id/txt_rating"
+                style="@style/BoldText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothambold"
                 android:text="4.5"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sb_text_size_28"
+                android:textSize="@dimen/sb_text_size_24"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/review_rating_bar"
                 app:layout_constraintStart_toStartOf="@id/review_rating_bar"
@@ -79,10 +80,11 @@
 
             <TextView
                 android:id="@+id/textView6"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="@string/did_the_item_sell_well"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sb_text_size_12"
@@ -91,11 +93,12 @@
 
             <TextView
                 android:id="@+id/textView7"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="Small"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -104,9 +107,10 @@
 
             <TextView
                 android:id="@+id/textView8"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="True to size"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -124,10 +128,11 @@
 
             <TextView
                 android:id="@+id/textView9"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="Large"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -143,6 +148,7 @@
                 android:progress="0"
                 android:progressBackgroundTint="@android:color/transparent"
                 android:progressTint="@color/black"
+                android:scaleY="1.8"
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_end"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar_size"
@@ -158,6 +164,7 @@
                 android:progress="0"
                 android:progressBackgroundTint="@android:color/transparent"
                 android:progressTint="@color/black"
+                android:scaleY="1.8"
                 app:layout_constraintBottom_toBottomOf="@+id/textView8"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_end"
                 app:layout_constraintStart_toEndOf="@+id/textView8"
@@ -172,6 +179,7 @@
                 android:progress="0"
                 android:progressBackgroundTint="@android:color/transparent"
                 android:progressTint="@color/black"
+                android:scaleY="1.8"
                 app:layout_constraintBottom_toBottomOf="@+id/textView9"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_end"
                 app:layout_constraintStart_toStartOf="@+id/progress_bar_size"
@@ -179,10 +187,11 @@
 
             <TextView
                 android:id="@+id/txt_value_small"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="31%"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -192,10 +201,11 @@
 
             <TextView
                 android:id="@+id/txt_value_true"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="93%"
                 android:textColor="@color/black"
                 android:textSize="10sp"
@@ -205,10 +215,11 @@
 
             <TextView
                 android:id="@+id/txt_value_large"
+                style="@style/MediumText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:fontFamily="@font/gotham_font"
+                android:fontFamily="@font/gothammedium"
                 android:text="4%"
                 android:textColor="@color/black"
                 android:textSize="10sp"
