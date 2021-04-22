@@ -18,7 +18,7 @@ import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewmodel.LoginWithPassViewModel;
+import com.shopping.bloom.viewModels.LoginWithPassViewModel;
 
 public class LoginWithPassActivity extends AppCompatActivity {
 

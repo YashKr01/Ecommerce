@@ -18,7 +18,7 @@ import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.utils.Tools;
-import com.shopping.bloom.viewmodel.LoginViewModel;
+import com.shopping.bloom.viewModels.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
 

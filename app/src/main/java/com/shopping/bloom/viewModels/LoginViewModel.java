@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewmodel;
+package com.shopping.bloom.viewModels;
 
 import android.app.Activity;
 import android.app.Application;
