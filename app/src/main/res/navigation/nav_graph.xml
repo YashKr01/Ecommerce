@@ -25,9 +25,4 @@
         android:name="com.shopping.bloom.fragment.profilefragment.ProfileFragment"
         android:label="@string/me"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/viewCategoryFragment"
-        android:name="com.shopping.bloom.fragment.ViewCategoryFragment"
-        android:label="fragment_view_category"
-        tools:layout="@layout/fragment_view_category" />
 </navigation>

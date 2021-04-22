@@ -69,15 +69,6 @@ public class MainActivity extends AppCompatActivity {
                     mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
                 }
 
-                if(destination.getId() == R.id.viewCategoryFragment) {
-                    setTitle("Category Title");
-                    mainView.layoutToolbar.imgMail.setVisibility(View.GONE);
-                    mainView.layoutToolbar.imgFavourites.setVisibility(View.GONE);
-                    ((ConstraintLayout)mainView.layoutToolbar.clToolbarRoot).setElevation(0F);
-                } else {
-                    ((ConstraintLayout)mainView.layoutToolbar.clToolbarRoot).setElevation(8F);
-                }
-
                 //Hide the bottom navigation bar if destination fragment not contains in the topLevelDestination
                 boolean showBottomNavBar = isTopLevelDestination(destination.getId());
                 showBottomNavigationBar(showBottomNavBar);

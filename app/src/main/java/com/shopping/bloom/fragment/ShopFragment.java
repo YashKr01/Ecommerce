@@ -1,5 +1,6 @@
 package com.shopping.bloom.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.ViewCategoryActivity;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
@@ -171,7 +173,8 @@ public class ShopFragment extends Fragment {
     private void setUpRecyclerView() {
         categoryImagesAdapter = new CategoryImagesAdapter(getContext(), product -> {
             Log.d(TAG, "initViews: product " + product.getId());
-            Navigation.findNavController(requireActivity(), R.id.home_fragment).navigate(R.id.viewCategoryFragment);
+            Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+            startActivity(intent);
         });
         rvCategoryImages.setHasFixedSize(true);
         rvCategoryImages.setLayoutManager(new GridLayoutManager(getContext(), 2));
