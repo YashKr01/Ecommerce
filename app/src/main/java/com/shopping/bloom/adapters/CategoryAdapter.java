@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.SubProduct;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 
@@ -25,21 +24,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     private static final String TAG = CategoryAdapter.class.getName();
 
     Context context;
-    ArrayList<Product> products;
+    ArrayList<Category> categories;
     ProductClickListener mListener;
 
     public CategoryAdapter(Context context, ProductClickListener mListener) {
         this.context = context;
         this.mListener = mListener;
-        products = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 
-    public void updateProductList(List<Product> productList){
-        if(products == null) {
-            products = new ArrayList<>(productList);
+    public void updateProductList(List<Category> categoryList){
+        if(categories == null) {
+            categories = new ArrayList<>(categoryList);
         } else {
-            products.clear();
-            products.addAll(productList);
+            categories.clear();
+            categories.addAll(categoryList);
         }
         notifyDataSetChanged();
     }
@@ -53,19 +52,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
-        Product product = getItemAt(position);
-        Log.d(TAG, "onBindViewHolder: productDetail " + product);
+        Category category = getItemAt(position);
+        Log.d(TAG, "onBindViewHolder: productDetail " + category);
 
-        holder.setUpData(context, product, mListener, null);
-        //attach the click listener to the product category
-        holder.tvProductCategory.setOnClickListener((view -> mListener.onProductClick(product)));
+        holder.setUpData(context, category, mListener, null);
+        //attach the click listener to the category category
+        holder.tvProductCategory.setOnClickListener((view -> mListener.onProductClick(category)));
     }
 
-    private Product getItemAt(int position) {
-        if(position < 0 || position > products.size()) {
+    private Category getItemAt(int position) {
+        if(position < 0 || position > categories.size()) {
             Log.d(TAG, "getItemAt: INVALID POSITION " + position);
         }
-        return products.get(position);
+        return categories.get(position);
     }
 
     static class CategoryViewHolder extends RecyclerView.ViewHolder {
@@ -78,10 +77,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             rvSubProduct = itemView.findViewById(R.id.rv_Products);
         }
 
-        public void setUpData(Context context, Product product, ProductClickListener mListener, LoadMoreItems listener) {
-            tvProductCategory.setText(product.getCategory_name());
+        public void setUpData(Context context, Category category, ProductClickListener mListener, LoadMoreItems listener) {
+            tvProductCategory.setText(category.getCategory_name());
 
-            NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, product.getSub_category(),
+            NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, category.getSub_category(),
                     mListener, null);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
             rvSubProduct.setLayoutManager(layoutManager);
@@ -92,6 +91,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public int getItemCount() {
-        return products.size();
+        return categories.size();
     }
 }

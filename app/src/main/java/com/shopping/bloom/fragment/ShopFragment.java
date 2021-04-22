@@ -9,15 +9,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,17 +30,17 @@ import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
+import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
-import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.SubProduct;
+import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewmodel.CategoryViewModel;
+import com.shopping.bloom.viewModels.CategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,7 @@ public class ShopFragment extends Fragment {
 
     private ViewPager2 vpHeaderImages;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout srlNoInternet;
     private MainScreenConfig mainScreenConfig;
     private ViewpagerAdapter viewpagerAdapter;
     private ImageView imgHeaderImage;
@@ -57,15 +59,16 @@ public class ShopFragment extends Fragment {
     private Runnable runnable;
     private Handler handler = new Handler();
 
-    private com.shopping.bloom.viewmodel.CategoryViewModel viewModel;
+    private CategoryViewModel viewModel;
 
-    private RecyclerView rvCategoryImages;          //At Top Product suggestion Horizontal Scroll
+    private RecyclerView rvCategoryImages;          //At Top Category suggestion Horizontal Scroll
     private RecyclerView rvTopProductSuggestion;    //Categories
-    private RecyclerView rvBottomProductSuggestion; //At bottom Product suggestion
+    private RecyclerView rvBottomProductSuggestion; //At bottom Category suggestion
 
     private CategoryImagesAdapter categoryImagesAdapter;
     private NestedProductAdapter topProductSuggestionAdapter;
     private NestedProductAdapter bottomProductSuggestionAdapter;
+    private ViewStub vsEmptyScreen;
     ImageView offerImage1;
     ImageView offerImage2;
     ImageView offerImage3;
@@ -108,6 +111,7 @@ public class ShopFragment extends Fragment {
 
         checkNetworkAndFetchData();
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkAndFetchData);
+        srlNoInternet.setOnRefreshListener(this::checkNetworkAndFetchData);
     }
 
     private void initViews(View view) {
@@ -115,11 +119,12 @@ public class ShopFragment extends Fragment {
         vpIndicator = view.findViewById(R.id.vpIndicator);
         imgHeaderImage = view.findViewById(R.id.imgNewArrival);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        srlNoInternet = view.findViewById(R.id.srlNoInternet);
 
         //below are the three recyclerView used in shop fragment
-        rvTopProductSuggestion = view.findViewById(R.id.rvTopProductSuggestion);        //At Top Product suggestion Horizontal Scroll
+        rvTopProductSuggestion = view.findViewById(R.id.rvTopProductSuggestion);        //At Top Category suggestion Horizontal Scroll
         rvCategoryImages = view.findViewById(R.id.rvProductsCategory);                  //Categories
-        rvBottomProductSuggestion = view.findViewById(R.id.rvBottomProductSuggestion);  //At bottom Product suggestion
+        rvBottomProductSuggestion = view.findViewById(R.id.rvBottomProductSuggestion);  //At bottom Category suggestion
         offerImage1 = view.findViewById(R.id.imgOffer1);
         offerImage2 = view.findViewById(R.id.imgOffer2);
         offerImage3 = view.findViewById(R.id.imgOffer3);
@@ -166,6 +171,7 @@ public class ShopFragment extends Fragment {
     private void setUpRecyclerView() {
         categoryImagesAdapter = new CategoryImagesAdapter(getContext(), product -> {
             Log.d(TAG, "initViews: product " + product.getId());
+            Navigation.findNavController(requireActivity(), R.id.home_fragment).navigate(R.id.viewCategoryFragment);
         });
         rvCategoryImages.setHasFixedSize(true);
         rvCategoryImages.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -203,26 +209,23 @@ public class ShopFragment extends Fragment {
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", 10, PAGE_NO, "");
         } else {
-            swipeRefreshLayout.setRefreshing(false);
-            noInternetToast(true);
+            setNoInternetLayout(true);
             Log.d(TAG, "onRefresh: NO INTERNET CONNECTION");
         }
     }
 
     private final CategoryResponseListener responseListener = new CategoryResponseListener() {
         @Override
-        public void onSuccess(List<Product> product) {
-            //Log.d(TAG, "onSuccess: productSize " + product);
-            swipeRefreshLayout.setRefreshing(false);
-            categoryImagesAdapter.updateList(product);
-            Log.d(TAG, "onSuccess: productSize " + product.size());
+        public void onSuccess(List<Category> category) {
+            setNoInternetLayout(false);
+            categoryImagesAdapter.updateList(category, true);
+            Log.d(TAG, "onSuccess: productSize " + category.size());
         }
 
         @Override
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
-            swipeRefreshLayout.setRefreshing(false);
-            noInternetToast(false);
+            setNoInternetLayout(false);
         }
     };
 
@@ -230,28 +233,14 @@ public class ShopFragment extends Fragment {
         Log.d(TAG, "loadMoreItems: ");
     };
 
-    private void noInternetToast(boolean show) {
-        //TODO: show No Internet error screen
-        String error_text = "";
-        if (show) {
-            error_text = getString(R.string.no_internet_connected);
-        } else {
-            error_text = getString(R.string.something_went_wrong);
-        }
-        if (getContext() != null) {
-            Toast.makeText(getContext(), error_text,
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private final ProductClickListener suggestedProductClickListener = new ProductClickListener() {
         @Override
-        public void onProductClick(Product productCategory) {
-            Log.d(TAG, "onProductClick: " + productCategory);
+        public void onProductClick(Category categoryCategory) {
+            Log.d(TAG, "onProductClick: " + categoryCategory);
         }
 
         @Override
-        public void onSubProductClick(SubProduct product) {
+        public void onSubProductClick(SubCategory product) {
             Log.d(TAG, "onSubProductClick: " + product);
         }
     };
@@ -323,16 +312,29 @@ public class ShopFragment extends Fragment {
         Log.d(TAG, "onCreateOptionsMenu: shop" + menu.getItem(0).getTitle());
     }
 
-    private List<SubProduct> getDummyData() {
-        List<SubProduct> list = new ArrayList<>();
+    //set No internet layout to visible and hide the main layout
+    private void setNoInternetLayout(boolean visible) {
+        swipeRefreshLayout.setRefreshing(false);
+        srlNoInternet.setRefreshing(false);
+        if (visible) {
+            srlNoInternet.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        } else {
+            srlNoInternet.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private List<SubCategory> getDummyData() {
+        List<SubCategory> list = new ArrayList<>();
         //String thumbNail = "http://bloomapp.in/images/product/product_image_3.png";
         String thumbNail = "/images/product/product_image_3.png";
         for (int i = 0; i < 12; i++) {
-            SubProduct subProduct = new SubProduct(1, "", "MockData", thumbNail, ""
+            SubCategory subCategory = new SubCategory(1, "", "MockData", thumbNail, ""
                     , "", "", "", "");
-            list.add(subProduct);
+            list.add(subCategory);
         }
-        SubProduct dummyItem = new SubProduct(-1, "", "", thumbNail, ""
+        SubCategory dummyItem = new SubCategory(-1, "", "", thumbNail, ""
                 , "", "", "", "");
         list.add(dummyItem);
         return list;

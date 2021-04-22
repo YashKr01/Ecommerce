@@ -2,7 +2,6 @@ package com.shopping.bloom.viewmodel;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.activities.OtpActivity;
-import com.shopping.bloom.activities.RegisterActivity;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.response.RegisterResponseModel;

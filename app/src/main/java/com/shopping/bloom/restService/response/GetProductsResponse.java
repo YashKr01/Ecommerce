@@ -1,22 +1,22 @@
 package com.shopping.bloom.restService.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.Product;
 
 import java.util.List;
 
-public class GetCategoryResponse {
+public class GetProductsResponse {
 
     @SerializedName("success")
     private boolean success;
 
     @SerializedName("data")
-    private List<Category> data;
+    private List<Product> data;
 
     @SerializedName("message")
     private String message;
 
-    public GetCategoryResponse(boolean success, List<Category> data, String message) {
+    public GetProductsResponse(boolean success, List<Product> data, String message) {
         this.success = success;
         this.data = data;
         this.message = message;
@@ -30,11 +30,11 @@ public class GetCategoryResponse {
         this.success = success;
     }
 
-    public List<Category> getData() {
+    public List<Product> getData() {
         return data;
     }
 
-    public void setData(List<Category> data) {
+    public void setData(List<Product> data) {
         this.data = data;
     }
 
@@ -48,7 +48,7 @@ public class GetCategoryResponse {
 
     @Override
     public String toString() {
-        return "GetCategoryResponse{" +
+        return "GetProductsResponse{" +
                 "success=" + success +
                 ", data=" + data +
                 ", message='" + message + '\'' +

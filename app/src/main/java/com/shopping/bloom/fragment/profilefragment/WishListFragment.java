@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
 public class WishListFragment extends Fragment {
 
     private FragmentWishListBinding binding;
-    private List<Product> productList;
+    private List<Category> categoryList;
     private WishListAdapter adapter;
 
     public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
@@ -49,9 +49,9 @@ public class WishListFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        productList = new ArrayList<>();
+        categoryList = new ArrayList<>();
         getMockData();
-        adapter = new WishListAdapter(productList, getContext());
+        adapter = new WishListAdapter(categoryList, getContext());
         binding.wishListRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2
                 , RecyclerView.VERTICAL, false));
         binding.wishListRecyclerView.setHasFixedSize(true);
@@ -60,14 +60,14 @@ public class WishListFragment extends Fragment {
     }
 
     // adding dummy data to recycler view
-    private List<Product> getMockData() {
+    private List<Category> getMockData() {
 
         for (int i = 0; i < 10; i++) {
-            productList.add(new Product(1, null, null, null,
+            categoryList.add(new Category(1, null, null, null,
                     null, IMAGE_URL, "1999", null, null
                     , null));
         }
-        return productList;
+        return categoryList;
     }
 
     @Override

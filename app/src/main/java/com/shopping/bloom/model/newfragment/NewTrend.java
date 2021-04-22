@@ -1,6 +1,6 @@
-package com.shopping.bloom.model.fragmentnew;
+package com.shopping.bloom.model.newfragment;
 
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 
 import java.util.List;
 
@@ -10,25 +10,25 @@ public class NewTrend {
     private String title;
     private String description;
     private int background;
-    private List<Product> productList;
+    private List<Category> categoryList;
 
     public NewTrend() {
     }
 
-    public NewTrend(String imageUrl, String title, String description, int background, List<Product> productList) {
+    public NewTrend(String imageUrl, String title, String description, int background, List<Category> categoryList) {
         this.imageUrl = imageUrl;
         this.title = title;
         this.description = description;
         this.background = background;
-        this.productList = productList;
+        this.categoryList = categoryList;
     }
 
-    public List<Product> getProductList() {
-        return productList;
+    public List<Category> getCategoryList() {
+        return categoryList;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
+    public void setCategoryList(List<Category> categoryList) {
+        this.categoryList = categoryList;
     }
 
     public int getBackground() {

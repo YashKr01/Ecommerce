@@ -21,11 +21,11 @@ import android.widget.Toast;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.newfragment.NewAdapter;
 import com.shopping.bloom.databinding.FragmentNewBinding;
+
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
-import com.shopping.bloom.model.MainScreenConfig;
-import com.shopping.bloom.model.MainScreenImageModel;
-import com.shopping.bloom.model.Product;
-import com.shopping.bloom.model.fragmentnew.NewTrend;
+import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.newfragment.NewFragmentConfig;
+import com.shopping.bloom.model.newfragment.NewTrend;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
 
@@ -38,9 +38,11 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     private FragmentNewBinding binding;
     private NewAdapter adapter;
-    private List<NewTrend> list;
+    private List<NewTrend> list = new ArrayList<>();
 
-    private MainScreenConfig mainScreenConfig;
+    private NewFragmentConfig config;
+    private String imagePath1;
+    private String imagePath2;
 
     // URL for loading temporary image
     public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
@@ -61,30 +63,22 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         // Inflate the layout for this fragment
         binding = FragmentNewBinding.inflate(inflater, container, false);
 
-        // REMOTE CONFIG
-        mainScreenConfig = RemoteConfig.getMainScreenConfig(getContext());
+        if (!isConnectionEnabled(getContext())) {
+            showNoConnectionLayout(true);
+        }
+
+        // for remote config
+        config = RemoteConfig.getNewFragmentConfig(getContext());
+
+        imagePath1 = config.getImage1();
+        imagePath2 = config.getImage2();
+
+        Log.d(TAG, "onCreateView: " + imagePath1 + "\n" + imagePath2);
 
         // swipe refresh listener
         binding.newTrendsSwipeRefresh.setOnRefreshListener(this);
+
         return binding.getRoot();
-    }
-
-    // loading images from remote config
-    private void loadRemoteConfigImages() {
-
-        if (getContext() == null || mainScreenConfig == null) return;
-
-        if (mainScreenConfig.getOfferImages().size() >= 2) {
-
-            CommonUtils.loadImageWithGlide(getContext(),
-                    mainScreenConfig.getOfferImages().get(0).getImagepath(),
-                    binding.image1, true);
-
-            CommonUtils.loadImageWithGlide(getContext(),
-                    mainScreenConfig.getOfferImages().get(1).getImagepath(),
-                    binding.image2, true);
-        }
-
     }
 
     @Override
@@ -92,13 +86,29 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
-        list = new ArrayList<>();
-        initList(list);
+        fetchData();
+        loadImages(imagePath1, imagePath2);
         initRecyclerView();
 
-        loadRemoteConfigImages();
+    }
 
-        binding.recyclerView.setAdapter(adapter);
+    // load image from remote config in first two images
+    private void loadImages(String path1, String path2) {
+        if (path1 != null && path2 != null) {
+            CommonUtils.loadImageWithGlide(getContext(), path1, binding.image1, true);
+            CommonUtils.loadImageWithGlide(getContext(), path2, binding.image2, true);
+        }
+    }
+
+    // fetch data after checking connection
+    private void fetchData() {
+
+        if (isConnectionEnabled(getContext())) {
+            initList(list);
+        } else {
+            showNoConnectionLayout(true);
+        }
+
     }
 
     // check device connection
@@ -113,19 +123,29 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         }
     }
 
+    // show no connection layout
+    private void showNoConnectionLayout(boolean show) {
+        if (show) {
+            binding.newFragmentNoConnectionLayout.setVisibility(View.VISIBLE);
+        } else {
+            binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
+        }
+    }
+
     // initialise recycler view
     private void initRecyclerView() {
         adapter = new NewAdapter(list, getContext());
         binding.recyclerView.setHasFixedSize(true);
         binding.recyclerView.setNestedScrollingEnabled(false);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setAdapter(adapter);
     }
 
     // function for getting mock data
-    private List<Product> getMockData() {
-        List<Product> list = new ArrayList<>();
+    private List<Category> getMockData() {
+        List<Category> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            list.add(new Product(1, null, null, null,
+            list.add(new Category(1, null, null, null,
                     null, IMAGE_URL, "1999", null, null
                     , null));
         }
@@ -166,11 +186,12 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     public void onRefresh() {
 
         if (isConnectionEnabled(getContext())) {
+            showNoConnectionLayout(false);
             list.clear();
             initList(list);
             adapter.notifyDataSetChanged();
         } else {
-            //Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            showNoConnectionLayout(true);
         }
 
         binding.newTrendsSwipeRefresh.setRefreshing(false);

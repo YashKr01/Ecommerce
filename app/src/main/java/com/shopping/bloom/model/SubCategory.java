@@ -1,6 +1,6 @@
 package com.shopping.bloom.model;
 
-public class SubProduct {
+public class SubCategory {
     private int id;
     private String parent_id;
     private String category_name;
@@ -12,10 +12,10 @@ public class SubProduct {
     private String updated_at;
     public String square_thumbnail;
 
-    public SubProduct(int id, String parent_id, String category_name,
-                      String category_thumbnail, String is_bigthumbnail_show,
-                      String big_thumbnail, String type,
-                      String created_at, String updated_at) {
+    public SubCategory(int id, String parent_id, String category_name,
+                       String category_thumbnail, String is_bigthumbnail_show,
+                       String big_thumbnail, String type,
+                       String created_at, String updated_at) {
         this.id = id;
         this.parent_id = parent_id;
         this.category_name = category_name;
@@ -109,7 +109,7 @@ public class SubProduct {
 
     @Override
     public String toString() {
-        return "SubProduct{" +
+        return "SubCategory{" +
                 "id=" + id +
                 ", parent_id='" + parent_id + '\'' +
                 ", category_name='" + category_name + '\'' +

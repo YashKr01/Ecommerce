@@ -1,8 +1,8 @@
 package com.shopping.bloom.restService.callback;
 
 
-import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.Category;
 
 public interface CategoryImageClickListener {
-    void onClick(Product product);
+    void onClick(Category category);
 }

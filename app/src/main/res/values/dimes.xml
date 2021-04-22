@@ -127,6 +127,7 @@
     <dimen name="sb_size_97">97dp</dimen>
     <dimen name="sb_size_98">98dp</dimen>
     <dimen name="sb_size_99">99dp</dimen>
+    <dimen name="sb_size_140">140dp</dimen>
     <dimen name="sb_size_negative_8">-8dp</dimen>
     <dimen name="sb_text_size_1">1sp</dimen>
     <dimen name="sb_text_size_10">10sp</dimen>
