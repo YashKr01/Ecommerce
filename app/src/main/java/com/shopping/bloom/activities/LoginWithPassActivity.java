@@ -1,6 +1,7 @@
 package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -28,6 +29,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
     ViewStub viewStub;
     SwipeRefreshLayout swipeRefreshLayout;
     LoginManager loginManager;
+    Toolbar toolbar;
 
     @Override
     protected void onStart() {
@@ -49,6 +51,9 @@ public class LoginWithPassActivity extends AppCompatActivity {
         viewStub = findViewById(R.id.vsEmptyScreen);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         constraintLayout = findViewById(R.id.constrainLayout);
+        toolbar = findViewById(R.id.toolbar);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
@@ -114,5 +119,11 @@ public class LoginWithPassActivity extends AppCompatActivity {
     public void signUpActivity(View view) {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    public void loginWithOtpActivity(View view) {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
