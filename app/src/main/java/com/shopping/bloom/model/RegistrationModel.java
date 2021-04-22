@@ -17,15 +17,54 @@ public class RegistrationModel {
     @Expose
     String mobile_no;
 
+    @SerializedName("password")
+    @Expose
+    String password;
+
     @SerializedName("firebase_token")
     @Expose
     String firebase_token;
 
-    public RegistrationModel(String name, String email, String mobile_no, String firebase_token) {
+    @SerializedName("imei_number")
+    @Expose
+    String imei_number;
+
+    @SerializedName("device_type")
+    @Expose
+    String device_type;
+
+    public RegistrationModel(String name, String email, String mobile_no, String password, String firebase_token, String imei_number, String device_type) {
         this.name = name;
         this.email = email;
         this.mobile_no = mobile_no;
+        this.password = password;
         this.firebase_token = firebase_token;
+        this.imei_number = imei_number;
+        this.device_type = device_type;
+    }
+
+    public String getImei_number() {
+        return imei_number;
+    }
+
+    public void setImei_number(String imei_number) {
+        this.imei_number = imei_number;
+    }
+
+    public String getDevice_type() {
+        return device_type;
+    }
+
+    public void setDevice_type(String device_type) {
+        this.device_type = device_type;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {

@@ -1,5 +1,11 @@
 package com.shopping.bloom.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewStub;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
@@ -11,19 +17,12 @@ import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
+import com.shopping.bloom.utils.Tools;
 import com.shopping.bloom.viewModels.LoginViewModel;
-
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewStub;
-import android.widget.Button;
 
 public class LoginActivity extends AppCompatActivity {
 
     TextInputEditText mobileNoEditText;
-    ShowToast showToast;
     LoginViewModel loginViewModel;
     Button button;
     ConstraintLayout constraintLayout;
@@ -47,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        showToast = new ShowToast(this);
-
         mobileNoEditText = findViewById(R.id.mobileNoEditText);
         button = findViewById(R.id.signInButton);
         viewStub = findViewById(R.id.vsEmptyScreen);
@@ -69,10 +66,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkNetworkConnectivity() {
 
-        if(!NetworkCheck.isConnect(this)){
+        if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
             constraintLayout.setVisibility(View.GONE);
-        }else{
+        } else {
             viewStub.setVisibility(View.GONE);
             constraintLayout.setVisibility(View.VISIBLE);
         }
@@ -88,14 +85,14 @@ public class LoginActivity extends AppCompatActivity {
     public void signIn(String mobile_no) {
 
         if (mobile_no == null || mobile_no.isEmpty()) {
-            showToast.showToast("Number is Empty");
+            ShowToast.showToast(this,"Number is Empty");
         } else if (!numberLength(mobile_no)) {
-            showToast.showToast("Number length should be 10");
+            ShowToast.showToast(this,"Number length should be 10");
         } else {
-            if(NetworkCheck.isConnect(this)){
+            if (NetworkCheck.isConnect(this)) {
                 LoginModel loginModel = new LoginModel(mobile_no);
                 loginViewModel.makeApiCall(loginModel, getApplication(), this);
-            }else{
+            } else {
                 viewStub.setVisibility(View.VISIBLE);
                 constraintLayout.setVisibility(View.GONE);
             }
@@ -105,5 +102,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean numberLength(String mobile_no) {
         return mobile_no.length() == 10;
+    }
+
+    public void loginWithPassActivity(View view) {
+        Intent intent = new Intent(this, LoginWithPassActivity.class);
+        startActivity(intent);
     }
 }

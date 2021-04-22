@@ -8,7 +8,6 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
-        app:titleTextColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -16,7 +15,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
-        app:title="Settings" />
+        app:title="Settings"
+        app:titleTextColor="@color/black" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -107,11 +107,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
+                    android:onClick="accountSecurityIntent"
                     android:paddingHorizontal="@dimen/sb_size_25"
                     android:paddingVertical="@dimen/sb_size_15"
                     android:text="Account Security"
                     android:textColor="@color/black"
-                    android:onClick="accountSecurityIntent"
                     android:textStyle="bold"
                     app:drawableEndCompat="@drawable/ic_baseline_right_24" />
             </LinearLayout>
@@ -145,11 +145,11 @@
                         android:id="@+id/setCountryTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/sb_size_10"
                         android:gravity="center|start"
                         android:paddingHorizontal="@dimen/sb_size_25"
                         android:paddingVertical="@dimen/sb_size_15"
                         android:text="IN"
-                        android:drawablePadding="@dimen/sb_size_10"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/ic_baseline_right_24" />
@@ -170,8 +170,8 @@
                         android:id="@+id/currencyTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center|start"
                         android:layout_weight="1"
+                        android:gravity="center|start"
                         android:paddingHorizontal="@dimen/sb_size_25"
                         android:paddingVertical="@dimen/sb_size_20"
                         android:text="Currency"
@@ -182,11 +182,11 @@
                         android:id="@+id/setCurrencyTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/sb_size_10"
                         android:gravity="center|start"
                         android:paddingHorizontal="@dimen/sb_size_25"
                         android:paddingVertical="@dimen/sb_size_15"
                         android:text="INR"
-                        android:drawablePadding="@dimen/sb_size_10"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/ic_baseline_right_24" />
@@ -208,8 +208,8 @@
                         android:id="@+id/notificationTextView"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center|start"
                         android:layout_weight="1"
+                        android:gravity="center|start"
                         android:paddingHorizontal="@dimen/sb_size_25"
                         android:paddingVertical="@dimen/sb_size_15"
                         android:text="Notification"
@@ -220,11 +220,11 @@
                         android:id="@+id/setNotificationTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/sb_size_10"
                         android:gravity="center|start"
                         android:paddingHorizontal="@dimen/sb_size_25"
                         android:paddingVertical="@dimen/sb_size_15"
                         android:text="ON"
-                        android:drawablePadding="@dimen/sb_size_10"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         app:drawableEndCompat="@drawable/ic_baseline_right_24" />
@@ -265,10 +265,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
+                    android:onClick="connectIntent"
                     android:paddingHorizontal="@dimen/sb_size_25"
                     android:paddingVertical="@dimen/sb_size_20"
                     android:text="Connect to us"
-                    android:onClick="connectIntent"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:drawableEndCompat="@drawable/ic_baseline_right_24" />
@@ -290,6 +290,18 @@
                     android:textStyle="bold"
                     app:drawableEndCompat="@drawable/ic_baseline_right_24" />
             </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:text="Sign Out"
+                android:onClick="signOut"
+                android:layout_marginBottom="@dimen/sb_size_20"
+                android:textColor="@color/red_A700"
+                android:textSize="@dimen/sb_text_size_18"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 

@@ -40,7 +40,7 @@ public class LoginManager {
 
     private static String isTokenChanged = "isTokenChanged";
 
-
+    private static String is_email_verified = "is_email_verified";
 
 
     public static LoginManager getInstance() {
@@ -53,6 +53,7 @@ public class LoginManager {
     }
 
 
+
     public LoginManager(Context context) {
         this.context = context;
 
@@ -60,6 +61,10 @@ public class LoginManager {
         editor = sharedPreferences.edit();
     }
 
+    public void removeSharedPreference(){
+        editor.clear();
+        editor.apply();
+    }
 
     public void SetLoginStatus(boolean isFirstTime) {
         editor.putBoolean(IS_LOGED_IN, isFirstTime);
@@ -70,7 +75,13 @@ public class LoginManager {
         return sharedPreferences.getBoolean(IS_LOGED_IN, true);
     }
 
+    public boolean is_email_verified() {
+        return sharedPreferences.getBoolean(is_email_verified, false);
+    }
 
+    public void setEmail_verified_at(boolean Is_email_verified) {
+        editor.putBoolean(is_email_verified, Is_email_verified).commit();
+    }
     public void setname(String mname) {
         editor.putString(name, mname).commit();
     }

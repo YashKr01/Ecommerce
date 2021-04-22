@@ -83,6 +83,7 @@
                         tools:layout_editor_absoluteX="24dp" />
 
                     <TextView
+                        android:id="@+id/textView6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -94,6 +95,19 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/signInButton" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:onClick="loginWithPassActivity"
+                        android:padding="@dimen/sb_size_5"
+                        android:text="Login with Password"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_16"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
