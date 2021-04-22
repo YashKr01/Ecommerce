@@ -63,7 +63,7 @@ public class AccountSecurityActivity extends AppCompatActivity {
             TextView emailTextView = bottomSheet.findViewById(R.id.emailTextView);
             emailTextView.setText(email);
             bottomSheet.findViewById(R.id.sendOtp).setOnClickListener(v1 -> {
-                if (!email.isEmpty()) {
+                if (!email.equals("NA")) {
                     if (!is_email_verified) {
                         if (NetworkCheck.isConnect(this)) {
                             EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
@@ -84,6 +84,13 @@ public class AccountSecurityActivity extends AppCompatActivity {
                     }
                 } else {
                     Toast.makeText(this, "Create an Account to Verify", Toast.LENGTH_SHORT).show();
+                    new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        bottomSheetDialog.dismiss();
+                    }
+                }, 1000);
+
                 }
             });
             bottomSheetDialog.setContentView(bottomSheet);
