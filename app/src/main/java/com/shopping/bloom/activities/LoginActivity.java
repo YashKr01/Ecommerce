@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
@@ -29,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     ViewStub viewStub;
     SwipeRefreshLayout swipeRefreshLayout;
     LoginManager loginManager;
+    private View parent_view;
 
     @Override
     protected void onStart() {
@@ -45,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        parent_view = findViewById(android.R.id.content);
 
         mobileNoEditText = findViewById(R.id.mobileNoEditText);
         button = findViewById(R.id.signInButton);
@@ -85,9 +88,9 @@ public class LoginActivity extends AppCompatActivity {
     public void signIn(String mobile_no) {
 
         if (mobile_no == null || mobile_no.isEmpty()) {
-            ShowToast.showToast(this,"Number is Empty");
+            Snackbar.make(parent_view, "Mobile Number is Empty", Snackbar.LENGTH_SHORT).show();
         } else if (!numberLength(mobile_no)) {
-            ShowToast.showToast(this,"Number length should be 10");
+            Snackbar.make(parent_view, "Mobile Number length should be 10", Snackbar.LENGTH_SHORT).show();
         } else {
             if (NetworkCheck.isConnect(this)) {
                 LoginModel loginModel = new LoginModel(mobile_no);

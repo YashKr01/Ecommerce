@@ -2,6 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#FF000000</color>
+    <color name="colorPrimaryDark">#FF000000</color>
+    <color name="colorPrimaryLight">#FF000000</color>
+    <color name="colorAccent">#D32F2F</color>
+    <color name="colorAccentDark">#D32F2F</color>
+    <color name="colorAccentLight">#D32F2F</color>
+
 
     <color name="active_tab_color">#D32F2F</color>
     <color name="inactive_tab_color">#BDBDBD</color>
