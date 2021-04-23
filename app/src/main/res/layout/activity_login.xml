@@ -123,7 +123,6 @@
                         android:text="Sign Up"
                         android:focusable="true"
                         android:clickable="true"
-                        android:onClick="signUpActivity"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
@@ -170,10 +169,10 @@
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/loginWithPassTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="36dp"
-                        android:onClick="loginWithPassActivity"
                         android:padding="@dimen/sb_size_5"
                         android:text="Login with Password"
                         android:textStyle="bold"

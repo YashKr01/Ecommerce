@@ -49,6 +49,8 @@ public class MyAddressActivity extends AppCompatActivity {
         });
     }
 
+
+
     public void addShippingAddress(View view) {
         Intent intent = new Intent(this, AddShippingAddressActivity.class);
         startActivity(intent);

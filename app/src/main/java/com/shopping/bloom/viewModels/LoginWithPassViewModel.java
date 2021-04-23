@@ -39,7 +39,7 @@ public class LoginWithPassViewModel extends ViewModel {
         call.enqueue(new Callback<LoginWithPassResponseModel>() {
             @Override
             public void onResponse(Call<LoginWithPassResponseModel> call, Response<LoginWithPassResponseModel> response) {
-                System.out.println(response.body().getData().getUserInfo().getEmail());
+//                System.out.println(response.body().getData().getUserInfo().getEmail());
                 if (response.isSuccessful()) {
                     String success = response.body().getSuccess();
                     String message = response.body().getMessage();

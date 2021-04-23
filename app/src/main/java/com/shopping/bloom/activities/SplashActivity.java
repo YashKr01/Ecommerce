@@ -30,14 +30,25 @@ public class SplashActivity extends AppCompatActivity {
 
         String imei_number = Tools.getDeviceID(this);
 
-        splashViewModel.getSplashDataMutableLiveData().observe(this, splashData -> {
-            if(splashData != null){
-                loginManager.settoken(splashData.getToken());
-                Toast.makeText(this, splashData.getToken(), Toast.LENGTH_SHORT).show();
+        if (loginManager.isLoggedIn()) {
+            splashViewModel.getSplashDataMutableLiveData().observe(this, splashData -> {
+                if (splashData != null) {
+                    loginManager.settoken(splashData.getToken());
+                }
+                System.out.println(splashData.getToken());
+
                 gotoMainScreen();
-            }
-        });
-        splashViewModel.makeApiCall(imei_number, getApplication());
+            });
+        } else {
+            gotoMainScreen();
+        }
+
+
+        if (loginManager.isLoggedIn()) {
+            splashViewModel.makeApiCall(imei_number, getApplication());
+        } else {
+            gotoMainScreen();
+        }
 
     }
 

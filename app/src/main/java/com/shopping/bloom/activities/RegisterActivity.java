@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.RegistrationModel;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.utils.Tools;
@@ -57,18 +58,9 @@ public class RegisterActivity extends AppCompatActivity {
         button = findViewById(R.id.signInButton);
 
         registerViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
-        button.setOnClickListener(v -> {
-            String imeiNumber = Tools.getDeviceID(this);
-            String name = nameEditText.getText().toString().trim();
-            String email = emailEditText.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
-            String number = numberEditText.getText().toString().trim();
-            signIn(name, email, number, password, imeiNumber);
-        });
+        button.setOnClickListener(debouncedOnClickListener);
 
-        textView.setOnClickListener(v -> {
-            customTabs();
-        });
+        textView.setOnClickListener(debouncedOnClickListener);
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
@@ -81,7 +73,23 @@ public class RegisterActivity extends AppCompatActivity {
         customTabsIntent.launchUrl(this, Uri.parse(url));
     }
 
-    public void signIn(String name, String email, String number, String password, String imeiNumber) {
+    private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
+        @Override
+        public void onDebouncedClick(View v) {
+            if(v.getId() == R.id.signInButton){
+                String imeiNumber = Tools.getDeviceID(getApplicationContext());
+                String name = nameEditText.getText().toString().trim();
+                String email = emailEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
+                String number = numberEditText.getText().toString().trim();
+                signIn(name, email, number, password, imeiNumber);
+            }else if(v.getId() == R.id.termsTextView){
+                customTabs();
+            }
+        }
+    };
+
+    private void signIn(String name, String email, String number, String password, String imeiNumber) {
         if (name == null || name.isEmpty()) {
             Snackbar.make(parent_view, "Enter a Name.", Snackbar.LENGTH_SHORT).show();
         } else if (!isEmailValid(email)) {
