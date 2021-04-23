@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.ColorImageArray;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
@@ -49,14 +50,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = getItemAt(position);
-        holder.setUpData(context, product);
 
-        List<String> colors = getAllColors(product.getAvailable_colors().trim());
-        if (colors != null) {
-            holder.addColors(context, colors, colorOptionSelected);
-        } else {
-            Log.d(TAG, "onBindViewHolder: NULL COLOR value");
-        }
+        holder.setUpData(context, product);
 
         holder.viewFavorites.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
@@ -65,22 +60,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 holder.setLiked(context, true);
             }
         });
-    }
-
-    private List<String> getAllColors(String available_colors) {
-        Log.d(TAG, "getAllColors: " + available_colors.toString());
-        if (available_colors.isEmpty()) {
-            Log.d(TAG, "getAllColors: EMPTY COLOR ARRAY");
-            return null;
-        }
-        List<String> colors;
-        colors = Arrays.asList(available_colors.split(","));
-        return colors;
-    }
-
-    @Override
-    public int getItemCount() {
-        return productList.size();
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -101,8 +80,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
             Log.d(TAG, "setUpData: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
-            tvPrice.setText(product.getPrice()); //TODO: change it to getProductPrice
+            tvPrice.setText(product.getPrice());
 
+
+            // Populate the color array and pass the callbackListener to change the Image
+            List<ColorImageArray> colors = product.getColorsImageArray();
+            if (colors != null && !colors.isEmpty()) {
+                addColors(context,colors, (color -> changeImage(context, color)));
+            }
+        }
+
+        public void changeImage(Context context, String imagePath) {
+            String imageURL = "http://bloomapp.in" + imagePath;
+            Log.d(TAG, "ChangeImage: imageURL "+imageURL);
+            CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
         }
 
         public void setLiked(Context context, boolean isLiked) {
@@ -113,33 +104,52 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             }
         }
 
-        public void addColors(Context context, List<String> colors, DebouncedOnClickListener colorOptionSelected) {
+        /*
+        *  @params colors is the list of ColorImageArray which contain color, imageURL
+        *  @params callback is used to change the image upon clicking the color
+        */
+        public void addColors(Context context, List<ColorImageArray> colors, ColorClickListener callback) {
             Log.d(TAG, "addColors: arraySize " + colors.size());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            for (String color : colors) {
+            for (ColorImageArray color : colors) {
                 TextView textView = new TextView(context);
-                textView.setText(color);
+                textView.setText(color.getColor());
                 textView.setTextColor(ContextCompat.getColor(context, R.color.blue_grey_900));
                 params.rightMargin = 12;
                 textView.setTextSize(12f);
                 textView.setLayoutParams(params);
                 textView.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices));
-                textView.setOnClickListener(colorOptionSelected);
+                textView.setOnClickListener(new DebouncedOnClickListener(200) {
+                    @Override
+                    public void onDebouncedClick(View v) {
+                        callback.onColorSelected(color.getImagePath());
+                    }
+                });
                 parentColorsLayout.addView(textView);
             }
         }
     }
 
-    private final DebouncedOnClickListener colorOptionSelected = new DebouncedOnClickListener(200) {
-        @Override
-        public void onDebouncedClick(View v) {
-            Log.d(TAG, "onDebouncedClick: " + v.getId());
-            if(v instanceof TextView) {
-                Log.d(TAG, "onDebouncedClick: color " + ((TextView) v).getText());
-            }
+    @Override
+    public int getItemCount() {
+        return productList.size();
+    }
+
+    private interface ColorClickListener {
+        void onColorSelected(String color);
+    }
+
+    private List<String> getAllColors(String available_colors) {
+        Log.d(TAG, "getAllColors: " + available_colors.toString());
+        if (available_colors.isEmpty()) {
+            Log.d(TAG, "getAllColors: EMPTY COLOR ARRAY");
+            return null;
         }
-    };
+        List<String> colors;
+        colors = Arrays.asList(available_colors.split(","));
+        return colors;
+    }
 
     private Product getItemAt(int position) {
         if (position < 0 || position > productList.size()) {

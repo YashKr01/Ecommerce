@@ -72,7 +72,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rvProducts.setLayoutManager(layoutManager);
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(adapter);
-        adapter.updateList(getDummyData());
+        //adapter.updateList(getDummyData());
     }
 
     private void checkNetworkAndFetchData() {
@@ -89,7 +89,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void onSuccess(List<Product> products) {
             Log.d(TAG, "onSuccess: View Category");
             showNoInternetImage(false);
-            //adapter.updateList(products);
+            adapter.updateList(products);
             Log.d(TAG, "onSuccess: products " + products.toString());
 
         }

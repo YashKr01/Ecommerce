@@ -38,7 +38,7 @@
             android:gravity="center"
             android:text="@string/sort"
             android:textColor="@color/blue_grey_900"
-            android:textSize="@dimen/sb_text_size_18" />
+            android:textSize="@dimen/sb_text_size_16" />
 
         <TextView
             android:id="@+id/tvCategory"
@@ -48,7 +48,7 @@
             android:gravity="center"
             android:text="@string/category"
             android:textColor="@color/blue_grey_900"
-            android:textSize="@dimen/sb_text_size_18" />
+            android:textSize="@dimen/sb_text_size_16" />
 
         <RelativeLayout
             android:id="@+id/rlFilter"
@@ -64,15 +64,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:paddingTop="@dimen/sb_size_4"
                 android:paddingEnd="@dimen/sb_size_16"
                 android:text="@string/filter"
                 android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_18" />
+                android:textSize="@dimen/sb_text_size_16" />
 
             <ImageView
-                android:layout_width="@dimen/sb_size_24"
-                android:layout_height="@dimen/sb_size_24"
+                android:layout_width="@dimen/sb_size_22"
+                android:layout_height="@dimen/sb_size_22"
                 android:layout_toEndOf="@+id/tvDummyFilter"
+                android:layout_marginTop="4dp"
                 android:src="@drawable/ic_filter" />
         </RelativeLayout>
 

@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         loginManager = new LoginManager(this);
-        if (!loginManager.isLoggedIn()) {
+        if (loginManager.isLoggedIn()) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

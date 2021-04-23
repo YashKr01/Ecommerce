@@ -1,5 +1,6 @@
 package com.shopping.bloom.model;
 
+import java.util.List;
 
 public class Product {
     private int id;
@@ -18,6 +19,7 @@ public class Product {
     private String deleted_at;
     private String created_at;
     private String updated_at;
+    private List<ColorImageArray> colorsImageArray;
 
     public Product(int id, String product_name, String description, String price, String mrp,
                    String available_sizes, String available_colors, String primary_image,
@@ -169,6 +171,14 @@ public class Product {
         this.updated_at = updated_at;
     }
 
+    public List<ColorImageArray> getColorsImageArray() {
+        return colorsImageArray;
+    }
+
+    public void setColorsImageArray(List<ColorImageArray> colorsImageArray) {
+        this.colorsImageArray = colorsImageArray;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -188,6 +198,7 @@ public class Product {
                 ", deleted_at='" + deleted_at + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
+                ", colorsImageArray=" + colorsImageArray +
                 '}';
     }
 }
