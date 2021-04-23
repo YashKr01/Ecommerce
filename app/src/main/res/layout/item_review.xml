@@ -15,7 +15,7 @@
         android:maxLength="8"
         android:fontFamily="@font/gothambold"
         android:textColor="@color/black"
-        style="@style/BoldText"
+        style="@style/BoldBlackText"
         android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

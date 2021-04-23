@@ -1,7 +1,6 @@
 package com.shopping.bloom.adapters.reviewfragment;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Review;
+import com.shopping.bloom.model.review.Review;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.shopping.bloom.fragment;
+package com.shopping.bloom.fragment.reviewsfragment;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.view.Window;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.reviewfragment.ReviewsAdapter;
 import com.shopping.bloom.databinding.FragmentReviewsBinding;
-import com.shopping.bloom.model.Review;
+import com.shopping.bloom.model.review.Review;
 
 import java.util.ArrayList;
 import java.util.List;

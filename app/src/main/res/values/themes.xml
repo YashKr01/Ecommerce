@@ -22,7 +22,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="BoldText" parent="Theme.Ecommerce">
+    <style name="BoldBlackText" parent="Theme.Ecommerce">
         <item name="android:fontFamily">@font/gothamblack</item>
         <item name="fontFamily">@font/gothamblack</item>
     </style>
@@ -85,4 +85,10 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="colorControlHighlight">@color/black</item>
     </style>
+
+    <style name="BoldText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothambold</item>
+        <item name="fontFamily">@font/gothambold</item>
+    </style>
+
 </resources>
