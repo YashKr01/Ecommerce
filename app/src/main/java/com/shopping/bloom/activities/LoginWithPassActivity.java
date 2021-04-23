@@ -12,6 +12,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.ViewStub;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
@@ -30,6 +31,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     LoginManager loginManager;
     Toolbar toolbar;
+    private View parent_view;
 
     @Override
     protected void onStart() {
@@ -45,6 +47,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_with_pass);
+        parent_view = findViewById(android.R.id.content);
 
         inputEditText = findViewById(R.id.inputEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
@@ -79,11 +82,9 @@ public class LoginWithPassActivity extends AppCompatActivity {
         String input = inputEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         if (input == null || input.isEmpty()) {
-            inputEditText.setError("Please enter Proper Number/Email");
-            inputEditText.requestFocus();
+            Snackbar.make(parent_view, "Please enter Proper Number/Email", Snackbar.LENGTH_SHORT).show();
         } else if (password == null || password.isEmpty()) {
-            passwordEditText.setError("Please enter a password");
-            passwordEditText.requestFocus();
+            Snackbar.make(parent_view, "Please enter a password", Snackbar.LENGTH_SHORT).show();
         } else {
             signInWithPass(input, password);
         }
@@ -107,8 +108,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.GONE);
             }
         } else {
-            inputEditText.setError("Please Enter Proper Number/Email");
-            inputEditText.requestFocus();
+            Snackbar.make(parent_view, "Please Enter Proper Number/Email", Snackbar.LENGTH_SHORT).show();
         }
     }
 

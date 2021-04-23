@@ -1,18 +1,22 @@
 package com.shopping.bloom.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -24,11 +28,13 @@ import com.shopping.bloom.viewModels.RegisterViewModel;
 public class RegisterActivity extends AppCompatActivity {
     EditText emailEditText, passwordEditText, numberEditText, nameEditText;
     Button button;
+    TextView textView;
     ConstraintLayout constraintLayout;
     ViewStub viewStub;
     RegisterViewModel registerViewModel;
     SwipeRefreshLayout swipeRefreshLayout;
     Toolbar toolbar;
+    private View parent_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         constraintLayout = findViewById(R.id.constrainLayout);
         toolbar = findViewById(R.id.toolbar);
+        textView = findViewById(R.id.termsTextView);
+        parent_view = findViewById(android.R.id.content);
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
@@ -58,26 +66,36 @@ public class RegisterActivity extends AppCompatActivity {
             signIn(name, email, number, password, imeiNumber);
         });
 
+        textView.setOnClickListener(v -> {
+            customTabs();
+        });
+
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
     }
 
-    public void signIn(String name, String email, String number, String password, String imeiNumber) {
+    private void customTabs() {
+        String url = "https://www.google.com/";
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(this, Uri.parse(url));
+    }
 
-        if (email == null || email.isEmpty()) {
-            ShowToast.showToast(this, "Enter email address.");
+    public void signIn(String name, String email, String number, String password, String imeiNumber) {
+        if (name == null || name.isEmpty()) {
+            Snackbar.make(parent_view, "Enter a Name.", Snackbar.LENGTH_SHORT).show();
         } else if (!isEmailValid(email)) {
-            ShowToast.showToast(this, "Enter a valid email address.");
-        } else if (name == null || name.isEmpty()) {
-            ShowToast.showToast(this, "Enter Name");
+            Snackbar.make(parent_view, "Enter a valid email address.", Snackbar.LENGTH_SHORT).show();
+        } else if (email == null || email.isEmpty()) {
+            Snackbar.make(parent_view, "Enter email address.", Snackbar.LENGTH_SHORT).show();
         } else if (password == null || password.isEmpty()) {
-            ShowToast.showToast(this, "Enter password.");
+            Snackbar.make(parent_view, "Enter password.", Snackbar.LENGTH_SHORT).show();
         } else if (!isPasswordGreaterThan8(password)) {
-            ShowToast.showToast(this, "Password Length should be greater than 8.");
+            Snackbar.make(parent_view, "Password Length should be greater than 8.", Snackbar.LENGTH_SHORT).show();
         } else if (number == null || number.isEmpty()) {
-            ShowToast.showToast(this, "Mobile No. is Empty");
+            Snackbar.make(parent_view, "Mobile No. is Empty", Snackbar.LENGTH_SHORT).show();
         } else if (!numberLength(number)) {
-            ShowToast.showToast(this,"Mobile No. length should be 10");
+            Snackbar.make(parent_view, "Mobile No. length should be 10.", Snackbar.LENGTH_SHORT).show();
         } else {
             if (NetworkCheck.isConnect(this)) {
                 RegistrationModel registrationModel = new RegistrationModel(name, email, number, password, "abc", imeiNumber, "android");

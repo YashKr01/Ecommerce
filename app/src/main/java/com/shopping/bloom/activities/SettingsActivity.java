@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.utils.LoginManager;
@@ -78,5 +79,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("Cancel", null);
         builder.show();
+    }
+
+    public void myPaymentOptionsOnClick(View view) {
+        Toast.makeText(this, loginManager.gettoken(), Toast.LENGTH_SHORT).show();
     }
 }

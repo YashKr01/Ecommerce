@@ -14,9 +14,12 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
+import com.shopping.bloom.restService.response.SplashBearerResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -71,4 +74,9 @@ public interface ApiInterface {
     @POST("auth/loginWithMobileNoPassword")
     @Headers("Content-type: application/json")
     Call<LoginWithPassResponseModel> sendLoginWithNumberPassData(@Body LoginWithNumberPassModel loginWithNumberPassModel);
+
+    @FormUrlEncoded
+    @POST("auth/customerRegistrationWithImei")
+    Call<SplashBearerResponse> sendBearerToken(@Field("imei_number") String imei_number);
+
 }
