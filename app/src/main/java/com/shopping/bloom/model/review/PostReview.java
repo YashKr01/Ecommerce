@@ -3,33 +3,30 @@ package com.shopping.bloom.model.review;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Review {
+public class PostReview {
 
+    @Expose
+    @SerializedName("product_id")
+    private String productId;
     @Expose
     @SerializedName("comment")
     private String review;
     @Expose
     @SerializedName("rating")
     private String rating;
-    @Expose
-    @SerializedName("user_info")
-    private UserInfo userInfo;
 
-    public Review() {
-    }
-
-    public Review(String review, String rating,UserInfo userInfo) {
+    public PostReview(String productId, String review, String rating) {
+        this.productId = productId;
         this.review = review;
         this.rating = rating;
-        this.userInfo=userInfo;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public String getReview() {
@@ -47,7 +44,4 @@ public class Review {
     public void setRating(String rating) {
         this.rating = rating;
     }
-
-
-
 }

@@ -14,11 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.reviewfragment.ReviewsAdapter;
 import com.shopping.bloom.databinding.FragmentReviewsBinding;
+import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.ReviewViewModel;
@@ -67,7 +71,6 @@ public class ReviewsFragment extends Fragment {
 
         //get initial list
         getReviewList(PRODUCT_ID, LIMIT, PAGE);
-
     }
 
     // fetch data using MVVM
@@ -77,7 +80,10 @@ public class ReviewsFragment extends Fragment {
             viewModel.getReviews(productId, limit, page)
                     .observe(getViewLifecycleOwner(), reviewModel -> {
                         // if list is empty or is null
-                        if (reviewModel.getData().isEmpty() || reviewModel.getData() == null) {
+                        if (reviewModel == null) {
+                            reviewList.clear();
+                            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+                        } else if (reviewModel.getData().isEmpty() || reviewModel.getData() == null) {
                             binding.txtEmptyList.setVisibility(View.VISIBLE);
                         } else {
                             // if obtained list is not empty
@@ -90,7 +96,7 @@ public class ReviewsFragment extends Fragment {
         } else {
             //if connection is not enabled
             reviewList.clear();
-            Toast.makeText(getContext(), "An error Occured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -100,14 +106,42 @@ public class ReviewsFragment extends Fragment {
 
         Dialog dialog = new Dialog(getActivity());
         dialog.setCancelable(true);
-
         View view = getActivity().getLayoutInflater().inflate(R.layout.custom_review_dialog, null);
         dialog.setContentView(view);
-
         dialog.show();
         Window window = dialog.getWindow();
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        // access views
+        TextView submit = view.findViewById(R.id.dialog_submit);
+        TextView cancel = view.findViewById(R.id.dialog_cancel);
+        EditText textReview = view.findViewById(R.id.edittext_review);
+        RatingBar ratingBar = view.findViewById(R.id.dialog_rating_bar);
+
+        // cancel dialog box
+        cancel.setOnClickListener(v -> dialog.cancel());
+
+        // submit review
+        submit.setOnClickListener(v -> {
+
+            String review = textReview.getText().toString().trim();
+            float rating = ratingBar.getRating();
+
+            if (review.isEmpty()) {
+                Toast.makeText(context, "cannot post empty review", Toast.LENGTH_SHORT).show();
+            } else if (rating == 0.0) {
+                Toast.makeText(context, "please give rating", Toast.LENGTH_SHORT).show();
+            } else {
+                PostReview postReview = new PostReview(PRODUCT_ID, review, String.valueOf(rating));
+                postProductReview(postReview);
+            }
+
+        });
+
+    }
+
+    private void postProductReview(PostReview postReview) {
+        viewModel.postReview(postReview);
     }
 
     // setting rating and progress

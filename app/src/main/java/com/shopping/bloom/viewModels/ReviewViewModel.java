@@ -39,7 +39,7 @@ public class ReviewViewModel extends AndroidViewModel {
         apiInterface.postReview(postReview).enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                Log.d("REVIEW", "onResponse: " + response.code());
+                Log.d("REVIEW", "onResponse: " + response.code()+response.message());
             }
             @Override
             public void onFailure(Call<ReviewModel> call, Throwable t) {

@@ -19,6 +19,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
+import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.utils.LoginManager;
 
 
@@ -52,17 +53,25 @@ public class ProfileFragment extends Fragment {
         String name = loginManager.getname();
 
         //Changing textView text if user is Logged in
-        if(!loginManager.getEmailid().equals("NA")){
+        if (!loginManager.getEmailid().equals("NA")) {
             binding.textView.setText("Hello, " + name);
-        }else{ //OnClickListener on textView when user isn't logged in
+        } else { //OnClickListener on textView when user isn't logged in
             binding.textView.setText(getString(R.string.sign_in_register));
-            binding.textView.setOnClickListener(v ->{
+            binding.textView.setOnClickListener(v -> {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
             });
         }
 
-       binding.nestscrollview.setNestedScrollingEnabled(true);
+        binding.imgProcessing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
+            }
+        });
+
+        binding.nestscrollview.setNestedScrollingEnabled(true);
 
 
         // Setup ViewPager Adapter
