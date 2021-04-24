@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
@@ -14,6 +15,7 @@ import com.shopping.bloom.utils.DebouncedOnClickListener;
 public class ConnectToUsActivity extends AppCompatActivity {
 
     Toolbar toolbar;
+    TextView textView;
     Button orderIssue, delivery, refund, payment, product, account;
 
     @Override
@@ -28,6 +30,7 @@ public class ConnectToUsActivity extends AppCompatActivity {
         payment = findViewById(R.id.payment);
         product = findViewById(R.id.product);
         account = findViewById(R.id.account);
+        textView = findViewById(R.id.faqTextView);
 
         setNavigationIcon();
 
@@ -37,13 +40,14 @@ public class ConnectToUsActivity extends AppCompatActivity {
         payment.setOnClickListener(debouncedOnClickListener);
         product.setOnClickListener(debouncedOnClickListener);
         account.setOnClickListener(debouncedOnClickListener);
+        textView.setOnClickListener(debouncedOnClickListener);
     }
 
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
             Intent intent = new Intent(getApplicationContext(), FAQActivity.class);
-            if(v.getId() == R.id.orderIssue){
+            if(v.getId() == R.id.orderIssue || v.getId() == R.id.faqTextView){
                 intent.putExtra("Title", "Order issues");
                 startActivity(intent);
             }else if(v.getId() == R.id.delivery){
