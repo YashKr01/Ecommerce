@@ -63,13 +63,14 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        binding.imgProcessing.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
-            }
-        });
+        // used for testing only
+//        binding.imgProcessing.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getParentFragmentManager().beginTransaction()
+//                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
+//            }
+//        });
 
         binding.nestscrollview.setNestedScrollingEnabled(true);
 

@@ -37,7 +37,7 @@ public class ReviewsFragment extends Fragment {
     private List<Review> reviewList;
     private ReviewViewModel viewModel;
     private String PRODUCT_ID = "2";
-    private String LIMIT = "10";
+    private String LIMIT = "30";
     private String PAGE = "0";
 
     public ReviewsFragment() {
@@ -76,6 +76,8 @@ public class ReviewsFragment extends Fragment {
     // fetch data using MVVM
     private void getReviewList(String productId, String limit, String page) {
 
+        binding.progressBar.setVisibility(View.VISIBLE);
+
         if (NetworkCheck.isConnect(getContext())) {
             viewModel.getReviews(productId, limit, page)
                     .observe(getViewLifecycleOwner(), reviewModel -> {
@@ -83,19 +85,24 @@ public class ReviewsFragment extends Fragment {
                         if (reviewModel == null) {
                             reviewList.clear();
                             Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+                            binding.progressBar.setVisibility(View.GONE);
                         } else if (reviewModel.getData().isEmpty() || reviewModel.getData() == null) {
                             binding.txtEmptyList.setVisibility(View.VISIBLE);
+                            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
+                            binding.progressBar.setVisibility(View.GONE);
                         } else {
                             // if obtained list is not empty
                             reviewList.clear();
                             reviewList.addAll(reviewModel.getData());
                             adapter.notifyDataSetChanged();
                             binding.txtEmptyList.setVisibility(View.GONE);
+                            binding.progressBar.setVisibility(View.GONE);
                         }
                     });
         } else {
             //if connection is not enabled
             reviewList.clear();
+            binding.progressBar.setVisibility(View.GONE);
             Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
         }
 
@@ -134,6 +141,9 @@ public class ReviewsFragment extends Fragment {
             } else {
                 PostReview postReview = new PostReview(PRODUCT_ID, review, String.valueOf(rating));
                 postProductReview(postReview);
+
+                dialog.cancel();
+                getReviewList(PRODUCT_ID, LIMIT, PAGE);
             }
 
         });

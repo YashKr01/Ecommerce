@@ -2,6 +2,7 @@ package com.shopping.bloom.viewModels;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -39,8 +40,14 @@ public class ReviewViewModel extends AndroidViewModel {
         apiInterface.postReview(postReview).enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                Log.d("REVIEW", "onResponse: " + response.code()+response.message());
+                Log.d("POST REVIEW", "onResponse: " + response.code() + " " + response.message());
+
+                if(response.isSuccessful()){
+                    Toast.makeText(application, "Review Posted", Toast.LENGTH_SHORT).show();
+                }
+
             }
+
             @Override
             public void onFailure(Call<ReviewModel> call, Throwable t) {
                 Log.d("REVIEW", "onFailure: " + t.getMessage());

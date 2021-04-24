@@ -28,11 +28,12 @@ public class ReviewRepository {
                     @Override
                     public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
-                        Log.d("RETROFIT", "onResponse: CODE " + response.code()+response.message());
+                        Log.d("RETROFIT", "onResponse: CODE " + response.code() + response.message());
                         if (response.isSuccessful()) {
                             liveData.postValue(response.body());
+                        } else {
+                            liveData.postValue(null);
                         }
-                        liveData.postValue(null);
                     }
 
                     @Override

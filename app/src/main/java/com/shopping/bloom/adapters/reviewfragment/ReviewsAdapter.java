@@ -41,12 +41,17 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
         Review currentItem = reviewList.get(position);
 
         // display name in format Lucknow = l******w
-        String name = currentItem.getUserInfo().getName().toLowerCase().substring(0, 1)
-                + "******" +
-                currentItem.getUserInfo().getName().toLowerCase()
-                        .substring(currentItem.getUserInfo().getName().length() - 1);
+        if (currentItem.getUserInfo() != null) {
+            String name = currentItem.getUserInfo().getName().toLowerCase().substring(0, 1)
+                    + "******" +
+                    currentItem.getUserInfo().getName().toLowerCase()
+                            .substring(currentItem.getUserInfo().getName().length() - 1);
+            holder.itemName.setText(name);
+        } else {
+            // because before testing name was not in response, to handle those cases
+            holder.itemName.setText("Unknown");
+        }
 
-        holder.itemName.setText(name);
         holder.itemReview.setText(currentItem.getReview());
         holder.reviewRating.setRating(Float.parseFloat(currentItem.getRating()));
 
