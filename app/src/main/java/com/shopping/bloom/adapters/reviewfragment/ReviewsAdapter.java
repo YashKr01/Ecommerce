@@ -47,7 +47,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
 
         holder.itemName.setText(name);
         holder.itemReview.setText(currentItem.getReview());
-        holder.reviewRating.setRating(currentItem.getRating());
+        holder.reviewRating.setRating(Float.parseFloat(currentItem.getRating()));
 
     }
 

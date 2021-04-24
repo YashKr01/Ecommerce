@@ -7,17 +7,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.reviewfragment.ReviewsAdapter;
 import com.shopping.bloom.databinding.FragmentReviewsBinding;
 import com.shopping.bloom.model.review.Review;
+import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewModels.ReviewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +29,12 @@ import java.util.List;
 public class ReviewsFragment extends Fragment {
 
     private FragmentReviewsBinding binding;
-    private ReviewsAdapter reviewsAdapter;
-    private List<Review> reviewList = new ArrayList<>();
+    private ReviewsAdapter adapter;
+    private List<Review> reviewList;
+    private ReviewViewModel viewModel;
+    private String PRODUCT_ID = "2";
+    private String LIMIT = "10";
+    private String PAGE = "0";
 
     public ReviewsFragment() {
         // Required empty public constructor
@@ -38,6 +46,9 @@ public class ReviewsFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentReviewsBinding.inflate(inflater, container, false);
 
+        // initialise view model here
+        viewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);
+
         return binding.getRoot();
     }
 
@@ -45,18 +56,42 @@ public class ReviewsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initRecyclerView();
+        // setup recyclerview and adapter
+        reviewList = new ArrayList<>();
+        adapter = new ReviewsAdapter(reviewList, getContext());
+        binding.reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.reviewsRecyclerView.setAdapter(adapter);
 
-        setRating();
+        // show custom dialog on floating action button click
+        binding.fabAddReview.setOnClickListener(v -> showDialog(getContext()));
 
-        setProgress();
+        //get initial list
+        getReviewList(PRODUCT_ID, LIMIT, PAGE);
 
-        binding.fabAddReview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(getContext());
-            }
-        });
+    }
+
+    // fetch data using MVVM
+    private void getReviewList(String productId, String limit, String page) {
+
+        if (NetworkCheck.isConnect(getContext())) {
+            viewModel.getReviews(productId, limit, page)
+                    .observe(getViewLifecycleOwner(), reviewModel -> {
+                        // if list is empty or is null
+                        if (reviewModel.getData().isEmpty() || reviewModel.getData() == null) {
+                            binding.txtEmptyList.setVisibility(View.VISIBLE);
+                        } else {
+                            // if obtained list is not empty
+                            reviewList.clear();
+                            reviewList.addAll(reviewModel.getData());
+                            adapter.notifyDataSetChanged();
+                            binding.txtEmptyList.setVisibility(View.GONE);
+                        }
+                    });
+        } else {
+            //if connection is not enabled
+            reviewList.clear();
+            Toast.makeText(getContext(), "An error Occured", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -88,28 +123,6 @@ public class ReviewsFragment extends Fragment {
                 .substring(0, binding.txtValueTrue.getText().toString().length() - 1)));
         binding.progressBarLarge.setProgress(Integer.parseInt(binding.txtValueLarge.getText().toString()
                 .substring(0, binding.txtValueLarge.getText().toString().length() - 1)));
-    }
-
-    // initialise recyclerview
-    private void initRecyclerView() {
-        getList();
-        reviewsAdapter = new ReviewsAdapter(reviewList, getContext());
-        binding.reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.reviewsRecyclerView.setClipToPadding(false);
-        binding.reviewsRecyclerView.setNestedScrollingEnabled(false);
-        binding.reviewsRecyclerView.setAdapter(reviewsAdapter);
-    }
-
-    // adding mock data as of now
-    private void getList() {
-        reviewList.clear();
-        reviewList.add(new Review("Sam", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 4));
-        reviewList.add(new Review("Nathan", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 5));
-        reviewList.add(new Review("Watson", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 2));
-        reviewList.add(new Review("Nicholas", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 4));
-        reviewList.add(new Review("Chris", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 5));
-        reviewList.add(new Review("Tom", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 3));
-        reviewList.add(new Review("Sam", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 3));
     }
 
     @Override

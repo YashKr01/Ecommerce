@@ -4,6 +4,8 @@ import com.shopping.bloom.model.EmailOtpModel;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
+import com.shopping.bloom.model.review.Review;
+import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
@@ -14,6 +16,8 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -71,4 +75,8 @@ public interface ApiInterface {
     @POST("auth/loginWithMobileNoPassword")
     @Headers("Content-type: application/json")
     Call<LoginWithPassResponseModel> sendLoginWithNumberPassData(@Body LoginWithNumberPassModel loginWithNumberPassModel);
+
+    @GET("frontend/getProductReview")
+    Call<ReviewModel> getReviews(@Query("product_id") String productId, @Query("limit") String limit, @Query("pageNo") String pageNo);
+
 }

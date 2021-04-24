@@ -1,15 +1,24 @@
 package com.shopping.bloom.model.review;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Review {
 
+    @Expose
+    @SerializedName("created_at")
     private String name;
+    @Expose
+    @SerializedName("comment")
     private String review;
-    private int rating;
+    @Expose
+    @SerializedName("rating")
+    private String rating;
 
     public Review() {
     }
 
-    public Review(String name, String review, int rating) {
+    public Review(String name, String review, String rating) {
         this.name = name;
         this.review = review;
         this.rating = rating;
@@ -31,11 +40,20 @@ public class Review {
         this.review = review;
     }
 
-    public int getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(String rating) {
         this.rating = rating;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "name='" + name + '\'' +
+                ", review='" + review + '\'' +
+                ", rating='" + rating + '\'' +
+                '}';
     }
 }

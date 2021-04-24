@@ -24,6 +24,7 @@
             android:name=".activities.AddShippingAddressActivity"
             android:theme="@style/Theme.Ecommerce.Theme" />
         <activity android:name=".activities.MyAddressActivity" />
+        <activity android:name=".activities.MyOrdersActivity" />
         <activity
             android:name=".activities.ConnectToUsActivity"
             android:theme="@style/Theme.Ecommerce.NoActionBar" />
