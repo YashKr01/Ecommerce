@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/sb_size_20"
+        android:layout_marginVertical="@dimen/sb_size_10"
+        app:cardBackgroundColor="@color/grey_100"
+        app:cardCornerRadius="@dimen/sb_size_20"
+        app:cardElevation="@dimen/sb_size_4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="@dimen/sb_size_10">
+
+            <TextView
+                android:id="@+id/questionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/sb_size_20"
+                android:paddingVertical="@dimen/sb_size_5"
+                android:textColor="@color/black"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="@dimen/sb_text_size_20"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_down_24" />
+
+            <TextView
+                android:id="@+id/solutionTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/sb_size_20"
+                android:paddingVertical="@dimen/sb_size_5"
+                android:visibility="gone"
+                android:letterSpacing="0.05"
+                android:lineSpacingExtra="0.5dp"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sb_text_size_17" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

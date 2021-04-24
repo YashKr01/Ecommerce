@@ -19,10 +19,11 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/sb_size_60"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,7 +32,9 @@
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true">
+                android:fillViewport="true"
+                tools:layout_editor_absoluteX="-158dp"
+                tools:layout_editor_absoluteY="53dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constrainLayout"
@@ -42,7 +45,6 @@
                         android:id="@+id/cardView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/sb_size_80"
                         app:cardBackgroundColor="@color/white"
                         app:cardCornerRadius="@dimen/sb_size_60"
                         app:cardElevation="@dimen/sb_size_0"
@@ -74,8 +76,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="Mobile No. / Email"
-                            android:theme="@style/MyEditTextTheme"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:theme="@style/MyEditTextTheme" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -93,9 +95,9 @@
                             android:id="@+id/passwordEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:theme="@style/MyEditTextTheme"
                             android:hint="Password"
-                            android:inputType="textPassword" />
+                            android:inputType="textPassword"
+                            android:theme="@style/MyEditTextTheme" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button
@@ -105,37 +107,36 @@
                         android:layout_marginHorizontal="@dimen/sb_size_20"
                         android:layout_marginTop="@dimen/sb_size_40"
                         android:background="@color/black"
-                        android:onClick="signIn"
-                        android:text="Sign in"
                         android:letterSpacing="0.4"
+                        android:text="Sign in"
                         android:textColor="@color/white"
                         android:textSize="@dimen/sb_text_size_17"
                         android:textStyle="bold"
                         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
-<!--                    <TextView-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginTop="16dp"-->
-<!--                        android:padding="@dimen/sb_size_5"-->
-<!--                        android:onClick="signUpActivity"-->
-<!--                        android:text="New user? Sign up"-->
-<!--                        android:textColor="@color/black"-->
-<!--                        android:textSize="@dimen/sb_size_15"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/signInButton" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginTop="16dp"-->
+                    <!--                        android:padding="@dimen/sb_size_5"-->
+                    <!--                        android:onClick="signUpActivity"-->
+                    <!--                        android:text="New user? Sign up"-->
+                    <!--                        android:textColor="@color/black"-->
+                    <!--                        android:textSize="@dimen/sb_size_15"-->
+                    <!--                        app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--                        app:layout_constraintStart_toStartOf="parent"-->
+                    <!--                        app:layout_constraintTop_toBottomOf="@+id/signInButton" />-->
 
                     <LinearLayout
+                        android:id="@+id/linearlayout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
                         android:layout_marginTop="16dp"
-                        android:id="@+id/linearlayout"
-                        app:layout_constraintStart_toStartOf="parent"
+                        android:orientation="horizontal"
                         android:padding="@dimen/sb_size_5"
-                        app:layout_constraintTop_toBottomOf="@+id/signInButton"
-                        android:orientation="horizontal">
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/signInButton">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -149,10 +150,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="?android:attr/selectableItemBackground"
-                            android:text="Sign Up"
-                            android:focusable="true"
                             android:clickable="true"
-                            android:onClick="signUpActivity"
+                            android:focusable="true"
+                            android:text="Sign Up"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
                             android:textColor="@color/black"
                             android:textStyle="bold" />
@@ -162,11 +162,11 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearlayout"
-                        android:layout_marginTop="8dp"
-                        android:layout_centerVertical="true">
+                        app:layout_constraintTop_toBottomOf="@+id/linearlayout">
 
                         <TextView
                             android:id="@+id/tvText"
@@ -176,7 +176,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:text="  O R  "
-                            android:textColor="@color/colorPrimaryDark"/>
+                            android:textColor="@color/colorPrimaryDark" />
 
                         <View
                             android:layout_width="match_parent"
@@ -184,8 +184,7 @@
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="16dp"
                             android:layout_toStartOf="@id/tvText"
-                            android:background="@color/colorPrimaryDark"
-                            />
+                            android:background="@color/colorPrimaryDark" />
 
                         <View
                             android:layout_width="match_parent"
@@ -193,22 +192,21 @@
                             android:layout_centerVertical="true"
                             android:layout_marginEnd="16dp"
                             android:layout_toEndOf="@id/tvText"
-                            android:background="@color/colorPrimaryDark"
-                            />
+                            android:background="@color/colorPrimaryDark" />
 
                     </RelativeLayout>
 
                     <TextView
+                        android:id="@+id/loginWithOtpTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="36dp"
-                        android:onClick="loginWithOtpActivity"
+                        android:background="?android:attr/selectableItemBackground"
                         android:padding="@dimen/sb_size_5"
                         android:text="Login with OTP"
-                        android:textStyle="bold"
                         android:textColor="@color/black"
-                        android:background="?android:attr/selectableItemBackground"
                         android:textSize="@dimen/sb_text_size_16"
+                        android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/linearlayout" />

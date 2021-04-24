@@ -16,11 +16,14 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
+import com.shopping.bloom.restService.response.SplashBearerResponse;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -78,5 +81,10 @@ public interface ApiInterface {
 
     @GET("frontend/getProductReview")
     Call<ReviewModel> getReviews(@Query("product_id") String productId, @Query("limit") String limit, @Query("pageNo") String pageNo);
+
+
+    @FormUrlEncoded
+    @POST("auth/customerRegistrationWithImei")
+    Call<SplashBearerResponse> sendBearerToken(@Field("imei_number") String imei_number);
 
 }
