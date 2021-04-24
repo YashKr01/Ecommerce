@@ -4,6 +4,7 @@ import com.shopping.bloom.model.EmailOtpModel;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
+import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
@@ -86,5 +87,9 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("auth/customerRegistrationWithImei")
     Call<SplashBearerResponse> sendBearerToken(@Field("imei_number") String imei_number);
+
+    @POST("metadata/createProductReview")
+    //@Headers("Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC92ZXJpZnlNb2JpbGVPdHAiLCJpYXQiOjE2MTg4NDg2OTgsImV4cCI6MTYxODg1MjI5OCwibmJmIjoxNjE4ODQ4Njk4LCJqdGkiOiJnN3lqWXNsWVFOWXFBcGFOIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.93CP04ZPpwrzKiKzYa8vcm5ITZrpyaaTsbTSa4ABWNY")
+    Call<ReviewModel> postReview(@Body PostReview review);
 
 }

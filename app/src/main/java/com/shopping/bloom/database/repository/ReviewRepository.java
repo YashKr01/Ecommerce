@@ -17,31 +17,28 @@ import retrofit2.Response;
 
 public class ReviewRepository {
 
-    ReviewModel reviewModel;
-
     public LiveData<ReviewModel> getReviews(Application context, String productId,
                                             String limit, String page) {
 
         MutableLiveData<ReviewModel> liveData = new MutableLiveData<>();
+
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
         apiInterface.getReviews(productId, limit, page)
                 .enqueue(new Callback<ReviewModel>() {
                     @Override
                     public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
+                        Log.d("RETROFIT", "onResponse: CODE " + response.code());
                         if (response.isSuccessful()) {
-                            Log.d("RETROFIT", "onResponse: RESPONSE " +
-                                    response.body().getData().toString());
-                            reviewModel = response.body();
                             liveData.postValue(response.body());
                         }
-
-                        Log.d("RETROFIT", "onResponse: CODE " + response.code());
+                        liveData.postValue(null);
                     }
 
                     @Override
                     public void onFailure(Call<ReviewModel> call, Throwable t) {
                         Log.d("RETROFIT", "onFailure: " + t.getMessage());
+                        liveData.postValue(null);
                     }
                 });
 

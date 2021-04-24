@@ -62,6 +62,7 @@ public class RetrofitBuilder {
                             Request.Builder requestBuilder = original.newBuilder()
                                     .addHeader("Access-Control-Allow-Origin", "*")
                                     .addHeader("Access-Control-Allow-Methods", "GET,POST,PUT, OPTIONS")
+                                    .addHeader("Authorization","Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC92ZXJpZnlNb2JpbGVPdHAiLCJpYXQiOjE2MTg4NDg2OTgsImV4cCI6MTYxODg1MjI5OCwibmJmIjoxNjE4ODQ4Njk4LCJqdGkiOiJnN3lqWXNsWVFOWXFBcGFOIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.93CP04ZPpwrzKiKzYa8vcm5ITZrpyaaTsbTSa4ABWNY")
                                     .method(original.method(), original.body());
                             Request request = requestBuilder.build();
                             return chain.proceed(request);
