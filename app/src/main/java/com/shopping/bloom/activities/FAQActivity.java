@@ -1,16 +1,18 @@
 package com.shopping.bloom.activities;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.widget.TextView;
-
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.FaqAdapter;
+import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.FaqModel;
+import com.shopping.bloom.model.faq.FaqConfig;
+import com.shopping.bloom.model.faq.faqModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +20,12 @@ import java.util.List;
 public class FAQActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    TextView headerTextView;
+    //    TextView headerTextView;
     List<FaqModel> faqList;
     FaqAdapter adapter;
+    FaqConfig faqConfig;
     Toolbar toolbar;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,28 +33,57 @@ public class FAQActivity extends AppCompatActivity {
         setContentView(R.layout.activity_f_a_q);
 
         recyclerView = findViewById(R.id.recyclerView);
-        headerTextView = findViewById(R.id.headerTextView);
         toolbar = findViewById(R.id.toolbar);
 
-        toolbar.setNavigationOnClickListener( v-> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-        headerTextView.setText(getIntent().getStringExtra("Title"));
+        String title = getIntent().getStringExtra("Title");
 
+        faqConfig = RemoteConfig.getFaqConfig(this);
         faqList = new ArrayList<>();
 
-        RecyclerView.LayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        List<faqModel> orderList = faqConfig.getOrder_Issues();
+        List<faqModel> deliveryList = faqConfig.getDelivery();
+        List<faqModel> returnList = faqConfig.getReturn_Refund();
+        List<faqModel> accountList = faqConfig.getAccount();
+        List<faqModel> paymentList = faqConfig.getPayment_Promos();
+        List<faqModel> productList = faqConfig.getProduct_Stock();
 
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
-        faqList.add(new FaqModel("How To?", "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."));
+        for(int i = 0; i<orderList.size(); i++){
+            faqList.add(new FaqModel(orderList.get(i).getName(),orderList.get(i).getQuestion(), orderList.get(i).getSolution()));
+        }
+        for(int i = 0; i<deliveryList.size(); i++){
+            faqList.add(new FaqModel(deliveryList.get(i).getName(),deliveryList.get(i).getQuestion(), deliveryList.get(i).getSolution()));
+        }
+        for(int i = 0; i<returnList.size(); i++){
+            faqList.add(new FaqModel(returnList.get(i).getName(),returnList.get(i).getQuestion(), returnList.get(i).getSolution()));
+        }
+        for(int i = 0; i<accountList.size(); i++){
+            faqList.add(new FaqModel(accountList.get(i).getName(),accountList.get(i).getQuestion(), accountList.get(i).getSolution()));
+        }
+        for(int i = 0; i<paymentList.size(); i++){
+            faqList.add(new FaqModel(paymentList.get(i).getName(),paymentList.get(i).getQuestion(), paymentList.get(i).getSolution()));
+        }
+        for(int i = 0; i<productList.size(); i++){
+            faqList.add(new FaqModel(productList.get(i).getName(),productList.get(i).getQuestion(), productList.get(i).getSolution()));
+        }
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         adapter = new FaqAdapter(this, faqList);
         recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
+
+        for (int i = 0; i < faqList.size(); i++) {
+            if (title.equals(faqList.get(i).getHeader())) {
+                position = i;
+                break;
+            }
+        }
+        linearLayoutManager.scrollToPosition(position);
 
     }
 }

@@ -34,6 +34,9 @@ public class SettingsActivity extends AppCompatActivity {
         loginManager = new LoginManager(this);
 
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(v -> {
+            setNavigationOnClick();
+        });
         linearLayout = findViewById(R.id.idLinearLayout);
 
         nameTextView = findViewById(R.id.name);
@@ -44,7 +47,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(debouncedOnClickListener);
-        toolbar.setNavigationOnClickListener(debouncedOnClickListener);
         addressBookTextView.setOnClickListener(debouncedOnClickListener);
         accountSecurityTextView.setOnClickListener(debouncedOnClickListener);
         connectTextView.setOnClickListener(debouncedOnClickListener);
@@ -73,8 +75,6 @@ public class SettingsActivity extends AppCompatActivity {
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.signOutButton) {
                 signOut();
-            } else if (v.getId() == R.id.toolbar) {
-                setNavigationIcon();
             } else if (v.getId() == R.id.addressBookTextView) {
                 addressBookIntent();
             } else if (v.getId() == R.id.connectTextView) {
@@ -90,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
         intent(AccountSecurityActivity.class);
     }
 
-    private void setNavigationIcon() {
+    private void setNavigationOnClick() {
         intent(MainActivity.class);
         finish();
     }

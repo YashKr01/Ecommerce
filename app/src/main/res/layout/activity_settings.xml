@@ -107,7 +107,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center|start"
-                    android:onClick="accountSecurityIntent"
                     android:paddingHorizontal="@dimen/sb_size_25"
                     android:paddingVertical="@dimen/sb_size_15"
                     android:text="Account Security"
