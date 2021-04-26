@@ -42,6 +42,8 @@ public class FAQActivity extends AppCompatActivity {
         faqConfig = RemoteConfig.getFaqConfig(this);
         faqList = new ArrayList<>();
 
+
+
         List<faqModel> orderList = faqConfig.getOrder_Issues();
         List<faqModel> deliveryList = faqConfig.getDelivery();
         List<faqModel> returnList = faqConfig.getReturn_Refund();
@@ -58,24 +60,15 @@ public class FAQActivity extends AppCompatActivity {
         for(int i = 0; i<returnList.size(); i++){
             faqList.add(new FaqModel(returnList.get(i).getName(),returnList.get(i).getQuestion(), returnList.get(i).getSolution()));
         }
-        for(int i = 0; i<accountList.size(); i++){
-            faqList.add(new FaqModel(accountList.get(i).getName(),accountList.get(i).getQuestion(), accountList.get(i).getSolution()));
-        }
         for(int i = 0; i<paymentList.size(); i++){
             faqList.add(new FaqModel(paymentList.get(i).getName(),paymentList.get(i).getQuestion(), paymentList.get(i).getSolution()));
         }
         for(int i = 0; i<productList.size(); i++){
             faqList.add(new FaqModel(productList.get(i).getName(),productList.get(i).getQuestion(), productList.get(i).getSolution()));
         }
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        adapter = new FaqAdapter(this, faqList);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
+        for(int i = 0; i<accountList.size(); i++){
+            faqList.add(new FaqModel(accountList.get(i).getName(),accountList.get(i).getQuestion(), accountList.get(i).getSolution()));
+        }
 
         for (int i = 0; i < faqList.size(); i++) {
             if (title.equals(faqList.get(i).getHeader())) {
@@ -83,7 +76,14 @@ public class FAQActivity extends AppCompatActivity {
                 break;
             }
         }
-        linearLayoutManager.scrollToPosition(position);
+        System.out.println(position);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
+        recyclerView.setLayoutManager(linearLayoutManager);
+        adapter = new FaqAdapter(this, faqList);
+        recyclerView.setAdapter(adapter);
+
+        linearLayoutManager.scrollToPosition(position);
+        adapter.notifyDataSetChanged();
     }
 }

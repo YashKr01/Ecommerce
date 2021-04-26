@@ -32,19 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     ConstraintLayout constraintLayout;
     ViewStub viewStub;
     SwipeRefreshLayout swipeRefreshLayout;
-    LoginManager loginManager;
     private View parent_view;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        loginManager = new LoginManager(this);
-        if (loginManager.isLoggedIn()) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
