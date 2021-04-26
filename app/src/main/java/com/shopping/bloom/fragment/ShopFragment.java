@@ -171,11 +171,8 @@ public class ShopFragment extends Fragment {
      * 3. Vertical scrollable for bottom product suggestions
      * */
     private void setUpRecyclerView() {
-        categoryImagesAdapter = new CategoryImagesAdapter(getContext(), product -> {
-            Log.d(TAG, "initViews: product " + product.getId());
-            Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
-            startActivity(intent);
-        });
+        categoryImagesAdapter = new CategoryImagesAdapter(getContext(), this::gotoProductScreen);
+
         rvCategoryImages.setHasFixedSize(true);
         rvCategoryImages.setLayoutManager(new GridLayoutManager(getContext(), 2));
         rvCategoryImages.setAdapter(categoryImagesAdapter);
@@ -189,6 +186,13 @@ public class ShopFragment extends Fragment {
         rvBottomProductSuggestion.setLayoutManager(new GridLayoutManager(getContext(), 3));
         bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener, null);
         rvBottomProductSuggestion.setAdapter(bottomProductSuggestionAdapter);
+    }
+
+    private void gotoProductScreen(Category product) {
+        String ARG_CATEGORY = "category_id";
+        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+        intent.putExtra(ARG_CATEGORY, product.getId());
+        startActivity(intent);
     }
 
     private void loadBannerAndOfferImages() {

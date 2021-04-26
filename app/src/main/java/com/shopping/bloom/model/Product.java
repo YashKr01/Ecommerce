@@ -19,12 +19,13 @@ public class Product {
     private String deleted_at;
     private String created_at;
     private String updated_at;
+    private boolean isInUserWishList;
     private List<ColorImageArray> colorsImageArray;
 
     public Product(int id, String product_name, String description, String price, String mrp,
                    String available_sizes, String available_colors, String primary_image,
                    String avg_rating, String is_on_sale, String sale_price, String sale_percentage,
-                   String is_new, String deleted_at, String created_at, String updated_at) {
+                   String is_new, String deleted_at, String created_at, String updated_at, boolean isInUserWishList) {
         this.id = id;
         this.product_name = product_name;
         this.description = description;
@@ -41,6 +42,7 @@ public class Product {
         this.deleted_at = deleted_at;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.isInUserWishList = isInUserWishList;
     }
 
     public int getId() {
@@ -179,6 +181,14 @@ public class Product {
         this.colorsImageArray = colorsImageArray;
     }
 
+    public boolean isInUserWishList() {
+        return isInUserWishList;
+    }
+
+    public void setInUserWishList(boolean inUserWishList) {
+        isInUserWishList = inUserWishList;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -198,6 +208,7 @@ public class Product {
                 ", deleted_at='" + deleted_at + '\'' +
                 ", created_at='" + created_at + '\'' +
                 ", updated_at='" + updated_at + '\'' +
+                ", isInUserWishList=" + isInUserWishList +
                 ", colorsImageArray=" + colorsImageArray +
                 '}';
     }

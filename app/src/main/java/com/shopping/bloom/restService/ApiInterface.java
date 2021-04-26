@@ -13,11 +13,15 @@ import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
+import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -27,6 +31,7 @@ public interface ApiInterface {
     @GET("/api/frontend/getCategory")
     @Headers("Accept-type: application/json")
     Call<GetCategoryResponse> getCategory(
+            @Header("Authorization") String authToken,
             @Query("mainCategory") String mainCategory,
             @Query("limit") int limit,
             @Query("pageNo") int pageNo,
@@ -60,8 +65,10 @@ public interface ApiInterface {
     @GET("/api/frontend/getProducts")
     @Headers("Accept-type: application/json")
     Call<GetProductsResponse> getProducts(
+            @Header("Authorization") String authToken,
             @Query("sub_category_id") String subCategoryId,
-            @Query("limit") int limit
+            @Query("limit") int limit,
+            @Query("pageNo") int  pageNo
     );
 
     @POST("auth/loginWithEmailPassword")
@@ -71,4 +78,10 @@ public interface ApiInterface {
     @POST("auth/loginWithMobileNoPassword")
     @Headers("Content-type: application/json")
     Call<LoginWithPassResponseModel> sendLoginWithNumberPassData(@Body LoginWithNumberPassModel loginWithNumberPassModel);
+
+    @POST("api/metadata/addUserWishList")
+    @Headers("Content-type: application/json")
+    Call<PutWishListRequest> postUserWishList(
+            @Header("Authorization") String authToken,
+            @Body List<String> product_ids);
 }

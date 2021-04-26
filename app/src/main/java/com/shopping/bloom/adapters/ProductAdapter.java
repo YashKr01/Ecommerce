@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.ColorImageArray;
+import com.shopping.bloom.model.LoginWithPassData;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
@@ -27,10 +29,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     private static final String TAG = ProductAdapter.class.getName();
     private List<Product> productList;
+    private WishListListener wishListListener;
     private Context context;
 
-    public ProductAdapter(Context context) {
+    public ProductAdapter(Context context, WishListListener wishListListener) {
         this.context = context;
+        this.wishListListener = wishListListener;
         productList = new ArrayList<>();
     }
 
@@ -57,7 +61,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             @Override
             public void onDebouncedClick(View v) {
                 Log.d(TAG, "onDebouncedClick: ADD to fav");
-                holder.setLiked(context, true);
+                boolean isLiked = product.isInUserWishList();
+                wishListListener.updateWishList(position, !isLiked);
             }
         });
     }
@@ -77,11 +82,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
 
         public void setUpData(Context context, Product product) {
+            //1. show primary image
+            //2. Change wishListIcon (if already added to wishList)
+            //3. Populate color option
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
             Log.d(TAG, "setUpData: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
             tvPrice.setText(product.getPrice());
 
+            setLiked(context, product.isInUserWishList());
 
             // Populate the color array and pass the callbackListener to change the Image
             List<ColorImageArray> colors = product.getColorsImageArray();
@@ -151,7 +160,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         return colors;
     }
 
-    private Product getItemAt(int position) {
+    public void updateItem(int position, boolean isAdded) {
+        Log.d(TAG, "updateItem: " + isAdded);
+        productList.get(position).setInUserWishList(isAdded);
+        notifyItemChanged(position);
+    }
+
+    public Product getItemAt(int position) {
         if (position < 0 || position > productList.size()) {
             Log.d(TAG, "getItemAt: INVALID POSITION");
         }

@@ -1,5 +1,6 @@
 package com.shopping.bloom.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.ViewCategoryActivity;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
@@ -119,9 +121,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     @Override
     public void onProductClick(Category categoryCategory) {
         Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
-        if(getContext() != null) {
-            Toast.makeText(getContext(), categoryCategory.getCategory_name(), Toast.LENGTH_SHORT).show();
-        }
+        gotoProductScreen(categoryCategory);
     }
 
     //When particular product image is clicked
@@ -144,6 +144,13 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
+    }
+
+    private void gotoProductScreen(Category product) {
+        String ARG_CATEGORY = "category_id";
+        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+        intent.putExtra(ARG_CATEGORY, product.getId());
+        startActivity(intent);
     }
 
     //set NO INTERNET Image to visible

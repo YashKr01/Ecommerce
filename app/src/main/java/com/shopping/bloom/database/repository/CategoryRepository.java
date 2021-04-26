@@ -9,6 +9,7 @@ import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.utils.Const;
+import com.shopping.bloom.utils.LoginManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,9 +32,10 @@ public class CategoryRepository {
         Log.d(TAG, "getCategory: mainCategory=" + mainCategory + " limit=" + limit + " pageNo=" + pageNo + " categoryName=" + categoryName);
 
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
-
+        String authToken = getToken();      //TODO : get token from the login manager
+        Log.d(TAG, "getCategory: authToken " + authToken);
         Call<GetCategoryResponse> responseCall = apiInterface.getCategory(
-                mainCategory, limit, pageNo, categoryName
+                authToken, mainCategory, limit, pageNo, categoryName
         );
 
         Log.d(TAG, "getCategory: REQUEST "+ responseCall.request().toString());
@@ -67,4 +69,7 @@ public class CategoryRepository {
         }
     }
 
+    private String getToken() {
+        return "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbldpdGhFbWFpbFBhc3N3b3JkIiwiaWF0IjoxNjE5MjQ1NzM2LCJleHAiOjE2MjE4Mzc3MzYsIm5iZiI6MTYxOTI0NTczNiwianRpIjoiMFV2ZXRBaDFjRG9JSGhJZiIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.OVQmN_wYtAWYXconv8zsg8JduQ6CJ6VnXDAP5UyvnAI";
+    }
 }
