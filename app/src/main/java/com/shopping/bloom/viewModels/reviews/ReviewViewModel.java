@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewModels;
+package com.shopping.bloom.viewModels.reviews;
 
 import android.app.Application;
 import android.util.Log;

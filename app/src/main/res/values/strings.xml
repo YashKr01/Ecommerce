@@ -64,6 +64,8 @@
     <string name="submit">SUBMIT</string>
     <string name="order_image">order image</string>
     <string name="faq"><u>FAQ</u></string>
+    <string name="no_reviews_for_this_product_yet">No reviews for this product yet</string>
+    <string name="view_more">View More</string>
 
 
 </resources>

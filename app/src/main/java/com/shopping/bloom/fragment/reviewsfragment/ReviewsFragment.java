@@ -25,7 +25,7 @@ import com.shopping.bloom.databinding.FragmentReviewsBinding;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.ReviewViewModel;
+import com.shopping.bloom.viewModels.reviews.ReviewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -26,12 +26,12 @@
                 android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:fontFamily="@font/gotham_font"
                 android:gravity="start|center"
                 android:paddingHorizontal="@dimen/sb_size_12"
                 android:paddingVertical="@dimen/sb_size_6"
-                android:focusable="true"
-                android:clickable="true"
                 android:text="@string/sign_in_register"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sb_text_size_16"
@@ -522,17 +522,20 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/profile_view_pager"
                 android:layout_width="0dp"
-                android:layout_height="1500dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_height="870dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_more_services" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_tab_layout" />
 
-
-            <ImageView
+            <TextView
+                android:id="@+id/txt_view_more"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/screen_end"
+                android:layout_marginTop="@dimen/sb_size_8"
+                android:layout_marginBottom="@dimen/sb_size_8"
+                android:text="@string/view_more"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sb_text_size_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
