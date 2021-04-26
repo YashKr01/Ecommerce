@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.EmailVerificationModel;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
@@ -48,47 +49,63 @@ public class AccountSecurityActivity extends AppCompatActivity {
         accountSecurityViewModel = ViewModelProviders.of(this).get(AccountSecurityViewModel.class);
         loginManager = new LoginManager(this);
 
-        String email = loginManager.getEmailid();
         is_email_verified = loginManager.is_email_verified();
-
-        System.out.println("email_verified_at" + is_email_verified);
 
         setNavigationIcon();
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
-        emailVerificationTextView.setOnClickListener(v -> {
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-            View bottomSheet = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_email, findViewById(R.id.bottomSheet));
-            TextView emailTextView = bottomSheet.findViewById(R.id.emailTextView);
-            emailTextView.setText(email);
-            bottomSheet.findViewById(R.id.sendOtp).setOnClickListener(v1 -> {
-                if (!email.isEmpty()) {
-                    if (!is_email_verified) {
-                        if (NetworkCheck.isConnect(this)) {
-                            EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
-                            accountSecurityViewModel.verifyEmailApiCall(emailVerificationModel, getApplication(), this);
-                        } else {
-                            bottomSheetDialog.dismiss();
-                            viewStub.setVisibility(View.VISIBLE);
-                            linearLayout.setVisibility(View.GONE);
-                        }
-                    }else{
-                        ShowToast.showToast(this, "Email Already Verified");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                bottomSheetDialog.dismiss();
-                            }
-                        }, 1000);
+        emailVerificationTextView.setOnClickListener(debouncedOnClickListener);
+    }
+
+    private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
+        @Override
+        public void onDebouncedClick(View v) {
+            if (v.getId() == R.id.emailVerifyTextView){
+                String email = loginManager.getEmailid();
+                emailVerify(email);
+            }
+        }
+    };
+
+    private void emailVerify(String email){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View bottomSheet = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_email, findViewById(R.id.bottomSheet));
+        TextView emailTextView = bottomSheet.findViewById(R.id.emailTextView);
+        emailTextView.setText(email);
+        bottomSheet.findViewById(R.id.sendOtp).setOnClickListener(v1 -> {
+            if (!email.equals("NA")) {
+                if (!is_email_verified) {
+                    if (NetworkCheck.isConnect(this)) {
+                        EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
+                        accountSecurityViewModel.verifyEmailApiCall(emailVerificationModel, getApplication(), this);
+                    } else {
+                        bottomSheetDialog.dismiss();
+                        viewStub.setVisibility(View.VISIBLE);
+                        linearLayout.setVisibility(View.GONE);
                     }
-                } else {
-                    Toast.makeText(this, "Create an Account to Verify", Toast.LENGTH_SHORT).show();
+                }else{
+                    ShowToast.showToast(this, "Email Already Verified");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            bottomSheetDialog.dismiss();
+                        }
+                    }, 1000);
                 }
-            });
-            bottomSheetDialog.setContentView(bottomSheet);
-            bottomSheetDialog.show();
+            } else {
+                Toast.makeText(this, "Create an Account to Verify", Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        bottomSheetDialog.dismiss();
+                    }
+                }, 1000);
+
+            }
         });
+        bottomSheetDialog.setContentView(bottomSheet);
+        bottomSheetDialog.show();
     }
 
     private void checkNetworkConnectivity() {

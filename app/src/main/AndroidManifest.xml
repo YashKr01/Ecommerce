@@ -14,8 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Ecommerce">
-        <activity android:name=".activities.ViewCategoryActivity"
-            android:parentActivityName=".activities.MainActivity"/>
+        <activity android:name=".activities.FAQActivity"/>
+        <activity
+            android:name=".activities.ViewCategoryActivity"
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LoginWithPassActivity"
             android:theme="@style/Theme.Ecommerce.Theme"
@@ -24,11 +26,13 @@
             android:name=".activities.AddShippingAddressActivity"
             android:theme="@style/Theme.Ecommerce.Theme" />
         <activity android:name=".activities.MyAddressActivity" />
+        <activity android:name=".activities.MyOrdersActivity" />
         <activity
             android:name=".activities.ConnectToUsActivity"
             android:theme="@style/Theme.Ecommerce.NoActionBar" />
         <activity android:name=".activities.AccountSecurityActivity" />
-        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".activities.SettingsActivity"
+            android:theme="@style/Theme.Ecommerce.Theme"/>
         <activity
             android:name=".activities.RegisterActivity"
             android:theme="@style/Theme.Ecommerce.Theme"

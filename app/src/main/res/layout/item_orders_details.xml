@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_product_order"
+        android:layout_width="@dimen/sb_size_80"
+        android:layout_height="120dp"
+        android:layout_marginTop="@dimen/sb_size_8"
+        android:layout_marginBottom="@dimen/sb_size_8"
+        android:contentDescription="@string/order_image"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/txt_order_name"
+        style="@style/BoldText"
+        android:layout_width="@dimen/sb_size_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="@dimen/sb_size_12"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_14"
+        app:layout_constraintBottom_toBottomOf="@+id/img_product_order"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_product_order"
+        app:layout_constraintTop_toTopOf="@+id/img_product_order"
+        tools:text="Pantaloons Women High Low Dress" />
+
+    <TextView
+        android:id="@+id/txt_order_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/grey_700"
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintBottom_toTopOf="@+id/txt_order_name"
+        app:layout_constraintStart_toStartOf="@+id/txt_order_name"
+        app:layout_constraintTop_toTopOf="@+id/img_product_order"
+        tools:text="Order #45221" />
+
+    <TextView
+        android:id="@+id/txt_order_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:singleLine="true"
+        android:textColor="@color/grey_700"
+
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintBottom_toBottomOf="@+id/img_product_order"
+        app:layout_constraintStart_toStartOf="@+id/txt_order_name"
+        app:layout_constraintTop_toBottomOf="@+id/txt_order_name"
+        tools:text="Exp.Delivery by Sun,June 21" />
+
+    <TextView
+        android:id="@+id/txt_order_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_order_number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/txt_order_number"
+        tools:text="$40" />
+
+    <TextView
+        android:id="@+id/txt_order_payment_method"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:textColor="@color/grey_700"
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_order_number"
+        app:layout_constraintEnd_toStartOf="@+id/txt_order_price"
+        app:layout_constraintTop_toTopOf="@+id/txt_order_number"
+        tools:text="COD" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

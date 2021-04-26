@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_category" />
     <fragment
         android:id="@+id/newTrendFragment"
-        android:name="com.shopping.bloom.fragment.NewFragment"
+        android:name="com.shopping.bloom.fragment.newfragment.NewFragment"
         android:label="@string/new_"
         tools:layout="@layout/fragment_new" />
     <fragment

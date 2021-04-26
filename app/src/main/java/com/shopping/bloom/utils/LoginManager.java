@@ -53,7 +53,6 @@ public class LoginManager {
     }
 
 
-
     public LoginManager(Context context) {
         this.context = context;
 
@@ -77,6 +76,14 @@ public class LoginManager {
 
     public boolean is_email_verified() {
         return sharedPreferences.getBoolean(is_email_verified, false);
+    }
+
+    public void setFirebase_token(String fb_token){
+        editor.putString(firebase_token, fb_token);
+    }
+
+    public String getFirebase_token(){
+        return sharedPreferences.getString(firebase_token, "NA");
     }
 
     public void setEmail_verified_at(boolean Is_email_verified) {

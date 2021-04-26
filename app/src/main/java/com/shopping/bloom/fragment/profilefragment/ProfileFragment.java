@@ -1,5 +1,6 @@
 package com.shopping.bloom.fragment.profilefragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,10 +13,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
+import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
+import com.shopping.bloom.utils.LoginManager;
 
 
 public class ProfileFragment extends Fragment {
@@ -24,6 +29,7 @@ public class ProfileFragment extends Fragment {
 
     private FragmentProfileBinding binding;
     private ProfileViewPagerAdapter viewPagerAdapter;
+    LoginManager loginManager;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -41,10 +47,32 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         binding = FragmentProfileBinding.inflate(inflater, container, false);
+        loginManager = new LoginManager(getContext());
         getActivity().invalidateOptionsMenu();
 
+        String name = loginManager.getname();
 
-       binding.nestscrollview.setNestedScrollingEnabled(true);
+        //Changing textView text if user is Logged in
+        if (!loginManager.getEmailid().equals("NA")) {
+            binding.textView.setText("Hello, " + name);
+        } else { //OnClickListener on textView when user isn't logged in
+            binding.textView.setText(getString(R.string.sign_in_register));
+            binding.textView.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // used for testing only
+//        binding.imgProcessing.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getParentFragmentManager().beginTransaction()
+//                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
+//            }
+//        });
+
+        binding.nestscrollview.setNestedScrollingEnabled(true);
 
 
         // Setup ViewPager Adapter

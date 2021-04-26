@@ -10,6 +10,7 @@ import com.google.gson.Gson
 
 import com.shopping.bloom.BuildConfig
 import com.shopping.bloom.model.MainScreenConfig
+import com.shopping.bloom.model.faq.FaqConfig
 import com.shopping.bloom.model.newfragment.NewFragmentConfig
 import com.shopping.bloom.utils.CommonUtils
 
@@ -65,6 +66,15 @@ open class RemoteConfig {
                 json = RemoteConfigDefaults.FRAGMENT_NEW_CONFIG.value().toString()
             }
             return Gson().fromJson(json, NewFragmentConfig::class.java)
+        }
+
+        @JvmStatic
+        fun getFaqConfig(context: Context): FaqConfig {
+            var json = getInstance(context).getString(RemoteConfigDefaults.FAQ_CONFIG.key())
+            if (CommonUtils.isNull(json)) {
+                json = RemoteConfigDefaults.FAQ_CONFIG.value().toString()
+            }
+            return Gson().fromJson(json, FaqConfig::class.java)
         }
 
         /*  @JvmStatic

@@ -24,6 +24,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/linearLayout2"
         android:layout_below="@+id/toolbar"
+        android:fillViewport="true"
         android:background="@color/grey_200"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
@@ -32,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sb_size_10"
+            android:paddingBottom="@dimen/sb_size_20"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -43,46 +45,55 @@
                 android:padding="@dimen/sb_size_5"
                 android:text="Find the most useful answers here"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sb_text_size_17"
+                android:textSize="@dimen/sb_text_size_16"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/sb_size_10"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/sb_size_25"
-                android:paddingVertical="@dimen/sb_size_10">
+                android:layout_marginHorizontal="@dimen/sb_size_10"
+                android:background="@color/grey_300"
+                android:orientation="horizontal">
+<!--                android:paddingHorizontal="@dimen/sb_size_25"-->
+<!--                android:paddingVertical="@dimen/sb_size_10">-->
 
                 <Button
+                    android:id="@+id/orderIssue"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:text="Order Issues"
-                    app:iconSize = "@dimen/sb_size_30"
+                    android:padding="@dimen/sb_size_20"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
+                    android:layout_marginEnd="0.5dp"
+                    android:layout_marginTop="1dp"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_unpaid"
                     app:iconGravity="top"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@color/black" />
 
                 <Button
+                    android:id="@+id/delivery"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:text="Delivery"
-                    app:iconSize = "@dimen/sb_size_30"
+                    android:padding="@dimen/sb_size_20"
+                    android:layout_marginStart="0.5dp"
+                    android:layout_marginVertical="@dimen/sb_size_1"
                     android:textAllCaps="false"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_shipping"
                     app:iconGravity="top"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@null" />
 
             </LinearLayout>
@@ -90,41 +101,45 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/sb_size_10"
-                android:paddingHorizontal="@dimen/sb_size_25"
-                android:paddingVertical="@dimen/sb_size_10">
+                android:layout_marginHorizontal="@dimen/sb_size_10"
+                android:background="@color/grey_300"
+                android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/refund"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:padding="@dimen/sb_size_20"
                     android:background="@color/white"
-                    android:text="Return &amp; Refund"
                     android:elevation="@dimen/sb_size_0"
-                    app:iconSize = "@dimen/sb_size_30"
+                    android:text="Return &amp; Refund"
                     android:textAllCaps="false"
+                    android:layout_marginEnd="0.5dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_returns"
                     app:iconGravity="top"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@null" />
 
                 <Button
+                    android:id="@+id/payment"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/sb_size_20"
                     android:background="@color/white"
                     android:text="Payment &amp; Promos"
                     android:textAllCaps="false"
-                    app:iconSize = "@dimen/sb_size_30"
+                    android:layout_marginStart="0.5dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_wallet"
                     app:iconGravity="top"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@color/black" />
 
             </LinearLayout>
@@ -132,43 +147,86 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sb_size_10"
-                android:background="@color/white"
-                android:orientation="horizontal"
-                android:paddingHorizontal="@dimen/sb_size_25"
-                android:paddingVertical="@dimen/sb_size_10">
+                android:background="@color/grey_300"
+                android:layout_marginHorizontal="@dimen/sb_size_10"
+                android:layout_marginVertical="@dimen/sb_size_1"
+                android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/product"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/sb_size_20"
                     android:background="@color/white"
                     android:text="Product &amp; Stock"
                     android:textAllCaps="false"
-                    app:iconSize = "@dimen/sb_size_30"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_processing"
                     app:iconGravity="top"
+                    android:layout_marginEnd="0.5dp"
+                    android:layout_marginTop="1dp"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@color/black" />
 
                 <Button
+                    android:id="@+id/account"
                     style="@style/Widget.MaterialComponents.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:text="Account"
+                    android:padding="@dimen/sb_size_20"
                     android:textAllCaps="false"
+                    android:layout_marginStart="0.5dp"
+                    android:layout_marginTop="1dp"
                     android:textColor="@color/black"
-                    app:iconSize = "@dimen/sb_size_30"
                     android:textStyle="bold"
                     app:icon="@drawable/ic_profile"
                     app:iconGravity="top"
+                    app:iconSize="@dimen/sb_size_30"
                     app:iconTint="@color/black" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/sb_size_15"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/sb_size_5"
+                    android:text="For all Q&amp;As Please Click on our"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/faqTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/sb_size_2"
+                    android:gravity="center"
+                    android:text="@string/faq"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textColor="@color/blue_900"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/sb_size_5"
+                    android:text="page"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
 
         </LinearLayout>
     </ScrollView>
@@ -189,10 +247,10 @@
             android:background="@color/white"
             android:text="Customer Service"
             android:textColor="@color/black"
+            android:textSize="@dimen/sb_text_size_13"
             android:textStyle="bold"
             app:icon="@drawable/ic_support"
             app:iconGravity="top"
-            android:textSize="@dimen/sb_text_size_13"
             app:iconSize="@dimen/sb_size_25"
             app:iconTint="@color/black" />
 
@@ -204,10 +262,10 @@
             android:background="@color/white"
             android:text="Service Records"
             android:textColor="@color/black"
+            android:textSize="@dimen/sb_text_size_13"
             android:textStyle="bold"
             app:icon="@drawable/ic_service_records"
             app:iconGravity="top"
-            android:textSize="@dimen/sb_text_size_13"
             app:iconTint="@color/black" />
     </LinearLayout>
 

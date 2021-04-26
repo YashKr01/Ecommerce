@@ -1,21 +1,27 @@
 package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.LoginWithPassViewModel;
@@ -26,8 +32,12 @@ public class LoginWithPassActivity extends AppCompatActivity {
     LoginWithPassViewModel loginWithPassViewModel;
     ConstraintLayout constraintLayout;
     ViewStub viewStub;
+    TextView textView, textView2;
+    Button signInButton;
     SwipeRefreshLayout swipeRefreshLayout;
     LoginManager loginManager;
+    Toolbar toolbar;
+    private View parent_view;
 
     @Override
     protected void onStart() {
@@ -44,17 +54,44 @@ public class LoginWithPassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_with_pass);
 
+        parent_view = findViewById(android.R.id.content);
+
         inputEditText = findViewById(R.id.inputEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         viewStub = findViewById(R.id.vsEmptyScreen);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         constraintLayout = findViewById(R.id.constrainLayout);
+        toolbar = findViewById(R.id.toolbar);
+        textView = findViewById(R.id.loginWithOtpTextView);
+        textView2 = findViewById(R.id.textView6);
+        signInButton = findViewById(R.id.signInButton);
+
+        toolbar.setNavigationOnClickListener(debouncedOnClickListener);
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
 
         loginWithPassViewModel = ViewModelProviders.of(this).get(LoginWithPassViewModel.class);
+
+        signInButton.setOnClickListener(debouncedOnClickListener);
+        textView.setOnClickListener(debouncedOnClickListener);
+        textView2.setOnClickListener(debouncedOnClickListener);
+
     }
+    private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
+        @Override
+        public void onDebouncedClick(View v) {
+            if (v.getId() == R.id.signInButton){
+                signIn();
+            }else if(v.getId() == R.id.toolbar){
+                onBackPressed();
+            }else if(v.getId() == R.id.textView6){
+                signUpActivity();
+            }else if(v.getId() == R.id.loginWithOtpTextView){
+                loginWithOtpActivity();
+            }
+        }
+    };
 
     private void checkNetworkConnectivity() {
 
@@ -69,16 +106,13 @@ public class LoginWithPassActivity extends AppCompatActivity {
 
     }
 
-
-    public void signIn(View view) {
+    private void signIn() {
         String input = inputEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         if (input == null || input.isEmpty()) {
-            inputEditText.setError("Please enter Proper Number/Email");
-            inputEditText.requestFocus();
+            Snackbar.make(parent_view, "Please enter Proper Number/Email", Snackbar.LENGTH_SHORT).show();
         } else if (password == null || password.isEmpty()) {
-            passwordEditText.setError("Please enter a password");
-            passwordEditText.requestFocus();
+            Snackbar.make(parent_view, "Please enter a password", Snackbar.LENGTH_SHORT).show();
         } else {
             signInWithPass(input, password);
         }
@@ -102,8 +136,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
                 constraintLayout.setVisibility(View.GONE);
             }
         } else {
-            inputEditText.setError("Please Enter Proper Number/Email");
-            inputEditText.requestFocus();
+            Snackbar.make(parent_view, "Please Enter Proper Number/Email", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -111,8 +144,14 @@ public class LoginWithPassActivity extends AppCompatActivity {
         return Patterns.EMAIL_ADDRESS.matcher(input).matches();
     }
 
-    public void signUpActivity(View view) {
+    public void signUpActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+    }
+
+    private void loginWithOtpActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

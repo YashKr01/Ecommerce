@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/sb_size_10">
+    android:layout_marginTop="@dimen/sb_size_10"
+    android:paddingBottom="@dimen/sb_size_12">
 
     <TextView
         android:id="@+id/item_review_name"
@@ -12,9 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:maxLength="8"
+        android:fontFamily="@font/gothambold"
         android:textColor="@color/black"
+        style="@style/BoldBlackText"
         android:textSize="@dimen/sb_text_size_12"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="S******M" />
@@ -40,31 +42,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sb_size_6"
-        android:ellipsize="end"
-        android:fontFamily="@font/gotham_font"
+        android:layout_marginBottom="@dimen/sb_size_8"
+        android:fontFamily="@font/gothammedium"
         android:lineSpacingExtra="@dimen/sb_size_2"
-        android:maxLines="4"
         android:text="@string/loren_ipsum_placeholder_text"
         android:textColor="@color/black"
         android:textSize="12sp"
+        style="@style/MediumText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/item_review_name"
         app:layout_constraintTop_toBottomOf="@+id/item_review_name" />
-
-    <TextView
-        android:id="@+id/txt_read_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sb_size_2"
-        android:layout_marginBottom="@dimen/sb_size_8"
-        android:fontFamily="@font/gotham_font"
-        android:padding="@dimen/sb_size_4"
-        android:text="@string/read_more"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sb_text_size_12"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_review" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

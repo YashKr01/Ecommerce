@@ -39,12 +39,10 @@ public class LoginWithPassViewModel extends ViewModel {
         call.enqueue(new Callback<LoginWithPassResponseModel>() {
             @Override
             public void onResponse(Call<LoginWithPassResponseModel> call, Response<LoginWithPassResponseModel> response) {
-                System.out.println(response.body().getData().getUserInfo().getEmail());
+//                System.out.println(response.body().getData().getUserInfo().getEmail());
                 if (response.isSuccessful()) {
                     String success = response.body().getSuccess();
-                    System.out.println(success);
                     String message = response.body().getMessage();
-                    System.out.println(message);
 
                     if (success.equals("true")) {
                         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
@@ -52,7 +50,8 @@ public class LoginWithPassViewModel extends ViewModel {
                         loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
                         loginManager.setname(response.body().getData().getUserInfo().getName());
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
-                        loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
+                        loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
+                        loginManager.settoken(response.body().getData().getToken());
                         loginManager.SetLoginStatus(false);
                         String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
                         if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
@@ -94,7 +93,8 @@ public class LoginWithPassViewModel extends ViewModel {
                         loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
                         loginManager.setname(response.body().getData().getUserInfo().getName());
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
-                        loginManager.settoken(response.body().getData().getUserInfo().getFirebase_token());
+                        loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
+                        loginManager.settoken(response.body().getData().getToken());
                         loginManager.SetLoginStatus(false);
                         String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
                         if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){

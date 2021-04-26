@@ -60,7 +60,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
             imageView = itemView.findViewById(R.id.background_image);
             title = itemView.findViewById(R.id.new_text_view);
             description = itemView.findViewById(R.id.new_text_description);
-            recyclerView = itemView.findViewById(R.id.child_recycler_view);
+            recyclerView = itemView.findViewById(R.id.child_order_recycler_view);
         }
 
         void setNewData(NewTrend data, Context context) {

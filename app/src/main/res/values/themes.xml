@@ -15,6 +15,23 @@
         <item name="fontFamily">@font/gotham_font</item>
     </style>
 
+    <style name="TabLayoutText" parent="Theme.Ecommerce">
+        <item name="fontFamily">@font/gothammedium</item>
+        <item name="android:fontFamily">@font/gothammedium</item>
+        <item name="android:textSize">@dimen/sb_text_size_12</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="BoldBlackText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothamblack</item>
+        <item name="fontFamily">@font/gothamblack</item>
+    </style>
+
+    <style name="MediumText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothammedium</item>
+        <item name="fontFamily">@font/gothammedium</item>
+    </style>
+
     <style name="RatingBarTheme" parent="Theme.Ecommerce">
         <item name="colorControlNormal">@color/grey_600</item>
         <item name="colorControlActivated">@color/amber_400</item>
@@ -45,6 +62,11 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
+
+        <item name="colorSecondary">@color/black</item>
+        <item name="colorSecondaryVariant">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
+
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="fontFamily">@font/gotham_font</item>
 
@@ -57,4 +79,16 @@
     <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="MyEditTextTheme">
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+    </style>
+
+    <style name="BoldText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gothambold</item>
+        <item name="fontFamily">@font/gothambold</item>
+    </style>
+
 </resources>

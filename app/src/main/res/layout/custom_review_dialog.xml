@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/gotham_font"
         android:text="David Park"
+        style="@style/BoldBlackText"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_14"
         app:layout_constraintStart_toStartOf="parent"

@@ -19,10 +19,6 @@ import retrofit2.Response;
 
 public class LoginViewModel extends ViewModel {
 
-    public LoginViewModel() {
-
-    }
-
     public void makeApiCall(LoginModel loginModel, Application application, Activity context) {
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<LoginResponseModel> call = apiService.sendLoginData(loginModel);

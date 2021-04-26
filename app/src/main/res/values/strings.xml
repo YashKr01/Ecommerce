@@ -62,6 +62,8 @@
     <string name="cancel">CANCEL</string>
     <string name="customer_services">Customer Services</string>
     <string name="submit">SUBMIT</string>
+    <string name="order_image">order image</string>
+    <string name="faq"><u>FAQ</u></string>
 
 
 </resources>
