@@ -1,8 +1,10 @@
 package com.shopping.bloom.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -212,6 +214,22 @@ public class ViewCategoryActivity extends AppCompatActivity {
         Log.d(TAG, "onBackPressed: uploading...");
         ProductRepository.getInstance().uploadAutomationMessages(this.getApplication());
         super.onBackPressed();
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Log.d(TAG, "onBackPressed: uploading...");
+                ProductRepository.getInstance().uploadAutomationMessages(this.getApplication());
+                super.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private List<Product> getDummyData() {

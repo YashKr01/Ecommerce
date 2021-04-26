@@ -87,11 +87,12 @@ public interface ApiInterface {
     @Headers("Content-type: application/json")
     Call<LoginWithPassResponseModel> sendLoginWithNumberPassData(@Body LoginWithNumberPassModel loginWithNumberPassModel);
 
-    @POST("api/metadata/addUserWishList")
+    @POST("metadata/addUserWishList")
     @Headers("Content-type: application/json")
     Call<PutWishListRequest> postUserWishList(
             @Header("Authorization") String authToken,
             @Body List<String> product_ids);
+
     @GET("frontend/getProductReview")
     @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5MjcyMDgzLCJleHAiOjE2MjE4NjQwODMsIm5iZiI6MTYxOTI3MjA4MywianRpIjoidnVLVzhMUjN4NjNhUGtXdCIsInN1YiI6NDAsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.oAnRkVe-HxNSVYTr6fqQJkTbIJj6KwVmfo9mjeD3IvE")
     Call<ReviewModel> getReviews(@Query("product_id") String productId, @Query("limit") String limit, @Query("pageNo") String pageNo);
