@@ -85,7 +85,7 @@ public class RetrofitBuilder {
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASEURL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                //.client(okHttpClient)
+                .client(okHttpClient)
                 .build();
 
     }
@@ -105,24 +105,4 @@ public class RetrofitBuilder {
 
 
 
-
-/*
-    private static Retrofit retrofit;
-
-    private static Gson gson = new GsonBuilder().setLenient().create();
-    private static GsonConverterFactory gsonFactory = GsonConverterFactory.create(gson);
-    private static OkHttpClient client = new OkHttpClient.Builder()
-            .connectTimeout(CONNECTION_TIMEOUT, TimeUnit.SECONDS)   // establish connection to server
-            .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)            // time between each byte read from the server
-            .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)          // time between each byte sent to server
-            .build();
-
-
-    public static Retrofit getInstance(String baseURL){
-        return new Retrofit.Builder()
-                .addConverterFactory(gsonFactory)
-                .baseUrl(baseURL)
-                .client(client)
-                .build();
-    }*/
 }
