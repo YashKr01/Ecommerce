@@ -22,11 +22,6 @@ import java.util.List;
 public class RecentlyViewedFragment extends Fragment {
 
     private FragmentRecentlyViewedBinding binding;
-    private List<Category> categoryList;
-    private WishListAdapter adapter;
-
-    // URL for loading temporary image
-    public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,29 +35,6 @@ public class RecentlyViewedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initRecyclerView();
-
-    }
-
-    private void initRecyclerView() {
-        categoryList = new ArrayList<>();
-        getMockData();
-        adapter = new WishListAdapter(categoryList, getContext());
-        binding.recentlyViewedRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2
-                , RecyclerView.VERTICAL, false));
-        binding.recentlyViewedRecyclerView.setHasFixedSize(true);
-        binding.recentlyViewedRecyclerView.setNestedScrollingEnabled(false);
-        binding.recentlyViewedRecyclerView.setAdapter(adapter);
-    }
-
-    private List<Category> getMockData() {
-
-        for (int i = 0; i < 10; i++) {
-            categoryList.add(new Category(1, null, null, null,
-                    null, IMAGE_URL, "1999", null, null
-                    , null));
-        }
-        return categoryList;
     }
 
     @Override
