@@ -7,6 +7,7 @@ import android.util.Log;
 import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
@@ -15,6 +16,7 @@ import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -100,22 +102,34 @@ public class ProductRepository {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             List<String> products = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
             if (products != null && products.size() > 0) {
-                Log.d(TAG, "uploadAutomationMessages: " + products.toString());
                 String authToken = getToken();
+                authToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbldpdGhFbWFpbFBhc3N3b3JkIiwiaWF0IjoxNjE5MjQ1NzM2LCJleHAiOjE2MjE4Mzc3MzYsIm5iZiI6MTYxOTI0NTczNiwianRpIjoiMFV2ZXRBaDFjRG9JSGhJZiIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.OVQmN_wYtAWYXconv8zsg8JduQ6CJ6VnXDAP5UyvnAI";
                 ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
-                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, products);
+                //String[] myArray = new String[products.size()];
+                //products.toArray(myArray);
+                ProductIds productIds = new ProductIds(products);
+                Log.d(TAG, "uploadAutomationMessages: " + productIds.toString());
+                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, productIds);
                 saveMessagesOnServer(request);
             }
         });
     }
 
     private void saveMessagesOnServer(Call<PutWishListRequest> request) {
+        Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
         if(request != null) {
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
                     Log.d(TAG, "onResponse: Removing all the items from the local DB");
-                    deleteAll();
+                    if(response.isSuccessful()) {
+                        Log.d(TAG, "onResponse: Deleting data");
+                    } else {
+                        Log.d(TAG, "onResponse: message " + response.message());
+                        Log.d(TAG, "onResponse: code " + response.code());
+                        Log.d(TAG, "onResponse: unSuccessful");
+                        deleteAll();
+                    }
                 }
 
                 @Override
