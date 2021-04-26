@@ -114,6 +114,7 @@ public class ProductRepository {
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
+                    Log.d(TAG, "onResponse: Removing all the items from the local DB");
                     deleteAll();
                 }
 

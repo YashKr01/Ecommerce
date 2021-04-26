@@ -23,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
+import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
@@ -122,13 +123,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
             @Override
             public boolean isLastPage() {
-                Log.d(TAG, "isLastPage: ");
                 return false;
             }
 
             @Override
             public boolean isLoading() {
-                Log.d(TAG, "isLoading: ");
                 return false;
             }
         });
@@ -194,11 +193,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     };
 
     private void showNoInternetImage(boolean show) {
-        if (show) {
-            Toast.makeText(this, "No internet", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "internet available", Toast.LENGTH_SHORT).show();
-        }
+
     }
 
     private void lockDrawerLayout() {
@@ -210,6 +205,13 @@ public class ViewCategoryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view_category, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: uploading...");
+        ProductRepository.getInstance().uploadAutomationMessages(this.getApplication());
+        super.onBackPressed();
     }
 
     private List<Product> getDummyData() {

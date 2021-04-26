@@ -96,6 +96,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             List<ColorImageArray> colors = product.getColorsImageArray();
             if (colors != null && !colors.isEmpty()) {
                 addColors(context,colors, (color -> changeImage(context, color)));
+            } else {
+                parentColorsLayout.removeAllViews();
+                parentColorsLayout.removeAllViewsInLayout();
             }
         }
 
@@ -121,6 +124,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             Log.d(TAG, "addColors: arraySize " + colors.size());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            parentColorsLayout.removeAllViewsInLayout();
+            parentColorsLayout.removeAllViews();
             for (ColorImageArray color : colors) {
                 TextView textView = new TextView(context);
                 textView.setText(color.getColor());
