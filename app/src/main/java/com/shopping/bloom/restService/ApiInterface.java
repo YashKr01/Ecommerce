@@ -1,21 +1,18 @@
 package com.shopping.bloom.restService;
 
-import com.shopping.bloom.App;
-import com.shopping.bloom.model.AddAddressModel;
 import com.shopping.bloom.model.EmailOtpModel;
 import com.shopping.bloom.model.EmailVerificationModel;
+import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
-import com.shopping.bloom.model.ProductIds;
-import com.shopping.bloom.model.review.PostReview;
-import com.shopping.bloom.model.review.Review;
-import com.shopping.bloom.model.review.ReviewModel;
-import com.shopping.bloom.restService.response.AddressResponse;
-import com.shopping.bloom.model.wishlist.WishList;
-import com.shopping.bloom.restService.response.EmailVerificationResponse;
-import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.OtpModel;
+import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.RegistrationModel;
+import com.shopping.bloom.model.review.PostReview;
+import com.shopping.bloom.model.review.ReviewModel;
+import com.shopping.bloom.model.wishlist.WishList;
+import com.shopping.bloom.restService.response.AddressResponse;
+import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
@@ -24,11 +21,6 @@ import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.restService.response.SplashBearerResponse;
-import com.shopping.bloom.utils.LoginManager;
-
-import java.util.List;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -36,7 +28,6 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
