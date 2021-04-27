@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
@@ -19,11 +19,11 @@ import java.util.List;
 public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.ChildViewHolder> {
 
     private Context context;
-    private List<Category> categoryList;
+    private List<NewProduct> list;
 
-    public NewProductAdapter(Context context, List<Category> categoryList) {
+    public NewProductAdapter(Context context, List<NewProduct> list) {
         this.context = context;
-        this.categoryList = categoryList;
+        this.list = list;
     }
 
     @NonNull
@@ -36,31 +36,34 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
 
-        // get current product list
-        Category currentItem = categoryList.get(position);
+        NewProduct currentItem = list.get(position);
 
-        CommonUtils.loadImageWithGlide(context, currentItem.getBig_thumbnail()
-                , holder.imageView, false);
-        holder.textView.setText(currentItem.getType());
+        String imagePath = "http://bloomapp.in" + currentItem.getImagePath();
+        CommonUtils.loadImageWithGlide(context,
+                imagePath,
+                holder.imageView,
+                true);
+
+        holder.textView.setText(currentItem.getPrice());
 
     }
 
     @Override
     public int getItemCount() {
-        return categoryList.size();
+        return 10;
     }
 
-    public class ChildViewHolder extends RecyclerView.ViewHolder {
+    public static class ChildViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textView;
 
         public ChildViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            imageView = itemView.findViewById(R.id.img_child);
-            textView = itemView.findViewById(R.id.txt_child_price);
-
+            imageView = itemView.findViewById(R.id.image_product);
+            textView = itemView.findViewById(R.id.txt_product_price);
         }
     }
+
+
 }

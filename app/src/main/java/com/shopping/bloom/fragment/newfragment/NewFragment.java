@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -23,11 +25,11 @@ import com.shopping.bloom.adapters.newfragment.NewAdapter;
 import com.shopping.bloom.databinding.FragmentNewBinding;
 
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
-import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.newfragment.NewFragmentConfig;
-import com.shopping.bloom.model.newfragment.NewTrend;
+import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewModels.newfragment.NewFragmentViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +40,12 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     private FragmentNewBinding binding;
     private NewAdapter adapter;
-    private List<NewTrend> list = new ArrayList<>();
+    private NewFragmentViewModel viewModel;
+    private List<NewProductCategory> list;
 
     private NewFragmentConfig config;
     private String imagePath1;
     private String imagePath2;
-
-    // URL for loading temporary image
-    public static final String IMAGE_URL = "http://bloomapp.in/images/product/product_image_3.png";
 
     public NewFragment() {
         // Required empty public constructor
@@ -62,6 +62,8 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentNewBinding.inflate(inflater, container, false);
+
+        viewModel = new ViewModelProvider(requireActivity()).get(NewFragmentViewModel.class);
 
         if (!isConnectionEnabled(getContext())) {
             showNoConnectionLayout(true);
@@ -86,10 +88,36 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
-        fetchData();
+        // load remote config images
         loadImages(imagePath1, imagePath2);
-        initRecyclerView();
 
+        // setup list, adapter and recyclerview
+        list = new ArrayList<>();
+        adapter = new NewAdapter(getContext(), list);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setNestedScrollingEnabled(false);
+        binding.recyclerView.setAdapter(adapter);
+
+        getNewProductsList();
+
+    }
+
+    // method to get new category list
+    private void getNewProductsList() {
+        binding.newTrendsSwipeRefresh.setRefreshing(true);
+
+        viewModel.getNewProducts().observe(getViewLifecycleOwner(), newProductCategories -> {
+
+            if (newProductCategories == null || newProductCategories.size() == 0) {
+                // empty or null list received
+            } else {
+                list.clear();
+                list.addAll(newProductCategories);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
     // load image from remote config in first two images
@@ -98,17 +126,6 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
             CommonUtils.loadImageWithGlide(getContext(), path1, binding.image1, true);
             CommonUtils.loadImageWithGlide(getContext(), path2, binding.image2, true);
         }
-    }
-
-    // fetch data after checking connection
-    private void fetchData() {
-
-        if (isConnectionEnabled(getContext())) {
-            initList(list);
-        } else {
-            showNoConnectionLayout(true);
-        }
-
     }
 
     // check device connection
@@ -130,37 +147,6 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         } else {
             binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
         }
-    }
-
-    // initialise recycler view
-    private void initRecyclerView() {
-        adapter = new NewAdapter(list, getContext());
-        binding.recyclerView.setHasFixedSize(true);
-        binding.recyclerView.setNestedScrollingEnabled(false);
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recyclerView.setAdapter(adapter);
-    }
-
-    // function for getting mock data
-    private List<Category> getMockData() {
-        List<Category> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            list.add(new Category(1, null, null, null,
-                    null, IMAGE_URL, "1999", null, null
-                    , null));
-        }
-        return list;
-    }
-
-    // initialise list
-    private void initList(List<NewTrend> newTrends) {
-
-        newTrends.add(new NewTrend(null, "New In Kurtis", "Printed, Graphic"
-                , R.color.yellow_200, getMockData()));
-        newTrends.add(new NewTrend(null, "New In SweatShirts", "Hooded, Cotton"
-                , R.color.orange_100, getMockData()));
-        newTrends.add(new NewTrend(null, "New In Jeans", "Washable, Graphic"
-                , R.color.red_100, getMockData()));
     }
 
     @Override
@@ -185,13 +171,10 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onRefresh() {
 
-        if (isConnectionEnabled(getContext())) {
-            showNoConnectionLayout(false);
-            list.clear();
-            initList(list);
-            adapter.notifyDataSetChanged();
-        } else {
+        if (!NetworkCheck.isConnect(getContext())) {
             showNoConnectionLayout(true);
+        } else {
+            getNewProductsList();
         }
 
         binding.newTrendsSwipeRefresh.setRefreshing(false);

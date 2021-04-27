@@ -13,19 +13,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.newfragment.NewTrend;
+import com.shopping.bloom.model.newfragment.NewProduct;
+import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
 public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
-    private List<NewTrend> list;
     private Context context;
+    private List<NewProductCategory> list;
 
-    public NewAdapter(List<NewTrend> list, Context context) {
-        this.list = list;
+    public NewAdapter(Context context, List<NewProductCategory> list) {
         this.context = context;
+        this.list = list;
     }
 
     @NonNull
@@ -38,10 +39,20 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        NewTrend currentItem = list.get(position);
 
-        holder.setNewData(currentItem, context);
-        setChildRecyclerView(holder.recyclerView, currentItem.getCategoryList());
+        NewProductCategory currentItem = list.get(position);
+
+        holder.title.setText(currentItem.getCategoryName());
+        holder.description.setText(currentItem.getType());
+
+        String imagePath = "http://bloomapp.in" + currentItem.getThumbNail();
+        CommonUtils.loadImageWithGlide(context,
+                imagePath,
+                holder.imageView,
+                true);
+
+        setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList());
+
     }
 
     @Override
@@ -63,21 +74,15 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
             recyclerView = itemView.findViewById(R.id.child_order_recycler_view);
         }
 
-        void setNewData(NewTrend data, Context context) {
-            CommonUtils.loadImageWithGlide(context, data.getImageUrl(), imageView, false);
-            imageView.setBackgroundResource(data.getBackground());
-            title.setText(data.getTitle());
-            description.setText(data.getDescription());
-        }
-
     }
 
-    private void setChildRecyclerView(RecyclerView recyclerView, List<Category> categoryList) {
+    private void setChildRecyclerView(RecyclerView recyclerView, List<NewProduct> productList) {
 
-        NewProductAdapter newProductAdapter = new NewProductAdapter(context, categoryList);
+        NewProductAdapter newProductAdapter = new NewProductAdapter(context, productList);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context, RecyclerView.HORIZONTAL, false
         ));
+
         recyclerView.setAdapter(newProductAdapter);
     }
 

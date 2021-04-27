@@ -2,12 +2,14 @@ package com.shopping.bloom.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,13 +23,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.CategoryTypesAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
 import com.shopping.bloom.database.repository.ProductRepository;
+import com.shopping.bloom.model.CategoryTypes;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
@@ -47,37 +52,31 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private ProductsViewModel viewModel;
     //views
-    private TextView tvSort, tvCategory;
     private RelativeLayout rlSort, rlCategory, rlFilter;
     private SwipeRefreshLayout refreshLayout;
-    private RecyclerView rvProducts;
-    private ProductAdapter adapter;
+    private RecyclerView rvProducts, rvCategoryTypes;
+    private ProductAdapter productAdapter;
+    private CategoryTypesAdapter categoryNamesAdapter;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private ImageView imgCloseNavigationView;
     private Toolbar toolbar;
+
+    private ImageView imgCloseNavigationView;
     private LinearLayout sortOptionSheet, categoryOptionSheet;
     private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
-    //animate these arrow images
     private ImageView sortArrow, categoryArrow;
+    private Button btApply, btClear;
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
     private final int ITEM_LIMIT = 14;
-    private int ITEM_CATEGORY = -1;
-    private String ARG_CATEGORY = "category_id";
+    private int PARENT_ID = -1;
+    List<CategoryTypes> filterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_category);
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            ITEM_CATEGORY = bundle.getInt(ARG_CATEGORY);
-        } else {
-            Log.d(TAG, "onCreate: Empty bundle");
-        }
 
         initViews();
         getIntentData();
@@ -95,12 +94,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        tvSort = findViewById(R.id.tvSort);
-        tvCategory = findViewById(R.id.tvCategory);
         rlSort = findViewById(R.id.rlSort);
         rlCategory = findViewById(R.id.rlCategory);
         rlFilter = findViewById(R.id.rlFilter);
         rvProducts = findViewById(R.id.rvViewCategory);
+        rvCategoryTypes = findViewById(R.id.rv_CategoryTypes);
         toolbar = findViewById(R.id.toolbar);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -110,11 +108,14 @@ public class ViewCategoryActivity extends AppCompatActivity {
         categoryOptionSheet = findViewById(R.id.llCategoryOptionsSheet);
         sortArrow = findViewById(R.id.imgSortArrow);
         categoryArrow = findViewById(R.id.imgCategoryArrow);
+        btApply = findViewById(R.id.btApply);
+        btClear = findViewById(R.id.btClearAll);
 
         sortMostPopular = findViewById(R.id.textView1);
         sortNewArrival = findViewById(R.id.textView2);
         sortPriceLtoH = findViewById(R.id.textView3);
         sortPriceHtoL = findViewById(R.id.textView4);
+
 
         //Lock the drawer layout so that it won't open with left swipe
         lockDrawerLayout();
@@ -129,21 +130,42 @@ public class ViewCategoryActivity extends AppCompatActivity {
         sortNewArrival.setOnClickListener(optionsClickListener);
         sortPriceLtoH.setOnClickListener(optionsClickListener);
         sortPriceHtoL.setOnClickListener(optionsClickListener);
+        btApply.setOnClickListener(optionsClickListener);
+        btClear.setOnClickListener(optionsClickListener);
     }
 
     private void getIntentData() {
-        Bundle bundle = getIntent().getExtras();
+        String ARG_CATEGORY_ID = "category_id";
+        String ARG_CATEGORY_NAMES = "category_names";
+        String ARG_BUNDLE = "app_bundle_name";
+        Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
+        String parentId;
+
         if (bundle != null) {
-            //TODO : get bundle data
+            Log.d(TAG, "getIntentData: Not null");
+            Log.d(TAG, "getIntentData: " + bundle.toString());
+            parentId = bundle.getString(ARG_CATEGORY_ID, "");
+            filterList = bundle.getParcelableArrayList(ARG_CATEGORY_NAMES);
+            Log.d(TAG, "getIntentData: parentId " + parentId);
+            Log.d(TAG, "getIntentData: categoryTypes " + filterList.toString());
+        } else {
+            Log.d(TAG, "getIntentData: NULL BUNDLE NO DATA RECEIVED");
         }
     }
 
     private void setUpRecycleView() {
-        adapter = new ProductAdapter(this, wishListListener);
+        productAdapter = new ProductAdapter(this, wishListListener);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvProducts.setLayoutManager(layoutManager);
         rvProducts.setHasFixedSize(true);
-        rvProducts.setAdapter(adapter);
+        rvProducts.setAdapter(productAdapter);
+
+        categoryNamesAdapter = new CategoryTypesAdapter(this);
+        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayout.HORIZONTAL);
+        rvCategoryTypes.setLayoutManager(staggeredGridLayoutManager);
+        rvCategoryTypes.setAdapter(categoryNamesAdapter);
+        categoryNamesAdapter.updateList(getDummyCategories());
+        categoryNamesAdapter.notifyDataSetChanged();
 
         //Disable blink animation when updating the items
         ((SimpleItemAnimator) rvProducts.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -162,7 +184,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
             @Override
             public boolean isLoading() {
                 boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
-                if (!isVisible) showSortMenu(false);
+                if (!isVisible) {
+                    rotateUpArrow(sortArrow,false);
+                    showOrHideSheet(sortOptionSheet,false);
+                }
                 return false;
             }
         });
@@ -170,8 +195,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private final WishListListener wishListListener = (position, isAdded) -> {
         Log.d(TAG, "updateWishList: " + isAdded);
-        Product product = adapter.getItemAt(position);
-        adapter.updateItem(position, isAdded);
+        Product product = productAdapter.getItemAt(position);
+        productAdapter.updateItem(position, isAdded);
         WishListItem wishListItem = new WishListItem(String.valueOf(product.getId()), LoginManager.getInstance().gettoken());
         if (isAdded) {
             viewModel.addToWishList(wishListItem);
@@ -193,7 +218,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         @Override
         public void onSuccess(List<Product> products) {
             refreshLayout.setRefreshing(false);
-            adapter.updateList(products);
+            productAdapter.updateList(products);
             CURRENT_PAGE++;
             showNoInternetImage(false);
         }
@@ -210,13 +235,30 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void onDebouncedClick(View v) {
             int viewId = v.getId();
             if (viewId == R.id.rlSort) {
+                selectText(0);  //ignore
+                boolean isOtherSheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
+                if(isOtherSheetVisible) { //close filter sheet
+                    rotateUpArrow(categoryArrow, false);
+                    showOrHideSheet(categoryOptionSheet, false);
+                }
+
+
                 boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
-                showSortMenu(isVisible);
+                showOrHideSheet(sortOptionSheet, isVisible);
+                rotateUpArrow(sortArrow, isVisible);
                 return;
             }
-            if (viewId == R.id.rlCategory) {
+            if (viewId == R.id.rlCategory) {    //close sort sheet
+                boolean isOtherSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
+                if(isOtherSheetVisible) {
+                    rotateUpArrow(sortArrow, false);
+                    showOrHideSheet(sortOptionSheet, false);
+                }
+
+
                 boolean isVisible = categoryOptionSheet.getVisibility() == View.GONE;
-                showFilterMenu(isVisible);
+                showOrHideSheet(categoryOptionSheet, isVisible);
+                rotateUpArrow(categoryArrow, isVisible);
                 return;
             }
             if (viewId == R.id.rlFilter) {
@@ -228,52 +270,63 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 return;
             }
 
-            //if any sort option selected
+            //if any sort option is selected
             if (viewId == R.id.textView1) {  //Most popular
-                selectText(sortMostPopular, viewId);
+                selectText(viewId);
                 return;
             }
             if (viewId == R.id.textView2) { //New arrival
-                selectText(sortNewArrival, viewId);
+                selectText(viewId);
                 return;
             }
             if (viewId == R.id.textView3) { //Price Low to High
-                selectText(sortPriceLtoH, viewId);
+                selectText(viewId);
                 return;
             }
             if (viewId == R.id.textView4) { //Price High to Low
-                selectText(sortPriceHtoL, viewId);
+                selectText(viewId);
                 return;
             }
+
+            if(viewId == R.id.btClearAll) {
+                showOrHideSheet(categoryOptionSheet, false);  // close filter sheet
+                categoryNamesAdapter.clearAllSelection();
+                return;
+            }
+
+            if(viewId == R.id.btApply) {
+                List<CategoryTypes> list = categoryNamesAdapter.getSelectedItems();
+                Log.d(TAG, "onDebouncedClick: list " + list.toString());
+                showOrHideSheet(categoryOptionSheet, false);
+                return;
+            }
+
         }
     };
 
-    private void showFilterMenu(boolean show) {
-        rotateUpArrow(categoryArrow, show);
-    }
-
-    private void showSortMenu(final boolean show) {
-        rotateUpArrow(sortArrow, show);
+    //animate Filter sheet or Sort layout sheet to get an dropDown effects
+    // Pass the parent layout LinearLayout
+    private void showOrHideSheet(LinearLayout sheetLayout, final boolean show) {
         long ANIMATION_DURATION = 300L;
         if (show) {
             //show navigation bar with animation
-            sortOptionSheet.animate().setListener(null);
-            sortOptionSheet.clearAnimation();
-            sortOptionSheet.animate()
+            sheetLayout.animate().setListener(null);
+            sheetLayout.clearAnimation();
+            sheetLayout.animate()
                     .alpha(1.0f).translationY(0f).setDuration(ANIMATION_DURATION);
-            sortOptionSheet.setVisibility(View.VISIBLE);
+            sheetLayout.setVisibility(View.VISIBLE);
         } else {
             //hide bottom navigation bar with animation
-            sortOptionSheet.clearAnimation();
-            sortOptionSheet.animate()
+            sheetLayout.clearAnimation();
+            sheetLayout.animate()
                     .alpha(0.0f)
-                    .translationY(-sortOptionSheet.getHeight())
-                    .setDuration(ANIMATION_DURATION + 200)
+                    .translationY(-sheetLayout.getHeight())
+                    .setDuration(ANIMATION_DURATION + 100)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            sortOptionSheet.setVisibility(View.GONE);
+                            sheetLayout.setVisibility(View.GONE);
                         }
                     });
         }
@@ -294,7 +347,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
-    private void selectText(TextView sortOption, int viewId) {
+    private void selectText(int viewId) {
         int[] optionList = {R.id.textView1, R.id.textView2, R.id.textView3, R.id.textView4};
         for(int i = 0; i < 4; i++) {
             TextView textView = findViewById(optionList[i]);
@@ -346,6 +399,19 @@ public class ViewCategoryActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private List<CategoryTypes> getDummyCategories() {
+        List<CategoryTypes> list = new ArrayList<>();
+        for (int i = 0; i < 9; i++) {
+            CategoryTypes product = new CategoryTypes("Dummy", "2", "");
+            CategoryTypes product1 = new CategoryTypes("Dummy shoes", "2","1");
+            CategoryTypes product2 = new CategoryTypes("dummy HipHop", "2","5");
+            list.add(product);
+            list.add(product1);
+            list.add(product2);
+        }
+        return list;
     }
 
     private List<Product> getDummyData() {

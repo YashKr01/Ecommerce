@@ -52,11 +52,11 @@
                     <RelativeLayout
                         android:id="@+id/rlSort"
                         android:layout_width="0dp"
-                        android:layout_weight="32"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:layout_weight="32"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:layout_height="match_parent">
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/tvSort"
@@ -72,10 +72,10 @@
                             android:id="@+id/imgSortArrow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:rotation="180"
-                            android:layout_marginStart="@dimen/sb_size_12"
                             android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/sb_size_12"
                             android:layout_toEndOf="@+id/tvSort"
+                            android:rotation="180"
                             android:src="@drawable/ic_arrow_up" />
                     </RelativeLayout>
 
@@ -93,11 +93,11 @@
                     <RelativeLayout
                         android:id="@+id/rlCategory"
                         android:layout_width="0dp"
-                        android:layout_weight="32"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:layout_weight="32"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:layout_height="match_parent">
+                        android:gravity="center">
 
                         <TextView
                             android:id="@+id/tvCategory"
@@ -113,8 +113,9 @@
                             android:id="@+id/imgCategoryArrow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/sb_size_12"
                             android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/sb_size_12"
+                            android:rotation="180"
                             android:layout_toEndOf="@+id/tvCategory"
                             android:src="@drawable/ic_arrow_up" />
                     </RelativeLayout>
@@ -170,7 +171,7 @@
                     android:background="@color/white"
                     android:elevation="@dimen/sb_size_8"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/sb_size_28"
+                    android:paddingBottom="@dimen/sb_size_22"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -179,89 +180,106 @@
                     <TextView
                         android:id="@+id/textView1"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_28"
-                        android:paddingHorizontal="@dimen/sb_size_36"
+                        android:layout_height="@dimen/sb_size_32"
+                        android:fontFamily="@font/gotham_font"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
-                        android:textColor="@color/black"
-                        android:fontFamily="@font/gotham_font"
-                        android:paddingVertical="@dimen/sb_size_4"
+                        android:paddingHorizontal="@dimen/sb_size_36"
+                        android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_1"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sb_text_size_15"
                         android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_28"
-                        android:layout_marginStart="@dimen/sb_size_36"
+                        android:layout_height="@dimen/sb_size_32"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
-                        android:paddingVertical="@dimen/sb_size_4"
+                        android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_2"
                         android:textSize="@dimen/sb_text_size_15"
+                        android:textColor="@color/black"
                         android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/textView3"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_28"
-                        android:layout_marginStart="@dimen/sb_size_36"
+                        android:layout_height="@dimen/sb_size_32"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
-                        android:paddingVertical="@dimen/sb_size_4"
+                        android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_3"
                         android:textSize="@dimen/sb_text_size_15"
+                        android:textColor="@color/black"
                         android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_28"
-                        android:layout_marginStart="@dimen/sb_size_36"
+                        android:layout_height="@dimen/sb_size_32"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
-                        android:paddingVertical="@dimen/sb_size_4"
+                        android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_4"
                         android:textSize="@dimen/sb_text_size_15"
+                        android:textColor="@color/black"
                         android:textStyle="normal" />
                 </LinearLayout>
 
-                <androidx.core.widget.NestedScrollView
-                    android:id="@+id/categoryScrollView"
+                <LinearLayout
+                    android:id="@+id/llCategoryOptionsSheet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:background="@color/white"
-                    android:elevation="@dimen/sb_size_8"
+                    android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/llFilterLayout">
+                    android:maxHeight="200dp"
+                    android:background="@color/white"
+                    android:elevation="@dimen/sb_size_8"
+                    app:layout_constraintTop_toBottomOf="@id/llFilterLayout">
 
-                    <LinearLayout
-                        android:id="@+id/llCategoryOptionsSheet"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_CategoryTypes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical" >
+                        android:background="@color/white"
+                        android:clipToPadding="false"
+                        android:paddingVertical="@dimen/sb_text_size_16"
+                        android:paddingBottom="@dimen/sb_size_20" />
 
-                        <TextView
-                            android:id="@+id/textView5"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/grey_50"
+                        android:elevation="@dimen/sb_size_2">
+
+                        <Button
+                            android:id="@+id/btClearAll"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:foreground="?attr/selectableItemBackgroundBorderless"
-                            android:gravity="center_vertical"
-                            android:paddingVertical="@dimen/sb_size_4"
-                            android:text="@string/sort_option_4"
-                            android:textSize="@dimen/sb_text_size_15"
-                            android:textStyle="normal" />
+                            android:text="@string/clear"
+                            android:backgroundTint="@color/grey_300"
+                            android:textColor="@color/black"
+                            android:layout_marginEnd="@dimen/sb_text_size_16"
+                            android:layout_toStartOf="@+id/btApply" />
 
-                    </LinearLayout>
+                        <Button
+                            android:id="@+id/btApply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="@string/apply"
+                            android:layout_marginEnd="@dimen/sb_size_18" />
 
+                    </RelativeLayout>
 
-                </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvViewCategory"
