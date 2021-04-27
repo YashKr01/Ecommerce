@@ -156,13 +156,14 @@ public interface ApiInterface {
             @Header("Authorization") String bearer);
 
     @GET("metadata/getUserWishlist")
-    //@Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NDMxMTUzLCJleHAiOjE2MjIwMjMxNTMsIm5iZiI6MTYxOTQzMTE1MywianRpIjoiblI5Zlc2dTJLUjJ5cGpFNCIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.16WTQmSWiGRSKvxf-DvnDzl73nq9MWiW85I6Wu_hhYM")
+    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
     Call<WishList> getWishList(
             @Query("pageNo") String pageNo,
             @Query("limit") String limit,
             @Header("Authorization") String bearer);
 
     @GET("frontend/getNewProducts")
+    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
     Call<NewProductsResponse> getNewProducts();
 
 }

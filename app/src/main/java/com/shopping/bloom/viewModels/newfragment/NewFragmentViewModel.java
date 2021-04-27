@@ -13,6 +13,8 @@ import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,10 +28,9 @@ public class NewFragmentViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    public LiveData<NewProductCategory> getNewProducts() {
+    public LiveData<List<NewProductCategory>> getNewProducts() {
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
-
-        MutableLiveData<NewProductCategory> liveData = new MutableLiveData<>();
+        MutableLiveData<List<NewProductCategory>> liveData = new MutableLiveData<>();
 
         apiInterface.getNewProducts().enqueue(new Callback<NewProductsResponse>() {
             @Override
@@ -37,6 +38,15 @@ public class NewFragmentViewModel extends AndroidViewModel {
                 Log.d("NEW_PRODUCTS", "onResponse: " +
                         response.code() + " " +
                         response.message());
+
+                Log.d("NEW_PRODUCTS", "onResponse: " + response.body().getMessage());
+
+                if (response.isSuccessful()) {
+                    liveData.postValue(response.body().getNewCategoryList());
+                } else {
+                    liveData.postValue(null);
+                }
+
             }
 
             @Override

@@ -50,10 +50,10 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return 10;
     }
 
-    public class ChildViewHolder extends RecyclerView.ViewHolder {
+    public static class ChildViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textView;

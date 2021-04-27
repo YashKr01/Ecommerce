@@ -6,7 +6,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
@@ -24,9 +26,13 @@ import com.shopping.bloom.databinding.FragmentNewBinding;
 
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.newfragment.NewFragmentConfig;
+import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.newfragment.NewFragmentViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -35,6 +41,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private FragmentNewBinding binding;
     private NewAdapter adapter;
     private NewFragmentViewModel viewModel;
+    private List<NewProductCategory> list;
 
     private NewFragmentConfig config;
     private String imagePath1;
@@ -81,12 +88,36 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
-
         // load remote config images
         loadImages(imagePath1, imagePath2);
 
-        viewModel.getNewProducts();
+        // setup list, adapter and recyclerview
+        list = new ArrayList<>();
+        adapter = new NewAdapter(getContext(), list);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setNestedScrollingEnabled(false);
+        binding.recyclerView.setAdapter(adapter);
 
+        getNewProductsList();
+
+    }
+
+    // method to get new category list
+    private void getNewProductsList() {
+        binding.newTrendsSwipeRefresh.setRefreshing(true);
+
+        viewModel.getNewProducts().observe(getViewLifecycleOwner(), newProductCategories -> {
+
+            if (newProductCategories == null || newProductCategories.size() == 0) {
+                // empty or null list received
+            } else {
+                list.clear();
+                list.addAll(newProductCategories);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
     // load image from remote config in first two images
@@ -140,6 +171,13 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     @Override
     public void onRefresh() {
 
+        if (!NetworkCheck.isConnect(getContext())) {
+            showNoConnectionLayout(true);
+        } else {
+            getNewProductsList();
+        }
+
+        binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
 }
