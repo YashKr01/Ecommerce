@@ -3,6 +3,7 @@ package com.shopping.bloom.database.repository;
 import android.app.Application;
 import android.util.Log;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductIds;

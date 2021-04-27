@@ -33,6 +33,7 @@ import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.CategoryTypes;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.model.SubCategory;
@@ -189,9 +190,29 @@ public class ShopFragment extends Fragment {
     }
 
     private void gotoProductScreen(Category product) {
-        String ARG_CATEGORY = "category_id";
+        /*
+        *  send the parent ID and subCategory name to populate in
+        *   filter section of the ViewCategory Activity.
+        * */
+
+        String ARG_CATEGORY_ID = "category_id";
+        String ARG_CATEGORY_NAMES = "category_names";
+        String ARG_BUNDLE = "app_bundle_name";
         Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
-        intent.putExtra(ARG_CATEGORY, product.getId());
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CATEGORY_ID, String.valueOf(product.getId()));
+
+        ArrayList<CategoryTypes> list = new ArrayList<>();
+        for(int i = 0; i < product.getSub_category().size(); i++){
+            SubCategory subCategory = product.getSub_category().get(i);
+            CategoryTypes categoryTypes = new CategoryTypes(
+                    subCategory.getCategory_name(),
+                    String.valueOf(subCategory.getId()),
+                    subCategory.getParent_id());
+            list.add(categoryTypes);
+        }
+        bundle.putParcelableArrayList(ARG_CATEGORY_NAMES, list);
+        intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
 
