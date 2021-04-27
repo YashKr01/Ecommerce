@@ -39,6 +39,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     public void updateList(List<Product> products) {
+        if(products == null) return ;
         this.productList = products;
         notifyDataSetChanged();
     }

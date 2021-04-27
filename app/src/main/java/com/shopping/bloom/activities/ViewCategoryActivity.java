@@ -1,13 +1,17 @@
 package com.shopping.bloom.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -44,7 +48,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private ProductsViewModel viewModel;
     //views
     private TextView tvSort, tvCategory;
-    private RelativeLayout rlFilter;
+    private RelativeLayout rlSort, rlCategory, rlFilter;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView rvProducts;
     private ProductAdapter adapter;
@@ -52,6 +56,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private ImageView imgCloseNavigationView;
     private Toolbar toolbar;
+    private LinearLayout sortOptionSheet, categoryOptionSheet;
+    private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
+    //animate these arrow images
+    private ImageView sortArrow, categoryArrow;
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
@@ -65,14 +73,16 @@ public class ViewCategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_category);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             ITEM_CATEGORY = bundle.getInt(ARG_CATEGORY);
         } else {
             Log.d(TAG, "onCreate: Empty bundle");
         }
 
         initViews();
+        getIntentData();
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener((view -> onBackPressed()));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setUpRecycleView();
         viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
@@ -87,6 +97,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private void initViews() {
         tvSort = findViewById(R.id.tvSort);
         tvCategory = findViewById(R.id.tvCategory);
+        rlSort = findViewById(R.id.rlSort);
+        rlCategory = findViewById(R.id.rlCategory);
         rlFilter = findViewById(R.id.rlFilter);
         rvProducts = findViewById(R.id.rvViewCategory);
         toolbar = findViewById(R.id.toolbar);
@@ -94,15 +106,36 @@ public class ViewCategoryActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         imgCloseNavigationView = findViewById(R.id.imgClose);
+        sortOptionSheet = findViewById(R.id.llSortOptionsSheet);
+        categoryOptionSheet = findViewById(R.id.llCategoryOptionsSheet);
+        sortArrow = findViewById(R.id.imgSortArrow);
+        categoryArrow = findViewById(R.id.imgCategoryArrow);
+
+        sortMostPopular = findViewById(R.id.textView1);
+        sortNewArrival = findViewById(R.id.textView2);
+        sortPriceLtoH = findViewById(R.id.textView3);
+        sortPriceHtoL = findViewById(R.id.textView4);
 
         //Lock the drawer layout so that it won't open with left swipe
         lockDrawerLayout();
 
         //Attack Click Listeners
-        tvSort.setOnClickListener(optionsClickListener);
-        tvCategory.setOnClickListener(optionsClickListener);
+        rlSort.setOnClickListener(optionsClickListener);
+        rlCategory.setOnClickListener(optionsClickListener);
         rlFilter.setOnClickListener(optionsClickListener);
         imgCloseNavigationView.setOnClickListener(optionsClickListener);
+
+        sortMostPopular.setOnClickListener(optionsClickListener);
+        sortNewArrival.setOnClickListener(optionsClickListener);
+        sortPriceLtoH.setOnClickListener(optionsClickListener);
+        sortPriceHtoL.setOnClickListener(optionsClickListener);
+    }
+
+    private void getIntentData() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            //TODO : get bundle data
+        }
     }
 
     private void setUpRecycleView() {
@@ -128,6 +161,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
             @Override
             public boolean isLoading() {
+                boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
+                if (!isVisible) showSortMenu(false);
                 return false;
             }
         });
@@ -148,7 +183,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(this)) {
             viewModel.setResponseListener(responseListener);
-            //TODO: change the subcategory parameter with intent value ITEM_CATEGORY
             viewModel.fetchData("2", ITEM_LIMIT, CURRENT_PAGE);       // Temporary category
         } else {
             showNoInternetImage(true);
@@ -174,23 +208,103 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
-            if (v.getId() == R.id.tvSort) {
-                Log.d(TAG, "onDebouncedClick: sort");
+            int viewId = v.getId();
+            if (viewId == R.id.rlSort) {
+                boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
+                showSortMenu(isVisible);
+                return;
             }
-            if (v.getId() == R.id.tvCategory) {
-                Log.d(TAG, "onDebouncedClick: Category");
+            if (viewId == R.id.rlCategory) {
+                boolean isVisible = categoryOptionSheet.getVisibility() == View.GONE;
+                showFilterMenu(isVisible);
+                return;
             }
-            if (v.getId() == R.id.rlFilter) {
+            if (viewId == R.id.rlFilter) {
                 drawerLayout.openDrawer(GravityCompat.END);
-                Log.d(TAG, "onDebouncedClick: filter");
+                return;
             }
-            if(v.getId() == R.id.imgClose) {
-                if(drawerLayout.isDrawerVisible(GravityCompat.END)) {
-                    drawerLayout.closeDrawer(GravityCompat.END);
-                }
+            if (viewId == R.id.imgClose) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+                return;
+            }
+
+            //if any sort option selected
+            if (viewId == R.id.textView1) {  //Most popular
+                selectText(sortMostPopular, viewId);
+                return;
+            }
+            if (viewId == R.id.textView2) { //New arrival
+                selectText(sortNewArrival, viewId);
+                return;
+            }
+            if (viewId == R.id.textView3) { //Price Low to High
+                selectText(sortPriceLtoH, viewId);
+                return;
+            }
+            if (viewId == R.id.textView4) { //Price High to Low
+                selectText(sortPriceHtoL, viewId);
+                return;
             }
         }
     };
+
+    private void showFilterMenu(boolean show) {
+        rotateUpArrow(categoryArrow, show);
+    }
+
+    private void showSortMenu(final boolean show) {
+        rotateUpArrow(sortArrow, show);
+        long ANIMATION_DURATION = 300L;
+        if (show) {
+            //show navigation bar with animation
+            sortOptionSheet.animate().setListener(null);
+            sortOptionSheet.clearAnimation();
+            sortOptionSheet.animate()
+                    .alpha(1.0f).translationY(0f).setDuration(ANIMATION_DURATION);
+            sortOptionSheet.setVisibility(View.VISIBLE);
+        } else {
+            //hide bottom navigation bar with animation
+            sortOptionSheet.clearAnimation();
+            sortOptionSheet.animate()
+                    .alpha(0.0f)
+                    .translationY(-sortOptionSheet.getHeight())
+                    .setDuration(ANIMATION_DURATION + 200)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            sortOptionSheet.setVisibility(View.GONE);
+                        }
+                    });
+        }
+    }
+
+    //This will animate the arrow icon on opening or closing the tab
+    private void rotateUpArrow(ImageView arrowIcon, boolean show) {
+        if (show) {
+            arrowIcon.animate()
+                    .setDuration(300)
+                    .rotation(0)
+                    .start();
+        } else {
+            arrowIcon.animate()
+                    .setDuration(300)
+                    .rotation(180)
+                    .start();
+        }
+    }
+
+    private void selectText(TextView sortOption, int viewId) {
+        int[] optionList = {R.id.textView1, R.id.textView2, R.id.textView3, R.id.textView4};
+        for(int i = 0; i < 4; i++) {
+            TextView textView = findViewById(optionList[i]);
+            if(optionList[i] == viewId){
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+            } else {
+                textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            }
+        }
+    }
 
     private void showNoInternetImage(boolean show) {
 
@@ -209,9 +323,29 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
+            drawerLayout.closeDrawer(GravityCompat.END);
+            return;
+        }
+
         Log.d(TAG, "onBackPressed: uploading...");
-        ProductRepository.getInstance().uploadAutomationMessages(this.getApplication());
+        ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
         super.onBackPressed();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; go home
+                Log.d(TAG, "onBackPressed: uploading...");
+                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
+                super.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private List<Product> getDummyData() {

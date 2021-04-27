@@ -10,6 +10,12 @@
     <string name="new_">New</string>
     <string name="me">Me</string>
 
+    <string-array name="filter_option">
+        <item>"Price high to low"</item>
+        <item>"Price low to high"</item>
+        <item>"Price high to low"</item>
+    </string-array>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -64,6 +70,10 @@
     <string name="submit">SUBMIT</string>
     <string name="order_image">order image</string>
     <string name="faq"><u>FAQ</u></string>
+    <string name="sort_option_1">Most Popular</string>
+    <string name="sort_option_2">New Arrival</string>
+    <string name="sort_option_3">Price Low to High</string>
+    <string name="sort_option_4">Price High to Low</string>
 
 
 </resources>

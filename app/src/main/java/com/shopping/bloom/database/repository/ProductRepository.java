@@ -1,10 +1,8 @@
 package com.shopping.bloom.database.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
-import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductIds;
@@ -16,7 +14,6 @@ import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -98,36 +95,34 @@ public class ProductRepository {
      * Post request network call to save all wishList items
      *  to server and clean the database
      */
-    public void uploadAutomationMessages(Application context) {
+    public void uploadWishListOnServer(Application context) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
             List<String> products = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
             if (products != null && products.size() > 0) {
                 String authToken = getToken();
-                authToken = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbldpdGhFbWFpbFBhc3N3b3JkIiwiaWF0IjoxNjE5MjQ1NzM2LCJleHAiOjE2MjE4Mzc3MzYsIm5iZiI6MTYxOTI0NTczNiwianRpIjoiMFV2ZXRBaDFjRG9JSGhJZiIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.OVQmN_wYtAWYXconv8zsg8JduQ6CJ6VnXDAP5UyvnAI";
-                ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
-                //String[] myArray = new String[products.size()];
-                //products.toArray(myArray);
-                ProductIds productIds = new ProductIds(products);
-                Log.d(TAG, "uploadAutomationMessages: " + productIds.toString());
-                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, productIds);
-                saveMessagesOnServer(request);
+                String result = join(products);
+                ProductIds res = new ProductIds(result);
+                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
+                saveWishListOnServer(request);
+            } else {
+                Log.d(TAG, "uploadAutomationMessages: empty delete all items from the wish list " + products.toString());
+                String authToken = getToken();
+                ProductIds res = new ProductIds("");
+                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
+                saveWishListOnServer(request);
             }
         });
     }
 
-    private void saveMessagesOnServer(Call<PutWishListRequest> request) {
+    private void saveWishListOnServer(Call<PutWishListRequest> request) {
         Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
         if(request != null) {
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
                     Log.d(TAG, "onResponse: Removing all the items from the local DB");
-                    if(response.isSuccessful()) {
-                        Log.d(TAG, "onResponse: Deleting data");
-                    } else {
-                        Log.d(TAG, "onResponse: message " + response.message());
-                        Log.d(TAG, "onResponse: code " + response.code());
-                        Log.d(TAG, "onResponse: unSuccessful");
+                    if(response.isSuccessful() && response.code() == 200) {
                         deleteAll();
                     }
                 }
@@ -140,6 +135,19 @@ public class ProductRepository {
         }
     }
 
+    private static String join(List<String> input) {
+        if (input == null || input.size() <= 0) return "";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.size(); i++) {
+            sb.append(input.get(i));
+            // if not the last item
+            if (i != input.size() - 1) {
+                sb.append(",");
+            }
+        }
+        return sb.toString();
+    }
+
     //Clean the database
     private void deleteAll() {
         EcommerceDatabase.databaseWriteExecutor.execute(()->{
@@ -150,6 +158,4 @@ public class ProductRepository {
     private String getToken() {
         return "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbldpdGhFbWFpbFBhc3N3b3JkIiwiaWF0IjoxNjE5MjQ1NzM2LCJleHAiOjE2MjE4Mzc3MzYsIm5iZiI6MTYxOTI0NTczNiwianRpIjoiMFV2ZXRBaDFjRG9JSGhJZiIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.OVQmN_wYtAWYXconv8zsg8JduQ6CJ6VnXDAP5UyvnAI";
     }
-
-
 }

@@ -16,7 +16,7 @@ public abstract class PaginationListener extends RecyclerView.OnScrollListener {
     /**
      * Set scrolling threshold here
      */
-    private static final int PAGE_SIZE = 15;
+    private static final int PAGE_SIZE = 14;
 
     public PaginationListener(@NonNull GridLayoutManager layoutManager) {
         this.layoutManager = layoutManager;

@@ -30,6 +30,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -88,12 +89,11 @@ public interface ApiInterface {
     @Headers("Content-type: application/json")
     Call<LoginWithPassResponseModel> sendLoginWithNumberPassData(@Body LoginWithNumberPassModel loginWithNumberPassModel);
 
-    @FormUrlEncoded
     @POST("metadata/addUserWishList")
     @Headers("Content-type: application/json")
     Call<PutWishListRequest> postUserWishList(
             @Header("Authorization") String authToken,
-            @Field("product_ids") ProductIds product_ids);
+            @Body ProductIds product_ids);
 
     @GET("frontend/getProductReview")
     @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5MjcyMDgzLCJleHAiOjE2MjE4NjQwODMsIm5iZiI6MTYxOTI3MjA4MywianRpIjoidnVLVzhMUjN4NjNhUGtXdCIsInN1YiI6NDAsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.oAnRkVe-HxNSVYTr6fqQJkTbIJj6KwVmfo9mjeD3IvE")
