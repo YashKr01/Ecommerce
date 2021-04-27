@@ -42,6 +42,8 @@ public class LoginManager {
 
     private static String is_email_verified = "is_email_verified";
 
+    private static String guest_token = "guest_token";
+
 
     public static LoginManager getInstance() {
 
@@ -69,6 +71,8 @@ public class LoginManager {
         editor.putBoolean(IS_LOGED_IN, isFirstTime);
         editor.commit();
     }
+
+
 
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(IS_LOGED_IN, true);
@@ -124,16 +128,20 @@ public class LoginManager {
 
     }
 
-
     public void settoken(String tok) {
         editor.putString(token, tok).apply();
-
     }
 
     public String gettoken() {
         return sharedPreferences.getString(token, "NA");
-
     }
 
+    public void setGuest_token(String token){
+        editor.putString(guest_token, token).apply();
+    }
+
+    public String getGuest_token(){
+        return sharedPreferences.getString(guest_token, "NA");
+    }
 
 }

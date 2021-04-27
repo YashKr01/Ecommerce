@@ -1,4 +1,4 @@
-package com.shopping.bloom.viewModels;
+package com.shopping.bloom.viewModels.reviews;
 
 import android.app.Application;
 import android.util.Log;
@@ -8,11 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.database.repository.ReviewRepository;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.utils.LoginManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,8 +38,17 @@ public class ReviewViewModel extends AndroidViewModel {
 
     public void postReview(PostReview postReview) {
 
+        LoginManager loginManager = new LoginManager(App.getContext());
+        String token;
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
+
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
-        apiInterface.postReview(postReview).enqueue(new Callback<ReviewModel>() {
+        apiInterface.postReview(postReview,"Bearer " + token).enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
                 Log.d("POST REVIEW", "onResponse: " + response.code() + " " + response.message());

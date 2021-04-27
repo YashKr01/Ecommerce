@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
@@ -70,6 +71,14 @@ public class CategoryRepository {
     }
 
     private String getToken() {
-        return "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMVwvYXBpXC9hdXRoXC9sb2dpbldpdGhFbWFpbFBhc3N3b3JkIiwiaWF0IjoxNjE5MjQ1NzM2LCJleHAiOjE2MjE4Mzc3MzYsIm5iZiI6MTYxOTI0NTczNiwianRpIjoiMFV2ZXRBaDFjRG9JSGhJZiIsInN1YiI6MSwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.OVQmN_wYtAWYXconv8zsg8JduQ6CJ6VnXDAP5UyvnAI";
+        LoginManager loginManager = new LoginManager(App.getContext());
+        String token;
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
+        return "Bearer " + token;
     }
 }

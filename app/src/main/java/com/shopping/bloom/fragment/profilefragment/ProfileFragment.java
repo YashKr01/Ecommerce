@@ -13,10 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.LoginActivity;
+import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
@@ -63,17 +63,7 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        // used for testing only
-//        binding.imgProcessing.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getParentFragmentManager().beginTransaction()
-//                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
-//            }
-//        });
-
         binding.nestscrollview.setNestedScrollingEnabled(true);
-
 
         // Setup ViewPager Adapter
         viewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());
@@ -84,6 +74,9 @@ public class ProfileFragment extends Fragment {
         binding.profileTabLayout.setupWithViewPager(binding.profileViewPager);
         binding.profileViewPager.setAdapter(viewPagerAdapter);
 
+        binding.txtViewMore.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), WishListActivity.class));
+        });
 
         return binding.getRoot();
     }
@@ -93,7 +86,6 @@ public class ProfileFragment extends Fragment {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: profile" + menu.getItem(0).getTitle());
     }
-
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {

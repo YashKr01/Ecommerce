@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities;
+package com.shopping.bloom.activities.myorders;
 
 import android.os.Bundle;
 

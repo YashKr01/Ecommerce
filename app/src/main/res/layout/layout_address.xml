@@ -65,7 +65,27 @@
                         android:textSize="@dimen/sb_text_size_16" />
 
                     <TextView
+                        android:id="@+id/cityTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/sb_size_5"
+                        android:padding="@dimen/sb_size_5"
+                        android:text="lorem epsium"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_16" />
+
+                    <TextView
                         android:id="@+id/address2TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/sb_size_5"
+                        android:padding="@dimen/sb_size_5"
+                        android:text="lorem epsium"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_16" />
+
+                    <TextView
+                        android:id="@+id/numberTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sb_size_5"

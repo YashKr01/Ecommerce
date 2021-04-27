@@ -33,16 +33,13 @@ public class SplashActivity extends AppCompatActivity {
         if (loginManager.isLoggedIn()) {
             splashViewModel.getSplashDataMutableLiveData().observe(this, splashData -> {
                 if (splashData != null) {
-                    loginManager.settoken(splashData.getToken());
+                    loginManager.setGuest_token(splashData.getToken());
                 }
-                System.out.println(splashData.getToken());
-
                 gotoMainScreen();
             });
         } else {
             gotoMainScreen();
         }
-
 
         if (loginManager.isLoggedIn()) {
             splashViewModel.makeApiCall(imei_number, getApplication());

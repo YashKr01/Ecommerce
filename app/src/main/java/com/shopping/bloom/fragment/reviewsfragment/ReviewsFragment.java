@@ -25,7 +25,7 @@ import com.shopping.bloom.databinding.FragmentReviewsBinding;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.ReviewViewModel;
+import com.shopping.bloom.viewModels.reviews.ReviewViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,19 +155,6 @@ public class ReviewsFragment extends Fragment {
     }
 
     // setting rating and progress
-    private void setRating() {
-        binding.reviewRatingBar.setRating(Float.parseFloat(binding.txtRating.getText().toString()));
-    }
-
-    // setting progress bar
-    private void setProgress() {
-        binding.progressBarSmall.setProgress(Integer.parseInt(binding.txtValueSmall.getText().toString()
-                .substring(0, binding.txtValueSmall.getText().toString().length() - 1)));
-        binding.progressBarSize.setProgress(Integer.parseInt(binding.txtValueTrue.getText().toString()
-                .substring(0, binding.txtValueTrue.getText().toString().length() - 1)));
-        binding.progressBarLarge.setProgress(Integer.parseInt(binding.txtValueLarge.getText().toString()
-                .substring(0, binding.txtValueLarge.getText().toString().length() - 1)));
-    }
 
     @Override
     public void onDestroyView() {

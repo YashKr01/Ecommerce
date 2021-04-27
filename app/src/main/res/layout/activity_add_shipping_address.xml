@@ -43,6 +43,7 @@
                 android:layout_marginHorizontal="@dimen/sb_size_20"
                 android:layout_marginTop="@dimen/sb_size_40"
                 app:hintTextColor="@color/black"
+                android:hint="Country Region"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView">
@@ -51,9 +52,11 @@
                     android:id="@+id/countryRegionEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Country Region"
-                    android:theme="@style/MyEditTextTheme"
-                    android:inputType="textEmailAddress" />
+                    android:text="India"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:theme="@style/MyEditTextTheme" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -69,12 +72,12 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/firstNameEditText"
+                    android:id="@+id/addressNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="First Name"
+                    android:hint="Address Name"
                     android:theme="@style/MyEditTextTheme"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPostalAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -89,10 +92,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/lastNameEditText"
+                    android:id="@+id/addressLineEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Last Name"
+                    android:hint="Address Line 1"
                     android:theme="@style/MyEditTextTheme"
                     android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -109,36 +112,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addressline1TextView"
+                    android:id="@+id/cityTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Address Line 1"
+                    android:hint="City"
                     android:theme="@style/MyEditTextTheme"
                     android:inputType="textPostalAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout5"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/sb_size_20"
-                android:layout_marginTop="12dp"
-                app:hintTextColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addressline2TextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Address Line 2"
-                    android:theme="@style/MyEditTextTheme"
-                    android:inputType="textPostalAddress" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/sb_size_20"
@@ -156,6 +139,38 @@
                     android:theme="@style/MyEditTextTheme"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/sb_size_20"
+                android:layout_marginTop="12dp"
+                app:hintTextColor="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/numberEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contact Number"
+                    android:theme="@style/MyEditTextTheme"
+                    android:inputType="phone" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/radio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Primary"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:buttonTint="@color/black"
+                android:paddingHorizontal="@dimen/sb_size_10"
+                android:layout_marginHorizontal="@dimen/sb_size_20"
+                android:layout_marginTop="12dp"/>
 
             <Button
                 android:id="@+id/addAddressButton"

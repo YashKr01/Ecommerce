@@ -74,6 +74,8 @@
     <string name="sort_option_2">New Arrival</string>
     <string name="sort_option_3">Price Low to High</string>
     <string name="sort_option_4">Price High to Low</string>
+    <string name="no_reviews_for_this_product_yet">No reviews for this product yet</string>
+    <string name="view_more">View More</string>
 
 
 </resources>

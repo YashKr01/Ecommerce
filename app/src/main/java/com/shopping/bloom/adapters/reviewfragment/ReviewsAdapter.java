@@ -49,7 +49,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
             holder.itemName.setText(name);
         } else {
             // because before testing name was not in response, to handle those cases
-            holder.itemName.setText("Unknown");
+            holder.itemName.setText("U******n");
         }
 
         holder.itemReview.setText(currentItem.getReview());
@@ -63,7 +63,7 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewVi
     }
 
 
-    public class ReviewViewHolder extends RecyclerView.ViewHolder {
+    public static class ReviewViewHolder extends RecyclerView.ViewHolder {
 
         TextView itemName, itemReview;
         RatingBar reviewRating;
