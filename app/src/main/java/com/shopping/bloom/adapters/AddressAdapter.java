@@ -2,6 +2,7 @@ package com.shopping.bloom.adapters;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.App;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.UpdateAddressActivity;
 import com.shopping.bloom.model.AddressDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
@@ -91,6 +93,18 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             });
         });
 
+        holder.updateImageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(context, UpdateAddressActivity.class);
+            intent.putExtra("addressName", address.getAddress_name());
+            intent.putExtra("addressLine", address.getAddress_line_1());
+            intent.putExtra("city", address.getCity());
+            intent.putExtra("pinCode", address.getPincode());
+            intent.putExtra("number", address.getContact_number());
+            intent.putExtra("is_primary", address.getIs_primary());
+            intent.putExtra("id", address.getId());
+            context.startActivity(intent);
+        });
+
         holder.radioButton.setChecked(lastSelectedPosition == position);
     }
 
@@ -105,7 +119,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameTextView, addressLine1TextView,
                 addressLine2TextView, cityTextView, numberTextView;
-        ImageButton imageButton;
+        ImageButton imageButton, updateImageButton;
         RadioButton radioButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -117,16 +131,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             numberTextView = itemView.findViewById(R.id.numberTextView);
 
             imageButton = itemView.findViewById(R.id.deleteButton);
+            updateImageButton = itemView.findViewById(R.id.updateAddress);
             radioButton = itemView.findViewById(R.id.selectRadioButton);
 
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    lastSelectedPosition = getAdapterPosition();
-                    notifyDataSetChanged();
+            radioButton.setOnClickListener(v -> {
+                lastSelectedPosition = getAdapterPosition();
+                notifyDataSetChanged();
 
-                    Toast.makeText(context, nameTextView.getText(), Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, nameTextView.getText(), Toast.LENGTH_SHORT).show();
             });
         }
     }
