@@ -7,6 +7,7 @@ import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.model.ProductIds;
+import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.model.review.ReviewModel;
@@ -160,5 +161,8 @@ public interface ApiInterface {
             @Query("pageNo") String pageNo,
             @Query("limit") String limit,
             @Header("Authorization") String bearer);
+
+    @GET("frontend/getNewProducts")
+    Call<NewProductsResponse> getNewProducts();
 
 }
