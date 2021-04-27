@@ -6,6 +6,7 @@ import com.shopping.bloom.model.EmailOtpModel;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
+import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
 import com.shopping.bloom.model.review.ReviewModel;
@@ -35,6 +36,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -99,7 +101,7 @@ public interface ApiInterface {
     @Headers("Content-type: application/json")
     Call<PutWishListRequest> postUserWishList(
             @Header("Authorization") String authToken,
-            @Body List<String> product_ids);
+            @Body ProductIds product_ids);
 
     @GET("frontend/getProductReview")
         //@Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5MjcyMDgzLCJleHAiOjE2MjE4NjQwODMsIm5iZiI6MTYxOTI3MjA4MywianRpIjoidnVLVzhMUjN4NjNhUGtXdCIsInN1YiI6NDAsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.oAnRkVe-HxNSVYTr6fqQJkTbIJj6KwVmfo9mjeD3IvE")
@@ -107,7 +109,6 @@ public interface ApiInterface {
                                  @Query("limit") String limit,
                                  @Query("pageNo") String pageNo,
                                  @Header("Authorization") String bearer);
-
 
     @FormUrlEncoded
     @POST("auth/customerRegistrationWithImei")
