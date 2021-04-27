@@ -27,46 +27,48 @@
 
         <TextView
             android:id="@+id/new_text_view"
+            style="@style/BoldBlackText"
             android:layout_width="@dimen/sb_size_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="@dimen/sb_size_36"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
-            style="@style/BoldBlackText"
             android:singleLine="true"
             android:text="New In Dresses"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="@dimen/sb_text_size_22"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/new_text_description"
+            style="@style/MediumText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/sb_size_32"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="36dp"
+            android:layout_marginBottom="@dimen/sb_text_size_28"
             android:background="@color/white"
             android:ellipsize="end"
-            style="@style/MediumText"
             android:paddingStart="@dimen/sb_size_22"
             android:paddingTop="@dimen/sb_size_4"
             android:paddingEnd="@dimen/sb_size_22"
             android:paddingBottom="@dimen/sb_size_4"
             android:singleLine="true"
-            android:text="Hooded, over sized, Graphic, tie dye"
             android:textAlignment="center"
             android:textColor="@color/grey_700"
             android:textSize="@dimen/sb_text_size_12"
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/new_text_view" />
+            app:layout_constraintTop_toBottomOf="@id/new_text_view"
+            tools:text="Hooded, over sized, Graphic, tie dye" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
