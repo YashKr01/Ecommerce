@@ -28,10 +28,12 @@
                 android:background="@color/white">
 
                 <ImageButton
+                    android:id="@+id/updateAddress"
                     android:layout_width="@dimen/sb_size_40"
                     android:layout_height="@dimen/sb_size_40"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
+                    android:elevation="@dimen/sb_size_4"
                     android:layout_marginEnd="@dimen/sb_size_30"
                     android:background="@android:color/transparent"
                     android:scaleType="centerCrop"

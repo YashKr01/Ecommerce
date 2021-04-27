@@ -7,9 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.utils.LoginManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,7 +30,16 @@ public class WishListViewModel extends AndroidViewModel {
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
         MutableLiveData<WishList> data = new MutableLiveData<>();
 
-        apiInterface.getWishList(pageNo, limit).enqueue(new Callback<WishList>() {
+        LoginManager loginManager = new LoginManager(App.getContext());
+        String token;
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
+
+        apiInterface.getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
             @Override
             public void onResponse(Call<WishList> call, Response<WishList> response) {
                 Log.d("WISHLIST", "onResponse: " + response.code() + " " + response.message());
