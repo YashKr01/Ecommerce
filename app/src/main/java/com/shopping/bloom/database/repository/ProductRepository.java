@@ -25,6 +25,7 @@ import retrofit2.Response;
 public class ProductRepository {
 
     private static final String TAG = ProductRepository.class.getName();
+    private static final int SUCCESS = 200;
 
     private static ProductRepository repository;
 
@@ -54,11 +55,15 @@ public class ProductRepository {
                         return;
                     }
 
-                    if (response.body() != null) {
+                    if (response.code() == SUCCESS  && response.body() != null) {
                         Log.d(TAG, "onResponse: response body" + response.body().toString());
                         GetProductsResponse productsResponse = response.body();
-                        insertItems(productsResponse.getData());
-                        responseListener.onSuccess(productsResponse.getData());
+                        if(productsResponse.isSuccess()) {
+                            insertItems(productsResponse.getData());
+                            responseListener.onSuccess(productsResponse.getData());
+                        } else {
+                            responseListener.onFailure(response.code(), response.message());
+                        }
                     } else {
                         responseListener.onFailure(response.code(), response.message());
                     }

@@ -71,6 +71,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private int CURRENT_PAGE = 0;
     private final int ITEM_LIMIT = 14;
     private int PARENT_ID = -1;
+    private boolean IS_LOADING = false, IS_LAST_PAGE = false;
     List<CategoryTypes> filterList;
 
     @Override
@@ -89,6 +90,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
         refreshLayout.setOnRefreshListener(() -> {
             CURRENT_PAGE = START_PAGE;
+            IS_LAST_PAGE = false;
             checkNetworkAndFetchData();
         });
     }
@@ -178,7 +180,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
             @Override
             public boolean isLastPage() {
-                return false;
+                return IS_LAST_PAGE;
             }
 
             @Override
@@ -188,7 +190,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
                     rotateUpArrow(sortArrow,false);
                     showOrHideSheet(sortOptionSheet,false);
                 }
-                return false;
+                return IS_LOADING;
             }
         });
     }
@@ -207,6 +209,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(this)) {
+            IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("2", ITEM_LIMIT, CURRENT_PAGE);       // Temporary category
         } else {
@@ -217,16 +220,25 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final ProductResponseListener responseListener = new ProductResponseListener() {
         @Override
         public void onSuccess(List<Product> products) {
+            IS_LOADING = false;
             refreshLayout.setRefreshing(false);
-            productAdapter.updateList(products);
+            if(CURRENT_PAGE == 0) {
+                productAdapter.updateList(products);
+            } else {
+                productAdapter.addProductList(products);
+            }
             CURRENT_PAGE++;
             showNoInternetImage(false);
         }
 
         @Override
         public void onFailure(int errorCode, String message) {
-            refreshLayout.setRefreshing(false);
             Log.d(TAG, "onFailure: errorCode " + errorCode + " message " + message);
+            refreshLayout.setRefreshing(false);
+            if(errorCode == 200) {
+                IS_LAST_PAGE = true;
+            }
+            IS_LOADING = false;
         }
     };
 

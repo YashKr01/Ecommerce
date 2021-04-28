@@ -44,6 +44,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         notifyDataSetChanged();
     }
 
+    public void addProductList(List<Product> products) {
+        if(products == null) return ;
+        int position = productList.size();
+        this.productList.addAll(products);
+        notifyItemRangeInserted(position, products.size());
+    }
+
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
