@@ -71,18 +71,20 @@ public class WishListFragment extends Fragment {
                 // null received
                 Toast.makeText(getContext(), "Server Error", Toast.LENGTH_SHORT).show();
             } else {
-                viewModel.getWishList(page_no, limit).observe(requireActivity(), wishList -> {
-                    if (wishList.getWishListData() == null) {
-                        // empty list
-                        binding.txtEmpty.setVisibility(View.VISIBLE);
+
+                viewModel.getWishList(PAGE_NO, LIMIT).observe(getViewLifecycleOwner(), wishListData -> {
+
+                    if (wishListData == null || wishListData.size() == 0) {
+
                     } else {
                         // non null response
                         list.clear();
-                        list.addAll(wishList.getWishListData());
+                        list.addAll(wishListData);
                         adapter.notifyDataSetChanged();
                     }
                 });
             }
+
         } else {
             //handle no connection
             Toast.makeText(getContext(), "Connection Error", Toast.LENGTH_SHORT).show();

@@ -80,27 +80,27 @@ public class ProductRepository {
     }
 
     /*
-    *  Insert all liked items into DB items into Database
-    * */
+     *  Insert all liked items into DB items into Database
+     * */
     private void insertItems(List<Product> products) {
-        if(products == null || products.size() == 0) return ;
+        if (products == null || products.size() == 0) return;
 
         List<WishListItem> wishListItems = new ArrayList<>();
         String token = getToken();
-        for(Product product: products) {
-            if(product.isInUserWishList()) {
+        for (Product product : products) {
+            if (product.isInUserWishList()) {
                 WishListItem wishListItem = new WishListItem(String.valueOf(product.getId()), token);
                 wishListItems.add(wishListItem);
             }
         }
 
         //insert into db
-        EcommerceDatabase.databaseWriteExecutor.execute(()-> EcommerceDatabase.getInstance().wishListProductDao().addAllItems(wishListItems));
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> EcommerceDatabase.getInstance().wishListProductDao().addAllItems(wishListItems));
     }
 
     /**
      * Post request network call to save all wishList items
-     *  to server and clean the database
+     * to server and clean the database
      */
     public void uploadWishListOnServer(Application context) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
@@ -122,14 +122,14 @@ public class ProductRepository {
         });
     }
 
-    private void saveWishListOnServer(Call<PutWishListRequest> request) {
+    public void saveWishListOnServer(Call<PutWishListRequest> request) {
         Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
-        if(request != null) {
+        if (request != null) {
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
                     Log.d(TAG, "onResponse: Removing all the items from the local DB");
-                    if(response.isSuccessful() && response.code() == 200) {
+                    if (response.isSuccessful() && response.code() == 200) {
                         deleteAll();
                     }
                 }
@@ -142,7 +142,7 @@ public class ProductRepository {
         }
     }
 
-    private static String join(List<String> input) {
+    public static String join(List<String> input) {
         if (input == null || input.size() <= 0) return "";
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < input.size(); i++) {
@@ -157,12 +157,12 @@ public class ProductRepository {
 
     //Clean the database
     private void deleteAll() {
-        EcommerceDatabase.databaseWriteExecutor.execute(()->{
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             EcommerceDatabase.getInstance().wishListProductDao().deleteAll();
         });
     }
 
-    private String getToken() {
+    public static String getToken() {
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
 

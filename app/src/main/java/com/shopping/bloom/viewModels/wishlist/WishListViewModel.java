@@ -8,14 +8,25 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.shopping.bloom.App;
+import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.ProductIds;
+import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.model.wishlist.WishList;
+import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.utils.LoginManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.shopping.bloom.database.repository.ProductRepository.getToken;
+import static com.shopping.bloom.database.repository.ProductRepository.join;
 
 public class WishListViewModel extends AndroidViewModel {
 
@@ -26,9 +37,10 @@ public class WishListViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    public MutableLiveData<WishList> getWishList(String pageNo, String limit) {
+    public MutableLiveData<List<WishListData>> getWishList(String pageNo, String limit) {
+
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
-        MutableLiveData<WishList> data = new MutableLiveData<>();
+        MutableLiveData<List<WishListData>> data = new MutableLiveData<>();
 
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
@@ -42,11 +54,30 @@ public class WishListViewModel extends AndroidViewModel {
         apiInterface.getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
             @Override
             public void onResponse(Call<WishList> call, Response<WishList> response) {
-                Log.d("WISHLIST", "onResponse: " + response.code() + " " + response.message());
-                Log.d("WISHLIST", "onResponse: " + response.body().getMessage());
+
+                String token = getToken();
 
                 if (response.isSuccessful()) {
-                    data.postValue(response.body());
+
+                    List<WishListItem> wishListItems = new ArrayList<>();
+
+                    if (response.body() != null && response.body().getWishListData() != null) {
+                        data.postValue(response.body().getWishListData());
+
+                        Log.d("MLD", "onResponse: " + response.code());
+
+                        for (WishListData wishListData : response.body().getWishListData()) {
+                            WishListItem item = new WishListItem(wishListData.getId() + "", token);
+                            wishListItems.add(item);
+                        }
+
+                    }
+
+                    // inserting each product in db
+                    EcommerceDatabase.databaseWriteExecutor.execute(() ->
+                            EcommerceDatabase.getInstance().wishListProductDao().addAllItems(wishListItems)
+                    );
+
                 } else {
                     data.postValue(null);
                 }
@@ -61,6 +92,68 @@ public class WishListViewModel extends AndroidViewModel {
         });
 
         return data;
+    }
+
+    public void deleteWishListProduct(String id) {
+        EcommerceDatabase.databaseWriteExecutor.execute(() ->
+                EcommerceDatabase.getInstance().wishListProductDao().deleteProductWithId(id)
+        );
+    }
+
+    public void postRemainingItems() {
+
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+
+            ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
+
+            List<String> products = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
+
+            if (products != null && products.size() > 0) {
+
+                String authToken = getToken();
+                String result = join(products);
+
+                ProductIds res = new ProductIds(result);
+                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
+                saveWishListOnServer(request);
+
+            } else {
+
+                String authToken = getToken();
+                ProductIds res = new ProductIds("");
+                Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
+                saveWishListOnServer(request);
+
+            }
+
+        });
+
+    }
+
+    public void saveWishListOnServer(Call<PutWishListRequest> request) {
+
+        if (request != null) {
+            request.enqueue(new Callback<PutWishListRequest>() {
+                @Override
+                public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
+                    if (response.isSuccessful() && response.code() == 200) {
+                        Log.d("SAVE RESPONSE", "onResponse: ");
+                        deleteAll();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<PutWishListRequest> call, Throwable t) {
+                }
+            });
+        }
+    }
+
+    // deleting all list from database
+    private void deleteAll() {
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            EcommerceDatabase.getInstance().wishListProductDao().deleteAll();
+        });
     }
 
 }
