@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:padding="@dimen/sb_size_5"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/colorButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/rect_back_button"
+        android:paddingHorizontal="@dimen/sb_size_10"
+        android:text="Red"
+        android:layout_marginEnd="@dimen/sb_size_10"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="@dimen/sb_size_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

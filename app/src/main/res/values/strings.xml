@@ -79,6 +79,8 @@
     <string name="wish_list_image">wish list image</string>
     <string name="clear">CLEAR</string>
     <string name="apply">Apply</string>
+    
+    <string name="rupee">\u20B9</string>
 
 
 </resources>
