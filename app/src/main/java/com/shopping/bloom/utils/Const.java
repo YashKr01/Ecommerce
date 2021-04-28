@@ -9,4 +9,12 @@ public class Const {
     public static final int READ_TIMEOUT = 20;
     public static final int WRITE_TIMEOUT = 20;
 
+    public enum SORT_BY {
+        NEW_ARRIVAL,
+        MOST_POPULAR,
+        PRICE_HIGH_TO_LOW,
+        PRICE_LOW_TO_HIGH,
+        SUB_CATEGORY
+    }
+
 }

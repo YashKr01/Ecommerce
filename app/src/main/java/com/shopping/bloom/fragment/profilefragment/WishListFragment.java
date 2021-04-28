@@ -1,5 +1,6 @@
 package com.shopping.bloom.fragment.profilefragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
 import com.shopping.bloom.model.wishlist.WishList;
@@ -57,9 +59,24 @@ public class WishListFragment extends Fragment {
         adapter = new WishListAdapter(list, getContext());
         binding.wishListRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.wishListRecyclerView.setAdapter(adapter);
+        binding.wishListRecyclerView.setNestedScrollingEnabled(false);
+
+        // navigate to wish list activity
+        binding.viewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), WishListActivity.class));
+                getParentFragment().getActivity().finish();
+            }
+        });
 
         // get wish list
         getWishList(PAGE_NO, LIMIT);
+
+        if (list.isEmpty()) {
+            binding.viewMore.setVisibility(View.INVISIBLE);
+            binding.txtEmpty.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -75,12 +92,16 @@ public class WishListFragment extends Fragment {
                 viewModel.getWishList(PAGE_NO, LIMIT).observe(getViewLifecycleOwner(), wishListData -> {
 
                     if (wishListData == null || wishListData.size() == 0) {
-
+                        binding.viewMore.setVisibility(View.INVISIBLE);
+                        binding.txtEmpty.setVisibility(View.VISIBLE);
                     } else {
                         // non null response
                         list.clear();
                         list.addAll(wishListData);
                         adapter.notifyDataSetChanged();
+
+                        binding.txtEmpty.setVisibility(View.INVISIBLE);
+                        binding.viewMore.setVisibility(View.VISIBLE);
                     }
                 });
             }

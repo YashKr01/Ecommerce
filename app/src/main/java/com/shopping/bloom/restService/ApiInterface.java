@@ -77,9 +77,12 @@ public interface ApiInterface {
     @Headers("Accept-type: application/json")
     Call<GetProductsResponse> getProducts(
             @Header("Authorization") String authToken,
+            @Query("category_id") String categoryId,
             @Query("sub_category_id") String subCategoryId,
             @Query("limit") int limit,
-            @Query("pageNo") int pageNo
+            @Query("pageNo") int pageNo,
+            @Query("sortByPrice") String sortByPrice
+            //TODO: Add two more filter option here Most Popular, New Arrival
     );
 
     @POST("auth/loginWithEmailPassword")
@@ -148,7 +151,6 @@ public interface ApiInterface {
             @Header("Authorization") String bearer);
 
     @GET("metadata/getUserWishlist")
-    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
     Call<WishList> getWishList(
             @Query("pageNo") String pageNo,
             @Query("limit") String limit,

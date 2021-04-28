@@ -44,6 +44,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         notifyDataSetChanged();
     }
 
+    public void addProductList(List<Product> products) {
+        if(products == null) return ;
+        int position = productList.size();
+        this.productList.addAll(products);
+        notifyItemRangeInserted(position, products.size());
+    }
+
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,6 +73,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 wishListListener.updateWishList(position, !isLiked);
             }
         });
+
+        holder.imgProductImage.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                wishListListener.productClicked(product);
+            }
+        });
+
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

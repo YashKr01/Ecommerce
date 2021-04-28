@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.wishlist.WishListData;
+import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.CommonUtils;
 
@@ -53,7 +54,7 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
                 true
         );
 
-        holder.imgDelete.setOnClickListener(v -> listener.wishListItemDelete(currentItem));
+        holder.imgDelete.setOnClickListener(v -> listener.wishListItemDelete(currentItem,position));
 
     }
 

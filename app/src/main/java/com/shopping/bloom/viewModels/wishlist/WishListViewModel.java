@@ -45,11 +45,10 @@ public class WishListViewModel extends AndroidViewModel {
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
 
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
+        if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
+        else token = loginManager.getGuest_token();
+
+        Log.d("USERTOKEN", "getWishList: " + token);
 
         apiInterface.getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
             @Override
@@ -57,15 +56,14 @@ public class WishListViewModel extends AndroidViewModel {
 
                 String token = getToken();
 
-                if (response.isSuccessful()) {
-
+                if (response.isSuccessful() && response.body() != null) {
                     List<WishListItem> wishListItems = new ArrayList<>();
 
-                    if (response.body() != null && response.body().getWishListData() != null) {
+                    if (response.body().getWishListData() != null) {
+
                         data.postValue(response.body().getWishListData());
 
-                        Log.d("MLD", "onResponse: " + response.code());
-
+                        // creating list of product ids for inserting in db
                         for (WishListData wishListData : response.body().getWishListData()) {
                             WishListItem item = new WishListItem(wishListData.getId() + "", token);
                             wishListItems.add(item);
