@@ -1,6 +1,7 @@
 package com.shopping.bloom.viewModels;
 
 import android.app.Application;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -34,8 +35,8 @@ public class ProductsViewModel extends AndroidViewModel {
         this.responseListener = responseListener;
     }
 
-    public void fetchData(String subCategoryId, int limit, int pageNo) {
-        repository.getProducts(context, subCategoryId, limit, pageNo, responseListener);
+    public void fetchData(String categoryId, int limit, int pageNo) {
+        repository.getProducts(context, categoryId, null, limit, pageNo, responseListener);
     }
 
     public void addToWishList(WishListItem wishListItem) {

@@ -76,6 +76,7 @@ public interface ApiInterface {
     @Headers("Accept-type: application/json")
     Call<GetProductsResponse> getProducts(
             @Header("Authorization") String authToken,
+            @Query("category_id") String categoryId,
             @Query("sub_category_id") String subCategoryId,
             @Query("limit") int limit,
             @Query("pageNo") int pageNo

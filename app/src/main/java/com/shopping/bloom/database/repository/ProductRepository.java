@@ -36,12 +36,17 @@ public class ProductRepository {
         return repository;
     }
 
-    public void getProducts(Application context, String subCategory, int limit, int pageNo, ProductResponseListener responseListener) {
+    public void getProducts(Application context,
+                            String categoryId,
+                            String subCategory,
+                            int limit,
+                            int pageNo,
+                            ProductResponseListener responseListener) {
         Log.d(TAG, "getProducts: subCategory: " + subCategory + " limit: " + limit);
 
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
         String authToken = getToken();      //TODO : add auth token method
-        Call<GetProductsResponse> responseCall = apiInterface.getProducts(authToken, subCategory, limit, pageNo);
+        Call<GetProductsResponse> responseCall = apiInterface.getProducts(authToken,categoryId, subCategory, limit, pageNo);
 
         Log.d(TAG, "getProducts: Request " + responseCall.request().toString());
 

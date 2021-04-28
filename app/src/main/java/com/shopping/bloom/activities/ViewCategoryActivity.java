@@ -69,7 +69,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
-    private final int ITEM_LIMIT = 14;
+    private final int ITEM_LIMIT = 20;
     private int PARENT_ID = -1;
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
     List<CategoryTypes> filterList;
@@ -211,7 +211,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         if (NetworkCheck.isConnect(this)) {
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("2", ITEM_LIMIT, CURRENT_PAGE);       // Temporary category
+            viewModel.fetchData("1", ITEM_LIMIT, CURRENT_PAGE);       // Temporary category
         } else {
             showNoInternetImage(true);
         }
