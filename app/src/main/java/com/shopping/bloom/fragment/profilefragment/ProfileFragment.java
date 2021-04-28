@@ -74,10 +74,6 @@ public class ProfileFragment extends Fragment {
         binding.profileTabLayout.setupWithViewPager(binding.profileViewPager);
         binding.profileViewPager.setAdapter(viewPagerAdapter);
 
-        binding.txtViewMore.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), WishListActivity.class));
-        });
-
         return binding.getRoot();
     }
 
