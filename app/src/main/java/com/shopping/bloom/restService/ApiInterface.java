@@ -79,7 +79,9 @@ public interface ApiInterface {
             @Query("category_id") String categoryId,
             @Query("sub_category_id") String subCategoryId,
             @Query("limit") int limit,
-            @Query("pageNo") int pageNo
+            @Query("pageNo") int pageNo,
+            @Query("sortByPrice") String sortByPrice
+            //TODO: Add two more filter option here Most Popular, New Arrival
     );
 
     @POST("auth/loginWithEmailPassword")

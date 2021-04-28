@@ -24,6 +24,7 @@ import com.shopping.bloom.activities.ViewCategoryActivity;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
@@ -121,7 +122,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     @Override
     public void onProductClick(Category categoryCategory) {
         Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
-        gotoProductScreen(categoryCategory);
+        gotoProductScreen(String.valueOf(categoryCategory.getId()));
     }
 
     //When particular product image is clicked
@@ -129,6 +130,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     public void onSubProductClick(SubCategory product) {
         Log.d(TAG, "onSubProductClick: "+ product.toString());
         if(getContext() != null) {
+            gotoProductScreen(product.getParent_id());
             Toast.makeText(getContext(), product.getCategory_name(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -146,10 +148,10 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
     }
 
-    private void gotoProductScreen(Category product) {
+    private void gotoProductScreen(String categoryId) {
         String ARG_CATEGORY = "category_id";
         Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
-        intent.putExtra(ARG_CATEGORY, product.getId());
+        intent.putExtra(ARG_CATEGORY, categoryId);
         startActivity(intent);
     }
 
