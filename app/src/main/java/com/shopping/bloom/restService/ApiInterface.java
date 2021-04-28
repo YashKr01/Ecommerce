@@ -9,6 +9,7 @@ import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.model.RegistrationModel;
+import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.wishlist.WishList;
@@ -158,5 +159,13 @@ public interface ApiInterface {
     @GET("frontend/getNewProducts")
     @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
     Call<NewProductsResponse> getNewProducts();
+
+    @GET("metadata/recentlyViewProducts")
+    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NjI5NzgzLCJleHAiOjE2MjIyMjE3ODMsIm5iZiI6MTYxOTYyOTc4MywianRpIjoiUGxaMXpXSkZHQkZtcHRPMyIsInN1YiI6MzksInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.H5pLqz3b8Glc1btZaRVUFr7uaVJOquzssobqoYhxbxY")
+    Call<RecentlyViewedResponse> getRecentlyViewedList(
+            @Query("pageNo") String pageNo,
+            @Query("limit") String limit
+    );
+
 
 }
