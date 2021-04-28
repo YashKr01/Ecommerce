@@ -1,0 +1,105 @@
+package com.shopping.bloom.model;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+public class SingleProductDataResponse {
+
+    @SerializedName("available_colors")
+    @Expose
+    String available_colors;
+
+    @SerializedName("available_sizes")
+    @Expose
+    String available_sizes;
+
+    @SerializedName("product_name")
+    @Expose
+    String product_name;
+
+    @SerializedName("avg_rating")
+    @Expose
+    String avg_rating;
+
+    @SerializedName("price")
+    @Expose
+    String price;
+
+    @SerializedName("primary_image")
+    @Expose
+    String primary_image;
+
+    @SerializedName("product_variables")
+    @Expose
+    List<ProductVariableResponse> productVariableResponses;
+
+    @SerializedName("product_descriptions")
+    @Expose
+    List<SingleProductDescResponse> singleProductDescResponseList;
+
+    public List<SingleProductDescResponse> getSingleProductDescResponseList() {
+        return singleProductDescResponseList;
+    }
+
+    public void setSingleProductDescResponseList(List<SingleProductDescResponse> singleProductDescResponseList) {
+        this.singleProductDescResponseList = singleProductDescResponseList;
+    }
+
+    public String getPrimary_image() {
+        return primary_image;
+    }
+
+    public void setPrimary_image(String primary_image) {
+        this.primary_image = primary_image;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getAvailable_sizes() {
+        return available_sizes;
+    }
+
+    public void setAvailable_sizes(String available_sizes) {
+        this.available_sizes = available_sizes;
+    }
+
+    public String getAvailable_colors() {
+        return available_colors;
+    }
+
+    public void setAvailable_colors(String available_colors) {
+        this.available_colors = available_colors;
+    }
+
+    public String getAvg_rating() {
+        return avg_rating;
+    }
+
+    public void setAvg_rating(String avg_rating) {
+        this.avg_rating = avg_rating;
+    }
+
+    public List<ProductVariableResponse> getProductVariableResponses() {
+        return productVariableResponses;
+    }
+
+    public void setProductVariableResponses(List<ProductVariableResponse> productVariableResponses) {
+        this.productVariableResponses = productVariableResponses;
+    }
+}
