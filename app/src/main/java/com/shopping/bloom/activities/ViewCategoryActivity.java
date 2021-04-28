@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -34,9 +35,11 @@ import com.shopping.bloom.adapters.ProductAdapter;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.CategoryTypes;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
+import com.shopping.bloom.utils.Const.SORT_BY;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -69,10 +72,13 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
-    private final int ITEM_LIMIT = 20;
     private int PARENT_ID = -1;
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
-    List<CategoryTypes> filterList;
+    List<CategoryTypes> filterList;     //subcategory list for filter/sorting
+    ProductFilter MAIN_FILTER = new ProductFilter();
+
+    private int RETRY_ATTEMPT = 0;
+    private final int MAX_RETRY_ATTEMPT = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +95,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         checkNetworkAndFetchData();
 
         refreshLayout.setOnRefreshListener(() -> {
-            CURRENT_PAGE = START_PAGE;
-            IS_LAST_PAGE = false;
+            reset();
             checkNetworkAndFetchData();
         });
     }
@@ -128,10 +133,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rlFilter.setOnClickListener(optionsClickListener);
         imgCloseNavigationView.setOnClickListener(optionsClickListener);
 
-        sortMostPopular.setOnClickListener(optionsClickListener);
-        sortNewArrival.setOnClickListener(optionsClickListener);
-        sortPriceLtoH.setOnClickListener(optionsClickListener);
-        sortPriceHtoL.setOnClickListener(optionsClickListener);
+        sortMostPopular.setOnClickListener(sortOptionClickListener);
+        sortNewArrival.setOnClickListener(sortOptionClickListener);
+        sortPriceLtoH.setOnClickListener(sortOptionClickListener);
+        sortPriceHtoL.setOnClickListener(sortOptionClickListener);
         btApply.setOnClickListener(optionsClickListener);
         btClear.setOnClickListener(optionsClickListener);
     }
@@ -187,23 +192,32 @@ public class ViewCategoryActivity extends AppCompatActivity {
             public boolean isLoading() {
                 boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
                 if (!isVisible) {
-                    rotateUpArrow(sortArrow,false);
-                    showOrHideSheet(sortOptionSheet,false);
+                    rotateUpArrow(sortArrow, false);
+                    showOrHideSheet(sortOptionSheet, false);
                 }
                 return IS_LOADING;
             }
         });
     }
 
-    private final WishListListener wishListListener = (position, isAdded) -> {
-        Log.d(TAG, "updateWishList: " + isAdded);
-        Product product = productAdapter.getItemAt(position);
-        productAdapter.updateItem(position, isAdded);
-        WishListItem wishListItem = new WishListItem(String.valueOf(product.getId()), LoginManager.getInstance().gettoken());
-        if (isAdded) {
-            viewModel.addToWishList(wishListItem);
-        } else {
-            viewModel.removeFromWishList(wishListItem);
+    private final WishListListener wishListListener = new WishListListener() {
+        @Override
+        public void updateWishList(int position, boolean isAdded) {
+            Log.d(TAG, "updateWishList: " + isAdded);
+            Product product = productAdapter.getItemAt(position);
+            productAdapter.updateItem(position, isAdded);
+            WishListItem wishListItem = new WishListItem(String.valueOf(product.getId()), LoginManager.getInstance().gettoken());
+            if (isAdded) {
+                viewModel.addToWishList(wishListItem);
+            } else {
+                viewModel.removeFromWishList(wishListItem);
+            }
+        }
+
+        @Override
+        public void productClicked(Product product) {
+            //Open single product screen
+            openSingleProductActivity(product);
         }
     };
 
@@ -211,7 +225,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         if (NetworkCheck.isConnect(this)) {
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("1", ITEM_LIMIT, CURRENT_PAGE);       // Temporary category
+            viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
         } else {
             showNoInternetImage(true);
         }
@@ -222,8 +236,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void onSuccess(List<Product> products) {
             IS_LOADING = false;
             refreshLayout.setRefreshing(false);
-            if(CURRENT_PAGE == 0) {
+            if (CURRENT_PAGE == 0) {
                 productAdapter.updateList(products);
+                rvProducts.smoothScrollToPosition(0);       //CHECK for bugs
             } else {
                 productAdapter.addProductList(products);
             }
@@ -235,21 +250,63 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void onFailure(int errorCode, String message) {
             Log.d(TAG, "onFailure: errorCode " + errorCode + " message " + message);
             refreshLayout.setRefreshing(false);
-            if(errorCode == 200) {
+            if (errorCode == 200) {
                 IS_LAST_PAGE = true;
+                return ;
             }
             IS_LOADING = false;
+            RETRY_ATTEMPT++;
+            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+                Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
+                checkNetworkAndFetchData();
+            }
         }
     };
+
+    private void updateFilter(SORT_BY sortBy) {
+        Log.d(TAG, "updateFilter: updating filter... " + sortBy);
+        CURRENT_PAGE = 0;
+        RETRY_ATTEMPT = 0;
+        IS_LAST_PAGE = false;
+        ProductFilter newFilter = new ProductFilter();
+        String subCategory = categoryNamesAdapter.getSelectedItemsString();
+        if (!subCategory.isEmpty()) {
+            newFilter.setSubCategoryIds(subCategory);
+        } else {
+            newFilter.setSubCategoryIds(null);
+        }
+        if(sortBy == SORT_BY.SUB_CATEGORY) {
+            //Just update the category items and return
+            MAIN_FILTER.setSubCategoryIds(newFilter.getSubCategoryIds());
+            Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
+            checkNetworkAndFetchData();
+            return ;
+        }
+
+        if (sortBy == SORT_BY.NEW_ARRIVAL) {
+            newFilter.setNewArrival("1");
+        }
+        if (sortBy == SORT_BY.MOST_POPULAR) {
+            newFilter.setMostPopular("1");
+        }
+        if (sortBy == SORT_BY.PRICE_HIGH_TO_LOW) {
+            newFilter.setPriceHtoL("1");
+        }
+        if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
+            newFilter.setNewArrival("0");
+        }
+        MAIN_FILTER = newFilter;
+        Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
+        checkNetworkAndFetchData();
+    }
 
     private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
             int viewId = v.getId();
             if (viewId == R.id.rlSort) {
-                selectText(0);  //ignore
                 boolean isOtherSheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
-                if(isOtherSheetVisible) { //close filter sheet
+                if (isOtherSheetVisible) { //close filter sheet
                     rotateUpArrow(categoryArrow, false);
                     showOrHideSheet(categoryOptionSheet, false);
                 }
@@ -262,11 +319,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
             if (viewId == R.id.rlCategory) {    //close sort sheet
                 boolean isOtherSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
-                if(isOtherSheetVisible) {
+                if (isOtherSheetVisible) {
                     rotateUpArrow(sortArrow, false);
                     showOrHideSheet(sortOptionSheet, false);
                 }
-
 
                 boolean isVisible = categoryOptionSheet.getVisibility() == View.GONE;
                 showOrHideSheet(categoryOptionSheet, isVisible);
@@ -282,39 +338,56 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 return;
             }
 
-            //if any sort option is selected
-            if (viewId == R.id.textView1) {  //Most popular
-                selectText(viewId);
-                return;
-            }
-            if (viewId == R.id.textView2) { //New arrival
-                selectText(viewId);
-                return;
-            }
-            if (viewId == R.id.textView3) { //Price Low to High
-                selectText(viewId);
-                return;
-            }
-            if (viewId == R.id.textView4) { //Price High to Low
-                selectText(viewId);
-                return;
-            }
-
-            if(viewId == R.id.btClearAll) {
-                showOrHideSheet(categoryOptionSheet, false);  // close filter sheet
+            if (viewId == R.id.btClearAll) {
                 categoryNamesAdapter.clearAllSelection();
                 return;
             }
 
-            if(viewId == R.id.btApply) {
-                List<CategoryTypes> list = categoryNamesAdapter.getSelectedItems();
-                Log.d(TAG, "onDebouncedClick: list " + list.toString());
+            if (viewId == R.id.btApply) {
                 showOrHideSheet(categoryOptionSheet, false);
-                return;
+                rotateUpArrow(categoryArrow, false);
+                updateFilter(SORT_BY.SUB_CATEGORY);
+                return ;
             }
 
         }
     };
+
+    //This Listener ONLY used for the click items
+    private final DebouncedOnClickListener sortOptionClickListener = new DebouncedOnClickListener(200) {
+        @Override
+        public void onDebouncedClick(View v) {
+            int viewId = v.getId();
+            selectText(viewId);     // change the typeface to bold for the selected text
+            //if any sort option is selected
+            if (viewId == R.id.textView1) {  //Most popular
+                updateFilter(SORT_BY.MOST_POPULAR);
+            }
+            if (viewId == R.id.textView2) { //New arrival
+                updateFilter(SORT_BY.NEW_ARRIVAL);
+            }
+            if (viewId == R.id.textView3) { //Price Low to High
+                updateFilter(SORT_BY.PRICE_LOW_TO_HIGH);
+            }
+            if (viewId == R.id.textView4) { //Price High to Low
+                updateFilter(SORT_BY.PRICE_HIGH_TO_LOW);
+            }
+            showOrHideSheet(sortOptionSheet, false);
+            rotateUpArrow(sortArrow, false);
+        }
+    };
+
+    // reset filter, set CURRENT PAGE = 0
+    private void reset() {
+        Toast.makeText(this, "Reset Everything", Toast.LENGTH_SHORT)
+                .show();
+        selectText(-1); //reset sort options
+        MAIN_FILTER = new ProductFilter();
+        CURRENT_PAGE = START_PAGE;
+        IS_LAST_PAGE = false;
+        RETRY_ATTEMPT = 0;
+        //categoryNamesAdapter.clearAllSelection(); //optional
+    }
 
     //animate Filter sheet or Sort layout sheet to get an dropDown effects
     // Pass the parent layout LinearLayout
@@ -359,11 +432,18 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
+    private void openSingleProductActivity(Product product) {
+        //TODO: send product id with intent
+        Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
     private void selectText(int viewId) {
         int[] optionList = {R.id.textView1, R.id.textView2, R.id.textView3, R.id.textView4};
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             TextView textView = findViewById(optionList[i]);
-            if(optionList[i] == viewId){
+            if (optionList[i] == viewId) {
                 textView.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
@@ -417,8 +497,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
         List<CategoryTypes> list = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
             CategoryTypes product = new CategoryTypes("Dummy", "2", "");
-            CategoryTypes product1 = new CategoryTypes("Dummy shoes", "2","1");
-            CategoryTypes product2 = new CategoryTypes("dummy HipHop", "2","5");
+            CategoryTypes product1 = new CategoryTypes("Dummy shoes", "2", "1");
+            CategoryTypes product2 = new CategoryTypes("dummy HipHop", "2", "5");
             list.add(product);
             list.add(product1);
             list.add(product2);

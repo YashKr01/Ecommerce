@@ -73,6 +73,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 wishListListener.updateWishList(position, !isLiked);
             }
         });
+
+        holder.imgProductImage.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                wishListListener.productClicked(product);
+            }
+        });
+
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

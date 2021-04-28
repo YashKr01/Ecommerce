@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.LoginWithPassData;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.ApiInterface;
@@ -36,21 +38,20 @@ public class ProductRepository {
         return repository;
     }
 
-    public void getProducts(Application context,
-                            String categoryId,
-                            String subCategory,
-                            int limit,
-                            int pageNo,
-                            ProductResponseListener responseListener) {
-        Log.d(TAG, "getProducts: subCategory: " + subCategory + " limit: " + limit);
-
+    public void getProducts(Application context, String categoryId, int limit,
+                            int pageNo, ProductFilter filter, ProductResponseListener responseListener) {
+        if(filter == null) {
+            Log.e(TAG, "getProducts: FILTER IS NOT INITIALIZED");
+            filter = new ProductFilter();
+        }
+        Log.d(TAG, "getProducts: subCategory: " + filter.toString());
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
-        String authToken = getToken();      //TODO : add auth token method
-        Call<GetProductsResponse> responseCall = apiInterface.getProducts(authToken,categoryId, subCategory, limit, pageNo);
-
-        Log.d(TAG, "getProducts: Request " + responseCall.request().toString());
+        String authToken = getToken();
+        Call<GetProductsResponse> responseCall =
+                apiInterface.getProducts(authToken, categoryId, filter.getSubCategoryIds(), limit, pageNo, filter.getPriceHtoL());
 
         if (responseCall != null) {
+            Log.d(TAG, "getProducts: Request " + responseCall.request().toString());
             responseCall.enqueue(new Callback<GetProductsResponse>() {
                 @Override
                 public void onResponse(Call<GetProductsResponse> call, Response<GetProductsResponse> response) {
@@ -60,10 +61,10 @@ public class ProductRepository {
                         return;
                     }
 
-                    if (response.code() == SUCCESS  && response.body() != null) {
+                    if (response.code() == SUCCESS && response.body() != null) {
                         Log.d(TAG, "onResponse: response body" + response.body().toString());
                         GetProductsResponse productsResponse = response.body();
-                        if(productsResponse.isSuccess()) {
+                        if (productsResponse.isSuccess()) {
                             insertItems(productsResponse.getData());
                             responseListener.onSuccess(productsResponse.getData());
                         } else {
@@ -81,7 +82,6 @@ public class ProductRepository {
                 }
             });
         }
-
     }
 
     /*
@@ -128,8 +128,8 @@ public class ProductRepository {
     }
 
     public void saveWishListOnServer(Call<PutWishListRequest> request) {
-        Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
         if (request != null) {
+            Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
