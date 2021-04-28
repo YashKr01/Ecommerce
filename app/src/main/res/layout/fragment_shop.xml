@@ -52,9 +52,9 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vpHeaderImages"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp"
+                    android:layout_height="150dp"
                     android:layout_marginTop="@dimen/sb_size_4"
-                    android:background="@color/blue_600"
+                    android:background="@android:color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
