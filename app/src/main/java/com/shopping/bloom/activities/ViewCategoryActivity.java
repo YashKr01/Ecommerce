@@ -77,6 +77,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
     List<CategoryTypes> filterList;     //subcategory list for filter/sorting
     ProductFilter MAIN_FILTER = new ProductFilter();
 
+    /*
+    *   RETRY FETCH POLICY
+    *       MAXIMUM Retry attempt = 3
+    *       if the request fails then check if for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+    *           Request again.
+    * */
     private int RETRY_ATTEMPT = 0;
     private final int MAX_RETRY_ATTEMPT = 3;
 
@@ -235,6 +241,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         @Override
         public void onSuccess(List<Product> products) {
             IS_LOADING = false;
+            RETRY_ATTEMPT = 0;
             refreshLayout.setRefreshing(false);
             if (CURRENT_PAGE == 0) {
                 productAdapter.updateList(products);
@@ -259,6 +266,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
             if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
                 checkNetworkAndFetchData();
+            } else {
+                RETRY_ATTEMPT = 0;
             }
         }
     };
