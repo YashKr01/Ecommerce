@@ -19,7 +19,7 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:paddingHorizontal="@dimen/sb_size_8"
-        android:textSize="@dimen/sb_text_size_15"
+        android:textSize="@dimen/sb_text_size_14"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
