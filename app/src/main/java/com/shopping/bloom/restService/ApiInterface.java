@@ -9,6 +9,7 @@ import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.model.RegistrationModel;
+import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.wishlist.WishList;
@@ -165,4 +166,12 @@ public interface ApiInterface {
     Call<SingleProductResponse> getSingleProduct(
             @Header("Authorization") String bearer
     );
+    @GET("metadata/recentlyViewProducts")
+    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5Njg1NjQyLCJleHAiOjE2MjIyNzc2NDIsIm5iZiI6MTYxOTY4NTY0MiwianRpIjoiSXZBbTFpcURlVDU5aXNWRyIsInN1YiI6MzksInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.xnrosDc2RAWX5wEjRdgQBSUdxLbocdQ9s1IoHbQuivs")
+    Call<RecentlyViewedResponse> getRecentlyViewedList(
+            @Query("pageNo") String pageNo,
+            @Query("limit") String limit
+    );
+
+
 }

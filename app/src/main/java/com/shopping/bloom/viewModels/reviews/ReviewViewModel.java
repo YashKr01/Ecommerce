@@ -1,7 +1,6 @@
 package com.shopping.bloom.viewModels.reviews;
 
 import android.app.Application;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,27 +40,22 @@ public class ReviewViewModel extends AndroidViewModel {
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
 
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
+        if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
+        else token = loginManager.getGuest_token();
+
 
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
-        apiInterface.postReview(postReview,"Bearer " + token).enqueue(new Callback<ReviewModel>() {
+        apiInterface.postReview(postReview, "Bearer " + token).enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
-                Log.d("POST REVIEW", "onResponse: " + response.code() + " " + response.message());
 
-                if(response.isSuccessful()){
+                if (response.isSuccessful())
                     Toast.makeText(application, "Review Posted", Toast.LENGTH_SHORT).show();
-                }
 
             }
 
             @Override
             public void onFailure(Call<ReviewModel> call, Throwable t) {
-                Log.d("REVIEW", "onFailure: " + t.getMessage());
             }
         });
 

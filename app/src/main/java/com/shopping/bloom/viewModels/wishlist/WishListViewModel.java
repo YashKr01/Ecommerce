@@ -76,15 +76,13 @@ public class WishListViewModel extends AndroidViewModel {
                             EcommerceDatabase.getInstance().wishListProductDao().addAllItems(wishListItems)
                     );
 
-                } else {
-                    data.postValue(null);
-                }
+                } else data.postValue(null);
+
 
             }
 
             @Override
             public void onFailure(Call<WishList> call, Throwable t) {
-                Log.d("WISHLIST", "onFailure: " + t.getMessage());
                 data.postValue(null);
             }
         });

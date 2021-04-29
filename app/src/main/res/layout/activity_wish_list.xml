@@ -18,17 +18,60 @@
         app:title="WishList"
         app:titleTextColor="@color/black" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="@dimen/sb_size_0"
+        android:layout_height="@dimen/sb_size_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:spanCount="2"
-        tools:listitem="@layout/item_wishlist_activity" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_60"
+                android:layout_marginTop="@dimen/sb_size_8"
+                android:background="@color/grey_300"
+                android:contentDescription="@string/divider"
+                android:padding="@dimen/sb_size_18"
+                android:src="@drawable/ic_divider"
+                app:tint="@color/grey_500" />
+
+            <TextView
+                android:id="@+id/txt_recommendations"
+                style="@style/BoldText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/sb_size_18"
+                android:text="@string/recommendations_for_you"
+                android:textSize="@dimen/sb_text_size_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recommendation_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <ProgressBar
         android:id="@+id/progress_bar"

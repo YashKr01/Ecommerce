@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
@@ -17,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shopping.bloom.R;
@@ -56,10 +56,18 @@ public class SingleProductActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     RelativeLayout relativeLayout;
 
+    private Integer PRODUCT_ID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product);
+
+        /*
+        Product ID received
+         */
+        PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
+        Log.d("SEND", "onCreate: "+PRODUCT_ID);
 
         productName = findViewById(R.id.product_name);
         price = findViewById(R.id.price);
@@ -169,6 +177,9 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
         singleProductViewModel.makeApiCall(getApplication());
+
+
+
 
     }
 

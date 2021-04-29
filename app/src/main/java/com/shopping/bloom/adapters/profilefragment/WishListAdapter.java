@@ -11,9 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.model.wishlist.WishListData;
+import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.CommonUtils;
 
 
@@ -23,10 +22,12 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
 
     private List<WishListData> wishList;
     private Context context;
+    private WishListProductListener listener;
 
-    public WishListAdapter(List<WishListData> wishList, Context context) {
+    public WishListAdapter(List<WishListData> wishList, Context context, WishListProductListener listener) {
         this.wishList = wishList;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -46,6 +47,8 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         CommonUtils.loadImageWithGlide(context, image_path,
                 holder.imageView, false);
 
+        holder.imageView.setOnClickListener(v -> listener.wishListItemCLicked(currentItem));
+
     }
 
     @Override
@@ -61,8 +64,8 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.img_wish_list);
-            textView = itemView.findViewById(R.id.txt_wish_list_name);
+            imageView = itemView.findViewById(R.id.img_recently_viewed);
+            textView = itemView.findViewById(R.id.txt_recent_name);
         }
     }
 }
