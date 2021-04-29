@@ -16,6 +16,7 @@ import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
+import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
@@ -82,8 +83,16 @@ public interface ApiInterface {
             @Query("sub_category_id") String subCategoryId,
             @Query("limit") int limit,
             @Query("pageNo") int pageNo,
-            @Query("sortByPrice") String sortByPrice
+            @Query("sortByPrice") String sortByPrice,
+            @Query("colors") String colors,
+            @Query("sizes") String sizes
             //TODO: Add two more filter option here Most Popular, New Arrival
+    );
+
+    @GET("/api/frontend/getSizeColorData")
+    @Headers("Accept-type: application/json")
+    Call<GetColorAndSizeResponse> getAvailableFilter(
+            @Header("Authorization") String authToken
     );
 
     @POST("auth/loginWithEmailPassword")

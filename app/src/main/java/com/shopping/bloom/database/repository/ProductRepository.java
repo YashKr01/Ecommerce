@@ -5,14 +5,15 @@ import android.util.Log;
 
 import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
-import com.shopping.bloom.model.LoginWithPassData;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
+import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.utils.LoginManager;
@@ -38,20 +39,29 @@ public class ProductRepository {
         return repository;
     }
 
+
+    /*
+     *   Get all the product based on the filter
+     *       Mandatory params are:
+     *           authToke, categoryId, limit, pageNo
+     *       optional param are:
+     *           subCategoryId, sortByPrice, (will add more)
+     *
+     * */
     public void getProducts(Application context, String categoryId, int limit,
                             int pageNo, ProductFilter filter, ProductResponseListener responseListener) {
-        if(filter == null) {
-            Log.e(TAG, "getProducts: FILTER IS NOT INITIALIZED");
+        if (filter == null) {
+            Log.e(TAG, "getProducts: FILTER MUST BE INITIALIZED");
             filter = new ProductFilter();
         }
         Log.d(TAG, "getProducts: subCategory: " + filter.toString());
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
         String authToken = getToken();
         Call<GetProductsResponse> responseCall =
-                apiInterface.getProducts(authToken, categoryId, filter.getSubCategoryIds(), limit, pageNo, filter.getPriceHtoL());
+                apiInterface.getProducts(authToken, categoryId, filter.getSubCategoryIds(), limit, pageNo,
+                        filter.getPriceHtoL(), filter.getColors(), filter.getSizes());
 
         if (responseCall != null) {
-            Log.d(TAG, "getProducts: Request " + responseCall.request().toString());
             responseCall.enqueue(new Callback<GetProductsResponse>() {
                 @Override
                 public void onResponse(Call<GetProductsResponse> call, Response<GetProductsResponse> response) {
@@ -62,7 +72,6 @@ public class ProductRepository {
                     }
 
                     if (response.code() == SUCCESS && response.body() != null) {
-                        Log.d(TAG, "onResponse: response body" + response.body().toString());
                         GetProductsResponse productsResponse = response.body();
                         if (productsResponse.isSuccess()) {
                             insertItems(productsResponse.getData());
@@ -83,6 +92,39 @@ public class ProductRepository {
             });
         }
     }
+
+    /*
+     *   Get all available filter like
+     *       Color, Size, (will include more)
+     * */
+    public void getAvailableColorAndSize(Application context, FetchFilterListener filterListener) {
+        Log.d(TAG, "getAvailableColorAndSize: ");
+        ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
+        String authToken = getToken();
+        Call<GetColorAndSizeResponse> responseCall =
+                apiInterface.getAvailableFilter(authToken);
+        if (responseCall != null) {
+            responseCall.enqueue(new Callback<GetColorAndSizeResponse>() {
+                @Override
+                public void onResponse(Call<GetColorAndSizeResponse> call, Response<GetColorAndSizeResponse> response) {
+                    if (response.isSuccessful() && response.code() == SUCCESS) {
+                        GetColorAndSizeResponse myResponse = response.body();
+                        filterListener.fetchOnSuccess(myResponse.getFilterArrays());
+                    } else {
+                        if (response != null)
+                            filterListener.fetchOnFailed(response.code(), response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetColorAndSizeResponse> call, Throwable t) {
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                    filterListener.fetchOnFailed(-1, t.getMessage());
+                }
+            });
+        }
+    }
+
 
     /*
      *  Insert all liked items into DB items into Database
@@ -118,7 +160,7 @@ public class ProductRepository {
                 Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
                 saveWishListOnServer(request);
             } else {
-                Log.d(TAG, "uploadAutomationMessages: empty delete all items from the wish list " + products.toString());
+                Log.d(TAG, "uploadWishListOnServer: empty delete all items from the wish list " + products.toString());
                 String authToken = getToken();
                 ProductIds res = new ProductIds("");
                 Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
@@ -129,7 +171,7 @@ public class ProductRepository {
 
     public void saveWishListOnServer(Call<PutWishListRequest> request) {
         if (request != null) {
-            Log.d(TAG, "saveMessagesOnServer: Request " + request.request().toString());
+            Log.d(TAG, "saveWishListOnServer: Request " + request.request().toString());
             request.enqueue(new Callback<PutWishListRequest>() {
                 @Override
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {

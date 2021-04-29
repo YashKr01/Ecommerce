@@ -9,6 +9,18 @@ public class ProductVariableResponse {
     @Expose
     String primary_image;
 
+    @SerializedName("color")
+    @Expose
+    String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public String getPrimary_image() {
         return primary_image;
     }

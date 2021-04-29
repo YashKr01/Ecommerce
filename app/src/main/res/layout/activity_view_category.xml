@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".activities.ViewCategoryActivity">
+    tools:context=".activities.ViewCategoryActivity"
+    tools:openDrawer="end">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,10 +18,126 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
-            android:elevation="0dp"
+            android:elevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/llFilterLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="@dimen/sb_size_8"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <RelativeLayout
+                android:id="@+id/rlSort"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="32"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/sort"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/imgSortArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/sb_size_12"
+                    android:layout_toEndOf="@+id/tvSort"
+                    android:rotation="180"
+                    android:src="@drawable/ic_arrow_up" />
+            </RelativeLayout>
+
+            <!--<TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="32"
+                android:gravity="center"
+                android:text="@string/category"
+                android:textColor="@color/blue_grey_900"
+                android:textSize="@dimen/sb_text_size_16"
+                android:visibility="gone" />-->
+
+            <RelativeLayout
+                android:id="@+id/rlCategory"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="32"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="@string/category"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/imgCategoryArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/sb_size_12"
+                    android:layout_toEndOf="@+id/tvCategory"
+                    android:rotation="180"
+                    android:src="@drawable/ic_arrow_up" />
+            </RelativeLayout>
+
+            <!--Filter -->
+            <RelativeLayout
+                android:id="@+id/rlFilter"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="36"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:gravity="center_horizontal"
+                android:paddingVertical="@dimen/sb_size_8">
+
+                <TextView
+                    android:id="@+id/tvDummyFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/sb_size_4"
+                    android:paddingEnd="@dimen/sb_size_16"
+                    android:text="@string/filter"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16" />
+
+                <ImageView
+                    android:layout_width="@dimen/sb_size_22"
+                    android:layout_height="@dimen/sb_size_22"
+                    android:layout_marginTop="4dp"
+                    android:layout_toEndOf="@+id/tvDummyFilter"
+                    android:src="@drawable/ic_filter" />
+            </RelativeLayout>
+
+        </LinearLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -29,139 +146,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/llFilterLayout">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/llFilterLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:elevation="@dimen/sb_size_8"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingVertical="@dimen/sb_size_2"
-                    android:weightSum="100"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <RelativeLayout
-                        android:id="@+id/rlSort"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="32"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/tvSort"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/sort"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sb_text_size_16"
-                            android:visibility="visible" />
-
-                        <ImageView
-                            android:id="@+id/imgSortArrow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="@dimen/sb_size_12"
-                            android:layout_toEndOf="@+id/tvSort"
-                            android:rotation="180"
-                            android:src="@drawable/ic_arrow_up" />
-                    </RelativeLayout>
-
-                    <!--<TextView
-                        android:id="@+id/tvCategory"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="32"
-                        android:gravity="center"
-                        android:text="@string/category"
-                        android:textColor="@color/blue_grey_900"
-                        android:textSize="@dimen/sb_text_size_16"
-                        android:visibility="gone" />-->
-
-                    <RelativeLayout
-                        android:id="@+id/rlCategory"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="32"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/tvCategory"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/category"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sb_text_size_16"
-                            android:visibility="visible" />
-
-                        <ImageView
-                            android:id="@+id/imgCategoryArrow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="@dimen/sb_size_12"
-                            android:rotation="180"
-                            android:layout_toEndOf="@+id/tvCategory"
-                            android:src="@drawable/ic_arrow_up" />
-                    </RelativeLayout>
-
-                    <!--Filter -->
-                    <RelativeLayout
-                        android:id="@+id/rlFilter"
-                        android:layout_width="@dimen/sb_size_0"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="36"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center_horizontal"
-                        android:paddingVertical="@dimen/sb_size_8">
-
-                        <TextView
-                            android:id="@+id/tvDummyFilter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:paddingTop="@dimen/sb_size_4"
-                            android:paddingEnd="@dimen/sb_size_16"
-                            android:text="@string/filter"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/sb_text_size_16" />
-
-                        <ImageView
-                            android:layout_width="@dimen/sb_size_22"
-                            android:layout_height="@dimen/sb_size_22"
-                            android:layout_marginTop="4dp"
-                            android:layout_toEndOf="@+id/tvDummyFilter"
-                            android:src="@drawable/ic_filter" />
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/viewSeparatorLine"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/sb_size_1"
-                    android:layout_marginHorizontal="@dimen/sb_size_20"
-                    android:background="@color/grey_300"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/llFilterLayout" />
 
                 <LinearLayout
                     android:id="@+id/llSortOptionsSheet"
@@ -171,11 +160,11 @@
                     android:background="@color/white"
                     android:elevation="@dimen/sb_size_8"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/sb_size_22"
+                    android:paddingVertical="@dimen/sb_size_18"
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/llFilterLayout">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/textView1"
@@ -195,39 +184,39 @@
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/sb_size_32"
-                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_2"
-                        android:textSize="@dimen/sb_text_size_15"
                         android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_15"
                         android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/textView3"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/sb_size_32"
-                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_3"
-                        android:textSize="@dimen/sb_text_size_15"
                         android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_15"
                         android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/sb_size_32"
-                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
                         android:gravity="center_vertical"
+                        android:paddingHorizontal="@dimen/sb_size_36"
                         android:paddingVertical="@dimen/sb_size_6"
                         android:text="@string/sort_option_4"
-                        android:textSize="@dimen/sb_text_size_15"
                         android:textColor="@color/black"
+                        android:textSize="@dimen/sb_text_size_15"
                         android:textStyle="normal" />
                 </LinearLayout>
 
@@ -235,13 +224,13 @@
                     android:id="@+id/llCategoryOptionsSheet"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    android:maxHeight="200dp"
                     android:background="@color/white"
                     android:elevation="@dimen/sb_size_8"
-                    app:layout_constraintTop_toBottomOf="@id/llFilterLayout">
+                    android:gravity="center_horizontal"
+                    android:maxHeight="200dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_CategoryTypes"
@@ -262,19 +251,19 @@
                             android:id="@+id/btClearAll"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/clear"
-                            android:backgroundTint="@color/grey_300"
-                            android:textColor="@color/black"
                             android:layout_marginEnd="@dimen/sb_text_size_16"
-                            android:layout_toStartOf="@+id/btApply" />
+                            android:layout_toStartOf="@+id/btApply"
+                            android:backgroundTint="@color/grey_300"
+                            android:text="@string/clear"
+                            android:textColor="@color/black" />
 
                         <Button
                             android:id="@+id/btApply"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
-                            android:text="@string/apply"
-                            android:layout_marginEnd="@dimen/sb_size_18" />
+                            android:layout_marginEnd="@dimen/sb_size_18"
+                            android:text="@string/apply" />
 
                     </RelativeLayout>
 
@@ -293,9 +282,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/llFilterLayout"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="2"
                     tools:listitem="@layout/item_view_category" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -313,7 +303,8 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="?attr/actionBarSize">
 
             <LinearLayout
                 android:id="@+id/sheet_content"
@@ -351,6 +342,13 @@
                     android:textColor="@color/grey_900"
                     android:textStyle="bold" />
 
+                <LinearLayout
+                    android:id="@+id/filterLength"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:orientation="vertical"/>
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/spacing_middle" />
@@ -364,6 +362,13 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                     android:textColor="@color/blue_grey_900"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/filterType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:orientation="vertical"/>
 
                 <View
                     android:layout_width="0dp"
@@ -379,6 +384,73 @@
                     android:textColor="@color/grey_900"
                     android:textStyle="bold" />
 
+                <LinearLayout
+                    android:id="@+id/filterColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:orientation="vertical">
+
+                    <!--<LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="3">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/grey_300"
+                                android:gravity="center"
+                                android:paddingVertical="@dimen/sb_size_4"
+                                android:paddingHorizontal="@dimen/sb_size_6"
+                                android:layout_gravity="center"
+                                android:text="@string/category" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/grey_300"
+                                android:gravity="center"
+                                android:paddingVertical="@dimen/sb_size_4"
+                                android:paddingHorizontal="@dimen/sb_size_6"
+                                android:layout_gravity="center"
+                                android:text="@string/category" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/grey_300"
+                                android:gravity="center"
+                                android:paddingVertical="@dimen/sb_size_4"
+                                android:paddingHorizontal="@dimen/sb_size_6"
+                                android:layout_gravity="center"
+                                android:text="@string/category" />
+                        </LinearLayout>
+
+                    </LinearLayout>-->
+                </LinearLayout>
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="@dimen/spacing_mlarge" />
@@ -386,6 +458,35 @@
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/grey_50"
+            android:elevation="2dp"
+            android:paddingVertical="@dimen/sb_size_4"
+            android:layout_gravity="bottom">
+
+            <Button
+                android:id="@+id/btClearAllFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/sb_text_size_16"
+                android:layout_toStartOf="@+id/btApplyFilter"
+                android:backgroundTint="@color/grey_300"
+                android:text="@string/clear"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btApplyFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/sb_size_18"
+                android:text="@string/apply" />
+
+        </RelativeLayout>
+
 
     </com.google.android.material.navigation.NavigationView>
 

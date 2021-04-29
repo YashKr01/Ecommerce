@@ -13,6 +13,7 @@ import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 
 import java.util.List;
@@ -52,6 +53,10 @@ public class ProductsViewModel extends AndroidViewModel {
         EcommerceDatabase.databaseWriteExecutor.execute(()->{
             wishListProductDao.delete(wishListItem);
         });
+    }
+
+    public void getAvailableColorAndSize(FetchFilterListener filterListener) {
+        repository.getAvailableColorAndSize(context, filterListener);
     }
 
 }

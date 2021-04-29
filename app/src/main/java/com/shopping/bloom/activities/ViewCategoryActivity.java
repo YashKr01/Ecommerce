@@ -4,11 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -34,12 +37,16 @@ import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.CategoryTypes;
+import com.shopping.bloom.model.FilterArrayValues;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.Const.SORT_BY;
+import com.shopping.bloom.utils.Const.FILTER;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -69,13 +76,18 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
     private ImageView sortArrow, categoryArrow;
     private Button btApply, btClear;
+    private Button navBtApply, navBtClear;
 
+    private LinearLayout filterType, filterColor, filterSize;
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
     private int PARENT_ID = -1;
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
+    private boolean IS_FILTER_FETCH_COMPLETE = false;
     List<CategoryTypes> filterList;     //subcategory list for filter/sorting
     ProductFilter MAIN_FILTER = new ProductFilter();
+    FilterArrayValues filterArrayValues = null;
+    List<String> colorFilterList, sizeFilterList, typeFilterList;
 
     /*
     *   RETRY FETCH POLICY
@@ -93,18 +105,18 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
         initViews();
         getIntentData();
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener((view -> onBackPressed()));
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setUpRecycleView();
+
         viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
         checkNetworkAndFetchData();
 
         refreshLayout.setOnRefreshListener(() -> {
-            reset();
+            reset();    //reset the UI and filters
             checkNetworkAndFetchData();
         });
     }
+
+
 
     private void initViews() {
         rlSort = findViewById(R.id.rlSort);
@@ -123,15 +135,30 @@ public class ViewCategoryActivity extends AppCompatActivity {
         categoryArrow = findViewById(R.id.imgCategoryArrow);
         btApply = findViewById(R.id.btApply);
         btClear = findViewById(R.id.btClearAll);
+        navBtApply = findViewById(R.id.btApplyFilter);
+        navBtClear = findViewById(R.id.btClearAllFilter);
+        filterType = findViewById(R.id.filterType);
+        filterColor = findViewById(R.id.filterColor);
+        filterSize = findViewById(R.id.filterLength);
 
         sortMostPopular = findViewById(R.id.textView1);
         sortNewArrival = findViewById(R.id.textView2);
         sortPriceLtoH = findViewById(R.id.textView3);
         sortPriceHtoL = findViewById(R.id.textView4);
 
+        //SetUpToolbar
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener((view -> onBackPressed()));
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
 
         //Lock the drawer layout so that it won't open with left swipe
         lockDrawerLayout();
+
+        //init List
+        colorFilterList = new ArrayList<>();
+        sizeFilterList = new ArrayList<>();
+        typeFilterList = new ArrayList<>();
 
         //Attack Click Listeners
         rlSort.setOnClickListener(optionsClickListener);
@@ -145,6 +172,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
         sortPriceHtoL.setOnClickListener(sortOptionClickListener);
         btApply.setOnClickListener(optionsClickListener);
         btClear.setOnClickListener(optionsClickListener);
+        navBtApply.setOnClickListener(optionsClickListener);
+        navBtClear.setOnClickListener(optionsClickListener);
     }
 
     private void getIntentData() {
@@ -229,6 +258,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(this)) {
+            if(!IS_FILTER_FETCH_COMPLETE) {
+                fetchFilterAndUpdateUI();
+            }
+
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
@@ -236,6 +269,26 @@ public class ViewCategoryActivity extends AppCompatActivity {
             showNoInternetImage(true);
         }
     }
+
+    private void fetchFilterAndUpdateUI() {
+        viewModel.getAvailableColorAndSize(filterListener);
+    }
+
+    private final FetchFilterListener filterListener = new FetchFilterListener() {
+        @Override
+        public void fetchOnSuccess(FilterArrayValues filterValues) {
+            IS_FILTER_FETCH_COMPLETE = true;
+            filterArrayValues = filterValues;
+            addFilterToNavigationSheet(filterColor ,filterValues.getColors(), FILTER.COLOR);
+            addFilterToNavigationSheet(filterType ,filterValues.getTypes(), FILTER.TYPE);
+            addFilterToNavigationSheet(filterSize ,filterValues.getSizes(), FILTER.LENGTH);
+        }
+
+        @Override
+        public void fetchOnFailed(int errorCode, String message) {
+            Log.d(TAG, "fetchFailed: errorCode "+ errorCode + " message "+ message);
+        }
+    };
 
     private final ProductResponseListener responseListener = new ProductResponseListener() {
         @Override
@@ -304,6 +357,15 @@ public class ViewCategoryActivity extends AppCompatActivity {
         if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
             newFilter.setNewArrival("0");
         }
+        if(sortBy == SORT_BY.NAV_FILTER) {
+            if(colorFilterList != null && colorFilterList.size() != 0)
+                newFilter.setColors(ProductRepository.join(colorFilterList));
+            if(sizeFilterList != null && sizeFilterList.size() != 0)
+                newFilter.setSizes(ProductRepository.join(sizeFilterList));
+            if(typeFilterList != null && typeFilterList.size() != 0)
+                newFilter.setTypes(ProductRepository.join(typeFilterList));
+            Log.d(TAG, "updateFilter: NAV_FILTER " + newFilter.toString());
+        }
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
         checkNetworkAndFetchData();
@@ -359,6 +421,29 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 return ;
             }
 
+            /*
+            *   Navigation filter option buttons
+            * */
+            if (viewId == R.id.btClearAllFilter) {
+                if(filterArrayValues == null) return ;
+                colorFilterList.clear();
+                typeFilterList.clear();
+                sizeFilterList.clear();
+                addFilterToNavigationSheet(filterColor ,filterArrayValues.getColors(), FILTER.COLOR);
+                addFilterToNavigationSheet(filterType ,filterArrayValues.getTypes(), FILTER.TYPE);
+                addFilterToNavigationSheet(filterSize ,filterArrayValues.getSizes(), FILTER.LENGTH);
+                updateFilter(SORT_BY.NAV_FILTER);
+                drawerLayout.closeDrawer(GravityCompat.END);
+                return;
+            }
+
+            if (viewId == R.id.btApplyFilter) {
+                updateFilter(SORT_BY.NAV_FILTER);
+                drawerLayout.closeDrawer(GravityCompat.END);
+                return ;
+            }
+            //Navigation filter buttons ENDS
+
         }
     };
 
@@ -386,6 +471,103 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     };
 
+    private void addFilterToNavigationSheet(LinearLayout parentView, List<String> values, FILTER tag) {
+        Log.d(TAG, "addFilterToNavigationSheet: TAG: " + tag);
+        if(values == null || values.isEmpty()) {
+            Log.d(TAG, "addFilterToNavigationSheet: NULL Values for TAG: " + tag);
+            parentView.removeAllViews();
+            return;
+        }
+        parentView.removeAllViews();
+
+        //Param for the textView
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        //params for the LinearLayout which will wrap the text view
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+
+        LinearLayout currentRow = new LinearLayout(this);
+        currentRow.setOrientation(LinearLayout.HORIZONTAL);
+        currentRow.setWeightSum(3.0f);
+        currentRow.setPadding(10,10,10,10);
+        int rowItemCount = 0;
+        for (String value: values) {
+            TextView textView = new TextView(this);
+            textView.setText(value);
+            textView.setTextColor(ContextCompat.getColor(this, R.color.blue_grey_900));
+            textView.setTextSize(14f);
+            textView.setLayoutParams(params);
+            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices));
+            textView.setOnClickListener(new DebouncedOnClickListener(200) {
+                @Override
+                public void onDebouncedClick(View v) {
+                    addToFilterToList(textView, tag);
+                }
+            });
+            if(rowItemCount%3 == 0 && rowItemCount != 0) {
+                parentView.addView(currentRow);
+                currentRow = new LinearLayout(this);
+                currentRow.setOrientation(LinearLayout.HORIZONTAL);
+                currentRow.setWeightSum(3.0f);
+                currentRow.setPadding(10,10,10,10);
+            }
+            LinearLayout tvParentLayout = new LinearLayout(this);
+            tvParentLayout.setOrientation(LinearLayout.VERTICAL);
+            tvParentLayout.setLayoutParams(tvParams);
+            tvParentLayout.addView(textView);
+            currentRow.addView(tvParentLayout);
+            rowItemCount++;
+            Log.d(TAG, "addFilterToNavigationSheet: adding...");
+        }
+        if(currentRow.getChildCount() > 0)
+            parentView.addView(currentRow);
+    }
+
+
+    /*
+    *   @param tag will is used to identify if Filter type
+    *       COLOR, TYPE, SIZE
+    * */
+    private void addToFilterToList(TextView textView, FILTER tag) {
+        Log.d(TAG, "filterItem: TAG: " + tag.toString());
+        Drawable background = textView.getBackground();
+        if (background == null) return;
+        String value = textView.getText().toString();
+        if (background.getConstantState() ==
+                ContextCompat.getDrawable(this, R.drawable.bg_color_choices).getConstantState()) {
+            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices_selected));
+
+            //Add item to the filter list based on tag
+            if (tag == FILTER.COLOR) {
+                colorFilterList.add(value);
+            } else if (tag == FILTER.TYPE) {
+                typeFilterList.add(value);
+            } else if (tag == FILTER.LENGTH) {
+                sizeFilterList.add(value);
+            } else {
+                Log.d(TAG, "filterItem: UNIDENTIFIED VALUE");
+            }
+        } else {
+            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices));
+
+            //Remove item to the filter list based on tag
+            if (tag == FILTER.COLOR) {
+                colorFilterList.remove(value);
+            } else if (tag == FILTER.TYPE) {
+                typeFilterList.remove(value);
+            } else if (tag == FILTER.LENGTH) {
+                sizeFilterList.remove(value);
+            } else {
+                Log.d(TAG, "filterItem: UNIDENTIFIED VALUE");
+            }
+        }
+    }
+
     // reset filter, set CURRENT PAGE = 0
     private void reset() {
         Toast.makeText(this, "Reset Everything", Toast.LENGTH_SHORT)
@@ -395,6 +577,14 @@ public class ViewCategoryActivity extends AppCompatActivity {
         CURRENT_PAGE = START_PAGE;
         IS_LAST_PAGE = false;
         RETRY_ATTEMPT = 0;
+        if(IS_FILTER_FETCH_COMPLETE) {
+            colorFilterList.clear();
+            typeFilterList.clear();
+            sizeFilterList.clear();
+            addFilterToNavigationSheet(filterColor ,filterArrayValues.getColors(), FILTER.COLOR);
+            addFilterToNavigationSheet(filterType ,filterArrayValues.getTypes(), FILTER.TYPE);
+            addFilterToNavigationSheet(filterSize ,filterArrayValues.getSizes(), FILTER.LENGTH);
+        }
         //categoryNamesAdapter.clearAllSelection(); //optional
     }
 
