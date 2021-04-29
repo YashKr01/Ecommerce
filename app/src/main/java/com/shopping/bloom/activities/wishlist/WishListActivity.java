@@ -15,9 +15,11 @@ import android.view.View;
 
 import com.shopping.bloom.activities.MainActivity;
 import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
 import com.shopping.bloom.adapters.wishlist.WishListActivityAdapter;
 import com.shopping.bloom.databinding.ActivityWishListBinding;
 import com.shopping.bloom.model.wishlist.WishListData;
+import com.shopping.bloom.model.wishlist.recommendations.RecommendationsItem;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 
@@ -29,10 +31,14 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
     private ActivityWishListBinding binding;
     private List<WishListData> list;
+    private List<RecommendationsItem> recommendationsItemList;
     private WishListActivityAdapter adapter;
+    private RecommendationsAdapter recommendationsAdapter;
     private WishListViewModel viewModel;
     private String PAGE = "0", LIMIT = "10";
     private AlertDialog.Builder builder;
+
+    private String IMAGE_URL = "http://bloomapp.in/images/product/product1619491000.png";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,23 +56,35 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
+        recommendationsItemList = new ArrayList<>();
+
+        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this);
         adapter = new WishListActivityAdapter(this, list, this);
+
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setNestedScrollingEnabled(false);
+
+        binding.recommendationRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        binding.recommendationRecyclerView.setAdapter(recommendationsAdapter);
+        binding.recommendationRecyclerView.setNestedScrollingEnabled(false);
 
         getWishList();
 
-        binding.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (binding.recyclerView.canScrollVertically(1)) {
-                    LIMIT = (Integer.parseInt(LIMIT) + 10 + "");
-                    getPaginatedList();
-                }
-            }
-        });
+    }
 
+    private List<RecommendationsItem> tempList() {
+
+        List<RecommendationsItem> recommendationsItems = new ArrayList<>();
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
+
+        return recommendationsItems;
     }
 
     public void getWishList() {
@@ -85,6 +103,9 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
             }
 
         });
+
+        recommendationsItemList.addAll(tempList());
+        adapter.notifyDataSetChanged();
 
         binding.progressBar.setVisibility(View.INVISIBLE);
     }

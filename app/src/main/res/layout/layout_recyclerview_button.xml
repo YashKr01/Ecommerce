@@ -14,6 +14,8 @@
         android:background="@drawable/rect_back_button"
         android:paddingHorizontal="@dimen/sb_size_10"
         android:text="Red"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_marginEnd="@dimen/sb_size_10"
         android:textStyle="bold"
         android:textColor="@color/black"

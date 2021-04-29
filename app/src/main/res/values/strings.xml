@@ -82,6 +82,9 @@
 
     <string name="rupee">\u20B9</string>
     <string name="no_items_here">No Items Here</string>
+    <string name="divider">divider</string>
+    <string name="recommendations_for_you">Recommendations For You</string>
+    <string name="recommended_product">recommended product</string>
 
 
 </resources>

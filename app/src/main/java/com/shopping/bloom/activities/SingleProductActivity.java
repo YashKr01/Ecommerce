@@ -1,9 +1,11 @@
 package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.ProgressDialog;
@@ -11,9 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -25,6 +29,7 @@ import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
 
 import java.util.ArrayList;
@@ -39,8 +44,7 @@ public class SingleProductActivity extends AppCompatActivity {
     ColorAdapter colorAdapter;
     SizeAdapter sizeAdapter;
     SingleProductDataResponse singleProductDataResponse;
-    List<String> colorList;
-    List<String> sizeList;
+    List<String> colorList, sizeList;
     LinearLayout linearLayout;
     TextView productName, price;
     RatingBar ratingBar;
@@ -49,6 +53,10 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> imageList;
     List<ProductVariableResponse> productVariableResponseList;
     ViewPagerImageAdapter viewPagerImageAdapter;
+    ViewStub viewStub;
+    SwipeRefreshLayout swipeRefreshLayout;
+    RelativeLayout relativeLayout;
+    Toolbar toolbar;
 
     private Integer PRODUCT_ID;
 
@@ -67,7 +75,17 @@ public class SingleProductActivity extends AppCompatActivity {
         price = findViewById(R.id.price);
         ratingBar = findViewById(R.id.ratingBar4);
         linearLayout = findViewById(R.id.linearLayout);
+        relativeLayout = findViewById(R.id.relative);
         viewPager = findViewById(R.id.viewpager);
+        viewStub = findViewById(R.id.vsEmptyScreen);
+        toolbar = findViewById(R.id.toolbar);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
@@ -109,7 +127,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 productVariableResponseList = this.singleProductDataResponse.getProductVariableResponses();
 
                 imageList.add(primary);
-                for(ProductVariableResponse productVariableResponse: productVariableResponseList){
+                for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
                     //
                     imageList.add(productVariableResponse.getPrimary_image());
                 }
@@ -160,7 +178,6 @@ public class SingleProductActivity extends AppCompatActivity {
                     bottomSheetDialog.setContentView(bottomSheet);
                     bottomSheetDialog.show();
 
-
                 });
             }
         });
@@ -172,4 +189,28 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
     }
+
+    private void checkNetworkConnectivity() {
+        if (!NetworkCheck.isConnect(this)) {
+            viewStub.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
+        } else {
+            viewStub.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
+        }
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void setViewPagerCurrentItem(int pos) {
+        String color = colorList.get(pos).trim();
+
+        for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
+            if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                viewPager.setCurrentItem(i + 1);
+                break;
+            }
+        }
+
+    }
+
 }

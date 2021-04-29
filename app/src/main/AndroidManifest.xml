@@ -15,8 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ecommerce">
         <activity android:name=".activities.SingleProductActivity"
-            android:theme="@style/Theme.Ecommerce.Theme">
-        </activity>
+            android:theme="@style/Theme.Ecommerce.Theme"/>
         <activity
             android:name=".activities.UpdateAddressActivity"
             android:theme="@style/Theme.Ecommerce.Theme" />
