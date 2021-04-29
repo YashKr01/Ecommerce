@@ -1,4 +1,4 @@
-package com.shopping.bloom.adapters.profilefragment;
+package com.shopping.bloom.adapters.coupons;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,25 +8,24 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class ProfileViewPagerAdapter extends FragmentPagerAdapter {
-    private int mCurrentPosition = -1;
+public class CouponsViewPagerAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Fragment> fragmentList = new ArrayList<>();
     private ArrayList<String> titleList = new ArrayList<>();
 
-    public ProfileViewPagerAdapter(@NonNull FragmentManager fm) {
+    public CouponsViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
+    }
+
+    public void addFragment(Fragment fragment, String title) {
+        fragmentList.add(fragment);
+        titleList.add(title);
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         return titleList.get(position);
-    }
-
-    public void addFragment(Fragment fragment, String title) {
-        fragmentList.add(fragment);
-        titleList.add(title);
     }
 
     @NonNull
