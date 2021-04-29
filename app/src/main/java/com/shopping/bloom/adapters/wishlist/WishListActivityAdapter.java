@@ -53,7 +53,9 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
                 true
         );
 
-        holder.imgDelete.setOnClickListener(v -> listener.wishListItemDelete(currentItem));
+        holder.imgDelete.setOnClickListener(v -> listener.wishListItemDelete(currentItem,position));
+
+        holder.imageView.setOnClickListener(v -> listener.wishListItemCLicked(currentItem));
 
     }
 

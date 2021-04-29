@@ -8,13 +8,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.shopping.bloom.activities.MainActivity;
+import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.WishListActivityAdapter;
-import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.databinding.ActivityWishListBinding;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
@@ -31,6 +32,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     private WishListActivityAdapter adapter;
     private WishListViewModel viewModel;
     private String PAGE = "0", LIMIT = "10";
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +67,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
             }
         });
 
-
     }
 
     public void getWishList() {
@@ -76,7 +77,11 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
             if (wishListData != null && wishListData.size() > 0) {
                 list.clear();
-                adapter.setList(wishListData);
+                list.addAll(wishListData);
+                adapter.notifyDataSetChanged();
+                binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
+            } else {
+                binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
             }
 
         });
@@ -99,29 +104,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void wishListItemDelete(WishListData wishListData) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Do you want to delete this item from WishList ?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", (dialog, which) -> {
-
-                    binding.progressBar.setVisibility(View.VISIBLE);
-
-                    deleteItem(wishListData.getId() + "");
-
-                    postRemaining();
-
-                    binding.progressBar.setVisibility(View.INVISIBLE);
-                })
-                .setNegativeButton("No", (dialog, which) -> dialog.cancel());
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-
-    }
-
     private void postRemaining() {
         binding.progressBar.setVisibility(View.VISIBLE);
         viewModel.postRemainingItems();
@@ -130,6 +112,53 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
     public void deleteItem(String id) {
         viewModel.deleteWishListProduct(id);
+    }
+
+    @Override
+    public void wishListItemDelete(WishListData wishListData, int position) {
+
+        builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle("Do yo want to delete this product from Wish List ?");
+        builder.setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
+
+        builder.setPositiveButton("YES", (dialog, which) -> {
+
+            deleteItem(String.valueOf(wishListData.getId()));
+            list.remove(position);
+            adapter.notifyItemRemoved(position);
+
+            if (list.isEmpty()) binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) onBackPressed();
+        return true;
+    }
+
+    @Override
+    public void wishListItemCLicked(WishListData wishListData) {
+        Intent intent = new Intent(WishListActivity.this, SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", wishListData.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        postRemaining();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(WishListActivity.this, MainActivity.class));
+        finish();
     }
 
 }

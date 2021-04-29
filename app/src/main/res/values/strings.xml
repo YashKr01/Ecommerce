@@ -80,5 +80,8 @@
     <string name="clear">CLEAR</string>
     <string name="apply">Apply</string>
 
+    <string name="rupee">\u20B9</string>
+    <string name="no_items_here">No Items Here</string>
+
 
 </resources>

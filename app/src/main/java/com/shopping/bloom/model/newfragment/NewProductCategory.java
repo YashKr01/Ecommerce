@@ -14,7 +14,7 @@ public class NewProductCategory {
     @SerializedName("category_name")
     private String categoryName;
     @Expose
-    @SerializedName("big_thumbnail")
+    @SerializedName("new_page_thumbnail")
     private String thumbNail;
     @Expose
     @SerializedName("type")

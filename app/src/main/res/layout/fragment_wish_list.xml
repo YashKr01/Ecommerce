@@ -9,10 +9,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/wish_list_recycler_view"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,16 +19,34 @@
         tools:listitem="@layout/item_wishlist" />
 
     <TextView
-        android:id="@+id/txt_empty"
+        android:id="@+id/view_more"
+        style="@style/BoldText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Empty WishList"
+        android:padding="@dimen/sb_size_12"
+        android:text="@string/view_more"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_16"
-        android:visibility="gone"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_empty"
+        style="@style/BoldText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="@dimen/sb_size_20"
+        android:text="@string/no_items_here"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_16"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="@dimen/sb_text_size_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
