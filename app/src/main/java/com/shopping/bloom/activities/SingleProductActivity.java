@@ -1,6 +1,7 @@
 package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,6 +56,7 @@ public class SingleProductActivity extends AppCompatActivity {
     ViewStub viewStub;
     SwipeRefreshLayout swipeRefreshLayout;
     RelativeLayout relativeLayout;
+    Toolbar toolbar;
 
     private Integer PRODUCT_ID;
 
@@ -76,7 +78,12 @@ public class SingleProductActivity extends AppCompatActivity {
         relativeLayout = findViewById(R.id.relative);
         viewPager = findViewById(R.id.viewpager);
         viewStub = findViewById(R.id.vsEmptyScreen);
+        toolbar = findViewById(R.id.toolbar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
