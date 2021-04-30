@@ -33,7 +33,7 @@ public class CategoryRepository {
         Log.d(TAG, "getCategory: mainCategory=" + mainCategory + " limit=" + limit + " pageNo=" + pageNo + " categoryName=" + categoryName);
 
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
-        String authToken = getToken();      //TODO : get token from the login manager
+        String authToken = getToken();
         Log.d(TAG, "getCategory: authToken " + authToken);
         Call<GetCategoryResponse> responseCall = apiInterface.getCategory(
                 authToken, mainCategory, limit, pageNo, categoryName

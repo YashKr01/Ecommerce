@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -9,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +67,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private ProductsViewModel viewModel;
     //views
     private RelativeLayout rlSort, rlCategory, rlFilter;
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout refreshLayout, retryConnecting;
     private RecyclerView rvProducts, rvCategoryTypes;
     private ProductAdapter productAdapter;
     private CategoryTypesAdapter categoryNamesAdapter;
@@ -74,10 +77,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private ImageView imgCloseNavigationView;
     private LinearLayout sortOptionSheet, categoryOptionSheet;
+    private LinearLayout dummyLayout;
     private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
     private ImageView sortArrow, categoryArrow;
     private Button btApply, btClear;
     private Button navBtApply, navBtClear;
+    private ViewStub noInternetLayout;
 
     private LinearLayout filterType, filterColor, filterSize;
     private final int START_PAGE = 0;
@@ -119,6 +124,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             reset();    //reset the UI and filters
             checkNetworkAndFetchData();
         });
+        retryConnecting.setOnRefreshListener(this::checkNetworkAndFetchData);
     }
 
 
@@ -131,6 +137,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rvCategoryTypes = findViewById(R.id.rv_CategoryTypes);
         toolbar = findViewById(R.id.toolbar);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
+        retryConnecting = findViewById(R.id.swipeNoInternet);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         imgCloseNavigationView = findViewById(R.id.imgClose);
@@ -145,6 +152,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
         filterType = findViewById(R.id.filterType);
         filterColor = findViewById(R.id.filterColor);
         filterSize = findViewById(R.id.filterLength);
+        dummyLayout = findViewById(R.id.llDummyLayout);
+        noInternetLayout = findViewById(R.id.vsEmptyScreen);
 
         sortMostPopular = findViewById(R.id.textView1);
         sortNewArrival = findViewById(R.id.textView2);
@@ -200,6 +209,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setUpRecycleView() {
         productAdapter = new ProductAdapter(this, wishListListener);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -211,8 +221,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayout.HORIZONTAL);
         rvCategoryTypes.setLayoutManager(staggeredGridLayoutManager);
         rvCategoryTypes.setAdapter(categoryNamesAdapter);
-        categoryNamesAdapter.updateList(getDummyCategories());
-        categoryNamesAdapter.notifyDataSetChanged();
+        //categoryNamesAdapter.updateList(getDummyCategories());
+        if(filterList != null) {
+            categoryNamesAdapter.updateList(filterList);
+        }
 
         //Disable blink animation when updating the items
         ((SimpleItemAnimator) rvProducts.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -230,14 +242,28 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
             @Override
             public boolean isLoading() {
-                boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
-                if (!isVisible) {
-                    rotateUpArrow(sortArrow, false);
-                    showOrHideSheet(sortOptionSheet, false);
-                }
                 return IS_LOADING;
             }
         });
+
+
+        /*
+        *   Dummy layout for identifying the clicks
+        *       1. If any dialog is open sort/category then close the dialog and consume the click.
+        *       2. If no dialog is open then return false.
+        * */
+        dummyLayout.setOnTouchListener((view, motionEvent) -> {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
+                boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
+                if(isCategorySheetVisible || isSortSheetVisible) {
+                    closeDialog();
+                    return true;
+                }
+            }
+            return false;
+        });
+
     }
 
     private final WishListListener wishListListener = new WishListListener() {
@@ -305,6 +331,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
             IS_LOADING = false;
             RETRY_ATTEMPT = 0;
             refreshLayout.setRefreshing(false);
+            showNoInternetImage(false);
+            showEmptyScreen(products.isEmpty());
             if (CURRENT_PAGE == 0) {
                 productAdapter.updateList(products);
                 rvProducts.smoothScrollToPosition(0);       //CHECK for bugs
@@ -312,7 +340,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 productAdapter.addProductList(products);
             }
             CURRENT_PAGE++;
-            showNoInternetImage(false);
         }
 
         @Override
@@ -378,6 +405,20 @@ public class ViewCategoryActivity extends AppCompatActivity {
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
         checkNetworkAndFetchData();
+    }
+
+    private boolean closeDialog() {
+        boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
+        boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
+        if (isCategorySheetVisible) { //close filter sheet
+            rotateUpArrow(categoryArrow, false);
+            showOrHideSheet(categoryOptionSheet, false);
+        }
+        if (isSortSheetVisible) {
+            rotateUpArrow(sortArrow, false);
+            showOrHideSheet(sortOptionSheet, false);
+        }
+        return isCategorySheetVisible||isSortSheetVisible;
     }
 
     private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
@@ -660,6 +701,20 @@ public class ViewCategoryActivity extends AppCompatActivity {
     }
 
     private void showNoInternetImage(boolean show) {
+        retryConnecting.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
+        if(show) {
+            retryConnecting.setVisibility(View.VISIBLE);
+            return;
+        }
+        retryConnecting.setVisibility(View.GONE);
+    }
+
+    private void showEmptyScreen(boolean show) {
+        if(show) {
+            //TODO: show empty here screen when created
+            return ;
+        }
 
     }
 
@@ -680,6 +735,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return;
         }
+        //If any dialog is in expanded state then close it
+        if(closeDialog()) return ;
 
         Log.d(TAG, "onBackPressed: uploading...");
         viewModel.uploadWishListOnServer(this.getApplication(), null);

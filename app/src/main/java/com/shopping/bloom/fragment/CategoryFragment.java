@@ -24,7 +24,6 @@ import com.shopping.bloom.activities.ViewCategoryActivity;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
@@ -43,6 +42,18 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
 
     private int PAGE_NO = 0;
     private final int START_PAGE = 0;
+
+    /*
+     *   RETRY POLICY
+     *       MAXIMUM Retry attempt = 3
+     *          1. First check if (WISHLIST_CHANGE == true) if so then
+     *               upload the wishlist to the server and fetch the data again
+     *           otherWish fetch the data.
+     *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+     *           Request again.
+     * */
+    private int RETRY_ATTEMPT = 0;
+    private final int MAX_RETRY_ATTEMPT = 3;
 
     public CategoryFragment() {
         // Required empty public constructor
@@ -89,30 +100,31 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         if (NetworkCheck.isConnect(getContext())) {
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", 20, PAGE_NO, "");
-            noInternetAvailable(false);
         } else {
             Log.d(TAG, "checkNetworkAndFetchData: No internet Available");
-            mainBinding.swipeRefreshLayout.setRefreshing(false);
-            noInternetAvailable(true);
+            setNoInternetLayout(true);
         }
     }
 
     private final CategoryResponseListener responseListener = new CategoryResponseListener() {
         @Override
         public void onSuccess(List<Category> category) {
-            Log.d(TAG, "onSuccess: productSize " + category);
-            Log.d(TAG, "onSuccess: productSize " + category.size());
             categoryImagesAdapter.updateProductList(category);
-            mainBinding.swipeRefreshLayout.setRefreshing(false);
-            noInternetAvailable(false);
+            showEmptyScreen(category.isEmpty());
+            setNoInternetLayout(false);
         }
 
         @Override
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
-            mainBinding.swipeRefreshLayout.setRefreshing(false);
-            if (getContext() != null) {
-                Toast.makeText(getContext(), R.string.something_went_wrong, Toast.LENGTH_SHORT).show();
+            RETRY_ATTEMPT++;
+            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+                Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
+                checkNetworkAndFetchData();
+            } else {
+                RETRY_ATTEMPT = 0;
+                showEmptyScreen(true);
+                setNoInternetLayout(false);
             }
         }
     };
@@ -156,12 +168,17 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     }
 
     //set NO INTERNET Image to visible
-    private void noInternetAvailable(boolean visible) {
+    private void setNoInternetLayout(boolean visible) {
+        mainBinding.swipeRefreshLayout.setRefreshing(false);
         if (visible) {
             mainBinding.vsEmptyScreen.setVisibility(View.VISIBLE);
         } else {
             mainBinding.vsEmptyScreen.setVisibility(View.GONE);
         }
+    }
+
+    private void showEmptyScreen(boolean show) {
+        //TODO: set empty screen
     }
 
 }

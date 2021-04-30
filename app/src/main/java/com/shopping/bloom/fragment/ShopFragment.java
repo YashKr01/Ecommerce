@@ -77,6 +77,18 @@ public class ShopFragment extends Fragment {
     ImageView offerImage3;
     ImageView offerImage4;
 
+    /*
+     *   RETRY POLICY
+     *       MAXIMUM Retry attempt = 3
+     *          1. First check if (WISHLIST_CHANGE == true) if so then
+     *               upload the wishlist to the server and fetch the data again
+     *           otherWish fetch the data.
+     *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+     *           Request again.
+     * */
+    private int RETRY_ATTEMPT = 0;
+    private final int MAX_RETRY_ATTEMPT = 3;
+
     public ShopFragment() {
         // Required empty public constructor
     }
@@ -237,6 +249,7 @@ public class ShopFragment extends Fragment {
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", 10, PAGE_NO, "");
         } else {
+            RETRY_ATTEMPT = 0;
             setNoInternetLayout(true);
             Log.d(TAG, "onRefresh: NO INTERNET CONNECTION");
         }
@@ -253,7 +266,15 @@ public class ShopFragment extends Fragment {
         @Override
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
-            setNoInternetLayout(false);
+            RETRY_ATTEMPT++;
+            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+                Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
+                checkNetworkAndFetchData();
+            } else {
+                RETRY_ATTEMPT = 0;
+                showEmptyScreen(true);
+                setNoInternetLayout(false);
+            }
         }
     };
 
@@ -351,6 +372,10 @@ public class ShopFragment extends Fragment {
             srlNoInternet.setVisibility(View.GONE);
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void showEmptyScreen(boolean show) {
+        //TODO Add empty screen
     }
 
     private List<SubCategory> getDummyData() {
