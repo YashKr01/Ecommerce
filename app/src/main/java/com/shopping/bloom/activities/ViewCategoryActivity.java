@@ -44,6 +44,7 @@ import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
+import com.shopping.bloom.restService.callback.WishListUploadedCallback;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.Const.SORT_BY;
 import com.shopping.bloom.utils.Const.FILTER;
@@ -83,6 +84,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private int CURRENT_PAGE = 0;
     private int PARENT_ID = -1;
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
+    private boolean WISHLIST_CHANGED = false;
     private boolean IS_FILTER_FETCH_COMPLETE = false;
     List<CategoryTypes> filterList;     //subcategory list for filter/sorting
     ProductFilter MAIN_FILTER = new ProductFilter();
@@ -90,9 +92,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
     List<String> colorFilterList, sizeFilterList, typeFilterList;
 
     /*
-    *   RETRY FETCH POLICY
+    *   RETRY POLICY
     *       MAXIMUM Retry attempt = 3
-    *       if the request fails then check if for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+    *          1. First check if (WISHLIST_CHANGE == true) if so then
+    *               upload the wishlist to the server and fetch the data again
+    *           otherWish fetch the data.
+    *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
     *           Request again.
     * */
     private int RETRY_ATTEMPT = 0;
@@ -238,6 +243,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final WishListListener wishListListener = new WishListListener() {
         @Override
         public void updateWishList(int position, boolean isAdded) {
+            WISHLIST_CHANGED = true;
             Log.d(TAG, "updateWishList: " + isAdded);
             Product product = productAdapter.getItemAt(position);
             productAdapter.updateItem(position, isAdded);
@@ -261,7 +267,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
             if(!IS_FILTER_FETCH_COMPLETE) {
                 fetchFilterAndUpdateUI();
             }
-
+            if(WISHLIST_CHANGED) {
+                //Upload the wishListItems to the server
+                viewModel.uploadWishListOnServer(this.getApplication(), wishListUploadedCallback);
+            }
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
@@ -673,9 +682,33 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
 
         Log.d(TAG, "onBackPressed: uploading...");
-        ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
+        viewModel.uploadWishListOnServer(this.getApplication(), null);
         super.onBackPressed();
     }
+
+    private final WishListUploadedCallback wishListUploadedCallback = new WishListUploadedCallback() {
+        @Override
+        public void onUploadSuccessful() {
+            if(WISHLIST_CHANGED) {
+                WISHLIST_CHANGED = false;
+                checkNetworkAndFetchData();
+            }
+        }
+
+        @Override
+        public void onUploadFailed(int errorCode, String message) {
+            Log.d(TAG, "onUploadFailed: errorCode " + errorCode);
+            Log.d(TAG, "onUploadFailed: message " + message);
+            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+                RETRY_ATTEMPT++;
+                checkNetworkAndFetchData();
+            } else {
+                WISHLIST_CHANGED = false;
+                RETRY_ATTEMPT = 0;
+                checkNetworkAndFetchData();
+            }
+        }
+    };
 
 
     @Override
@@ -684,7 +717,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 Log.d(TAG, "onBackPressed: uploading...");
-                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
+                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication(), null);
                 super.onBackPressed();
                 return true;
             default:

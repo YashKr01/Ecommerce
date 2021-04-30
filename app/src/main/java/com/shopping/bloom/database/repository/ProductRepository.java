@@ -13,6 +13,7 @@ import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
+import com.shopping.bloom.restService.callback.WishListUploadedCallback;
 import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.PutWishListRequest;
@@ -149,7 +150,7 @@ public class ProductRepository {
      * Post request network call to save all wishList items
      * to server and clean the database
      */
-    public void uploadWishListOnServer(Application context) {
+    public void uploadWishListOnServer(Application context, WishListUploadedCallback callback) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
             List<String> products = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
@@ -158,18 +159,18 @@ public class ProductRepository {
                 String result = join(products);
                 ProductIds res = new ProductIds(result);
                 Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
-                saveWishListOnServer(request);
+                saveWishListOnServer(request, callback);
             } else {
                 Log.d(TAG, "uploadWishListOnServer: empty delete all items from the wish list " + products.toString());
                 String authToken = getToken();
                 ProductIds res = new ProductIds("");
                 Call<PutWishListRequest> request = apiInterface.postUserWishList(authToken, res);
-                saveWishListOnServer(request);
+                saveWishListOnServer(request, callback);
             }
         });
     }
 
-    public void saveWishListOnServer(Call<PutWishListRequest> request) {
+    public void saveWishListOnServer(Call<PutWishListRequest> request, WishListUploadedCallback callback) {
         if (request != null) {
             Log.d(TAG, "saveWishListOnServer: Request " + request.request().toString());
             request.enqueue(new Callback<PutWishListRequest>() {
@@ -178,12 +179,22 @@ public class ProductRepository {
                     Log.d(TAG, "onResponse: Removing all the items from the local DB");
                     if (response.isSuccessful() && response.code() == 200) {
                         deleteAll();
+                        if(callback != null) {
+                            callback.onUploadSuccessful();
+                        }
+                    } else {
+                        if(callback != null) {
+                            callback.onUploadFailed(-1, "Something went wrong retry");
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<PutWishListRequest> call, Throwable t) {
                     Log.d(TAG, "onFailure: " + t.getMessage());
+                    if(callback != null) {
+                        callback.onUploadFailed(-1 ,t.getMessage());
+                    }
                 }
             });
         }
