@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/sb_size_4"
-    android:background="@color/orange_50">
+    android:background="@color/orange_50"
+    android:clickable="true"
+    android:focusable="true">
 
     <View
         android:id="@+id/view"

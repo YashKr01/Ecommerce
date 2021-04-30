@@ -113,10 +113,12 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
             if (newProductCategories == null || newProductCategories.size() == 0) {
                 // empty or null list received
+                binding.emptyText.setVisibility(View.VISIBLE);
             } else {
                 list.clear();
                 list.addAll(newProductCategories);
                 adapter.notifyDataSetChanged();
+                binding.emptyText.setVisibility(View.INVISIBLE);
             }
         });
 

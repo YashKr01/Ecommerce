@@ -187,8 +187,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(WishListActivity.this, MainActivity.class));
-        finish();
     }
 
     @Override

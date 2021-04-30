@@ -11,9 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.coupons.CouponAdapter;
-import com.shopping.bloom.databinding.FragmentExpiredBinding;
+import com.shopping.bloom.databinding.FragmentExpiredCouponsBinding;
 import com.shopping.bloom.model.coupons.Coupon;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
 
 public class ExpiredCouponsFragment extends Fragment {
 
-    private FragmentExpiredBinding binding;
+    private FragmentExpiredCouponsBinding binding;
     private CouponAdapter adapter;
     private List<Coupon> list;
 
@@ -33,7 +32,7 @@ public class ExpiredCouponsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentExpiredBinding.inflate(inflater, container, false);
+        binding = FragmentExpiredCouponsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 

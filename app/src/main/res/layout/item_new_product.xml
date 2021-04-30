@@ -22,19 +22,22 @@
             android:id="@+id/image_product"
             android:layout_width="110dp"
             android:layout_height="160dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
             android:contentDescription="@string/sub_product"
+            android:focusable="true"
             android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/txt_product_price"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="@dimen/sb_size_8"
         android:layout_marginBottom="@dimen/sb_size_8"
-        style="@style/MediumText"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_14"
         android:textStyle="normal"
