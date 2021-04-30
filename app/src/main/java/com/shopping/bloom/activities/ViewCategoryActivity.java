@@ -97,14 +97,14 @@ public class ViewCategoryActivity extends AppCompatActivity {
     List<String> colorFilterList, sizeFilterList, typeFilterList;
 
     /*
-    *   RETRY POLICY
-    *       MAXIMUM Retry attempt = 3
-    *          1. First check if (WISHLIST_CHANGE == true) if so then
-    *               upload the wishlist to the server and fetch the data again
-    *           otherWish fetch the data.
-    *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
-    *           Request again.
-    * */
+     *   RETRY POLICY
+     *       MAXIMUM Retry attempt = 3
+     *          1. First check if (WISHLIST_CHANGE == true) if so then
+     *               upload the wishlist to the server and fetch the data again
+     *           otherWish fetch the data.
+     *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+     *           Request again.
+     * */
     private int RETRY_ATTEMPT = 0;
     private final int MAX_RETRY_ATTEMPT = 3;
 
@@ -126,7 +126,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
         });
         retryConnecting.setOnRefreshListener(this::checkNetworkAndFetchData);
     }
-
 
 
     private void initViews() {
@@ -194,8 +193,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
         String ARG_CATEGORY_ID = "category_id";
         String ARG_CATEGORY_NAMES = "category_names";
         String ARG_BUNDLE = "app_bundle_name";
+        int CATEGORY_ID;
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
+
+        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 0);
 
         if (bundle != null) {
             Log.d(TAG, "getIntentData: Not null");
@@ -222,7 +224,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rvCategoryTypes.setLayoutManager(staggeredGridLayoutManager);
         rvCategoryTypes.setAdapter(categoryNamesAdapter);
         //categoryNamesAdapter.updateList(getDummyCategories());
-        if(filterList != null) {
+        if (filterList != null) {
             categoryNamesAdapter.updateList(filterList);
         }
 
@@ -248,15 +250,15 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
 
         /*
-        *   Dummy layout for identifying the clicks
-        *       1. If any dialog is open sort/category then close the dialog and consume the click.
-        *       2. If no dialog is open then return false.
-        * */
+         *   Dummy layout for identifying the clicks
+         *       1. If any dialog is open sort/category then close the dialog and consume the click.
+         *       2. If no dialog is open then return false.
+         * */
         dummyLayout.setOnTouchListener((view, motionEvent) -> {
-            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
                 boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
-                if(isCategorySheetVisible || isSortSheetVisible) {
+                if (isCategorySheetVisible || isSortSheetVisible) {
                     closeDialog();
                     return true;
                 }
@@ -290,10 +292,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(this)) {
-            if(!IS_FILTER_FETCH_COMPLETE) {
+            if (!IS_FILTER_FETCH_COMPLETE) {
                 fetchFilterAndUpdateUI();
             }
-            if(WISHLIST_CHANGED) {
+            if (WISHLIST_CHANGED) {
                 //Upload the wishListItems to the server
                 viewModel.uploadWishListOnServer(this.getApplication(), wishListUploadedCallback);
             }
@@ -314,14 +316,14 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void fetchOnSuccess(FilterArrayValues filterValues) {
             IS_FILTER_FETCH_COMPLETE = true;
             filterArrayValues = filterValues;
-            addFilterToNavigationSheet(filterColor ,filterValues.getColors(), FILTER.COLOR);
-            addFilterToNavigationSheet(filterType ,filterValues.getTypes(), FILTER.TYPE);
-            addFilterToNavigationSheet(filterSize ,filterValues.getSizes(), FILTER.LENGTH);
+            addFilterToNavigationSheet(filterColor, filterValues.getColors(), FILTER.COLOR);
+            addFilterToNavigationSheet(filterType, filterValues.getTypes(), FILTER.TYPE);
+            addFilterToNavigationSheet(filterSize, filterValues.getSizes(), FILTER.LENGTH);
         }
 
         @Override
         public void fetchOnFailed(int errorCode, String message) {
-            Log.d(TAG, "fetchFailed: errorCode "+ errorCode + " message "+ message);
+            Log.d(TAG, "fetchFailed: errorCode " + errorCode + " message " + message);
         }
     };
 
@@ -348,11 +350,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
             refreshLayout.setRefreshing(false);
             if (errorCode == 200) {
                 IS_LAST_PAGE = true;
-                return ;
+                return;
             }
             IS_LOADING = false;
             RETRY_ATTEMPT++;
-            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+            if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
                 checkNetworkAndFetchData();
             } else {
@@ -373,12 +375,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
         } else {
             newFilter.setSubCategoryIds(null);
         }
-        if(sortBy == SORT_BY.SUB_CATEGORY) {
+        if (sortBy == SORT_BY.SUB_CATEGORY) {
             //Just update the category items and return
             MAIN_FILTER.setSubCategoryIds(newFilter.getSubCategoryIds());
             Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
             checkNetworkAndFetchData();
-            return ;
+            return;
         }
 
         if (sortBy == SORT_BY.NEW_ARRIVAL) {
@@ -393,12 +395,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
         if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
             newFilter.setNewArrival("0");
         }
-        if(sortBy == SORT_BY.NAV_FILTER) {
-            if(colorFilterList != null && colorFilterList.size() != 0)
+        if (sortBy == SORT_BY.NAV_FILTER) {
+            if (colorFilterList != null && colorFilterList.size() != 0)
                 newFilter.setColors(ProductRepository.join(colorFilterList));
-            if(sizeFilterList != null && sizeFilterList.size() != 0)
+            if (sizeFilterList != null && sizeFilterList.size() != 0)
                 newFilter.setSizes(ProductRepository.join(sizeFilterList));
-            if(typeFilterList != null && typeFilterList.size() != 0)
+            if (typeFilterList != null && typeFilterList.size() != 0)
                 newFilter.setTypes(ProductRepository.join(typeFilterList));
             Log.d(TAG, "updateFilter: NAV_FILTER " + newFilter.toString());
         }
@@ -418,7 +420,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             rotateUpArrow(sortArrow, false);
             showOrHideSheet(sortOptionSheet, false);
         }
-        return isCategorySheetVisible||isSortSheetVisible;
+        return isCategorySheetVisible || isSortSheetVisible;
     }
 
     private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
@@ -468,20 +470,20 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 showOrHideSheet(categoryOptionSheet, false);
                 rotateUpArrow(categoryArrow, false);
                 updateFilter(SORT_BY.SUB_CATEGORY);
-                return ;
+                return;
             }
 
             /*
-            *   Navigation filter option buttons
-            * */
+             *   Navigation filter option buttons
+             * */
             if (viewId == R.id.btClearAllFilter) {
-                if(filterArrayValues == null) return ;
+                if (filterArrayValues == null) return;
                 colorFilterList.clear();
                 typeFilterList.clear();
                 sizeFilterList.clear();
-                addFilterToNavigationSheet(filterColor ,filterArrayValues.getColors(), FILTER.COLOR);
-                addFilterToNavigationSheet(filterType ,filterArrayValues.getTypes(), FILTER.TYPE);
-                addFilterToNavigationSheet(filterSize ,filterArrayValues.getSizes(), FILTER.LENGTH);
+                addFilterToNavigationSheet(filterColor, filterArrayValues.getColors(), FILTER.COLOR);
+                addFilterToNavigationSheet(filterType, filterArrayValues.getTypes(), FILTER.TYPE);
+                addFilterToNavigationSheet(filterSize, filterArrayValues.getSizes(), FILTER.LENGTH);
                 updateFilter(SORT_BY.NAV_FILTER);
                 drawerLayout.closeDrawer(GravityCompat.END);
                 return;
@@ -490,7 +492,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             if (viewId == R.id.btApplyFilter) {
                 updateFilter(SORT_BY.NAV_FILTER);
                 drawerLayout.closeDrawer(GravityCompat.END);
-                return ;
+                return;
             }
             //Navigation filter buttons ENDS
 
@@ -523,7 +525,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void addFilterToNavigationSheet(LinearLayout parentView, List<String> values, FILTER tag) {
         Log.d(TAG, "addFilterToNavigationSheet: TAG: " + tag);
-        if(values == null || values.isEmpty()) {
+        if (values == null || values.isEmpty()) {
             Log.d(TAG, "addFilterToNavigationSheet: NULL Values for TAG: " + tag);
             parentView.removeAllViews();
             return;
@@ -544,9 +546,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
         LinearLayout currentRow = new LinearLayout(this);
         currentRow.setOrientation(LinearLayout.HORIZONTAL);
         currentRow.setWeightSum(3.0f);
-        currentRow.setPadding(10,10,10,10);
+        currentRow.setPadding(10, 10, 10, 10);
         int rowItemCount = 0;
-        for (String value: values) {
+        for (String value : values) {
             TextView textView = new TextView(this);
             textView.setText(value);
             textView.setTextColor(ContextCompat.getColor(this, R.color.blue_grey_900));
@@ -559,12 +561,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
                     addToFilterToList(textView, tag);
                 }
             });
-            if(rowItemCount%3 == 0 && rowItemCount != 0) {
+            if (rowItemCount % 3 == 0 && rowItemCount != 0) {
                 parentView.addView(currentRow);
                 currentRow = new LinearLayout(this);
                 currentRow.setOrientation(LinearLayout.HORIZONTAL);
                 currentRow.setWeightSum(3.0f);
-                currentRow.setPadding(10,10,10,10);
+                currentRow.setPadding(10, 10, 10, 10);
             }
             LinearLayout tvParentLayout = new LinearLayout(this);
             tvParentLayout.setOrientation(LinearLayout.VERTICAL);
@@ -574,15 +576,15 @@ public class ViewCategoryActivity extends AppCompatActivity {
             rowItemCount++;
             Log.d(TAG, "addFilterToNavigationSheet: adding...");
         }
-        if(currentRow.getChildCount() > 0)
+        if (currentRow.getChildCount() > 0)
             parentView.addView(currentRow);
     }
 
 
     /*
-    *   @param tag will is used to identify if Filter type
-    *       COLOR, TYPE, SIZE
-    * */
+     *   @param tag will is used to identify if Filter type
+     *       COLOR, TYPE, SIZE
+     * */
     private void addToFilterToList(TextView textView, FILTER tag) {
         Log.d(TAG, "filterItem: TAG: " + tag.toString());
         Drawable background = textView.getBackground();
@@ -627,13 +629,13 @@ public class ViewCategoryActivity extends AppCompatActivity {
         CURRENT_PAGE = START_PAGE;
         IS_LAST_PAGE = false;
         RETRY_ATTEMPT = 0;
-        if(IS_FILTER_FETCH_COMPLETE) {
+        if (IS_FILTER_FETCH_COMPLETE) {
             colorFilterList.clear();
             typeFilterList.clear();
             sizeFilterList.clear();
-            addFilterToNavigationSheet(filterColor ,filterArrayValues.getColors(), FILTER.COLOR);
-            addFilterToNavigationSheet(filterType ,filterArrayValues.getTypes(), FILTER.TYPE);
-            addFilterToNavigationSheet(filterSize ,filterArrayValues.getSizes(), FILTER.LENGTH);
+            addFilterToNavigationSheet(filterColor, filterArrayValues.getColors(), FILTER.COLOR);
+            addFilterToNavigationSheet(filterType, filterArrayValues.getTypes(), FILTER.TYPE);
+            addFilterToNavigationSheet(filterSize, filterArrayValues.getSizes(), FILTER.LENGTH);
         }
         //categoryNamesAdapter.clearAllSelection(); //optional
     }
@@ -704,7 +706,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private void showNoInternetImage(boolean show) {
         retryConnecting.setRefreshing(false);
         refreshLayout.setRefreshing(false);
-        if(show) {
+        if (show) {
             retryConnecting.setVisibility(View.VISIBLE);
             return;
         }
@@ -712,9 +714,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
     }
 
     private void showEmptyScreen(boolean show) {
-        if(show) {
+        if (show) {
             //TODO: show empty here screen when created
-            return ;
+            return;
         }
 
     }
@@ -737,7 +739,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             return;
         }
         //If any dialog is in expanded state then close it
-        if(closeDialog()) return ;
+        if (closeDialog()) return;
 
         Log.d(TAG, "onBackPressed: uploading...");
         viewModel.uploadWishListOnServer(this.getApplication(), null);
@@ -747,7 +749,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final WishListUploadedCallback wishListUploadedCallback = new WishListUploadedCallback() {
         @Override
         public void onUploadSuccessful() {
-            if(WISHLIST_CHANGED) {
+            if (WISHLIST_CHANGED) {
                 WISHLIST_CHANGED = false;
                 checkNetworkAndFetchData();
             }
@@ -757,7 +759,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         public void onUploadFailed(int errorCode, String message) {
             Log.d(TAG, "onUploadFailed: errorCode " + errorCode);
             Log.d(TAG, "onUploadFailed: message " + message);
-            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+            if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 RETRY_ATTEMPT++;
                 checkNetworkAndFetchData();
             } else {

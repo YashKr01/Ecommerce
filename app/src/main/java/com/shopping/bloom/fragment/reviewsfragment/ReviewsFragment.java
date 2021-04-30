@@ -88,11 +88,9 @@ public class ReviewsFragment extends Fragment {
                         // if list is empty or is null
                         if (reviewModel == null) {
                             reviewList.clear();
-                            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
                             binding.progressBar.setVisibility(View.GONE);
                         } else if (reviewModel.getData() == null || reviewModel.getData().isEmpty()) {
                             binding.txtEmptyList.setVisibility(View.VISIBLE);
-                            Toast.makeText(getContext(), "An error occurred", Toast.LENGTH_SHORT).show();
                             binding.progressBar.setVisibility(View.GONE);
                         } else {
                             // if obtained list is not empty

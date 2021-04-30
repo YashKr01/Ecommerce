@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_18"
         android:layout_marginTop="28dp"
-        android:textSize="@dimen/sb_text_size_28"
+        android:textSize="@dimen/sb_text_size_24"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="15.00% OFF" />
@@ -47,8 +47,9 @@
         style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="@+id/txt_coupon_rate"
         app:layout_constraintTop_toBottomOf="@+id/txt_coupon_rate"
         tools:text="For orders over 1500" />
@@ -60,6 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
         app:layout_constraintTop_toBottomOf="@+id/txt_coupon_limit"
         tools:text="Code:treatsaleapp" />
@@ -71,6 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
         app:layout_constraintTop_toBottomOf="@+id/txt_coupon_code"
         tools:text="3/16/2021" />
@@ -83,6 +86,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="16dp"
         android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
         app:layout_constraintTop_toBottomOf="@+id/txt_coupon_date"

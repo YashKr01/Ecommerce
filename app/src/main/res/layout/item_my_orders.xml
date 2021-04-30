@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:textColor="@color/grey_700"
         android:textSize="@dimen/sb_text_size_16"
+        style="@style/BoldText"
+        android:layout_margin="@dimen/sb_size_4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Pending Orders" />
