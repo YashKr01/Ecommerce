@@ -17,6 +17,7 @@
 
     <style name="TabLayoutText" parent="Theme.Ecommerce">
         <item name="fontFamily">@font/gothammedium</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">@font/gothammedium</item>
         <item name="android:textSize">@dimen/sb_text_size_12</item>
         <item name="android:layout_height">wrap_content</item>
@@ -92,10 +93,16 @@
     </style>
 
     <style name="ToolbarStyle" parent="Theme.Ecommerce">
-        <item name="fontFamily">@font/gothammedium</item>
-        <item name="android:fontFamily">@font/gothammedium</item>
+        <item name="fontFamily">@font/gothambold</item>
+        <item name="android:fontFamily">@font/gothambold</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/sb_text_size_12</item>
+    </style>
+
+    <style name="NormalText" parent="Theme.Ecommerce">
+        <item name="android:fontFamily">@font/gotham_font</item>
+        <item name="fontFamily">@font/gotham_font</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>
