@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -9,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,6 +47,7 @@ import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
+import com.shopping.bloom.restService.callback.WishListUploadedCallback;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.Const.SORT_BY;
 import com.shopping.bloom.utils.Const.FILTER;
@@ -63,7 +67,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private ProductsViewModel viewModel;
     //views
     private RelativeLayout rlSort, rlCategory, rlFilter;
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout refreshLayout, retryConnecting;
     private RecyclerView rvProducts, rvCategoryTypes;
     private ProductAdapter productAdapter;
     private CategoryTypesAdapter categoryNamesAdapter;
@@ -73,16 +77,19 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private ImageView imgCloseNavigationView;
     private LinearLayout sortOptionSheet, categoryOptionSheet;
+    private LinearLayout dummyLayout;
     private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
     private ImageView sortArrow, categoryArrow;
     private Button btApply, btClear;
     private Button navBtApply, navBtClear;
+    private ViewStub noInternetLayout;
 
     private LinearLayout filterType, filterColor, filterSize;
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
     private int PARENT_ID = -1;
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
+    private boolean WISHLIST_CHANGED = false;
     private boolean IS_FILTER_FETCH_COMPLETE = false;
     List<CategoryTypes> filterList;     //subcategory list for filter/sorting
     ProductFilter MAIN_FILTER = new ProductFilter();
@@ -90,9 +97,12 @@ public class ViewCategoryActivity extends AppCompatActivity {
     List<String> colorFilterList, sizeFilterList, typeFilterList;
 
     /*
-     *   RETRY FETCH POLICY
+     *   RETRY POLICY
      *       MAXIMUM Retry attempt = 3
-     *       if the request fails then check if for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
+     *          1. First check if (WISHLIST_CHANGE == true) if so then
+     *               upload the wishlist to the server and fetch the data again
+     *           otherWish fetch the data.
+     *       if the request fails then check for (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) if so then
      *           Request again.
      * */
     private int RETRY_ATTEMPT = 0;
@@ -114,6 +124,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             reset();    //reset the UI and filters
             checkNetworkAndFetchData();
         });
+        retryConnecting.setOnRefreshListener(this::checkNetworkAndFetchData);
     }
 
 
@@ -125,6 +136,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rvCategoryTypes = findViewById(R.id.rv_CategoryTypes);
         toolbar = findViewById(R.id.toolbar);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
+        retryConnecting = findViewById(R.id.swipeNoInternet);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.nav_view);
         imgCloseNavigationView = findViewById(R.id.imgClose);
@@ -139,6 +151,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
         filterType = findViewById(R.id.filterType);
         filterColor = findViewById(R.id.filterColor);
         filterSize = findViewById(R.id.filterLength);
+        dummyLayout = findViewById(R.id.llDummyLayout);
+        noInternetLayout = findViewById(R.id.vsEmptyScreen);
 
         sortMostPopular = findViewById(R.id.textView1);
         sortNewArrival = findViewById(R.id.textView2);
@@ -183,7 +197,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
 
-        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 1);
+        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 0);
 
         if (bundle != null) {
             Log.d(TAG, "getIntentData: Not null");
@@ -197,6 +211,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setUpRecycleView() {
         productAdapter = new ProductAdapter(this, wishListListener);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -208,8 +223,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayout.HORIZONTAL);
         rvCategoryTypes.setLayoutManager(staggeredGridLayoutManager);
         rvCategoryTypes.setAdapter(categoryNamesAdapter);
-        categoryNamesAdapter.updateList(getDummyCategories());
-        categoryNamesAdapter.notifyDataSetChanged();
+        //categoryNamesAdapter.updateList(getDummyCategories());
+        if (filterList != null) {
+            categoryNamesAdapter.updateList(filterList);
+        }
 
         //Disable blink animation when updating the items
         ((SimpleItemAnimator) rvProducts.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -227,19 +244,34 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
             @Override
             public boolean isLoading() {
-                boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
-                if (!isVisible) {
-                    rotateUpArrow(sortArrow, false);
-                    showOrHideSheet(sortOptionSheet, false);
-                }
                 return IS_LOADING;
             }
         });
+
+
+        /*
+         *   Dummy layout for identifying the clicks
+         *       1. If any dialog is open sort/category then close the dialog and consume the click.
+         *       2. If no dialog is open then return false.
+         * */
+        dummyLayout.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
+                boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
+                if (isCategorySheetVisible || isSortSheetVisible) {
+                    closeDialog();
+                    return true;
+                }
+            }
+            return false;
+        });
+
     }
 
     private final WishListListener wishListListener = new WishListListener() {
         @Override
         public void updateWishList(int position, boolean isAdded) {
+            WISHLIST_CHANGED = true;
             Log.d(TAG, "updateWishList: " + isAdded);
             Product product = productAdapter.getItemAt(position);
             productAdapter.updateItem(position, isAdded);
@@ -263,7 +295,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
             if (!IS_FILTER_FETCH_COMPLETE) {
                 fetchFilterAndUpdateUI();
             }
-
+            if (WISHLIST_CHANGED) {
+                //Upload the wishListItems to the server
+                viewModel.uploadWishListOnServer(this.getApplication(), wishListUploadedCallback);
+            }
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
             viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
@@ -298,6 +333,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
             IS_LOADING = false;
             RETRY_ATTEMPT = 0;
             refreshLayout.setRefreshing(false);
+            showNoInternetImage(false);
+            showEmptyScreen(products.isEmpty());
             if (CURRENT_PAGE == 0) {
                 productAdapter.updateList(products);
                 rvProducts.smoothScrollToPosition(0);       //CHECK for bugs
@@ -305,7 +342,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 productAdapter.addProductList(products);
             }
             CURRENT_PAGE++;
-            showNoInternetImage(false);
         }
 
         @Override
@@ -371,6 +407,20 @@ public class ViewCategoryActivity extends AppCompatActivity {
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
         checkNetworkAndFetchData();
+    }
+
+    private boolean closeDialog() {
+        boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
+        boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
+        if (isCategorySheetVisible) { //close filter sheet
+            rotateUpArrow(categoryArrow, false);
+            showOrHideSheet(categoryOptionSheet, false);
+        }
+        if (isSortSheetVisible) {
+            rotateUpArrow(sortArrow, false);
+            showOrHideSheet(sortOptionSheet, false);
+        }
+        return isCategorySheetVisible || isSortSheetVisible;
     }
 
     private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
@@ -653,6 +703,20 @@ public class ViewCategoryActivity extends AppCompatActivity {
     }
 
     private void showNoInternetImage(boolean show) {
+        retryConnecting.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
+        if (show) {
+            retryConnecting.setVisibility(View.VISIBLE);
+            return;
+        }
+        retryConnecting.setVisibility(View.GONE);
+    }
+
+    private void showEmptyScreen(boolean show) {
+        if (show) {
+            //TODO: show empty here screen when created
+            return;
+        }
 
     }
 
@@ -673,11 +737,37 @@ public class ViewCategoryActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.END);
             return;
         }
+        //If any dialog is in expanded state then close it
+        if (closeDialog()) return;
 
         Log.d(TAG, "onBackPressed: uploading...");
-        ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
+        viewModel.uploadWishListOnServer(this.getApplication(), null);
         super.onBackPressed();
     }
+
+    private final WishListUploadedCallback wishListUploadedCallback = new WishListUploadedCallback() {
+        @Override
+        public void onUploadSuccessful() {
+            if (WISHLIST_CHANGED) {
+                WISHLIST_CHANGED = false;
+                checkNetworkAndFetchData();
+            }
+        }
+
+        @Override
+        public void onUploadFailed(int errorCode, String message) {
+            Log.d(TAG, "onUploadFailed: errorCode " + errorCode);
+            Log.d(TAG, "onUploadFailed: message " + message);
+            if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+                RETRY_ATTEMPT++;
+                checkNetworkAndFetchData();
+            } else {
+                WISHLIST_CHANGED = false;
+                RETRY_ATTEMPT = 0;
+                checkNetworkAndFetchData();
+            }
+        }
+    };
 
 
     @Override
@@ -686,7 +776,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 Log.d(TAG, "onBackPressed: uploading...");
-                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication());
+                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication(), null);
                 super.onBackPressed();
                 return true;
             default:

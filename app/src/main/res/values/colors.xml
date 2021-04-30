@@ -9,6 +9,7 @@
     <color name="colorAccentDark">#D32F2F</color>
     <color name="colorAccentLight">#D32F2F</color>
 
+    <color name="transparent">#00FFFFFF</color>
 
     <color name="active_tab_color">#D32F2F</color>
     <color name="inactive_tab_color">#BDBDBD</color>

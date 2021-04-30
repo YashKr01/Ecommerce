@@ -119,6 +119,7 @@ public class CategoryTypesAdapter extends RecyclerView.Adapter<CategoryTypesAdap
     public void updateList(List<CategoryTypes> list) {
         if (list == null) return;
         categoryTypesList = list;
+        notifyDataSetChanged();
     }
 
     @Override
