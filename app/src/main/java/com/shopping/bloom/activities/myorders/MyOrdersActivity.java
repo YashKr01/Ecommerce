@@ -1,10 +1,13 @@
 package com.shopping.bloom.activities.myorders;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.adapters.myorders.MyOrdersAdapter;
 import com.shopping.bloom.databinding.ActivityMyOrdersBinding;
@@ -23,12 +26,19 @@ public class MyOrdersActivity extends AppCompatActivity {
 
     private MyOrdersAdapter adapter;
     private List<MyOrders> myOrdersList;
+    private Integer RECYCLER_VIEW_POSITION;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMyOrdersBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // get passed position
+        RECYCLER_VIEW_POSITION = getIntent().getIntExtra("RECYCLER_VIEW_POSITION", 0);
+
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // setup recycler view and adapter
         myOrdersList = new ArrayList<>();
@@ -37,10 +47,19 @@ public class MyOrdersActivity extends AppCompatActivity {
         binding.recyclerView.setAdapter(adapter);
 
         // setup mock data for recycler view
-        myOrdersList.add(new MyOrders("Pending Orders", getList()));
-        myOrdersList.add(new MyOrders("Past Orders", getList()));
+        myOrdersList.add(new MyOrders("Unpaid Orders", getList()));
+        myOrdersList.add(new MyOrders("Processed Orders", getList()));
+        myOrdersList.add(new MyOrders("Shipped Orders", getList()));
         myOrdersList.add(new MyOrders("Cancelled Orders", getList()));
 
+        binding.recyclerView.getLayoutManager().scrollToPosition(RECYCLER_VIEW_POSITION);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) onBackPressed();
+        return true;
     }
 
     // method for generating mock list

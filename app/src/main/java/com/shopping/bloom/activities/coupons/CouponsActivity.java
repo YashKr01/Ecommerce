@@ -1,8 +1,10 @@
 package com.shopping.bloom.activities.coupons;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.coupons.CouponsViewPagerAdapter;
@@ -33,5 +35,11 @@ public class CouponsActivity extends AppCompatActivity {
         binding.couponsTabLayout.setupWithViewPager(binding.couponsViewPager);
         binding.couponsViewPager.setAdapter(viewPagerAdapter);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) onBackPressed();
+        return true;
     }
 }

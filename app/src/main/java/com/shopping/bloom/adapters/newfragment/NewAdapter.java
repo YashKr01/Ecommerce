@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
+import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
@@ -23,10 +23,12 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
     private Context context;
     private List<NewProductCategory> list;
+    private NewProductOnClick listener;
 
-    public NewAdapter(Context context, List<NewProductCategory> list) {
+    public NewAdapter(Context context, List<NewProductCategory> list, NewProductOnClick listener) {
         this.context = context;
         this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -51,7 +53,14 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
                 holder.imageView,
                 true);
 
-        setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList());
+        setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList(), listener);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.newBannerListener(currentItem);
+            }
+        });
 
     }
 
@@ -76,9 +85,9 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
     }
 
-    private void setChildRecyclerView(RecyclerView recyclerView, List<NewProduct> productList) {
+    private void setChildRecyclerView(RecyclerView recyclerView, List<NewProduct> productList, NewProductOnClick listener) {
 
-        NewProductAdapter newProductAdapter = new NewProductAdapter(context, productList);
+        NewProductAdapter newProductAdapter = new NewProductAdapter(context, productList, listener);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 context, RecyclerView.HORIZONTAL, false
         ));

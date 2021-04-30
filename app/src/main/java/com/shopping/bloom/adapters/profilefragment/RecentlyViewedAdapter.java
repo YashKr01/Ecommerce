@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
+import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class RecentlyViewedAdapter extends RecyclerView.Adapter<RecentlyViewedAd
 
     private List<RecentlyViewedItem> list;
     private Context context;
+    private WishListProductListener listener;
 
-    public RecentlyViewedAdapter(List<RecentlyViewedItem> list, Context context) {
+    public RecentlyViewedAdapter(List<RecentlyViewedItem> list, Context context, WishListProductListener listener) {
         this.list = list;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +54,13 @@ public class RecentlyViewedAdapter extends RecyclerView.Adapter<RecentlyViewedAd
                 holder.imageView,
                 true
         );
+
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(1000) {
+            @Override
+            public void onDebouncedClick(View v) {
+                listener.recentlyViewedOnClicked(currentItem);
+            }
+        });
 
     }
 

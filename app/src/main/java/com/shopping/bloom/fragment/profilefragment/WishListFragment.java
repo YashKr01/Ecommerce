@@ -18,6 +18,7 @@ import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
+import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -115,6 +116,11 @@ public class WishListFragment extends Fragment implements WishListProductListene
         Intent intent = new Intent(getActivity(), SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", wishListData.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void recentlyViewedOnClicked(RecentlyViewedItem recentlyViewedItem) {
+
     }
 
 }

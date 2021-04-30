@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.newfragment.NewProduct;
+import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
@@ -20,10 +21,12 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
 
     private Context context;
     private List<NewProduct> list;
+    private NewProductOnClick listener;
 
-    public NewProductAdapter(Context context, List<NewProduct> list) {
+    public NewProductAdapter(Context context, List<NewProduct> list, NewProductOnClick listener) {
         this.context = context;
         this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,6 +48,13 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
                 true);
 
         holder.textView.setText(currentItem.getPrice());
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.newProductListener(currentItem);
+            }
+        });
 
     }
 
