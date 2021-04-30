@@ -16,6 +16,7 @@ import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -55,9 +56,10 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
 
         setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList(), listener);
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
-            public void onClick(View v) {
+            public void onDebouncedClick(View v) {
                 listener.newBannerListener(currentItem);
             }
         });

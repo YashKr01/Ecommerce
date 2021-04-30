@@ -48,7 +48,7 @@ public class MyOrdersAdapter extends RecyclerView.Adapter<MyOrdersAdapter.Orders
         return myOrdersList.size();
     }
 
-    public class OrdersViewHolder extends RecyclerView.ViewHolder {
+    public static class OrdersViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
         RecyclerView recyclerView;
