@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -47,9 +48,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(debouncedOnClickListener);
-        addressBookTextView.setOnClickListener(debouncedOnClickListener);
         accountSecurityTextView.setOnClickListener(debouncedOnClickListener);
         connectTextView.setOnClickListener(debouncedOnClickListener);
+        addressBookTextView.setOnClickListener(debouncedOnClickListener);
 
         String name = loginManager.getname();
         String email = loginManager.getEmailid();
@@ -79,7 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
                 addressBookIntent();
             } else if (v.getId() == R.id.connectTextView) {
                 connectIntent();
-            }else if(v.getId() == R.id.accountSecurityTextView){
+            } else if (v.getId() == R.id.accountSecurityTextView) {
                 accountSecurityIntent();
             }
         }
@@ -87,7 +88,16 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     public void accountSecurityIntent() {
-        intent(AccountSecurityActivity.class);
+        if (loginManager.isLoggedIn()) {
+            Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
+            new Handler().postDelayed(() -> {
+                intent(LoginActivity.class);
+                finish();
+            }, 1500);
+        } else {
+            intent(AccountSecurityActivity.class);
+        }
+
     }
 
     private void setNavigationOnClick() {
@@ -105,7 +115,15 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void addressBookIntent() {
-        intent(MyAddressActivity.class);
+        if (loginManager.isLoggedIn()) {
+            Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
+            new Handler().postDelayed(() -> {
+                intent(LoginActivity.class);
+                finish();
+            }, 1500);
+        } else {
+            intent(MyAddressActivity.class);
+        }
     }
 
     public void signOut() {

@@ -66,7 +66,9 @@ public class LoginWithPassActivity extends AppCompatActivity {
         textView2 = findViewById(R.id.textView6);
         signInButton = findViewById(R.id.signInButton);
 
-        toolbar.setNavigationOnClickListener(debouncedOnClickListener);
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
@@ -83,8 +85,6 @@ public class LoginWithPassActivity extends AppCompatActivity {
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.signInButton){
                 signIn();
-            }else if(v.getId() == R.id.toolbar){
-                onBackPressed();
             }else if(v.getId() == R.id.textView6){
                 signUpActivity();
             }else if(v.getId() == R.id.loginWithOtpTextView){

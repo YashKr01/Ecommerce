@@ -37,7 +37,7 @@ public class ReviewsFragment extends Fragment {
     private ReviewsAdapter adapter;
     private List<Review> reviewList;
     private ReviewViewModel viewModel;
-    private String PRODUCT_ID = "2";
+    private String PRODUCT_ID;
     private String LIMIT = "30";
     private String PAGE = "0";
 
@@ -50,6 +50,10 @@ public class ReviewsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentReviewsBinding.inflate(inflater, container, false);
+
+        if (getArguments() != null) {
+            PRODUCT_ID = getArguments().getString("PRODUCT_ID", "1");
+        }
 
         // initialise view model here
         viewModel = new ViewModelProvider(requireActivity()).get(ReviewViewModel.class);

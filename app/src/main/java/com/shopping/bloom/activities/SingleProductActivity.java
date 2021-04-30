@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -26,9 +28,11 @@ import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
 import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
 import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
+import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
 
@@ -46,7 +50,7 @@ public class SingleProductActivity extends AppCompatActivity {
     SingleProductDataResponse singleProductDataResponse;
     List<String> colorList, sizeList;
     LinearLayout linearLayout;
-    TextView productName, price;
+    TextView productName, price, viewReview, colorTextView;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
     ViewPager viewPager;
@@ -57,7 +61,7 @@ public class SingleProductActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     RelativeLayout relativeLayout;
     Toolbar toolbar;
-
+    FrameLayout frameLayout;
     private Integer PRODUCT_ID;
 
     @Override
@@ -68,18 +72,25 @@ public class SingleProductActivity extends AppCompatActivity {
         /*
         Product ID received
          */
-        PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
-        Log.d("SEND", "onCreate: "+PRODUCT_ID);
+        if (getIntent() != null) {
+            PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
+        }
+        Log.d("SEND", "onCreate: " + PRODUCT_ID);
 
         productName = findViewById(R.id.product_name);
         price = findViewById(R.id.price);
+        colorTextView = findViewById(R.id.color);
         ratingBar = findViewById(R.id.ratingBar4);
+        viewReview = findViewById(R.id.viewAllReviewTextView);
         linearLayout = findViewById(R.id.linearLayout);
         relativeLayout = findViewById(R.id.relative);
         viewPager = findViewById(R.id.viewpager);
         viewStub = findViewById(R.id.vsEmptyScreen);
         toolbar = findViewById(R.id.toolbar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        frameLayout = findViewById(R.id.fragment);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -89,7 +100,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.show();
 
         colorRecyclerView = findViewById(R.id.colorRecyclerView);
@@ -136,8 +147,6 @@ public class SingleProductActivity extends AppCompatActivity {
                 viewPagerImageAdapter.setImageList(imageList);
                 viewPagerImageAdapter.notifyDataSetChanged();
 
-                //Glide.with(this).load("http://bloomapp.in" + primary).into(imageView);
-
                 //colors
                 String colors = this.singleProductDataResponse.getAvailable_colors();
                 String[] colorArray = colors.split(",");
@@ -182,13 +191,35 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+        if (PRODUCT_ID != null) {
+            singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
+        }
 
-        singleProductViewModel.makeApiCall(getApplication());
-
-
-
+        viewReview.setOnClickListener(debouncedOnClickListener);
 
     }
+
+    private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
+        @Override
+        public void onDebouncedClick(View v) {
+            if (v.getId() == R.id.viewAllReviewTextView) {
+                frameLayout.setVisibility(View.VISIBLE);
+                swipeRefreshLayout.setVisibility(View.GONE);
+
+                toolbar.setTitle("Reviews");
+
+                Bundle bundle = new Bundle();
+                bundle.putString("PRODUCT_ID", String.valueOf(PRODUCT_ID));
+
+                Fragment fragment = new ReviewsFragment();
+                fragment.setArguments(bundle);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+
+            }
+        }
+    };
+
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
@@ -203,14 +234,24 @@ public class SingleProductActivity extends AppCompatActivity {
 
     public void setViewPagerCurrentItem(int pos) {
         String color = colorList.get(pos).trim();
+        if (!color.isEmpty()) {
+            colorTextView.setVisibility(View.VISIBLE);
+            colorTextView.setText("Color: ".concat(color));
 
-        for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
-            if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
-                viewPager.setCurrentItem(i + 1);
-                break;
+            for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
+                if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                    viewPager.setCurrentItem(i + 1);
+                    break;
+                }
             }
         }
-
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
+        toolbar.setTitle("Sweaters & Cardigans");
+    }
 }

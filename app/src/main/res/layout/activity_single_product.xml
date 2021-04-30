@@ -18,6 +18,12 @@
         app:title="Sweaters &amp; Cardigans"
         app:titleTextColor="@color/black" />
 
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -47,7 +53,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/grey_300">
-
 
                         <RelativeLayout
                             android:id="@+id/relativeLayout1"
@@ -123,6 +128,7 @@
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:fontFamily="@font/gothambold"
                                 android:text="Color: Red"
+                                android:visibility="gone"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_15" />
 
