@@ -28,7 +28,7 @@ public class SingleProductViewModel extends ViewModel {
         return mutableLiveData;
     }
 
-    public void makeApiCall(Application application) {
+    public void makeApiCall(int id, Application application) {
 
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
@@ -40,7 +40,7 @@ public class SingleProductViewModel extends ViewModel {
         }
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
-        Call<SingleProductResponse> call = apiService.getSingleProduct("Bearer " + token);
+        Call<SingleProductResponse> call = apiService.getSingleProduct("Bearer " + token, id);
         call.enqueue(new Callback<SingleProductResponse>() {
             @Override
             public void onResponse(Call<SingleProductResponse> call, Response<SingleProductResponse> response) {

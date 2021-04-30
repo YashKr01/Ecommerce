@@ -684,6 +684,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private void openSingleProductActivity(Product product) {
         //TODO: send product id with intent
         Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", product.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
