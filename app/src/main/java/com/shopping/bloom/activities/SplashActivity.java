@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
             builder.setTitle("Error");
             builder.setMessage("No Internet");
             builder.setPositiveButton("Retry", (dialog, which) -> {
-               checkNetworkConnectivity();
+                checkNetworkConnectivity();
             });
             builder.setNegativeButton("Close", (dialog, which) -> {
                 finish();
@@ -62,23 +62,36 @@ public class SplashActivity extends AppCompatActivity {
 
             splashViewModel = ViewModelProviders.of(this).get(SplashViewModel.class);
 
+
             String imei_number = Tools.getDeviceID(this);
 
             if (loginManager.isLoggedIn()) {
+
                 splashViewModel.getSplashDataMutableLiveData().observe(this, splashData -> {
                     if (splashData != null) {
                         loginManager.setGuest_token(splashData.getToken());
+
+                        gotoMainScreen();
                     }
-                    gotoMainScreen();
                 });
+
             } else {
-                gotoMainScreen();
+                splashViewModel.getRefreshTokenResponseMutableLiveData().observe(this, refreshTokenResponse -> {
+                    if (refreshTokenResponse != null) {
+                        if (!refreshTokenResponse.isSuccess()) {
+                            loginManager.settoken(refreshTokenResponse.getData().getToken());
+                        }
+                        gotoMainScreen();
+                    }
+                });
+
             }
 
             if (loginManager.isLoggedIn()) {
                 splashViewModel.makeApiCall(imei_number, getApplication());
+
             } else {
-                gotoMainScreen();
+                splashViewModel.makeApiCallCheckToken(loginManager.gettoken(), getApplication());
             }
         }
 

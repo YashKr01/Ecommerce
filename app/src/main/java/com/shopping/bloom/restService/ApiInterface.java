@@ -22,6 +22,7 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.PutWishListRequest;
+import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.restService.response.SingleProductResponse;
 import com.shopping.bloom.restService.response.SplashBearerResponse;
@@ -180,5 +181,6 @@ public interface ApiInterface {
             @Header("Authorization") String bearer
     );
 
-
+    @GET("frontend/checkTokenExpiry")
+    Call<RefreshTokenResponse> checkBearerToken(@Header("Authorization") String bearer);
 }

@@ -40,6 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
+
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/scrollView"
                     android:layout_width="match_parent"
@@ -533,6 +535,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:background="@color/white"
+                    android:orientation="horizontal"
                     android:elevation="@dimen/sb_size_4"
                     android:padding="@dimen/sb_size_10">
 
@@ -556,6 +559,7 @@
                         android:textStyle="bold" />
 
                 </LinearLayout>
+
             </RelativeLayout>
 
             <ViewStub
