@@ -154,7 +154,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         }
     }
 
-    @Override
+   /* @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_settings).setVisible(true);
         MenuItem item = menu.findItem(R.id.menu_settings);
@@ -165,7 +165,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: new" + menu.getItem(0).getTitle());
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
