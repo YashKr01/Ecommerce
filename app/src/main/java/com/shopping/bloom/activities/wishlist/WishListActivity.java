@@ -38,7 +38,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     private WishListActivityAdapter adapter;
     private RecommendationsAdapter recommendationsAdapter;
     private WishListViewModel viewModel;
-    private String PAGE = "0", LIMIT = "10";
+    private String PAGE = "0", LIMIT = "30";
     private AlertDialog.Builder builder;
 
     private String IMAGE_URL = "http://bloomapp.in/images/product/product1619491000.png";
@@ -119,19 +119,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
     }
 
-    public void getPaginatedList() {
-
-        viewModel.getWishList(PAGE, LIMIT).observe(this, new Observer<List<WishListData>>() {
-            @Override
-            public void onChanged(List<WishListData> wishListData) {
-                if (wishListData != null && wishListData.size() > 0) {
-                    adapter.addAll(wishListData);
-                }
-            }
-        });
-
-    }
-
     private void postRemaining() {
         viewModel.postRemainingItems();
     }
@@ -187,6 +174,10 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent = new Intent();
+        intent.putExtra("MESSAGE", "");
+        setResult(123, intent);
+        finish();
     }
 
     @Override

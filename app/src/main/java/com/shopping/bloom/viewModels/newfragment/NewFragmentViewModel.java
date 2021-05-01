@@ -31,7 +31,7 @@ public class NewFragmentViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<NewProductCategory>> getNewProducts() {
-        ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
+
         MutableLiveData<List<NewProductCategory>> liveData = new MutableLiveData<>();
 
         LoginManager loginManager = new LoginManager(App.getContext());
@@ -40,26 +40,25 @@ public class NewFragmentViewModel extends AndroidViewModel {
         if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
         else token = loginManager.getGuest_token();
 
-        apiInterface.getNewProducts("Bearer " + token).enqueue(new Callback<NewProductsResponse>() {
+        RetrofitBuilder.getInstance(application).getApi()
+                .getNewProducts("Bearer " + token).enqueue(new Callback<NewProductsResponse>() {
+
             @Override
             public void onResponse(Call<NewProductsResponse> call, Response<NewProductsResponse> response) {
-                Log.d("NEW_PRODUCTS", "onResponse: " +
-                        response.code() + " " +
-                        response.message());
 
-                Log.d("NEW_PRODUCTS", "onResponse: " + response.body().getMessage());
+                if (response.isSuccessful() && response.body() != null) {
 
-                if (response.isSuccessful()) {
-                    liveData.postValue(response.body().getNewCategoryList());
-                } else {
-                    liveData.postValue(null);
-                }
+                    if (response.body().getNewCategoryList() != null)
+                        liveData.postValue(response.body().getNewCategoryList());
+
+                    else liveData.postValue(null);
+
+                } else liveData.postValue(null);
 
             }
 
             @Override
             public void onFailure(Call<NewProductsResponse> call, Throwable t) {
-                Log.d("NEW_PRODUCTS", "onFailure: " + t.getMessage());
                 liveData.postValue(null);
             }
         });

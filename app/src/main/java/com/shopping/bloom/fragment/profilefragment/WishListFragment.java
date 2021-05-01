@@ -37,6 +37,7 @@ public class WishListFragment extends Fragment implements WishListProductListene
     private List<WishListData> list;
     private WishListViewModel viewModel;
     private String PAGE_NO = "0", LIMIT = "8";
+    private int RESULT_CODE = 123;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -67,9 +68,8 @@ public class WishListFragment extends Fragment implements WishListProductListene
         binding.viewMore.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                startActivity(new Intent(getActivity(), WishListActivity.class));
-                getParentFragment().onDetach();
-                onDetach();
+                Intent intent = new Intent(getActivity(), WishListActivity.class);
+                startActivityForResult(intent, RESULT_CODE);
             }
         });
 
@@ -119,7 +119,12 @@ public class WishListFragment extends Fragment implements WishListProductListene
 
     @Override
     public void recentlyViewedOnClicked(RecentlyViewedItem recentlyViewedItem) {
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_CODE)
+            getWishList(PAGE_NO, LIMIT);
+    }
 }

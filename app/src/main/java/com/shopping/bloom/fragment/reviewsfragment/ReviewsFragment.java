@@ -83,7 +83,7 @@ public class ReviewsFragment extends Fragment {
         getReviewList(PRODUCT_ID, LIMIT, PAGE);
     }
 
-    // fetch data using MVVM
+    // fetch data
     private void getReviewList(String productId, String limit, String page) {
 
         binding.progressBar.setVisibility(View.VISIBLE);
