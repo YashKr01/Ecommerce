@@ -35,7 +35,6 @@
         android:textColor="@color/blue_grey_900"
         android:textSize="@dimen/sb_text_size_16"
         android:fontFamily="@font/gothamblack"
-
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imgProductImage"
         app:layout_constraintStart_toStartOf="@+id/imgProductImage"

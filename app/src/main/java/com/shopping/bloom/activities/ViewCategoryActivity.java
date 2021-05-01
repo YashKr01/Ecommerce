@@ -1,43 +1,30 @@
 package com.shopping.bloom.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.navigation.NavigationView;
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.CategoryTypesAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
+import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.CategoryTypes;
 import com.shopping.bloom.model.FilterArrayValues;
@@ -49,8 +36,8 @@ import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.restService.callback.WishListUploadedCallback;
 import com.shopping.bloom.utils.Const;
-import com.shopping.bloom.utils.Const.SORT_BY;
 import com.shopping.bloom.utils.Const.FILTER;
+import com.shopping.bloom.utils.Const.SORT_BY;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -66,25 +53,13 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private ProductsViewModel viewModel;
     //views
-    private RelativeLayout rlSort, rlCategory, rlFilter;
     private SwipeRefreshLayout refreshLayout, retryConnecting;
-    private RecyclerView rvProducts, rvCategoryTypes;
+    private RecyclerView rvProducts;
     private ProductAdapter productAdapter;
-    private CategoryTypesAdapter categoryNamesAdapter;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
     private Toolbar toolbar;
+    private LinearLayout llSort, llFilter;
+    private TextView tvSortBy, tvFilterBy;
 
-    private ImageView imgCloseNavigationView;
-    private LinearLayout sortOptionSheet, categoryOptionSheet;
-    private LinearLayout dummyLayout;
-    private TextView sortMostPopular, sortNewArrival, sortPriceLtoH, sortPriceHtoL;
-    private ImageView sortArrow, categoryArrow;
-    private Button btApply, btClear;
-    private Button navBtApply, navBtClear;
-    private ViewStub noInternetLayout;
-
-    private LinearLayout filterType, filterColor, filterSize;
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
     private int PARENT_ID = -1;
@@ -94,7 +69,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
     List<CategoryTypes> filterList;     //subcategory list for filter/sorting
     ProductFilter MAIN_FILTER = new ProductFilter();
     FilterArrayValues filterArrayValues = null;
+    SORT_BY DEFAULT_SORT_VALUE = null;
     List<String> colorFilterList, sizeFilterList, typeFilterList;
+
 
     /*
      *   RETRY POLICY
@@ -129,64 +106,29 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
 
     private void initViews() {
-        rlSort = findViewById(R.id.rlSort);
-        rlCategory = findViewById(R.id.rlCategory);
-        rlFilter = findViewById(R.id.rlFilter);
         rvProducts = findViewById(R.id.rvViewCategory);
-        rvCategoryTypes = findViewById(R.id.rv_CategoryTypes);
         toolbar = findViewById(R.id.toolbar);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         retryConnecting = findViewById(R.id.swipeNoInternet);
-        drawerLayout = findViewById(R.id.drawerLayout);
-        navigationView = findViewById(R.id.nav_view);
-        imgCloseNavigationView = findViewById(R.id.imgClose);
-        sortOptionSheet = findViewById(R.id.llSortOptionsSheet);
-        categoryOptionSheet = findViewById(R.id.llCategoryOptionsSheet);
-        sortArrow = findViewById(R.id.imgSortArrow);
-        categoryArrow = findViewById(R.id.imgCategoryArrow);
-        btApply = findViewById(R.id.btApply);
-        btClear = findViewById(R.id.btClearAll);
-        navBtApply = findViewById(R.id.btApplyFilter);
-        navBtClear = findViewById(R.id.btClearAllFilter);
-        filterType = findViewById(R.id.filterType);
-        filterColor = findViewById(R.id.filterColor);
-        filterSize = findViewById(R.id.filterLength);
-        dummyLayout = findViewById(R.id.llDummyLayout);
-        noInternetLayout = findViewById(R.id.vsEmptyScreen);
-
-        sortMostPopular = findViewById(R.id.textView1);
-        sortNewArrival = findViewById(R.id.textView2);
-        sortPriceLtoH = findViewById(R.id.textView3);
-        sortPriceHtoL = findViewById(R.id.textView4);
+        llSort = findViewById(R.id.llSortLayout);
+        llFilter = findViewById(R.id.llFilterLayout);
+        tvSortBy = findViewById(R.id.tvSortBy);
+        tvFilterBy = findViewById(R.id.tvFilterBy);
 
         //SetUpToolbar
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener((view -> onBackPressed()));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-
-        //Lock the drawer layout so that it won't open with left swipe
-        lockDrawerLayout();
-
         //init List
         colorFilterList = new ArrayList<>();
         sizeFilterList = new ArrayList<>();
         typeFilterList = new ArrayList<>();
 
-        //Attack Click Listeners
-        rlSort.setOnClickListener(optionsClickListener);
-        rlCategory.setOnClickListener(optionsClickListener);
-        rlFilter.setOnClickListener(optionsClickListener);
-        imgCloseNavigationView.setOnClickListener(optionsClickListener);
 
-        sortMostPopular.setOnClickListener(sortOptionClickListener);
-        sortNewArrival.setOnClickListener(sortOptionClickListener);
-        sortPriceLtoH.setOnClickListener(sortOptionClickListener);
-        sortPriceHtoL.setOnClickListener(sortOptionClickListener);
-        btApply.setOnClickListener(optionsClickListener);
-        btClear.setOnClickListener(optionsClickListener);
-        navBtApply.setOnClickListener(optionsClickListener);
-        navBtClear.setOnClickListener(optionsClickListener);
+        llSort.setOnClickListener(clickListener);
+        llFilter.setOnClickListener(clickListener);
+
     }
 
     private void getIntentData() {
@@ -211,7 +153,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private void setUpRecycleView() {
         productAdapter = new ProductAdapter(this, wishListListener);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -219,14 +160,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(productAdapter);
 
-        categoryNamesAdapter = new CategoryTypesAdapter(this);
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, LinearLayout.HORIZONTAL);
-        rvCategoryTypes.setLayoutManager(staggeredGridLayoutManager);
-        rvCategoryTypes.setAdapter(categoryNamesAdapter);
-        //categoryNamesAdapter.updateList(getDummyCategories());
-        if (filterList != null) {
-            categoryNamesAdapter.updateList(filterList);
-        }
 
         //Disable blink animation when updating the items
         ((SimpleItemAnimator) rvProducts.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -248,25 +181,22 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
         });
 
-
-        /*
-         *   Dummy layout for identifying the clicks
-         *       1. If any dialog is open sort/category then close the dialog and consume the click.
-         *       2. If no dialog is open then return false.
-         * */
-        dummyLayout.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN || motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
-                boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
-                if (isCategorySheetVisible || isSortSheetVisible) {
-                    closeDialog();
-                    return true;
-                }
-            }
-            return false;
-        });
-
     }
+
+    private final DebouncedOnClickListener clickListener = new DebouncedOnClickListener(200) {
+        @Override
+        public void onDebouncedClick(View v) {
+            int SORT_BOTTOM_SHEET = 0;
+            int FILTER_BOTTOM_SHEET = 1;
+            int viewId = v.getId();
+            if (viewId == R.id.llSortLayout) {
+                openBottomSheet(SORT_BOTTOM_SHEET);
+            }
+            if (viewId == R.id.llFilterLayout) {
+                openBottomSheet(FILTER_BOTTOM_SHEET);
+            }
+        }
+    };
 
     private final WishListListener wishListListener = new WishListListener() {
         @Override
@@ -314,11 +244,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final FetchFilterListener filterListener = new FetchFilterListener() {
         @Override
         public void fetchOnSuccess(FilterArrayValues filterValues) {
+            Log.d(TAG, "fetchOnSuccess: ");
             IS_FILTER_FETCH_COMPLETE = true;
             filterArrayValues = filterValues;
-            addFilterToNavigationSheet(filterColor, filterValues.getColors(), FILTER.COLOR);
-            addFilterToNavigationSheet(filterType, filterValues.getTypes(), FILTER.TYPE);
-            addFilterToNavigationSheet(filterSize, filterValues.getSizes(), FILTER.LENGTH);
         }
 
         @Override
@@ -363,167 +291,41 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     };
 
-    private void updateFilter(SORT_BY sortBy) {
-        Log.d(TAG, "updateFilter: updating filter... " + sortBy);
-        CURRENT_PAGE = 0;
-        RETRY_ATTEMPT = 0;
-        IS_LAST_PAGE = false;
-        ProductFilter newFilter = new ProductFilter();
-        String subCategory = categoryNamesAdapter.getSelectedItemsString();
-        if (!subCategory.isEmpty()) {
-            newFilter.setSubCategoryIds(subCategory);
-        } else {
-            newFilter.setSubCategoryIds(null);
-        }
-        if (sortBy == SORT_BY.SUB_CATEGORY) {
-            //Just update the category items and return
-            MAIN_FILTER.setSubCategoryIds(newFilter.getSubCategoryIds());
-            Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
-            checkNetworkAndFetchData();
-            return;
-        }
+    private void openBottomSheet(int bottomSheetType) {
+        final int SORT_BOTTOM_SHEET = 0;
+        final int FILTER_BOTTOM_SHEET = 1;
+        switch (bottomSheetType) {
+            case SORT_BOTTOM_SHEET: {
+                SortBottomSheet sortBottomSheet = new SortBottomSheet(this);
 
-        if (sortBy == SORT_BY.NEW_ARRIVAL) {
-            newFilter.setNewArrival("1");
+                sortBottomSheet.setListenerAndDefaultValue((sortBy, value) -> {
+                    DEFAULT_SORT_VALUE = sortBy;
+                    tvSortBy.setText(value);
+                    updateFilter(sortBy);
+                    sortBottomSheet.dismiss();
+                }, DEFAULT_SORT_VALUE);
+                sortBottomSheet.show();
+                return;
+            }
+            case FILTER_BOTTOM_SHEET: {
+                Toast.makeText(this, "Not available", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+                /*FilterBottomSheetDialog fragment = new FilterBottomSheetDialog(this);
+                if (filterArrayValues != null) {
+                    fragment.updateFilterLists(filterArrayValues.getColors(),
+                            filterArrayValues.getSizes(), filterArrayValues.getTypes());
+
+                }
+                fragment.show(getSupportFragmentManager(), fragment.getTag());*/
+            }
+            default: {
+                Log.d(TAG, "openBottomSheet: Trying to open the bottom sheet with invalid values " + bottomSheetType);
+            }
         }
-        if (sortBy == SORT_BY.MOST_POPULAR) {
-            newFilter.setMostPopular("1");
-        }
-        if (sortBy == SORT_BY.PRICE_HIGH_TO_LOW) {
-            newFilter.setPriceHtoL("1");
-        }
-        if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
-            newFilter.setNewArrival("0");
-        }
-        if (sortBy == SORT_BY.NAV_FILTER) {
-            if (colorFilterList != null && colorFilterList.size() != 0)
-                newFilter.setColors(ProductRepository.join(colorFilterList));
-            if (sizeFilterList != null && sizeFilterList.size() != 0)
-                newFilter.setSizes(ProductRepository.join(sizeFilterList));
-            if (typeFilterList != null && typeFilterList.size() != 0)
-                newFilter.setTypes(ProductRepository.join(typeFilterList));
-            Log.d(TAG, "updateFilter: NAV_FILTER " + newFilter.toString());
-        }
-        MAIN_FILTER = newFilter;
-        Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
-        checkNetworkAndFetchData();
     }
 
-    private boolean closeDialog() {
-        boolean isCategorySheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
-        boolean isSortSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
-        if (isCategorySheetVisible) { //close filter sheet
-            rotateUpArrow(categoryArrow, false);
-            showOrHideSheet(categoryOptionSheet, false);
-        }
-        if (isSortSheetVisible) {
-            rotateUpArrow(sortArrow, false);
-            showOrHideSheet(sortOptionSheet, false);
-        }
-        return isCategorySheetVisible || isSortSheetVisible;
-    }
-
-    private final DebouncedOnClickListener optionsClickListener = new DebouncedOnClickListener(200) {
-        @Override
-        public void onDebouncedClick(View v) {
-            int viewId = v.getId();
-            if (viewId == R.id.rlSort) {
-                boolean isOtherSheetVisible = categoryOptionSheet.getVisibility() == View.VISIBLE;
-                if (isOtherSheetVisible) { //close filter sheet
-                    rotateUpArrow(categoryArrow, false);
-                    showOrHideSheet(categoryOptionSheet, false);
-                }
-
-
-                boolean isVisible = sortOptionSheet.getVisibility() == View.GONE;
-                showOrHideSheet(sortOptionSheet, isVisible);
-                rotateUpArrow(sortArrow, isVisible);
-                return;
-            }
-            if (viewId == R.id.rlCategory) {    //close sort sheet
-                boolean isOtherSheetVisible = sortOptionSheet.getVisibility() == View.VISIBLE;
-                if (isOtherSheetVisible) {
-                    rotateUpArrow(sortArrow, false);
-                    showOrHideSheet(sortOptionSheet, false);
-                }
-
-                boolean isVisible = categoryOptionSheet.getVisibility() == View.GONE;
-                showOrHideSheet(categoryOptionSheet, isVisible);
-                rotateUpArrow(categoryArrow, isVisible);
-                return;
-            }
-            if (viewId == R.id.rlFilter) {
-                drawerLayout.openDrawer(GravityCompat.END);
-                return;
-            }
-            if (viewId == R.id.imgClose) {
-                drawerLayout.closeDrawer(GravityCompat.END);
-                return;
-            }
-
-            if (viewId == R.id.btClearAll) {
-                categoryNamesAdapter.clearAllSelection();
-                return;
-            }
-
-            if (viewId == R.id.btApply) {
-                showOrHideSheet(categoryOptionSheet, false);
-                rotateUpArrow(categoryArrow, false);
-                updateFilter(SORT_BY.SUB_CATEGORY);
-                return;
-            }
-
-            /*
-             *   Navigation filter option buttons
-             * */
-            if (viewId == R.id.btClearAllFilter) {
-                if (filterArrayValues == null) return;
-                colorFilterList.clear();
-                typeFilterList.clear();
-                sizeFilterList.clear();
-                addFilterToNavigationSheet(filterColor, filterArrayValues.getColors(), FILTER.COLOR);
-                addFilterToNavigationSheet(filterType, filterArrayValues.getTypes(), FILTER.TYPE);
-                addFilterToNavigationSheet(filterSize, filterArrayValues.getSizes(), FILTER.LENGTH);
-                updateFilter(SORT_BY.NAV_FILTER);
-                drawerLayout.closeDrawer(GravityCompat.END);
-                return;
-            }
-
-            if (viewId == R.id.btApplyFilter) {
-                updateFilter(SORT_BY.NAV_FILTER);
-                drawerLayout.closeDrawer(GravityCompat.END);
-                return;
-            }
-            //Navigation filter buttons ENDS
-
-        }
-    };
-
-    //This Listener ONLY used for the click items
-    private final DebouncedOnClickListener sortOptionClickListener = new DebouncedOnClickListener(200) {
-        @Override
-        public void onDebouncedClick(View v) {
-            int viewId = v.getId();
-            selectText(viewId);     // change the typeface to bold for the selected text
-            //if any sort option is selected
-            if (viewId == R.id.textView1) {  //Most popular
-                updateFilter(SORT_BY.MOST_POPULAR);
-            }
-            if (viewId == R.id.textView2) { //New arrival
-                updateFilter(SORT_BY.NEW_ARRIVAL);
-            }
-            if (viewId == R.id.textView3) { //Price Low to High
-                updateFilter(SORT_BY.PRICE_LOW_TO_HIGH);
-            }
-            if (viewId == R.id.textView4) { //Price High to Low
-                updateFilter(SORT_BY.PRICE_HIGH_TO_LOW);
-            }
-            showOrHideSheet(sortOptionSheet, false);
-            rotateUpArrow(sortArrow, false);
-        }
-    };
-
-    private void addFilterToNavigationSheet(LinearLayout parentView, List<String> values, FILTER tag) {
+    private void addFilterToNavigationSheet(LinearLayout parentView, List<String> values, Const.FILTER tag) {
         Log.d(TAG, "addFilterToNavigationSheet: TAG: " + tag);
         if (values == null || values.isEmpty()) {
             Log.d(TAG, "addFilterToNavigationSheet: NULL Values for TAG: " + tag);
@@ -580,7 +382,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
             parentView.addView(currentRow);
     }
 
-
     /*
      *   @param tag will is used to identify if Filter type
      *       COLOR, TYPE, SIZE
@@ -620,67 +421,45 @@ public class ViewCategoryActivity extends AppCompatActivity {
         }
     }
 
+    private void updateFilter(SORT_BY sortBy) {
+        Log.d(TAG, "updateFilter: updating filter... " + sortBy);
+        CURRENT_PAGE = 0;
+        RETRY_ATTEMPT = 0;
+        IS_LAST_PAGE = false;
+        ProductFilter newFilter = new ProductFilter();
+        if (sortBy == SORT_BY.SUB_CATEGORY) {
+            //Just update the category items and return
+            MAIN_FILTER.setSubCategoryIds(newFilter.getSubCategoryIds());
+            Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
+            checkNetworkAndFetchData();
+            return;
+        }
+
+        if (sortBy == SORT_BY.NEW_ARRIVAL) {
+            newFilter.setNewArrival("1");
+        }
+        if (sortBy == SORT_BY.MOST_POPULAR) {
+            newFilter.setMostPopular("1");
+        }
+        if (sortBy == SORT_BY.PRICE_HIGH_TO_LOW) {
+            newFilter.setPriceHtoL("1");
+        }
+        if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
+            newFilter.setNewArrival("0");
+        }
+        MAIN_FILTER = newFilter;
+        Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
+        checkNetworkAndFetchData();
+    }
+
     // reset filter, set CURRENT PAGE = 0
     private void reset() {
         Toast.makeText(this, "Reset Everything", Toast.LENGTH_SHORT)
                 .show();
-        selectText(-1); //reset sort options
         MAIN_FILTER = new ProductFilter();
         CURRENT_PAGE = START_PAGE;
         IS_LAST_PAGE = false;
         RETRY_ATTEMPT = 0;
-        if (IS_FILTER_FETCH_COMPLETE) {
-            colorFilterList.clear();
-            typeFilterList.clear();
-            sizeFilterList.clear();
-            addFilterToNavigationSheet(filterColor, filterArrayValues.getColors(), FILTER.COLOR);
-            addFilterToNavigationSheet(filterType, filterArrayValues.getTypes(), FILTER.TYPE);
-            addFilterToNavigationSheet(filterSize, filterArrayValues.getSizes(), FILTER.LENGTH);
-        }
-        //categoryNamesAdapter.clearAllSelection(); //optional
-    }
-
-    //animate Filter sheet or Sort layout sheet to get an dropDown effects
-    // Pass the parent layout LinearLayout
-    private void showOrHideSheet(LinearLayout sheetLayout, final boolean show) {
-        long ANIMATION_DURATION = 300L;
-        if (show) {
-            //show navigation bar with animation
-            sheetLayout.animate().setListener(null);
-            sheetLayout.clearAnimation();
-            sheetLayout.animate()
-                    .alpha(1.0f).translationY(0f).setDuration(ANIMATION_DURATION);
-            sheetLayout.setVisibility(View.VISIBLE);
-        } else {
-            //hide bottom navigation bar with animation
-            sheetLayout.clearAnimation();
-            sheetLayout.animate()
-                    .alpha(0.0f)
-                    .translationY(-sheetLayout.getHeight())
-                    .setDuration(ANIMATION_DURATION + 100)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            sheetLayout.setVisibility(View.GONE);
-                        }
-                    });
-        }
-    }
-
-    //This will animate the arrow icon on opening or closing the tab
-    private void rotateUpArrow(ImageView arrowIcon, boolean show) {
-        if (show) {
-            arrowIcon.animate()
-                    .setDuration(300)
-                    .rotation(0)
-                    .start();
-        } else {
-            arrowIcon.animate()
-                    .setDuration(300)
-                    .rotation(180)
-                    .start();
-        }
     }
 
     private void openSingleProductActivity(Product product) {
@@ -689,18 +468,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
         intent.putExtra("PRODUCT_ID", product.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-    }
-
-    private void selectText(int viewId) {
-        int[] optionList = {R.id.textView1, R.id.textView2, R.id.textView3, R.id.textView4};
-        for (int i = 0; i < 4; i++) {
-            TextView textView = findViewById(optionList[i]);
-            if (optionList[i] == viewId) {
-                textView.setTypeface(Typeface.DEFAULT_BOLD);
-            } else {
-                textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
-            }
-        }
     }
 
     private void showNoInternetImage(boolean show) {
@@ -721,11 +488,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     }
 
-    private void lockDrawerLayout() {
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        //drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view_category, menu);
@@ -734,12 +496,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerVisible(GravityCompat.END)) {
-            drawerLayout.closeDrawer(GravityCompat.END);
-            return;
-        }
-        //If any dialog is in expanded state then close it
-        if (closeDialog()) return;
 
         Log.d(TAG, "onBackPressed: uploading...");
         viewModel.uploadWishListOnServer(this.getApplication(), null);

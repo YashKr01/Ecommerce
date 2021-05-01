@@ -6,8 +6,7 @@
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_black"
         android:title="@string/search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_cart"

@@ -49,146 +49,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <LinearLayout
-            android:id="@+id/llFilterLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:elevation="@dimen/sb_size_8"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:weightSum="100"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-            <RelativeLayout
-                android:id="@+id/rlSort"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="32"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tvSort"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/sort"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/gothamblack"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/imgSortArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/sb_size_12"
-                    android:layout_toEndOf="@+id/tvSort"
-                    android:rotation="180"
-                    android:src="@drawable/ic_arrow_up" />
-            </RelativeLayout>
-
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EEEEEE"
-
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"/>
-            <!--<TextView
-                android:id="@+id/tvCategory"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="32"
-                android:gravity="center"
-                android:text="@string/category"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_16"
-                android:visibility="gone" />-->
-
-            <RelativeLayout
-                android:id="@+id/rlCategory"
-                android:layout_marginStart="4dp"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="32"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tvCategory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/category"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:textStyle="bold"
-                    android:fontFamily="@font/gothamblack"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/imgCategoryArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/sb_size_12"
-                    android:layout_toEndOf="@+id/tvCategory"
-                    android:rotation="180"
-                    android:src="@drawable/ic_arrow_up" />
-            </RelativeLayout>
-
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="#EEEEEE"
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp"/>
-
-            <!--Filter -->
-            <RelativeLayout
-                android:id="@+id/rlFilter"
-                android:layout_width="@dimen/sb_size_0"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="36"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:gravity="center_horizontal"
-                android:paddingVertical="@dimen/sb_size_8">
-
-                <TextView
-                    android:id="@+id/tvDummyFilter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:paddingTop="@dimen/sb_size_4"
-                    android:paddingEnd="@dimen/sb_size_8"
-                    android:text="@string/filter"
-                    android:fontFamily="@font/gothamblack"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sb_text_size_16" />
-
-                <ImageView
-                    android:layout_width="@dimen/sb_size_22"
-                    android:layout_height="@dimen/sb_size_22"
-                    android:layout_marginTop="4dp"
-                    android:layout_toEndOf="@+id/tvDummyFilter"
-                     android:padding="2dp"
-                    android:src="@drawable/ic_filter" />
-            </RelativeLayout>
-
-        </LinearLayout>
-
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
@@ -196,142 +56,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llFilterLayout">
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/llSortOptionsSheet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:background="@color/white"
-                    android:elevation="@dimen/sb_size_8"
-                    android:orientation="vertical"
-                    android:paddingVertical="@dimen/sb_size_18"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/textView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_32"
-                        android:fontFamily="@font/gotham_font"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="@dimen/sb_size_36"
-                        android:paddingVertical="@dimen/sb_size_6"
-                        android:text="@string/sort_option_1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_15"
-                        android:textStyle="normal" />
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_32"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="@dimen/sb_size_36"
-                        android:paddingVertical="@dimen/sb_size_6"
-                        android:text="@string/sort_option_2"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_15"
-                        android:textStyle="normal" />
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_32"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="@dimen/sb_size_36"
-                        android:paddingVertical="@dimen/sb_size_6"
-                        android:text="@string/sort_option_3"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_15"
-                        android:textStyle="normal" />
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/sb_size_32"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="@dimen/sb_size_36"
-                        android:paddingVertical="@dimen/sb_size_6"
-                        android:text="@string/sort_option_4"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_15"
-                        android:textStyle="normal" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/llCategoryOptionsSheet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:elevation="@dimen/sb_size_8"
-                    android:gravity="center_horizontal"
-                    android:maxHeight="200dp"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_CategoryTypes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:clipToPadding="false"
-                        android:paddingVertical="@dimen/sb_text_size_16"
-                        android:paddingBottom="@dimen/sb_size_20" />
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/grey_50"
-                        android:elevation="@dimen/sb_size_2">
-
-                        <Button
-                            android:id="@+id/btClearAll"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/sb_text_size_16"
-                            android:layout_toStartOf="@+id/btApply"
-                            android:backgroundTint="@color/grey_300"
-                            android:text="@string/clear"
-                            android:textColor="@color/black" />
-
-                        <Button
-                            android:id="@+id/btApply"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginEnd="@dimen/sb_size_18"
-                            android:text="@string/apply" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <!--Dummy layout for identify click into the empty space
-                    so that we can close the dialogs -->
-                <LinearLayout
-                    android:id="@+id/llDummyLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:background="@color/transparent"
-                    android:elevation="@dimen/sb_size_4"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvViewCategory"
@@ -342,215 +71,124 @@
                     android:paddingHorizontal="@dimen/sb_size_4"
                     android:paddingVertical="@dimen/sb_size_8"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/llFilterParentLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="2"
                     tools:listitem="@layout/item_view_category" />
 
+                <LinearLayout
+                    android:id="@+id/llFilterParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_52"
+                    android:orientation="horizontal"
+                    android:weightSum="101"
+                    android:background="@color/white"
+                    android:elevation="@dimen/sb_size_6"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <!-- Sort Box-->
+                    <LinearLayout
+                        android:id="@+id/llSortLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imgSortIcon"
+                            android:layout_width="@dimen/sb_size_24"
+                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_filter" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/sb_size_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSortTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sort"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_14" />
+
+                            <TextView
+                                android:id="@+id/tvSortBy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="@color/grey_900"
+                                android:layout_marginTop="@dimen/sb_size_2"
+                                android:textSize="@dimen/sb_text_size_10" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey_200"/>
+
+                    <!-- Filter Box-->
+                    <LinearLayout
+                        android:id="@+id/llFilterLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imgFilterIcon"
+                            android:layout_width="@dimen/sb_size_24"
+                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_filter" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/sb_size_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvFilterTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/filter"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_14" />
+
+                            <TextView
+                                android:id="@+id/tvFilterBy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_filter_applied"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginTop="@dimen/sb_size_2"
+                                android:textSize="@dimen/sb_text_size_10" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:fitsSystemWindows="false"
-        android:nestedScrollingEnabled="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="?attr/actionBarSize">
-
-            <LinearLayout
-                android:id="@+id/sheet_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@color/grey_100"
-                    android:gravity="end"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/imgClose"
-                        android:layout_width="@dimen/sb_size_28"
-                        android:layout_height="@dimen/sb_size_28"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_marginEnd="@dimen/sb_size_16"
-                        android:src="@drawable/ic_close" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/spacing_middle" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/spacing_mlarge"
-                    android:layout_marginVertical="@dimen/spacing_large"
-                    android:text="Length"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/filterLength"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/sb_size_10"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/spacing_middle" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/spacing_mlarge"
-                    android:layout_marginVertical="@dimen/spacing_large"
-                    android:text="Type"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/blue_grey_900"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/filterType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/sb_size_10"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/spacing_smlarge" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/spacing_mlarge"
-                    android:layout_marginVertical="@dimen/spacing_large"
-                    android:text="Color"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/grey_900"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/filterColor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/sb_size_10"
-                    android:orientation="vertical">
-
-                    <!--<LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="3">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/grey_300"
-                                android:gravity="center"
-                                android:paddingVertical="@dimen/sb_size_4"
-                                android:paddingHorizontal="@dimen/sb_size_6"
-                                android:layout_gravity="center"
-                                android:text="@string/category" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/grey_300"
-                                android:gravity="center"
-                                android:paddingVertical="@dimen/sb_size_4"
-                                android:paddingHorizontal="@dimen/sb_size_6"
-                                android:layout_gravity="center"
-                                android:text="@string/category" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@color/grey_300"
-                                android:gravity="center"
-                                android:paddingVertical="@dimen/sb_size_4"
-                                android:paddingHorizontal="@dimen/sb_size_6"
-                                android:layout_gravity="center"
-                                android:text="@string/category" />
-                        </LinearLayout>
-
-                    </LinearLayout>-->
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/spacing_mlarge" />
-
-            </LinearLayout>
-
-        </androidx.core.widget.NestedScrollView>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="bottom"
-            android:background="@color/grey_50"
-            android:elevation="2dp"
-            android:paddingVertical="@dimen/sb_size_4">
-
-            <Button
-                android:id="@+id/btClearAllFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/sb_text_size_16"
-                android:layout_toStartOf="@+id/btApplyFilter"
-                android:backgroundTint="@color/grey_300"
-                android:text="@string/clear"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btApplyFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/sb_size_18"
-                android:text="@string/apply" />
-
-        </RelativeLayout>
-
-
-    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>
