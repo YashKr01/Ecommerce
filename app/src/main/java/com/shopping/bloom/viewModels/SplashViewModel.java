@@ -13,6 +13,7 @@ import com.shopping.bloom.model.SplashData;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
+import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.SplashBearerResponse;
 
 import retrofit2.Call;
@@ -21,15 +22,22 @@ import retrofit2.Response;
 
 public class SplashViewModel extends ViewModel {
     private final MutableLiveData<SplashData> splashDataMutableLiveData;
+    private final MutableLiveData<RefreshTokenResponse> refreshTokenResponseMutableLiveData;
 
-    public SplashViewModel(){
+    public SplashViewModel() {
         splashDataMutableLiveData = new MutableLiveData<>();
+        refreshTokenResponseMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<SplashData> getSplashDataMutableLiveData(){
+    public MutableLiveData<SplashData> getSplashDataMutableLiveData() {
         return splashDataMutableLiveData;
     }
-    public void makeApiCall(String imei_number, Application application){
+
+    public MutableLiveData<RefreshTokenResponse> getRefreshTokenResponseMutableLiveData(){
+        return refreshTokenResponseMutableLiveData;
+    }
+
+    public void makeApiCall(String imei_number, Application application) {
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<SplashBearerResponse> call = apiService.sendBearerToken(imei_number);
         call.enqueue(new Callback<SplashBearerResponse>() {
@@ -46,6 +54,31 @@ public class SplashViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<SplashBearerResponse> call, Throwable t) {
+                System.out.println(call.request());
+                System.out.println(t.toString());
+            }
+        });
+    }
+
+    public void makeApiCallCheckToken(String token, Application application) {
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<RefreshTokenResponse> call = apiService.checkBearerToken("Bearer " + token);
+        call.enqueue(new Callback<RefreshTokenResponse>() {
+            @Override
+            public void onResponse(Call<RefreshTokenResponse> call, Response<RefreshTokenResponse> response) {
+
+                if (response.code() == 401) {
+                    Toast.makeText(application, "Invalid Token", Toast.LENGTH_SHORT).show();
+                } else {
+                    if(response != null){
+                        refreshTokenResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RefreshTokenResponse> call, Throwable t) {
                 System.out.println(call.request());
                 System.out.println(t.toString());
             }

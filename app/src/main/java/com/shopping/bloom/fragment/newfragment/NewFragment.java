@@ -1,12 +1,12 @@
 package com.shopping.bloom.fragment.newfragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -21,12 +21,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.activities.ViewCategoryActivity;
 import com.shopping.bloom.adapters.newfragment.NewAdapter;
 import com.shopping.bloom.databinding.FragmentNewBinding;
 
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.newfragment.NewFragmentConfig;
+import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
+import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.newfragment.NewFragmentViewModel;
@@ -34,8 +38,7 @@ import com.shopping.bloom.viewModels.newfragment.NewFragmentViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, NewProductOnClick {
     private static final String TAG = NewFragment.class.getName();
 
     private FragmentNewBinding binding;
@@ -93,7 +96,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
         // setup list, adapter and recyclerview
         list = new ArrayList<>();
-        adapter = new NewAdapter(getContext(), list);
+        adapter = new NewAdapter(getContext(), list, this);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setNestedScrollingEnabled(false);
         binding.recyclerView.setAdapter(adapter);
@@ -110,10 +113,12 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
             if (newProductCategories == null || newProductCategories.size() == 0) {
                 // empty or null list received
+                binding.emptyText.setVisibility(View.VISIBLE);
             } else {
                 list.clear();
                 list.addAll(newProductCategories);
                 adapter.notifyDataSetChanged();
+                binding.emptyText.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -174,10 +179,24 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
         if (!NetworkCheck.isConnect(getContext())) {
             showNoConnectionLayout(true);
         } else {
+            showNoConnectionLayout(false);
             getNewProductsList();
         }
 
         binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
+    @Override
+    public void newProductListener(NewProduct newProduct) {
+        Intent intent = new Intent(getActivity(), SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", newProduct.getId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void newBannerListener(NewProductCategory newProductCategory) {
+        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+        intent.putExtra("CATEGORY_ID", newProductCategory.getId());
+        startActivity(intent);
+    }
 }

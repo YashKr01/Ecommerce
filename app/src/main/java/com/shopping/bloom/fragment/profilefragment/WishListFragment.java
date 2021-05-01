@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -18,8 +19,10 @@ import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
+import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 
@@ -34,6 +37,7 @@ public class WishListFragment extends Fragment implements WishListProductListene
     private List<WishListData> list;
     private WishListViewModel viewModel;
     private String PAGE_NO = "0", LIMIT = "8";
+    private int RESULT_CODE = 123;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -61,21 +65,17 @@ public class WishListFragment extends Fragment implements WishListProductListene
         binding.wishListRecyclerView.setNestedScrollingEnabled(false);
 
         // navigate to wish list activity
-        binding.viewMore.setOnClickListener(new View.OnClickListener() {
+        binding.viewMore.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), WishListActivity.class));
-                getParentFragment().getActivity().finish();
+            public void onDebouncedClick(View v) {
+                Intent intent = new Intent(getActivity(), WishListActivity.class);
+                startActivityForResult(intent, RESULT_CODE);
             }
         });
 
         // get wish list
         getWishList(PAGE_NO, LIMIT);
 
-        if (list.isEmpty()) {
-            binding.viewMore.setVisibility(View.INVISIBLE);
-            binding.txtEmpty.setVisibility(View.VISIBLE);
-        }
 
     }
 
@@ -117,4 +117,14 @@ public class WishListFragment extends Fragment implements WishListProductListene
         startActivity(intent);
     }
 
+    @Override
+    public void recentlyViewedOnClicked(RecentlyViewedItem recentlyViewedItem) {
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_CODE)
+            getWishList(PAGE_NO, LIMIT);
+    }
 }

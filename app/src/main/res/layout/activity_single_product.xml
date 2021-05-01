@@ -18,6 +18,12 @@
         app:title="Sweaters &amp; Cardigans"
         app:titleTextColor="@color/black" />
 
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
@@ -34,6 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
+
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/scrollView"
                     android:layout_width="match_parent"
@@ -48,7 +56,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/grey_300">
 
-
                         <RelativeLayout
                             android:id="@+id/relativeLayout1"
                             android:layout_width="match_parent"
@@ -61,6 +68,7 @@
                                 android:layout_height="300dp"
                                 android:layout_marginTop="@dimen/sb_size_10"
                                 app:layout_constraintEnd_toEndOf="parent"
+                                android:layout_marginBottom="4dp"
                                 app:layout_constraintStart_toStartOf="parent">
 
                             </androidx.viewpager.widget.ViewPager>
@@ -73,7 +81,9 @@
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_20"
                                 android:textColor="@color/black"
-                                android:textSize="@dimen/sb_text_size_17" />
+                                android:textStyle="bold"
+                                android:fontFamily="@font/gothamblack"
+                                android:textSize="@dimen/sb_text_size_18" />
 
                             <TextView
                                 android:id="@+id/price"
@@ -90,7 +100,7 @@
                             <ImageButton
                                 android:id="@+id/share"
                                 android:layout_width="@dimen/sb_size_30"
-                                android:layout_height="@dimen/sb_size_30"
+                                android:layout_height="@dimen/sb_size_28"
                                 android:layout_below="@+id/viewpager"
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginTop="@dimen/sb_size_10"
@@ -105,13 +115,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/share"
                                 android:layout_alignParentEnd="true"
-                                android:layout_marginTop="@dimen/sb_size_10"
+                                android:layout_marginTop="@dimen/sb_size_12"
                                 android:layout_marginEnd="@dimen/sb_size_20"
                                 android:isIndicator="true"
                                 android:numStars="5"
+                                android:stepSize="0.5"
                                 android:progressBackgroundTint="@color/grey_500"
                                 android:progressTint="#FFD700"
-                                android:rating="4.8"
+                                android:rating="4.5"
                                 android:secondaryProgressTint="@null" />
 
                             <TextView
@@ -122,7 +133,9 @@
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:fontFamily="@font/gothambold"
+                                android:textStyle="bold"
                                 android:text="Color: Red"
+                                android:visibility="gone"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_15" />
 
@@ -142,6 +155,7 @@
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:text="Size"
+                                android:textStyle="bold"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_15" />
 
@@ -171,6 +185,8 @@
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:text="Shipping to"
+                                android:textStyle="bold"
+                                android:fontFamily="@font/gothamblack"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_16" />
 
@@ -202,6 +218,12 @@
                                     android:text="Free standard shipping"
                                     android:textColor="@color/black"
                                     app:drawableStartCompat="@drawable/ic_shipping_size" />
+
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#EEEEEE"/>
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -256,6 +278,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Reviews(3238)"
+                                android:fontFamily="@font/gothambold"
+                                android:textStyle="bold"
                                 android:textColor="@color/black" />
 
                             <TextView
@@ -263,9 +287,9 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:text="view all"
+                                android:text="View All"
                                 android:textColor="@color/black"
-                                android:textStyle="bold" />
+                                android:fontFamily="@font/gothamblack" />
 
                             <androidx.cardview.widget.CardView
                                 android:id="@+id/cardView"
@@ -511,6 +535,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:background="@color/white"
+                    android:orientation="horizontal"
                     android:elevation="@dimen/sb_size_4"
                     android:padding="@dimen/sb_size_10">
 
@@ -519,18 +544,22 @@
                         android:layout_height="@dimen/sb_size_35"
                         android:layout_gravity="center|start"
                         android:layout_marginEnd="@dimen/sb_size_10"
-                        android:background="@drawable/ic_favourites"
-                        android:scaleType="fitCenter" />
+
+                        android:background="@android:color/white"
+                        android:src="@drawable/ic_favourites"
+                        android:scaleType="centerCrop" />
 
                     <Button
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/black"
                         android:text="Add to bag"
+                        android:fontFamily="@font/gothamblack"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
                 </LinearLayout>
+
             </RelativeLayout>
 
             <ViewStub

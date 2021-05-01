@@ -44,13 +44,15 @@ public class ReviewViewModel extends AndroidViewModel {
         else token = loginManager.getGuest_token();
 
 
-        ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
-        apiInterface.postReview(postReview, "Bearer " + token).enqueue(new Callback<ReviewModel>() {
+        RetrofitBuilder.getInstance(application).getApi()
+                .postReview(postReview, "Bearer " + token).enqueue(new Callback<ReviewModel>() {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
                 if (response.isSuccessful())
                     Toast.makeText(application, "Review Posted", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(application, "Couldn't post your review", Toast.LENGTH_SHORT).show();
 
             }
 

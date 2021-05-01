@@ -24,7 +24,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
-import com.shopping.bloom.bottomSheet.FilterBottomSheetDialog;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.CategoryTypes;
@@ -136,8 +135,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
         String ARG_CATEGORY_ID = "category_id";
         String ARG_CATEGORY_NAMES = "category_names";
         String ARG_BUNDLE = "app_bundle_name";
+        int CATEGORY_ID;
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
+
+        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 0);
 
         if (bundle != null) {
             Log.d(TAG, "getIntentData: Not null");
@@ -245,7 +247,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
             Log.d(TAG, "fetchOnSuccess: ");
             IS_FILTER_FETCH_COMPLETE = true;
             filterArrayValues = filterValues;
-            Log.d(TAG, "fetchOnSuccess: filterArrayValues: " + filterArrayValues.toString());
         }
 
         @Override
@@ -464,6 +465,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private void openSingleProductActivity(Product product) {
         //TODO: send product id with intent
         Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", product.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

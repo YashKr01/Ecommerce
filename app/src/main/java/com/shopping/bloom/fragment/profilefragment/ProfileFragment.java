@@ -15,13 +15,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.ConnectToUsActivity;
 import com.shopping.bloom.activities.LoginActivity;
-import com.shopping.bloom.activities.wishlist.WishListActivity;
+import com.shopping.bloom.activities.coupons.CouponsActivity;
+import com.shopping.bloom.activities.myorders.MyOrdersActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
-import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
-
 
 public class ProfileFragment extends Fragment {
 
@@ -39,7 +40,6 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -74,7 +74,55 @@ public class ProfileFragment extends Fragment {
         binding.profileTabLayout.setupWithViewPager(binding.profileViewPager);
         binding.profileViewPager.setAdapter(viewPagerAdapter);
 
+        binding.imgCoupons.setOnClickListener(new DebouncedOnClickListener(1000) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getContext(), CouponsActivity.class));
+            }
+        });
+
+        /**
+         *  Orders On click and sending header for recyclerview scroll
+         */
+
+        binding.imgUnpaid.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                sendIntent(0);
+            }
+        });
+        binding.imgProcessing.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                sendIntent(1);
+            }
+        });
+        binding.imgShipped.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                sendIntent(2);
+            }
+        });
+        binding.imgReturns.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                sendIntent(3);
+            }
+        });
+        binding.imgSupport.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getContext(), ConnectToUsActivity.class));
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    private void sendIntent(Integer integer) {
+        Intent intent = new Intent(getActivity(), MyOrdersActivity.class);
+        intent.putExtra("RECYCLER_VIEW_POSITION", integer);
+        startActivity(intent);
     }
 
     @Override
@@ -86,12 +134,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        onDetach();
         binding = null;
     }
 

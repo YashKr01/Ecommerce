@@ -39,7 +39,6 @@ public class WishListViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<WishListData>> getWishList(String pageNo, String limit) {
 
-        ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
         MutableLiveData<List<WishListData>> data = new MutableLiveData<>();
 
         LoginManager loginManager = new LoginManager(App.getContext());
@@ -48,9 +47,8 @@ public class WishListViewModel extends AndroidViewModel {
         if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
         else token = loginManager.getGuest_token();
 
-        Log.d("USERTOKEN", "getWishList: " + token);
-
-        apiInterface.getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
+        RetrofitBuilder.getInstance(application).getApi()
+                .getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
             @Override
             public void onResponse(Call<WishList> call, Response<WishList> response) {
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,16 +19,18 @@ import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
 import com.shopping.bloom.adapters.wishlist.WishListActivityAdapter;
 import com.shopping.bloom.databinding.ActivityWishListBinding;
+import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationsItem;
 import com.shopping.bloom.restService.callback.WishListProductListener;
+import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WishListActivity extends AppCompatActivity implements WishListProductListener {
+public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ActivityWishListBinding binding;
     private List<WishListData> list;
@@ -35,7 +38,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     private WishListActivityAdapter adapter;
     private RecommendationsAdapter recommendationsAdapter;
     private WishListViewModel viewModel;
-    private String PAGE = "0", LIMIT = "10";
+    private String PAGE = "0", LIMIT = "30";
     private AlertDialog.Builder builder;
 
     private String IMAGE_URL = "http://bloomapp.in/images/product/product1619491000.png";
@@ -46,6 +49,8 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         binding = ActivityWishListBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        binding.swipeRefresh.setOnRefreshListener(this);
+
         //view model
         viewModel = new ViewModelProvider(this).get(WishListViewModel.class);
 
@@ -53,6 +58,10 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle("WishList");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        if (!NetworkCheck.isConnect(this)) {
+            showNoConnectionLayout(true);
+        }
 
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
@@ -89,46 +98,29 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
     public void getWishList() {
 
-        binding.progressBar.setVisibility(View.VISIBLE);
-
-        viewModel.getWishList(PAGE, LIMIT).observe(this, wishListData -> {
-
-            if (wishListData != null && wishListData.size() > 0) {
-                list.clear();
-                list.addAll(wishListData);
-                adapter.notifyDataSetChanged();
-                binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
-            } else {
-                binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
-            }
-
-        });
-
-        recommendationsItemList.addAll(tempList());
-        adapter.notifyDataSetChanged();
-
-        binding.progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    public void getPaginatedList() {
-        binding.progressBar.setVisibility(View.VISIBLE);
-
-        viewModel.getWishList(PAGE, LIMIT).observe(this, new Observer<List<WishListData>>() {
-            @Override
-            public void onChanged(List<WishListData> wishListData) {
+        if (NetworkCheck.isConnect(this)) {
+            viewModel.getWishList(PAGE, LIMIT).observe(this, wishListData -> {
                 if (wishListData != null && wishListData.size() > 0) {
-                    adapter.addAll(wishListData);
+                    list.clear();
+                    list.addAll(wishListData);
+                    adapter.notifyDataSetChanged();
+                    binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
+                } else {
+                    binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
                 }
-            }
-        });
+            });
+            recommendationsItemList.addAll(tempList());
+            adapter.notifyDataSetChanged();
+        } else {
+            binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
+            showNoConnectionLayout(true);
+        }
 
-        binding.progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     private void postRemaining() {
-        binding.progressBar.setVisibility(View.VISIBLE);
         viewModel.postRemainingItems();
-        binding.progressBar.setVisibility(View.INVISIBLE);
     }
 
     public void deleteItem(String id) {
@@ -170,6 +162,10 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     }
 
     @Override
+    public void recentlyViewedOnClicked(RecentlyViewedItem recentlyViewedItem) {
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         postRemaining();
@@ -178,8 +174,32 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(WishListActivity.this, MainActivity.class));
+        Intent intent = new Intent();
+        intent.putExtra("MESSAGE", "");
+        setResult(123, intent);
         finish();
     }
+
+    @Override
+    public void onRefresh() {
+
+        if (NetworkCheck.isConnect(this)) {
+            showNoConnectionLayout(false);
+            getWishList();
+        } else {
+            showNoConnectionLayout(true);
+        }
+
+        binding.swipeRefresh.setRefreshing(false);
+    }
+
+    private void showNoConnectionLayout(boolean show) {
+        if (show) {
+            binding.noConnectionLayout.setVisibility(View.VISIBLE);
+        } else {
+            binding.noConnectionLayout.setVisibility(View.GONE);
+        }
+    }
+
 
 }

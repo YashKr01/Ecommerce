@@ -22,6 +22,7 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.PutWishListRequest;
+import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.restService.response.SingleProductResponse;
 import com.shopping.bloom.restService.response.SplashBearerResponse;
@@ -110,7 +111,6 @@ public interface ApiInterface {
             @Body ProductIds product_ids);
 
     @GET("frontend/getProductReview")
-        //@Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5MjcyMDgzLCJleHAiOjE2MjE4NjQwODMsIm5iZiI6MTYxOTI3MjA4MywianRpIjoidnVLVzhMUjN4NjNhUGtXdCIsInN1YiI6NDAsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.oAnRkVe-HxNSVYTr6fqQJkTbIJj6KwVmfo9mjeD3IvE")
     Call<ReviewModel> getReviews(@Query("product_id") String productId,
                                  @Query("limit") String limit,
                                  @Query("pageNo") String pageNo,
@@ -121,7 +121,6 @@ public interface ApiInterface {
     Call<SplashBearerResponse> sendBearerToken(@Field("imei_number") String imei_number);
 
     @POST("metadata/createProductReview")
-    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
     Call<ReviewModel> postReview(@Body PostReview review,
                                  @Header("Authorization") String bearer);
 
@@ -167,20 +166,21 @@ public interface ApiInterface {
             @Header("Authorization") String bearer);
 
     @GET("frontend/getNewProducts")
-    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5NTE2MTk5LCJleHAiOjE2MjIxMDgxOTksIm5iZiI6MTYxOTUxNjE5OSwianRpIjoiVHB5UXdqd0xkU0wwUlVWVyIsInN1YiI6MzgsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.7kJk3oMHZ_vXAGiyTAdGT_iSCRNAIYy-MkFK_Odbn1w")
-    Call<NewProductsResponse> getNewProducts();
+    Call<NewProductsResponse> getNewProducts(@Header("Authorization") String bearer);
 
-    @GET("frontend/getSingleProductInfo/2")
-        //@Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9sb2dpbldpdGhNb2JpbGVOb1Bhc3N3b3JkIiwiaWF0IjoxNjE5Mjg2MTE4LCJleHAiOjE2MjE4NzgxMTgsIm5iZiI6MTYxOTI4NjExOCwianRpIjoiOG96MXN2cVFwbDJTYm11RiIsInN1YiI6MzEsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.NjWLAB8bnCfj6gmQzWwJk5itPybyiKMQNHb3f2s8gT0")
+    @GET("frontend/getSingleProductInfo/{id}")
     Call<SingleProductResponse> getSingleProduct(
-            @Header("Authorization") String bearer
+            @Header("Authorization") String bearer,
+            @Path("id") int id
     );
+
     @GET("metadata/recentlyViewProducts")
-    @Headers("Authorization:Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9hdXRoXC9jdXN0b21lclJlZ2lzdHJhdGlvbldpdGhJbWVpIiwiaWF0IjoxNjE5Njg1NjQyLCJleHAiOjE2MjIyNzc2NDIsIm5iZiI6MTYxOTY4NTY0MiwianRpIjoiSXZBbTFpcURlVDU5aXNWRyIsInN1YiI6MzksInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.xnrosDc2RAWX5wEjRdgQBSUdxLbocdQ9s1IoHbQuivs")
     Call<RecentlyViewedResponse> getRecentlyViewedList(
             @Query("pageNo") String pageNo,
-            @Query("limit") String limit
+            @Query("limit") String limit,
+            @Header("Authorization") String bearer
     );
 
-
+    @GET("frontend/checkTokenExpiry")
+    Call<RefreshTokenResponse> checkBearerToken(@Header("Authorization") String bearer);
 }
