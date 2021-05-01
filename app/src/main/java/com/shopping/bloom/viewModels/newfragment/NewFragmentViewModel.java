@@ -8,10 +8,12 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.utils.LoginManager;
 
 import java.util.List;
 
@@ -32,7 +34,13 @@ public class NewFragmentViewModel extends AndroidViewModel {
         ApiInterface apiInterface = RetrofitBuilder.getInstance(application).getApi();
         MutableLiveData<List<NewProductCategory>> liveData = new MutableLiveData<>();
 
-        apiInterface.getNewProducts().enqueue(new Callback<NewProductsResponse>() {
+        LoginManager loginManager = new LoginManager(App.getContext());
+        String token;
+
+        if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
+        else token = loginManager.getGuest_token();
+
+        apiInterface.getNewProducts("Bearer " + token).enqueue(new Callback<NewProductsResponse>() {
             @Override
             public void onResponse(Call<NewProductsResponse> call, Response<NewProductsResponse> response) {
                 Log.d("NEW_PRODUCTS", "onResponse: " +

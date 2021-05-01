@@ -21,7 +21,6 @@ import com.shopping.bloom.activities.coupons.CouponsActivity;
 import com.shopping.bloom.activities.myorders.MyOrdersActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
-import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 
@@ -117,14 +116,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        binding.imgGiftCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.home_fragment, new ReviewsFragment()).commit();
-            }
-        });
-
         return binding.getRoot();
     }
 
@@ -148,6 +139,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        onDetach();
         binding = null;
     }
 

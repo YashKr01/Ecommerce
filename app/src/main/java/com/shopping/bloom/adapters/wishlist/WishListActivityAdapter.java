@@ -14,6 +14,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -53,9 +54,19 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
                 true
         );
 
-        holder.imgDelete.setOnClickListener(v -> listener.wishListItemDelete(currentItem,position));
+        holder.imgDelete.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                listener.wishListItemDelete(currentItem,position);
+            }
+        });
 
-        holder.imageView.setOnClickListener(v -> listener.wishListItemCLicked(currentItem));
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                listener.wishListItemCLicked(currentItem);
+            }
+        });
 
     }
 

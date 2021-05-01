@@ -24,6 +24,7 @@ import com.shopping.bloom.adapters.reviewfragment.ReviewsAdapter;
 import com.shopping.bloom.databinding.FragmentReviewsBinding;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.Review;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.reviews.ReviewViewModel;
 
@@ -71,7 +72,12 @@ public class ReviewsFragment extends Fragment {
         binding.reviewsRecyclerView.setAdapter(adapter);
 
         // show custom dialog on floating action button click
-        binding.fabAddReview.setOnClickListener(v -> showDialog(getContext()));
+        binding.fabAddReview.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                showDialog(getContext());
+            }
+        });
 
         //get initial list
         getReviewList(PRODUCT_ID, LIMIT, PAGE);

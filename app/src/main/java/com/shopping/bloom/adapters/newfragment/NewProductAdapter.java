@@ -14,6 +14,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -49,9 +50,9 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
 
         holder.textView.setText(currentItem.getPrice());
 
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
-            public void onClick(View v) {
+            public void onDebouncedClick(View v) {
                 listener.newProductListener(currentItem);
             }
         });

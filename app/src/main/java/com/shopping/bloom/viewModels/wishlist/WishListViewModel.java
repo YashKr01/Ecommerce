@@ -48,8 +48,6 @@ public class WishListViewModel extends AndroidViewModel {
         if (!loginManager.isLoggedIn()) token = loginManager.gettoken();
         else token = loginManager.getGuest_token();
 
-        Log.d("USERTOKEN", "getWishList: " + token);
-
         apiInterface.getWishList(pageNo, limit, "Bearer " + token).enqueue(new Callback<WishList>() {
             @Override
             public void onResponse(Call<WishList> call, Response<WishList> response) {

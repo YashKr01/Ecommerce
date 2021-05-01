@@ -60,6 +60,19 @@
                     app:layout_constraintTop_toBottomOf="@id/image2"
                     tools:listitem="@layout/item_container_new" />
 
+                <TextView
+                    android:id="@+id/empty_text"
+                    style="@style/BoldText"
+                    android:textSize="@dimen/sb_text_size_14"
+                    android:layout_width="wrap_content"
+                    android:visibility="invisible"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/no_items_here"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/image2" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
