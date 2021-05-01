@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lyt_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginTop="@dimen/sb_text_size_16"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/rlHeader"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@color/grey_100"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/filterText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/gotham_font"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/sb_size_18"
+                    android:textSize="@dimen/sb_text_size_22" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/llContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@id/rlHeader">
+
+                <TextView
+                    android:id="@+id/dummyCategoryTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/sb_size_16"
+                    android:text="@string/category"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llCategoryParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:paddingStart="@dimen/sb_size_10"/>
+
+                <TextView
+                    android:id="@+id/dummyTypeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/sb_size_16"
+                    android:text="@string/type"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llTypeParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:paddingStart="@dimen/sb_size_10"/>
+
+
+                <TextView
+                    android:id="@+id/dummyColorTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/sb_size_16"
+                    android:text="@string/color"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llColorParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:paddingStart="@dimen/sb_size_10"/>
+
+
+                <TextView
+                    android:id="@+id/dummySizeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/sb_size_16"
+                    android:text="@string/size"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_16"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llSizeParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="@dimen/sb_size_10"
+                    android:paddingStart="@dimen/sb_size_10"
+                    android:layout_marginBottom="@dimen/sb_size_16"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llFilterParentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sb_size_52"
+                android:orientation="horizontal"
+                android:weightSum="101"
+                android:background="@color/white"
+                android:elevation="@dimen/sb_size_6"
+                app:layout_constraintTop_toBottomOf="@id/llContent">
+
+                <!-- Sort Box-->
+                <LinearLayout
+                    android:id="@+id/llSortLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_weight="50">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/sb_size_12"
+                        android:orientation="vertical">
+
+                        <Button
+                            android:id="@+id/btClear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/clear"
+                            android:textStyle="bold"
+                            android:backgroundTint="@color/grey_300"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sb_text_size_14" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey_200"/>
+
+                <!-- Filter Box-->
+                <LinearLayout
+                    android:id="@+id/llFilterLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:layout_weight="50">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="@dimen/sb_size_12"
+                        android:orientation="vertical">
+
+                        <Button
+                            android:id="@+id/btApply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/apply"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sb_text_size_16" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

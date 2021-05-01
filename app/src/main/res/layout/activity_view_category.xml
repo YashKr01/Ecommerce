@@ -68,12 +68,120 @@
                     android:paddingHorizontal="@dimen/sb_size_4"
                     android:paddingVertical="@dimen/sb_size_8"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toTopOf="@id/llFilterParentLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="2"
                     tools:listitem="@layout/item_view_category" />
+
+                <LinearLayout
+                    android:id="@+id/llFilterParentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/sb_size_52"
+                    android:orientation="horizontal"
+                    android:weightSum="101"
+                    android:background="@color/white"
+                    android:elevation="@dimen/sb_size_6"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <!-- Sort Box-->
+                    <LinearLayout
+                        android:id="@+id/llSortLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imgSortIcon"
+                            android:layout_width="@dimen/sb_size_24"
+                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_filter" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/sb_size_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSortTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sort"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_14" />
+
+                            <TextView
+                                android:id="@+id/tvSortBy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textColor="@color/grey_900"
+                                android:layout_marginTop="@dimen/sb_size_2"
+                                android:textSize="@dimen/sb_text_size_10" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey_200"/>
+
+                    <!-- Filter Box-->
+                    <LinearLayout
+                        android:id="@+id/llFilterLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:layout_weight="50">
+
+                        <ImageView
+                            android:id="@+id/imgFilterIcon"
+                            android:layout_width="@dimen/sb_size_24"
+                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_filter" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="@dimen/sb_size_12"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvFilterTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/filter"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_14" />
+
+                            <TextView
+                                android:id="@+id/tvFilterBy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/no_filter_applied"
+                                android:textColor="@color/grey_900"
+                                android:layout_marginTop="@dimen/sb_size_2"
+                                android:textSize="@dimen/sb_text_size_10" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

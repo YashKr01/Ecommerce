@@ -15,7 +15,6 @@ public class Const {
         PRICE_HIGH_TO_LOW,
         PRICE_LOW_TO_HIGH,
         SUB_CATEGORY,
-        NAV_FILTER
     }
 
     public enum FILTER {

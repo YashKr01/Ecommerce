@@ -85,6 +85,11 @@
     <string name="divider">divider</string>
     <string name="recommendations_for_you">Recommendations For You</string>
     <string name="recommended_product">recommended product</string>
+    <string name="no_filter_applied">No Filter Applied</string>
+    <string name="type">Type</string>
+    <string name="color">Color</string>
+    <string name="sort_by">Sort By</string>
+    <string name="size">Size</string>
 
 
 </resources>
