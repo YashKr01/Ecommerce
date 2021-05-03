@@ -13,16 +13,24 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sb_text_size_15"
         android:textColor="@color/black"
+        android:text="style"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
 
     <TextView
         android:id="@+id/property_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sb_text_size_15"
+        android:text="sdsdsd"
         android:textColor="@color/black"
-        android:layout_marginStart="@dimen/sb_size_10"
-        app:layout_constraintStart_toEndOf="@+id/property_name"
+        android:textSize="@dimen/sb_text_size_15"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

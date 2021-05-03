@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.ProgressDialog;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +22,14 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.amar.library.ui.StickyScrollView;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
@@ -38,10 +45,12 @@ import com.shopping.bloom.viewModels.SingleProductViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
 
+    boolean colorClickable, sizeClickable;
     RecyclerView colorRecyclerView;
     RecyclerView sizeRecyclerView;
     SingleProductViewModel singleProductViewModel;
@@ -57,9 +66,10 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> imageList;
     List<ProductVariableResponse> productVariableResponseList;
     ViewPagerImageAdapter viewPagerImageAdapter;
-    ViewStub viewStub;
-    SwipeRefreshLayout swipeRefreshLayout;
-    RelativeLayout relativeLayout;
+    StickyScrollView stickyScrollView;
+    //ViewStub viewStub;
+    //SwipeRefreshLayout swipeRefreshLayout;
+    LinearLayout relativeLayout;
     Toolbar toolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
@@ -69,6 +79,7 @@ public class SingleProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product);
 
+
         /*
         Product ID received
          */
@@ -77,26 +88,31 @@ public class SingleProductActivity extends AppCompatActivity {
         }
         Log.d("SEND", "onCreate: " + PRODUCT_ID);
 
+
         productName = findViewById(R.id.product_name);
         price = findViewById(R.id.price);
         colorTextView = findViewById(R.id.color);
         ratingBar = findViewById(R.id.ratingBar4);
         viewReview = findViewById(R.id.viewAllReviewTextView);
         linearLayout = findViewById(R.id.linearLayout);
-        relativeLayout = findViewById(R.id.relative);
+        relativeLayout = findViewById(R.id.relativeLayout);
         viewPager = findViewById(R.id.viewpager);
-        viewStub = findViewById(R.id.vsEmptyScreen);
+        //viewStub = findViewById(R.id.vsEmptyScreen);
         toolbar = findViewById(R.id.toolbar);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        //nestedScrollView = findViewById(R.id.scrollView);
+        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        //swipeRefreshLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
+        stickyScrollView = findViewById(R.id.scrollView);
+
+
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
 
-        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
+        //swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
@@ -109,17 +125,17 @@ public class SingleProductActivity extends AppCompatActivity {
 
         //color
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        colorList = new ArrayList<>();
         colorRecyclerView.setLayoutManager(linearLayoutManager);
         colorAdapter = new ColorAdapter(this, colorList);
         colorRecyclerView.setAdapter(colorAdapter);
-        colorList = new ArrayList<>();
 
         //size
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        sizeRecyclerView.setLayoutManager(linearLayoutManager2);
-        sizeAdapter = new SizeAdapter(this, colorList);
-        sizeRecyclerView.setAdapter(sizeAdapter);
         sizeList = new ArrayList<>();
+        sizeRecyclerView.setLayoutManager(linearLayoutManager2);
+        sizeAdapter = new SizeAdapter(this, sizeList);
+        sizeRecyclerView.setAdapter(sizeAdapter);
 
         productVariableResponseList = new ArrayList<>();
         imageList = new ArrayList<>();
@@ -139,28 +155,44 @@ public class SingleProductActivity extends AppCompatActivity {
 
                 imageList.add(primary);
                 for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
-                    //
                     imageList.add(productVariableResponse.getPrimary_image());
+                    colorList.add(productVariableResponse.getColor());
+                    sizeList.add(productVariableResponse.getSize());
                 }
-                System.out.println(imageList.size());
+
+                HashSet<String> colorSet = new HashSet<>(colorList);
+                colorList.clear();
+                colorList.addAll(colorSet);
+
+                if(colorList.size() == 0){
+                    colorClickable = false;
+                    String colors = this.singleProductDataResponse.getAvailable_colors();
+                    String[] colorArray = colors.split(",");
+                    colorList.addAll(Arrays.asList(colorArray));
+                }else{
+                    colorClickable = true;
+                }
+
+                HashSet<String> sizeSet = new HashSet<>(sizeList);
+                sizeList.clear();
+                sizeList.addAll(sizeSet);
+
+                if(sizeList.size() == 0){
+                    sizeClickable = false;
+                    String size = this.singleProductDataResponse.getAvailable_sizes();
+                    String[] sizeArray = size.split(",");
+                    sizeList.addAll(Arrays.asList(sizeArray));
+                }else{
+                    sizeClickable = true;
+                }
 
                 viewPagerImageAdapter.setImageList(imageList);
                 viewPagerImageAdapter.notifyDataSetChanged();
 
-                //colors
-                String colors = this.singleProductDataResponse.getAvailable_colors();
-                String[] colorArray = colors.split(",");
-                colorList.addAll(Arrays.asList(colorArray));
-
-                colorAdapter.setColorList(colorList);
+                colorAdapter.setColorList(colorList, colorClickable);
                 colorAdapter.notifyDataSetChanged();
 
-                //size
-                String size = this.singleProductDataResponse.getAvailable_sizes();
-                String[] sizeArray = size.split(",");
-                sizeList.addAll(Arrays.asList(sizeArray));
-
-                sizeAdapter.setSizeList(sizeList);
+                sizeAdapter.setSizeList(sizeList, sizeClickable);
                 sizeAdapter.notifyDataSetChanged();
 
                 productName.setText(this.singleProductDataResponse.getProduct_name());
@@ -175,11 +207,14 @@ public class SingleProductActivity extends AppCompatActivity {
                     ImageButton imageButton = bottomSheet.findViewById(R.id.imgClose);
                     imageButton.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
 
+                    TextView textView = bottomSheet.findViewById(R.id.description);
+                    textView.setText(this.singleProductDataResponse.getDescription());
+
                     RecyclerView recyclerView = bottomSheet.findViewById(R.id.recyclerView);
-                    LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-                    List<SingleProductDescResponse> list;
-                    list = this.singleProductDataResponse.getSingleProductDescResponseList();
+                    LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
                     recyclerView.setLayoutManager(linearLayoutManager3);
+
+                    List<SingleProductDescResponse> list = this.singleProductDataResponse.getSingleProductDescResponseList();
                     ProductDescAdapter productDescAdapter = new ProductDescAdapter(this, list);
                     productDescAdapter.setSingleProductDescResponseList(list);
                     recyclerView.setAdapter(productDescAdapter);
@@ -204,7 +239,8 @@ public class SingleProductActivity extends AppCompatActivity {
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.viewAllReviewTextView) {
                 frameLayout.setVisibility(View.VISIBLE);
-                swipeRefreshLayout.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.GONE);
+                //swipeRefreshLayout.setVisibility(View.GONE);
 
                 toolbar.setTitle("Reviews");
 
@@ -223,24 +259,27 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
-            viewStub.setVisibility(View.VISIBLE);
-            relativeLayout.setVisibility(View.GONE);
+           // viewStub.setVisibility(View.VISIBLE);
+           // relativeLayout.setVisibility(View.GONE);
         } else {
-            viewStub.setVisibility(View.GONE);
-            relativeLayout.setVisibility(View.VISIBLE);
+          //  viewStub.setVisibility(View.GONE);
+           // relativeLayout.setVisibility(View.VISIBLE);
         }
-        swipeRefreshLayout.setRefreshing(false);
+       // swipeRefreshLayout.setRefreshing(false);
     }
 
     public void setViewPagerCurrentItem(int pos) {
         String color = colorList.get(pos).trim();
+        stickyScrollView.initFooterView(R.id.fav_layout);
         if (!color.isEmpty()) {
             colorTextView.setVisibility(View.VISIBLE);
             colorTextView.setText("Color: ".concat(color));
 
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
                 if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                    stickyScrollView.initFooterView(R.id.fav_layout);
                     viewPager.setCurrentItem(i + 1);
+                    price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
                     break;
                 }
             }
@@ -250,7 +289,8 @@ public class SingleProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        //swipeRefreshLayout.setVisibility(View.VISIBLE);
+        relativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         toolbar.setTitle("Sweaters & Cardigans");
     }

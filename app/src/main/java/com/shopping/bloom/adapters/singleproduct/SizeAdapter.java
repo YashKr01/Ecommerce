@@ -17,14 +17,16 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
 
     Context context;
     List<String> sizeList;
+    boolean clickable;
 
     public SizeAdapter(Context context, List<String> sizeList) {
         this.context = context;
         this.sizeList = sizeList;
     }
 
-    public void setSizeList(List<String> sizeList) {
+    public void setSizeList(List<String> sizeList, boolean clickable) {
         this.sizeList = sizeList;
+        this.clickable = clickable;
         notifyDataSetChanged();
     }
 
@@ -38,6 +40,9 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull SizeAdapter.ViewHolder holder, int position) {
         holder.button.setText(sizeList.get(position));
+        if (clickable) {
+            //TODO do something when user clicks size button
+        }
     }
 
     @Override
