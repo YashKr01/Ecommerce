@@ -104,14 +104,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
             Log.d(TAG, "setUpData: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
-            tvPrice.setText(product.getPrice());
+            tvPrice.setText(CommonUtils.getSignedAmount(product.getPrice()));
 
             setLiked(context, product.isInUserWishList());
 
             // Populate the color array and pass the callbackListener to change the Image
             List<ColorImageArray> colors = product.getColorsImageArray();
             if (colors != null && !colors.isEmpty()) {
-                addColors(context,colors, (color -> changeImage(context, color)));
+                addColors(context, colors, (imageUrl -> changeImage(context, imageUrl)));
             } else {
                 parentColorsLayout.removeAllViews();
                 parentColorsLayout.removeAllViewsInLayout();
@@ -120,7 +120,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void changeImage(Context context, String imagePath) {
             String imageURL = "http://bloomapp.in" + imagePath;
-            Log.d(TAG, "ChangeImage: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
         }
 
@@ -128,7 +127,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             if (isLiked) {
                 viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_wishlist_background));
             } else {
-                viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favourite_product));
+                viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_wishlist_product));
             }
         }
 
@@ -153,12 +152,31 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
                 textView.setOnClickListener(new DebouncedOnClickListener(200) {
                     @Override
                     public void onDebouncedClick(View v) {
+                        changeBackgroundColor(context, v, parentColorsLayout);
                         callback.onColorSelected(color.getImagePath());
                     }
                 });
                 parentColorsLayout.addView(textView);
             }
         }
+
+        private void changeBackgroundColor(Context context, View v, LinearLayout parentLayout) {
+            int childViewCount = parentLayout.getChildCount();
+            if(childViewCount == 0) return ;
+            TextView textView = (TextView) v;
+            String titleClicked = textView.getText().toString().trim();
+            for(int i = 0;  i < childViewCount; i++) {
+                View view = parentLayout.getChildAt(i);
+                TextView textView1 = (TextView) view;
+                String title = textView1.getText().toString().trim();
+                if(titleClicked.equals(title)) {
+                    textView.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices_selected));
+                } else {
+                    textView1.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices));
+                }
+            }
+        }
+
     }
 
     @Override

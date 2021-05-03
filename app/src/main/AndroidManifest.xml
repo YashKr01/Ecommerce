@@ -32,7 +32,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".activities.FAQActivity" />
         <activity
-            android:name=".activities.ViewCategoryActivity"
+            android:name=".activities.AllProductCategory"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LoginWithPassActivity"

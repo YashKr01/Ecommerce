@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -19,17 +16,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.shopping.bloom.R;
-import com.shopping.bloom.activities.ViewCategoryActivity;
+import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.CategoryViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragment extends Fragment implements ProductClickListener {
@@ -134,7 +132,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     @Override
     public void onProductClick(Category categoryCategory) {
         Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
-        gotoProductScreen(String.valueOf(categoryCategory.getId()));
+        gotoAllProductScreen(String.valueOf(categoryCategory.getId()));
     }
 
     //When particular product image is clicked
@@ -142,8 +140,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     public void onSubProductClick(SubCategory product) {
         Log.d(TAG, "onSubProductClick: "+ product.toString());
         if(getContext() != null) {
-            gotoProductScreen(product.getParent_id());
-            Toast.makeText(getContext(), product.getCategory_name(), Toast.LENGTH_SHORT).show();
+            gotoAllProductScreen(product);
         }
     }
 
@@ -160,10 +157,31 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
     }*/
 
-    private void gotoProductScreen(String categoryId) {
-        String ARG_CATEGORY = "category_id";
-        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
-        intent.putExtra(ARG_CATEGORY, categoryId);
+    private void gotoAllProductScreen(String categoryId) {
+        String ARG_CATEGORY_ID = "category_id";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
+        String ARG_BUNDLE = "app_bundle_name";
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CATEGORY_ID, categoryId);
+        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, null);
+        bundle.putString(ARG_CATEGORY_NAME, null);
+        Intent intent = new Intent(getActivity(), AllProductCategory.class);
+        intent.putExtra(ARG_BUNDLE, bundle);
+        startActivity(intent);
+    }
+
+    private void gotoAllProductScreen(SubCategory subCategory) {
+        String ARG_CATEGORY_ID = "category_id";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
+        String ARG_BUNDLE = "app_bundle_name";
+        Intent intent = new Intent(getActivity(), AllProductCategory.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CATEGORY_ID, String.valueOf(subCategory.getParent_id()));
+        bundle.putString(ARG_CATEGORY_NAME, subCategory.getCategory_name());
+        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, null);
+        intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
 

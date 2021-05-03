@@ -90,6 +90,7 @@
     <string name="color">Color</string>
     <string name="sort_by">Sort By</string>
     <string name="size">Size</string>
+    <string name="close">Close</string>
 
 
 </resources>

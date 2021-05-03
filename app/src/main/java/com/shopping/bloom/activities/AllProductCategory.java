@@ -1,40 +1,46 @@
 package com.shopping.bloom.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.ProductAdapter;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
-import com.shopping.bloom.model.CategoryTypes;
 import com.shopping.bloom.model.FilterArrayValues;
+import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
+import com.shopping.bloom.restService.callback.FilterItemClicked;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.restService.callback.WishListUploadedCallback;
+import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.Const.FILTER;
 import com.shopping.bloom.utils.Const.SORT_BY;
@@ -47,30 +53,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ViewCategoryActivity extends AppCompatActivity {
+public class AllProductCategory extends AppCompatActivity {
 
-    private static final String TAG = ViewCategoryActivity.class.getName();
+    private static final String TAG = AllProductCategory.class.getName();
 
     private ProductsViewModel viewModel;
     //views
     private SwipeRefreshLayout refreshLayout, retryConnecting;
     private RecyclerView rvProducts;
     private ProductAdapter productAdapter;
+    private RecyclerView rvFilter;
+    private FilterItemAdapter filterItemAdapter;
     private Toolbar toolbar;
     private LinearLayout llSort, llFilter;
-    private TextView tvSortBy, tvFilterBy;
+    private ConstraintLayout cltFilter;
+    private TextView tvSortBy;
+    private TextView tvCategory, tvType, tvColor, tvSize;
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
-    private int PARENT_ID = -1;
+    private String PARENT_ID = "";
+    private String SUB_CATEGORY_ID = "";
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
     private boolean WISHLIST_CHANGED = false;
     private boolean IS_FILTER_FETCH_COMPLETE = false;
-    List<CategoryTypes> filterList;     //subcategory list for filter/sorting
+    final int SORT_BOTTOM_SHEET = 0;
+    final int FILTER_BOTTOM_SHEET = 1;
+    List<FilterItem> flCategory, flColor, flSize, flType;
+    List<FilterItem> savedCategory, savedColor, savedSize, savedType;
     ProductFilter MAIN_FILTER = new ProductFilter();
     FilterArrayValues filterArrayValues = null;
     SORT_BY DEFAULT_SORT_VALUE = null;
-    List<String> colorFilterList, sizeFilterList, typeFilterList;
 
 
     /*
@@ -88,11 +101,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_category);
+        setContentView(R.layout.activity_all_product_category);
 
         initViews();
-        getIntentData();
         setUpRecycleView();
+        getIntentData();
 
         viewModel = new ViewModelProvider(this).get(ProductsViewModel.class);
         checkNetworkAndFetchData();
@@ -107,58 +120,103 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void initViews() {
         rvProducts = findViewById(R.id.rvViewCategory);
+        rvFilter = findViewById(R.id.rvFilter);
         toolbar = findViewById(R.id.toolbar);
         refreshLayout = findViewById(R.id.swipeRefreshLayout);
         retryConnecting = findViewById(R.id.swipeNoInternet);
         llSort = findViewById(R.id.llSortLayout);
         llFilter = findViewById(R.id.llFilterLayout);
+        cltFilter = findViewById(R.id.cltFilterSheet);
         tvSortBy = findViewById(R.id.tvSortBy);
-        tvFilterBy = findViewById(R.id.tvFilterBy);
+
+        tvCategory = findViewById(R.id.tvCategory);
+        tvType = findViewById(R.id.tvType);
+        tvColor = findViewById(R.id.tvColor);
+        tvSize = findViewById(R.id.tvSize);
 
         //SetUpToolbar
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener((view -> onBackPressed()));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        //init List
-        colorFilterList = new ArrayList<>();
-        sizeFilterList = new ArrayList<>();
-        typeFilterList = new ArrayList<>();
+        /*
+        *   filter item list
+        * */
+        flCategory = new ArrayList<>();
+        flColor = new ArrayList<>();
+        flSize = new ArrayList<>();
+        flType = new ArrayList<>();
+        /*
+        *   persistence filter list
+        *      when user open the filter bottom sheet
+        *       populate the last saved filter
+        * */
+        savedCategory = new ArrayList<>();
+        savedType = new ArrayList<>();
+        savedSize = new ArrayList<>();
+        savedColor = new ArrayList<>();
 
-
+        findViewById(R.id.btClose).setOnClickListener(clickListener);
+        findViewById(R.id.btApplyFilter).setOnClickListener(clickListener);
+        findViewById(R.id.imgClose).setOnClickListener(clickListener);
         llSort.setOnClickListener(clickListener);
         llFilter.setOnClickListener(clickListener);
 
+        tvCategory.setOnClickListener(changeCategory);
+        tvType.setOnClickListener(changeCategory);
+        tvColor.setOnClickListener(changeCategory);
+        tvSize.setOnClickListener(changeCategory);
     }
 
     private void getIntentData() {
         String ARG_CATEGORY_ID = "category_id";
-        String ARG_CATEGORY_NAMES = "category_names";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
         String ARG_BUNDLE = "app_bundle_name";
-        int CATEGORY_ID;
+
+
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
 
-        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 0);
-
         if (bundle != null) {
-            Log.d(TAG, "getIntentData: Not null");
             Log.d(TAG, "getIntentData: " + bundle.toString());
-            parentId = bundle.getString(ARG_CATEGORY_ID, "");
-            filterList = bundle.getParcelableArrayList(ARG_CATEGORY_NAMES);
-            Log.d(TAG, "getIntentData: parentId " + parentId);
-            Log.d(TAG, "getIntentData: categoryTypes " + filterList.toString());
+
+            parentId = bundle.getString(ARG_CATEGORY_ID, "1");
+            PARENT_ID = parentId;
+            String title = bundle.getString(ARG_CATEGORY_NAME, "ECOMMERCE..");
+            this.setTitle(title);
+            flCategory = bundle.getParcelableArrayList(ARG_SUB_CATEGORY_LIST);
+            if (flCategory != null && flCategory.size() > 0) {
+                changeSelectedTextTo(tvCategory.getId());
+                filterItemAdapter.updateList(flCategory);
+                tvCategory.setVisibility(View.VISIBLE);
+            } else {
+                changeSelectedTextTo(tvSize.getId());
+                filterItemAdapter.updateList(flSize);
+                tvCategory.setVisibility(View.GONE);
+            }
         } else {
             Log.d(TAG, "getIntentData: NULL BUNDLE NO DATA RECEIVED");
         }
     }
 
     private void setUpRecycleView() {
-        productAdapter = new ProductAdapter(this, wishListListener);
+        productAdapter = new ProductAdapter(this, updateWishList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvProducts.setLayoutManager(layoutManager);
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(productAdapter);
+
+        filterItemAdapter = new FilterItemAdapter(this, new FilterItemClicked() {
+            @Override
+            public void onItemClicked(FilterItem filterItem) {
+
+            }
+        });
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvFilter.setHasFixedSize(true);
+        rvFilter.setLayoutManager(linearLayoutManager);
+        rvFilter.setAdapter(filterItemAdapter);
 
 
         //Disable blink animation when updating the items
@@ -186,19 +244,119 @@ public class ViewCategoryActivity extends AppCompatActivity {
     private final DebouncedOnClickListener clickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
-            int SORT_BOTTOM_SHEET = 0;
-            int FILTER_BOTTOM_SHEET = 1;
             int viewId = v.getId();
             if (viewId == R.id.llSortLayout) {
                 openBottomSheet(SORT_BOTTOM_SHEET);
             }
             if (viewId == R.id.llFilterLayout) {
+                updateSelection();
                 openBottomSheet(FILTER_BOTTOM_SHEET);
+            }
+            if (viewId == R.id.btClose) {
+                showOrHideSheet(cltFilter, false);
+            }
+            if (viewId == R.id.btApplyFilter) {
+                //save list data
+                saveSelectionData();
+                updateFilter(SORT_BY.FILTERS);
+                showOrHideSheet(cltFilter, false);
+            }
+            if(viewId == R.id.imgClose) {
+                showOrHideSheet(cltFilter, false);
             }
         }
     };
 
-    private final WishListListener wishListListener = new WishListListener() {
+    private void updateSelection() {
+        Log.d(TAG, "updateSelection: ");
+        if (savedCategory.isEmpty()) {
+            for (FilterItem filterItem : flCategory) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedCategory, flCategory);
+        }
+
+        if (savedColor.isEmpty()) {
+            for (FilterItem filterItem : flColor) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedColor, flColor);
+        }
+
+        if (savedSize.isEmpty()) {
+            for (FilterItem filterItem : flSize) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedSize, flSize);
+        }
+        if (savedType.isEmpty()) {
+            for (FilterItem filterItem : flType) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedType, flType);
+        }
+
+        filterItemAdapter.notifyDataSetChanged();
+    }
+
+    private void saveSelectionData() {
+        createADeepCopy(flCategory, savedCategory);
+        createADeepCopy(flType, savedType);
+        createADeepCopy(flSize, savedSize);
+        createADeepCopy(flColor, savedColor);
+    }
+
+    private void createADeepCopy(List<FilterItem> from, List<FilterItem> to) {
+        if(from == null || to == null) return ;
+        to.clear();
+        for(FilterItem item: from) {
+            FilterItem f = new FilterItem(item.getCategoryName(),
+                    item.getCategoryId(), item.getParentId(),
+                    item.isSelected(), item.getFilterType());
+            to.add(f);
+        }
+    }
+
+    private final DebouncedOnClickListener changeCategory = new DebouncedOnClickListener(300) {
+        @Override
+        public void onDebouncedClick(View v) {
+            int viewId = v.getId();
+            Log.d(TAG, "onDebouncedClick: change category");
+            changeSelectedTextTo(viewId);
+            if (viewId == R.id.tvCategory) {
+                filterItemAdapter.updateList(flCategory);
+            }
+            if (viewId == R.id.tvColor) {
+                filterItemAdapter.updateList(flColor);
+            }
+            if (viewId == R.id.tvSize) {
+                filterItemAdapter.updateList(flSize);
+            }
+            if (viewId == R.id.tvType) {
+                filterItemAdapter.updateList(flType);
+            }
+        }
+    };
+
+    private void changeSelectedTextTo(int viewId) {
+        int[] ids = {R.id.tvCategory, R.id.tvColor, R.id.tvSize, R.id.tvType};
+        for (int id : ids) {
+            TextView textView = findViewById(id);
+            if (id == viewId) {
+                textView.setTypeface(Typeface.DEFAULT_BOLD);
+                textView.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            } else {
+                textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+                textView.setBackgroundColor(ContextCompat.getColor(this, R.color.grey_50));
+            }
+        }
+    }
+
+    private final WishListListener updateWishList = new WishListListener() {
         @Override
         public void updateWishList(int position, boolean isAdded) {
             WISHLIST_CHANGED = true;
@@ -231,22 +389,23 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
+            viewModel.fetchData(PARENT_ID, CURRENT_PAGE, MAIN_FILTER);
         } else {
             showNoInternetImage(true);
         }
     }
 
     private void fetchFilterAndUpdateUI() {
-        viewModel.getAvailableColorAndSize(filterListener);
+        viewModel.getAvailableColorAndSize(fetchFilter);
     }
 
-    private final FetchFilterListener filterListener = new FetchFilterListener() {
+    private final FetchFilterListener fetchFilter = new FetchFilterListener() {
         @Override
         public void fetchOnSuccess(FilterArrayValues filterValues) {
             Log.d(TAG, "fetchOnSuccess: ");
             IS_FILTER_FETCH_COMPLETE = true;
             filterArrayValues = filterValues;
+            updateFilterList(filterArrayValues);
         }
 
         @Override
@@ -254,6 +413,33 @@ public class ViewCategoryActivity extends AppCompatActivity {
             Log.d(TAG, "fetchFailed: errorCode " + errorCode + " message " + message);
         }
     };
+
+    private void updateFilterList(FilterArrayValues filterValues) {
+        if (filterValues == null) return;
+
+        if (!filterValues.getSizes().isEmpty()) {
+            flSize.clear();
+            for (String size : filterValues.getSizes()) {
+                FilterItem item = new FilterItem(size, "", "", false, Const.FILTER.LENGTH);
+                flSize.add(item);
+            }
+        }
+        if (filterValues.getTypes() != null && !filterValues.getTypes().isEmpty()) {
+            flType.clear();
+            for (String type : filterValues.getTypes()) {
+                FilterItem item = new FilterItem(type, "", "", false, Const.FILTER.TYPE);
+                flType.add(item);
+            }
+
+        }
+        if (!filterValues.getColors().isEmpty()) {
+            flColor.clear();
+            for (String color : filterValues.getColors()) {
+                FilterItem item = new FilterItem(color, "", "", false, Const.FILTER.COLOR);
+                flColor.add(item);
+            }
+        }
+    }
 
     private final ProductResponseListener responseListener = new ProductResponseListener() {
         @Override
@@ -292,12 +478,9 @@ public class ViewCategoryActivity extends AppCompatActivity {
     };
 
     private void openBottomSheet(int bottomSheetType) {
-        final int SORT_BOTTOM_SHEET = 0;
-        final int FILTER_BOTTOM_SHEET = 1;
         switch (bottomSheetType) {
             case SORT_BOTTOM_SHEET: {
                 SortBottomSheet sortBottomSheet = new SortBottomSheet(this);
-
                 sortBottomSheet.setListenerAndDefaultValue((sortBy, value) -> {
                     DEFAULT_SORT_VALUE = sortBy;
                     tvSortBy.setText(value);
@@ -308,116 +491,40 @@ public class ViewCategoryActivity extends AppCompatActivity {
                 return;
             }
             case FILTER_BOTTOM_SHEET: {
-                Toast.makeText(this, "Not available", Toast.LENGTH_SHORT)
-                        .show();
+                showOrHideSheet(cltFilter, true);
                 return;
-                /*FilterBottomSheetDialog fragment = new FilterBottomSheetDialog(this);
-                if (filterArrayValues != null) {
-                    fragment.updateFilterLists(filterArrayValues.getColors(),
-                            filterArrayValues.getSizes(), filterArrayValues.getTypes());
-
-                }
-                fragment.show(getSupportFragmentManager(), fragment.getTag());*/
             }
             default: {
-                Log.d(TAG, "openBottomSheet: Trying to open the bottom sheet with invalid values " + bottomSheetType);
+                Log.d(TAG, "openBottomSheet: Invalid values " + bottomSheetType);
             }
         }
     }
 
-    private void addFilterToNavigationSheet(LinearLayout parentView, List<String> values, Const.FILTER tag) {
-        Log.d(TAG, "addFilterToNavigationSheet: TAG: " + tag);
-        if (values == null || values.isEmpty()) {
-            Log.d(TAG, "addFilterToNavigationSheet: NULL Values for TAG: " + tag);
-            parentView.removeAllViews();
-            return;
-        }
-        parentView.removeAllViews();
-
-        //Param for the textView
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        //params for the LinearLayout which will wrap the text view
-        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1.0f
-        );
-
-        LinearLayout currentRow = new LinearLayout(this);
-        currentRow.setOrientation(LinearLayout.HORIZONTAL);
-        currentRow.setWeightSum(3.0f);
-        currentRow.setPadding(10, 10, 10, 10);
-        int rowItemCount = 0;
-        for (String value : values) {
-            TextView textView = new TextView(this);
-            textView.setText(value);
-            textView.setTextColor(ContextCompat.getColor(this, R.color.blue_grey_900));
-            textView.setTextSize(14f);
-            textView.setLayoutParams(params);
-            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices));
-            textView.setOnClickListener(new DebouncedOnClickListener(200) {
-                @Override
-                public void onDebouncedClick(View v) {
-                    addToFilterToList(textView, tag);
-                }
-            });
-            if (rowItemCount % 3 == 0 && rowItemCount != 0) {
-                parentView.addView(currentRow);
-                currentRow = new LinearLayout(this);
-                currentRow.setOrientation(LinearLayout.HORIZONTAL);
-                currentRow.setWeightSum(3.0f);
-                currentRow.setPadding(10, 10, 10, 10);
-            }
-            LinearLayout tvParentLayout = new LinearLayout(this);
-            tvParentLayout.setOrientation(LinearLayout.VERTICAL);
-            tvParentLayout.setLayoutParams(tvParams);
-            tvParentLayout.addView(textView);
-            currentRow.addView(tvParentLayout);
-            rowItemCount++;
-            Log.d(TAG, "addFilterToNavigationSheet: adding...");
-        }
-        if (currentRow.getChildCount() > 0)
-            parentView.addView(currentRow);
-    }
-
-    /*
-     *   @param tag will is used to identify if Filter type
-     *       COLOR, TYPE, SIZE
-     * */
-    private void addToFilterToList(TextView textView, FILTER tag) {
-        Log.d(TAG, "filterItem: TAG: " + tag.toString());
-        Drawable background = textView.getBackground();
-        if (background == null) return;
-        String value = textView.getText().toString();
-        if (background.getConstantState() ==
-                ContextCompat.getDrawable(this, R.drawable.bg_color_choices).getConstantState()) {
-            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices_selected));
-
-            //Add item to the filter list based on tag
-            if (tag == FILTER.COLOR) {
-                colorFilterList.add(value);
-            } else if (tag == FILTER.TYPE) {
-                typeFilterList.add(value);
-            } else if (tag == FILTER.LENGTH) {
-                sizeFilterList.add(value);
-            } else {
-                Log.d(TAG, "filterItem: UNIDENTIFIED VALUE");
-            }
+    //animate Filter sheet or Sort layout sheet to get an dropDown effects
+    // Pass the parent layout LinearLayout
+    private void showOrHideSheet(ConstraintLayout sheetLayout, final boolean show) {
+        long ANIMATION_DURATION = 250L;
+        if (show) {
+            //show navigation bar with animation
+            sheetLayout.animate().setListener(null);
+            sheetLayout.clearAnimation();
+            sheetLayout.animate()
+                    .alpha(1.0f).translationY(0f).setDuration(ANIMATION_DURATION);
+            sheetLayout.setVisibility(View.VISIBLE);
         } else {
-            textView.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_color_choices));
-
-            //Remove item to the filter list based on tag
-            if (tag == FILTER.COLOR) {
-                colorFilterList.remove(value);
-            } else if (tag == FILTER.TYPE) {
-                typeFilterList.remove(value);
-            } else if (tag == FILTER.LENGTH) {
-                sizeFilterList.remove(value);
-            } else {
-                Log.d(TAG, "filterItem: UNIDENTIFIED VALUE");
-            }
+            //hide bottom navigation bar with animation
+            sheetLayout.clearAnimation();
+            sheetLayout.animate()
+                    .alpha(0.0f)
+                    .translationY(sheetLayout.getHeight())
+                    .setDuration(ANIMATION_DURATION)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            sheetLayout.setVisibility(View.GONE);
+                        }
+                    });
         }
     }
 
@@ -427,9 +534,34 @@ public class ViewCategoryActivity extends AppCompatActivity {
         RETRY_ATTEMPT = 0;
         IS_LAST_PAGE = false;
         ProductFilter newFilter = new ProductFilter();
-        if (sortBy == SORT_BY.SUB_CATEGORY) {
-            //Just update the category items and return
-            MAIN_FILTER.setSubCategoryIds(newFilter.getSubCategoryIds());
+        if (sortBy == SORT_BY.FILTERS) {
+            String categoryIds = getQueryStringFor(flCategory, FILTER.CATEGORY);
+            if (!categoryIds.isEmpty()) {
+                MAIN_FILTER.setSubCategoryIds(categoryIds);
+            } else {
+                MAIN_FILTER.setSubCategoryIds(null);
+            }
+
+            String colors = getQueryStringFor(flColor, FILTER.COLOR);
+            if (!colors.isEmpty()) {
+                MAIN_FILTER.setColors(colors);
+            } else {
+                MAIN_FILTER.setColors(null);
+            }
+
+            String type = getQueryStringFor(flType, FILTER.TYPE);
+            if (!type.isEmpty()) {
+                MAIN_FILTER.setTypes(type);
+            } else {
+                MAIN_FILTER.setTypes(null);
+            }
+
+            String size = getQueryStringFor(flSize, FILTER.LENGTH);
+            if (!size.isEmpty()) {
+                MAIN_FILTER.setSizes(size);
+            } else {
+                MAIN_FILTER.setSizes(null);
+            }
             Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
             checkNetworkAndFetchData();
             return;
@@ -445,11 +577,26 @@ public class ViewCategoryActivity extends AppCompatActivity {
             newFilter.setPriceHtoL("1");
         }
         if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
-            newFilter.setNewArrival("0");
+            newFilter.setPriceHtoL("0");
         }
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
         checkNetworkAndFetchData();
+    }
+
+    private String getQueryStringFor(List<FilterItem> filterItems, FILTER filter) {
+        if (filterItems == null || filterItems.isEmpty()) return "";
+        List<String> newList = new ArrayList<>();
+        for (FilterItem item : filterItems) {
+            if (item.isSelected()) {
+                if (filter == FILTER.CATEGORY) {
+                    newList.add(item.getCategoryId());
+                } else {
+                    newList.add(item.getCategoryName());
+                }
+            }
+        }
+        return CommonUtils.getStringFromList(newList);
     }
 
     // reset filter, set CURRENT PAGE = 0
@@ -463,7 +610,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
     }
 
     private void openSingleProductActivity(Product product) {
-        //TODO: send product id with intent
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -496,7 +642,10 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        if (cltFilter.getVisibility() == View.VISIBLE) {
+            showOrHideSheet(cltFilter, false);
+            return;
+        }
         Log.d(TAG, "onBackPressed: uploading...");
         viewModel.uploadWishListOnServer(this.getApplication(), null);
         super.onBackPressed();
@@ -517,12 +666,11 @@ public class ViewCategoryActivity extends AppCompatActivity {
             Log.d(TAG, "onUploadFailed: message " + message);
             if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 RETRY_ATTEMPT++;
-                checkNetworkAndFetchData();
             } else {
                 WISHLIST_CHANGED = false;
                 RETRY_ATTEMPT = 0;
-                checkNetworkAndFetchData();
             }
+            checkNetworkAndFetchData();
         }
     };
 
@@ -539,31 +687,6 @@ public class ViewCategoryActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private List<CategoryTypes> getDummyCategories() {
-        List<CategoryTypes> list = new ArrayList<>();
-        for (int i = 0; i < 9; i++) {
-            CategoryTypes product = new CategoryTypes("Dummy", "2", "");
-            CategoryTypes product1 = new CategoryTypes("Dummy shoes", "2", "1");
-            CategoryTypes product2 = new CategoryTypes("dummy HipHop", "2", "5");
-            list.add(product);
-            list.add(product1);
-            list.add(product2);
-        }
-        return list;
-    }
-
-    private List<Product> getDummyData() {
-        List<Product> list = new ArrayList<>();
-        for (int i = 0; i < 99; i++) {
-            Product product = new Product(1, "Dummy Name", "", "100", "1000", "", "WHITE, YELLOW, BLACK, BLUE, YELLOW, BLACK, BLUE, YELLOW, BLACK, BLUE",
-                    "/images/product/product1618639820.png", "", "",
-                    "100", "", "", "", "",
-                    "", false);
-            list.add(product);
-        }
-        return list;
     }
 
 }

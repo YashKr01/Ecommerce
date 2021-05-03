@@ -110,11 +110,13 @@ public class ProductRepository {
                 public void onResponse(Call<GetColorAndSizeResponse> call, Response<GetColorAndSizeResponse> response) {
                     if (response.isSuccessful() && response.code() == SUCCESS) {
                         GetColorAndSizeResponse myResponse = response.body();
-                        filterListener.fetchOnSuccess(myResponse.getFilterArrays());
-                    } else {
-                        if (response != null)
-                            filterListener.fetchOnFailed(response.code(), response.message());
+                        if(myResponse != null && myResponse.isSuccess()){
+                            filterListener.fetchOnSuccess(myResponse.getFilterArrays());
+                            return ;
+                        }
                     }
+
+                    filterListener.fetchOnFailed(response.code(), response.message());
                 }
 
                 @Override

@@ -5,9 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -19,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,13 +23,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.ViewCategoryActivity;
+import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.CategoryTypes;
+import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.model.SubCategory;
@@ -208,22 +204,23 @@ public class ShopFragment extends Fragment {
         * */
 
         String ARG_CATEGORY_ID = "category_id";
-        String ARG_CATEGORY_NAMES = "category_names";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
         String ARG_BUNDLE = "app_bundle_name";
-        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+        Intent intent = new Intent(getActivity(), AllProductCategory.class);
         Bundle bundle = new Bundle();
         bundle.putString(ARG_CATEGORY_ID, String.valueOf(product.getId()));
-
-        ArrayList<CategoryTypes> list = new ArrayList<>();
+        bundle.putString(ARG_CATEGORY_NAME, product.getCategory_name());
+        ArrayList<FilterItem> list = new ArrayList<>();
         for(int i = 0; i < product.getSub_category().size(); i++){
             SubCategory subCategory = product.getSub_category().get(i);
-            CategoryTypes categoryTypes = new CategoryTypes(
+            FilterItem filterItem = new FilterItem(
                     subCategory.getCategory_name(),
                     String.valueOf(subCategory.getId()),
                     subCategory.getParent_id());
-            list.add(categoryTypes);
+            list.add(filterItem);
         }
-        bundle.putParcelableArrayList(ARG_CATEGORY_NAMES, list);
+        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, list);
         intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
