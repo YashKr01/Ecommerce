@@ -23,6 +23,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.search.SearchActivity;
 import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.databinding.ActivityMainBinding;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
@@ -207,6 +208,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_cart) {
             Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_search) {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);
