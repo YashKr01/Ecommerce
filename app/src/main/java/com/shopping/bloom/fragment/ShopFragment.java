@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +32,7 @@ import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.CategoryTypes;
+import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.model.SubCategory;
@@ -214,14 +213,14 @@ public class ShopFragment extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_CATEGORY_ID, String.valueOf(product.getId()));
 
-        ArrayList<CategoryTypes> list = new ArrayList<>();
+        ArrayList<FilterItem> list = new ArrayList<>();
         for(int i = 0; i < product.getSub_category().size(); i++){
             SubCategory subCategory = product.getSub_category().get(i);
-            CategoryTypes categoryTypes = new CategoryTypes(
+            FilterItem filterItem = new FilterItem(
                     subCategory.getCategory_name(),
                     String.valueOf(subCategory.getId()),
                     subCategory.getParent_id());
-            list.add(categoryTypes);
+            list.add(filterItem);
         }
         bundle.putParcelableArrayList(ARG_CATEGORY_NAMES, list);
         intent.putExtra(ARG_BUNDLE, bundle);

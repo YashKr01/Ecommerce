@@ -14,12 +14,13 @@ public class Const {
         MOST_POPULAR,
         PRICE_HIGH_TO_LOW,
         PRICE_LOW_TO_HIGH,
-        SUB_CATEGORY,
+        FILTERS,
     }
 
     public enum FILTER {
         LENGTH,
         TYPE,
-        COLOR
+        COLOR,
+        CATEGORY
     }
 }

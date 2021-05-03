@@ -104,7 +104,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
             Log.d(TAG, "setUpData: imageURL "+imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
-            tvPrice.setText(product.getPrice());
+            tvPrice.setText(CommonUtils.getSignedAmount(product.getPrice()));
 
             setLiked(context, product.isInUserWishList());
 

@@ -60,6 +60,27 @@ class CommonUtils {
         fun getInitialText(word: String): Char {
             return word.get(0)
         }
+
+        @JvmStatic
+        fun getSignedAmount(amount: String) : String {
+            if(amount.isEmpty()) return ""
+            return "₹ $amount"
+        }
+
+        @JvmStatic
+        fun getStringFromList(input: List<String>) : String {
+            if (input == null || input.isEmpty()) return ""
+            val sb = StringBuilder()
+            for (i in input.indices) {
+                sb.append(input.get(i))
+                // if not the last item
+                if (i != input.size - 1) {
+                    sb.append(",")
+                }
+            }
+            return sb.toString()
+        }
+
     }
 
     interface ACTION {
