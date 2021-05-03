@@ -32,8 +32,11 @@ import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.newfragment.NewFragmentViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +64,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentNewBinding.inflate(inflater, container, false);
@@ -107,22 +110,24 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     // method to get new category list
     private void getNewProductsList() {
-        binding.newTrendsSwipeRefresh.setRefreshing(true);
+
+        binding.progressBar2.setVisibility(View.VISIBLE);
 
         viewModel.getNewProducts().observe(getViewLifecycleOwner(), newProductCategories -> {
 
             if (newProductCategories == null || newProductCategories.size() == 0) {
                 // empty or null list received
                 binding.emptyText.setVisibility(View.VISIBLE);
+                binding.progressBar2.setVisibility(View.INVISIBLE);
             } else {
                 list.clear();
                 list.addAll(newProductCategories);
                 adapter.notifyDataSetChanged();
                 binding.emptyText.setVisibility(View.INVISIBLE);
+                binding.progressBar2.setVisibility(View.INVISIBLE);
             }
         });
 
-        binding.newTrendsSwipeRefresh.setRefreshing(false);
     }
 
     // load image from remote config in first two images

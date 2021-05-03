@@ -76,7 +76,6 @@ public class WishListFragment extends Fragment implements WishListProductListene
         // get wish list
         getWishList(PAGE_NO, LIMIT);
 
-
     }
 
     private void getWishList(String page_no, String limit) {
@@ -91,6 +90,7 @@ public class WishListFragment extends Fragment implements WishListProductListene
                     adapter.notifyDataSetChanged();
                 } else {
                     binding.txtEmpty.setVisibility(View.VISIBLE);
+                    binding.viewMore.setVisibility(View.INVISIBLE);
                 }
             });
         } else {
@@ -124,7 +124,10 @@ public class WishListFragment extends Fragment implements WishListProductListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_CODE)
+        if (requestCode == RESULT_CODE){
+            list.clear();
             getWishList(PAGE_NO, LIMIT);
+        }
+
     }
 }

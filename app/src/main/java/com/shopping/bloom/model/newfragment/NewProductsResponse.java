@@ -13,13 +13,12 @@ public class NewProductsResponse {
     @Expose
     @SerializedName("message")
     private String message;
+    @Expose
+    @SerializedName("success")
+    private boolean success;
 
     public List<NewProductCategory> getNewCategoryList() {
         return newCategoryList;
-    }
-
-    public void setNewCategoryList(List<NewProductCategory> newCategoryList) {
-        this.newCategoryList = newCategoryList;
     }
 
     public String getMessage() {
@@ -28,5 +27,13 @@ public class NewProductsResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }
