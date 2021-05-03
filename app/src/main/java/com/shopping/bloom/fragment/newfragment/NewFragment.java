@@ -197,8 +197,16 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     @Override
     public void newBannerListener(NewProductCategory newProductCategory) {
-        Intent intent = new Intent(getActivity(), AllProductCategory.class);
-        intent.putExtra("CATEGORY_ID", newProductCategory.getId());
+        String ARG_CATEGORY_ID = "category_id";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
+        String ARG_BUNDLE = "app_bundle_name";
+        Intent intent = new Intent(getContext(), AllProductCategory.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CATEGORY_ID, String.valueOf(newProductCategory.getId()));
+        bundle.putString(ARG_CATEGORY_NAME, newProductCategory.getCategoryName());
+        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, null);
+        intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
 }
