@@ -608,7 +608,7 @@ public class AllProductCategory extends AppCompatActivity {
             newFilter.setPriceHtoL("1");
         }
         if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
-            newFilter.setNewArrival("0");
+            newFilter.setPriceHtoL("0");
         }
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
