@@ -54,9 +54,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ViewCategoryActivity extends AppCompatActivity {
+public class AllProductCategory extends AppCompatActivity {
 
-    private static final String TAG = ViewCategoryActivity.class.getName();
+    private static final String TAG = AllProductCategory.class.getName();
 
     private ProductsViewModel viewModel;
     //views
@@ -73,7 +73,8 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
-    private int PARENT_ID = -1;
+    private String PARENT_ID = "";
+    private String SUB_CATEGORY_ID = "";
     private boolean IS_LOADING = false, IS_LAST_PAGE = false;
     private boolean WISHLIST_CHANGED = false;
     private boolean IS_FILTER_FETCH_COMPLETE = false;
@@ -98,7 +99,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_category);
+        setContentView(R.layout.activity_all_product_category);
 
         initViews();
         setUpRecycleView();
@@ -160,22 +161,31 @@ public class ViewCategoryActivity extends AppCompatActivity {
 
     private void getIntentData() {
         String ARG_CATEGORY_ID = "category_id";
-        String ARG_CATEGORY_NAMES = "category_names";
+        String ARG_CATEGORY_NAME = "category_name";
+        String ARG_SUB_CATEGORY_LIST = "sub_category_list";
         String ARG_BUNDLE = "app_bundle_name";
-        int CATEGORY_ID;
+
+
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
 
-        CATEGORY_ID = getIntent().getIntExtra("CATEGORY_ID", 0);
-
         if (bundle != null) {
-            Log.d(TAG, "getIntentData: Not null");
             Log.d(TAG, "getIntentData: " + bundle.toString());
-            parentId = bundle.getString(ARG_CATEGORY_ID, "");
-            subCategoryList = bundle.getParcelableArrayList(ARG_CATEGORY_NAMES);
-            Log.d(TAG, "getIntentData: parentId " + parentId);
-            Log.d(TAG, "getIntentData: categoryTypes " + subCategoryList.toString());
-            filterItemAdapter.updateList(subCategoryList);
+
+            parentId = bundle.getString(ARG_CATEGORY_ID, "1");
+            PARENT_ID = parentId;
+            String title = bundle.getString(ARG_CATEGORY_NAME, "ECOMMERCE..");
+            this.setTitle(title);
+            subCategoryList = bundle.getParcelableArrayList(ARG_SUB_CATEGORY_LIST);
+            if(subCategoryList != null && subCategoryList.size() > 0) {
+                changeSelectedTextTo(tvCategory.getId());
+                filterItemAdapter.updateList(subCategoryList);
+                tvCategory.setVisibility(View.VISIBLE);
+            } else {
+                changeSelectedTextTo(tvSize.getId());
+                filterItemAdapter.updateList(flSize);
+                tvCategory.setVisibility(View.GONE);
+            }
         } else {
             Log.d(TAG, "getIntentData: NULL BUNDLE NO DATA RECEIVED");
         }
@@ -239,6 +249,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
             if(viewId == R.id.btApplyFilter) {
                 updateFilter(SORT_BY.FILTERS);
+                showOrHideSheet(cltFilter, false);
             }
         }
     };
@@ -311,7 +322,7 @@ public class ViewCategoryActivity extends AppCompatActivity {
             }
             IS_LOADING = true;
             viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("1", CURRENT_PAGE, MAIN_FILTER);
+            viewModel.fetchData(PARENT_ID, CURRENT_PAGE, MAIN_FILTER);
         } else {
             showNoInternetImage(true);
         }
