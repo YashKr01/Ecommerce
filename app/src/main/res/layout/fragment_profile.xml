@@ -502,7 +502,7 @@
                         android:clickable="true"
                         android:contentDescription="@string/my_reference"
                         android:focusable="true"
-                        android:src="@drawable/ic_reference"
+                        android:src="@drawable/ic_myreference"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

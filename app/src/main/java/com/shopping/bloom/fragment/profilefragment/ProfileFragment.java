@@ -18,6 +18,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.ConnectToUsActivity;
 import com.shopping.bloom.activities.LoginActivity;
 import com.shopping.bloom.activities.coupons.CouponsActivity;
+import com.shopping.bloom.activities.giftcard.GiftCardActivity;
 import com.shopping.bloom.activities.myorders.MyOrdersActivity;
 import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
@@ -113,6 +114,13 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDebouncedClick(View v) {
                 startActivity(new Intent(getContext(), ConnectToUsActivity.class));
+            }
+        });
+
+        binding.imgGiftCard.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getContext(), GiftCardActivity.class));
             }
         });
 

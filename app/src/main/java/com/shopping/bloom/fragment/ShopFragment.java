@@ -347,7 +347,7 @@ public class ShopFragment extends Fragment {
         }
     }
 
-    @Override
+   /* @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_settings).setVisible(true);
         MenuItem item = menu.getItem(0);
@@ -358,7 +358,7 @@ public class ShopFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: shop" + menu.getItem(0).getTitle());
-    }
+    }*/
 
     //set No internet layout to visible and hide the main layout
     private void setNoInternetLayout(boolean visible) {

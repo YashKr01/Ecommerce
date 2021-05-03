@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -18,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.databinding.ActivityMainBinding;
 
@@ -28,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     private ActivityMainBinding mainView;
+    private int bottomsheet_int ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,21 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mainView.bottomNavigationView, navController);
 
         navController.addOnDestinationChangedListener(destinationChangedListener);
+        mainView.bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
+            //empty just to stop repeated  api call
+        });
+
+        //might use this to handle fragments
+       /* mainView.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return false;
+            }
+        });
+*/
     }
+
+
 
     /*Customize the toolbar according to the fragment*/
     private final NavController.OnDestinationChangedListener destinationChangedListener =
@@ -53,7 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onDestinationChanged: current fragment Id " + destination.getId());
                 //show the searchBar if current fragment is shopFragment or category Fragment
-                Boolean searchBarVisible = (destination.getId() == R.id.shopFragment) ||
+                if (destination.getId() == R.id.shopFragment){
+                    bottomsheet_int =1 ;
+                }else if(destination.getId() == R.id.categoryFragment){
+                    bottomsheet_int =2 ;
+                }else if(destination.getId() == R.id.newTrendFragment){
+                    bottomsheet_int=3;
+                }else if(destination.getId() == R.id.profileFragment){
+                    bottomsheet_int=4 ;
+                }
+
+
+
+            /*    Boolean searchBarVisible = (destination.getId() == R.id.shopFragment) ||
                         (destination.getId() == R.id.categoryFragment);
                 showSearchBar(searchBarVisible);
                 if (destination.getId() == R.id.newTrendFragment) {
@@ -67,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
                     mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
-                }
+                }*/
 
                 //Hide the bottom navigation bar if destination fragment not contains in the topLevelDestination
                 boolean showBottomNavBar = isTopLevelDestination(destination.getId());
@@ -78,17 +108,17 @@ public class MainActivity extends AppCompatActivity {
     private void setTitle(String title) {
         //Hide the search box and update the
         showSearchBar(false);
-        mainView.layoutToolbar.tvTitle.setText(title);
-        mainView.layoutToolbar.tvTitle.setVisibility(View.VISIBLE);
+     /*   mainView.layoutToolbar.tvTitle.setText(title);
+        mainView.layoutToolbar.tvTitle.setVisibility(View.VISIBLE);*/
     }
 
     private void showSearchBar(Boolean show) {
-        if (show) {
+    /*    if (show) {
             mainView.layoutToolbar.tvTitle.setVisibility(View.GONE);
             mainView.layoutToolbar.etSearch.setVisibility(View.VISIBLE);
         } else {
             mainView.layoutToolbar.etSearch.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     //Back button on Toolbar will not appear on these fragments
@@ -128,6 +158,31 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        MenuInflater inflater = getMenuInflater();
+        if(bottomsheet_int== 1){
+            inflater.inflate(R.menu.shop_fragment, menu);
+            mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
+            mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
+        }else if(bottomsheet_int== 2){
+            inflater.inflate(R.menu.shop_fragment, menu);
+            mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
+            mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
+        }else if(bottomsheet_int== 3){
+            inflater.inflate(R.menu.new_fragment_menu, menu);
+            mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
+            mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
+        }else if(bottomsheet_int== 4){
+            inflater.inflate(R.menu.profile_fragment_menu, menu);
+            mainView.layoutToolbar.imgFavourites.setVisibility(View.GONE);
+            mainView.layoutToolbar.imgMail.setVisibility(View.GONE);
+        }
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

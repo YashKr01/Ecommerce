@@ -147,7 +147,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         }
     }
 
-    @Override
+   /* @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_settings).setVisible(true);
         MenuItem item = menu.getItem(0);
@@ -158,7 +158,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.profile_fragment_menu, menu);
         Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
-    }
+    }*/
 
     private void gotoProductScreen(String categoryId) {
         String ARG_CATEGORY = "category_id";

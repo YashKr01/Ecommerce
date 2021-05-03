@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ecommerce">
         <activity
+            android:name=".activities.giftcard.GiftCardActivity"
+            android:theme="@style/Theme.Ecommerce.Theme" />
+        <activity
             android:name=".activities.SingleProductActivity"
             android:theme="@style/Theme.Ecommerce.Theme" />
         <activity
