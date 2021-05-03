@@ -23,14 +23,16 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     Context context;
     List<String> colorList;
     int pos = -1;
+    boolean clickable;
 
     public ColorAdapter(Context context, List<String> colorList) {
         this.context = context;
         this.colorList = colorList;
     }
 
-    public void setColorList(List<String> colorList) {
+    public void setColorList(List<String> colorList, boolean clickable) {
         this.colorList = colorList;
+        this.clickable = clickable;
         notifyDataSetChanged();
     }
 
@@ -44,17 +46,22 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         holder.button.setText(colorList.get(position));
-        holder.button.setOnClickListener(v -> {
-            pos = position;
-            notifyDataSetChanged();
-            if(context instanceof SingleProductActivity){
-                ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+        if (clickable) {
+
+            holder.button.setOnClickListener(v -> {
+                pos = position;
+                notifyDataSetChanged();
+                if (context instanceof SingleProductActivity) {
+                    ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+                }
+            });
+
+            if (pos == position) {
+                holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
+            } else {
+                holder.button.setBackgroundResource(R.drawable.rect_back_button);
             }
-        });
-        if(pos == position){
-            holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
-        }else{
-            holder.button.setBackgroundResource(R.drawable.rect_back_button);
+
         }
     }
 

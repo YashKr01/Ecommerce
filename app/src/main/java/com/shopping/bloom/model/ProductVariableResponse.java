@@ -13,12 +13,36 @@ public class ProductVariableResponse {
     @Expose
     String color;
 
+    @SerializedName("size")
+    @Expose
+    String size;
+
+    @SerializedName("price")
+    @Expose
+    String price;
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getPrimary_image() {

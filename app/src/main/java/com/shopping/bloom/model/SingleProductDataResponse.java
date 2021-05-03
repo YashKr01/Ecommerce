@@ -19,6 +19,10 @@ public class SingleProductDataResponse {
     @Expose
     String product_name;
 
+    @SerializedName("description")
+    @Expose
+    String description;
+
     @SerializedName("avg_rating")
     @Expose
     String avg_rating;
@@ -85,6 +89,14 @@ public class SingleProductDataResponse {
 
     public void setAvailable_colors(String available_colors) {
         this.available_colors = available_colors;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getAvg_rating() {
