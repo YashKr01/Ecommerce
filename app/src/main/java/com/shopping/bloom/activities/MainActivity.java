@@ -20,6 +20,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.databinding.ActivityMainBinding;
 
@@ -48,10 +49,19 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mainView.bottomNavigationView, navController);
 
         navController.addOnDestinationChangedListener(destinationChangedListener);
+        mainView.bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
+            //empty just to stop repeated  api call
+        });
+
+        //might use this to handle fragments
+       /* mainView.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return false;
+            }
+        });
+*/
     }
-
-
-
 
 
 

@@ -126,7 +126,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
         public void setLiked(Context context, boolean isLiked) {
             if (isLiked) {
-                viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_fav_added));
+                viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_wishlist_background));
             } else {
                 viewFavorites.setBackground(ContextCompat.getDrawable(context, R.drawable.ic_favourite_product));
             }

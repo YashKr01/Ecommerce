@@ -79,7 +79,14 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
 
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+
+
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 }
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }
