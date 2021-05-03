@@ -13,16 +13,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
-import com.shopping.bloom.activities.ViewCategoryActivity;
+import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.newfragment.NewAdapter;
 import com.shopping.bloom.databinding.FragmentNewBinding;
 
@@ -200,7 +197,7 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     @Override
     public void newBannerListener(NewProductCategory newProductCategory) {
-        Intent intent = new Intent(getActivity(), ViewCategoryActivity.class);
+        Intent intent = new Intent(getActivity(), AllProductCategory.class);
         intent.putExtra("CATEGORY_ID", newProductCategory.getId());
         startActivity(intent);
     }

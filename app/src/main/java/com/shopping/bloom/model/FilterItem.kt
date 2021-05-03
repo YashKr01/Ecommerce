@@ -2,12 +2,14 @@ package com.shopping.bloom.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.shopping.bloom.utils.Const
 
-data class CategoryTypes(
+data class FilterItem(
         val categoryName: String,
         val categoryId: String,
         val parentId: String,
-        var isSelected: Boolean
+        var isSelected: Boolean,
+        var filterType: Const.FILTER = Const.FILTER.CATEGORY
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString().toString(),
@@ -30,12 +32,12 @@ data class CategoryTypes(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<CategoryTypes> {
-        override fun createFromParcel(parcel: Parcel): CategoryTypes {
-            return CategoryTypes(parcel)
+    companion object CREATOR : Parcelable.Creator<FilterItem> {
+        override fun createFromParcel(parcel: Parcel): FilterItem {
+            return FilterItem(parcel)
         }
 
-        override fun newArray(size: Int): Array<CategoryTypes?> {
+        override fun newArray(size: Int): Array<FilterItem?> {
             return arrayOfNulls(size)
         }
     }

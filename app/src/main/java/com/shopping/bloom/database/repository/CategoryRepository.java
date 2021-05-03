@@ -31,15 +31,13 @@ public class CategoryRepository {
 
     public void getCategory(String mainCategory, int limit, int pageNo, String categoryName, Application context, CategoryResponseListener responseListener) {
         Log.d(TAG, "getCategory: mainCategory=" + mainCategory + " limit=" + limit + " pageNo=" + pageNo + " categoryName=" + categoryName);
-
+        int SUCCESS_CODE = 200;
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
         String authToken = getToken();
         Log.d(TAG, "getCategory: authToken " + authToken);
         Call<GetCategoryResponse> responseCall = apiInterface.getCategory(
                 authToken, mainCategory, limit, pageNo, categoryName
         );
-
-        Log.d(TAG, "getCategory: REQUEST "+ responseCall.request().toString());
 
         if(responseCall != null) {
             responseCall.enqueue(new Callback<GetCategoryResponse>() {
@@ -51,14 +49,14 @@ public class CategoryRepository {
                         return;
                     }
 
-                    if(response.body() != null) {
-                        Log.d(TAG, "onResponse: response body"+ response.body().toString());
+                    if(response.body() != null && response.code() == SUCCESS_CODE) {
                         GetCategoryResponse categoryResponse = response.body();
-                        Log.d(TAG, "onResponse: categoryResponse "+ categoryResponse.toString());
-                        responseListener.onSuccess(categoryResponse.getData());
-                    } else {
-                        responseListener.onFailure(response.code(), response.message());
+                        if(categoryResponse != null && categoryResponse.isSuccess()) {
+                            responseListener.onSuccess(categoryResponse.getData());
+                            return ;
+                        }
                     }
+                    responseListener.onFailure(response.code(), response.message());
                 }
 
                 @Override
