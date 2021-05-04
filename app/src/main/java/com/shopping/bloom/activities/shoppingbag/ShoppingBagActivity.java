@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,6 +36,10 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         super.onCreate(savedInstanceState);
         binding = ActivityShoppingBagBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         // initialise view model
         viewModel = new ViewModelProvider(this).get(ShoppingBagViewModel.class);
@@ -85,5 +90,11 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         AlertDialog dialog = builder.create();
         dialog.show();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.shopping_bag_menu, menu);
+        return true;
     }
 }
