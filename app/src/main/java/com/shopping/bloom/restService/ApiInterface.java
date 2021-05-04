@@ -12,6 +12,7 @@ import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
+import com.shopping.bloom.model.search.SearchResponse;
 import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
@@ -183,4 +184,19 @@ public interface ApiInterface {
 
     @GET("frontend/checkTokenExpiry")
     Call<RefreshTokenResponse> checkBearerToken(@Header("Authorization") String bearer);
+
+    @GET("/api/frontend/getProducts")
+    @Headers("Accept-type: application/json")
+    Call<SearchResponse> getSearchedProducts(
+            @Header("Authorization") String authToken,
+            @Query("category_id") String categoryId,
+            @Query("sub_category_id") String subCategoryId,
+            @Query("limit") int limit,
+            @Query("pageNo") int pageNo,
+            @Query("sortByPrice") String sortByPrice,
+            @Query("colors") String colors,
+            @Query("sizes") String sizes
+            //TODO: Add two more filter option here Most Popular, New Arrival
+    );
+
 }

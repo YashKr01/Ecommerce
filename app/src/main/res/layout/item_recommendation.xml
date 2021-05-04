@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/sb_size_8">
+    android:padding="@dimen/sb_size_2">
 
     <ImageView
         android:id="@+id/img_recommended_product"
-        android:layout_width="@dimen/sb_size_60"
-        android:layout_height="@dimen/sb_size_90"
+        android:layout_width="@dimen/sb_size_100"
+        android:layout_height="@dimen/sb_size_140"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:contentDescription="@string/recommended_product"

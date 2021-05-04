@@ -57,7 +57,8 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         // setup toolbar
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setTitle("WishList");
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (!NetworkCheck.isConnect(this)) {
             showNoConnectionLayout(true);
@@ -110,7 +111,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
                 }
             });
             recommendationsItemList.addAll(tempList());
-            adapter.notifyDataSetChanged();
+            recommendationsAdapter.notifyDataSetChanged();
         } else {
             binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
             showNoConnectionLayout(true);

@@ -39,6 +39,7 @@ public class ProductDescAdapter extends RecyclerView.Adapter<ProductDescAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ProductDescAdapter.ViewHolder holder, int position) {
+        System.out.println(singleProductDescResponseList.get(position).getProperty_name());
         holder.property_name.setText(singleProductDescResponseList.get(position).getProperty_name()+": ");
         holder.property_value.setText(singleProductDescResponseList.get(position).getProperty_value());
     }

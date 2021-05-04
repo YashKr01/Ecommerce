@@ -47,22 +47,25 @@ public class OtpViewModel extends ViewModel {
                     if (success.equals("true")) {
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
-                        loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
-                        loginManager.setname(response.body().getData().getUserInfo().getName());
-                        loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
-                        loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
-                        loginManager.settoken(response.body().getData().getToken());
-                        loginManager.SetLoginStatus(false);
-                        String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
-                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
-                            loginManager.setEmail_verified_at(true);
-                        }
+                        if (ActivityName.equals("LoginActivity")) {
+                            loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
+                            loginManager.setname(response.body().getData().getUserInfo().getName());
+                            loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
+                            loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
+                            loginManager.settoken(response.body().getData().getToken());
+                            loginManager.SetLoginStatus(false);
+                            String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
 
+                            if (email_verified_at == null || email_verified_at.isEmpty() || email_verified_at.equals("")) {
+                                loginManager.setEmail_verified_at(false);
+                            } else {
+                                loginManager.setEmail_verified_at(true);
+                            }
+                        }
                         Intent intent;
                         if (ActivityName.equals("RegisterActivity")) {
                             intent = new Intent(context, LoginActivity.class);
-                        }
-                        else {
+                        } else {
                             intent = new Intent(context, MainActivity.class);
                             loginManager.SetLoginStatus(false);
                         }
@@ -104,8 +107,9 @@ public class OtpViewModel extends ViewModel {
                         loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
                         loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
                         loginManager.settoken(response.body().getData().getToken());
+
                         String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
-                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                        if (email_verified_at != null || !email_verified_at.isEmpty() || !email_verified_at.equals("")) {
                             loginManager.setEmail_verified_at(true);
                         }
 
