@@ -26,6 +26,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.amar.library.ui.StickyScrollView;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabItem;
@@ -66,11 +67,12 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> imageList;
     List<ProductVariableResponse> productVariableResponseList;
     ViewPagerImageAdapter viewPagerImageAdapter;
-    StickyScrollView stickyScrollView;
-    //ViewStub viewStub;
-    //SwipeRefreshLayout swipeRefreshLayout;
-    LinearLayout relativeLayout;
-    Toolbar toolbar;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    ViewStub viewStub;
+    LinearLayout favLinearLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
+    RelativeLayout relativeLayout;
+    Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
 
@@ -95,24 +97,30 @@ public class SingleProductActivity extends AppCompatActivity {
         ratingBar = findViewById(R.id.ratingBar4);
         viewReview = findViewById(R.id.viewAllReviewTextView);
         linearLayout = findViewById(R.id.linearLayout);
-        relativeLayout = findViewById(R.id.relativeLayout);
+        favLinearLayout = findViewById(R.id.fav_layout);
+        relativeLayout = findViewById(R.id.relative);
         viewPager = findViewById(R.id.viewpager);
-        //viewStub = findViewById(R.id.vsEmptyScreen);
+        viewStub = findViewById(R.id.vsEmptyScreen);
         toolbar = findViewById(R.id.toolbar);
-        //nestedScrollView = findViewById(R.id.scrollView);
-        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        frameLayout = findViewById(R.id.fragment);
-        //swipeRefreshLayout.setVisibility(View.VISIBLE);
-        frameLayout.setVisibility(View.GONE);
-        stickyScrollView = findViewById(R.id.scrollView);
+        reviewToolbar = findViewById(R.id.reviewToolbar);
 
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        frameLayout = findViewById(R.id.fragment);
+        collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
+
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
 
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
 
-        //swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
+        reviewToolbar.setNavigationOnClickListener(v ->{
+            onBackPressed();
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
@@ -239,10 +247,10 @@ public class SingleProductActivity extends AppCompatActivity {
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.viewAllReviewTextView) {
                 frameLayout.setVisibility(View.VISIBLE);
-                relativeLayout.setVisibility(View.GONE);
-                //swipeRefreshLayout.setVisibility(View.GONE);
-
-                toolbar.setTitle("Reviews");
+                swipeRefreshLayout.setVisibility(View.GONE);
+                collapsingToolbarLayout.setVisibility(View.GONE);
+                favLinearLayout.setVisibility(View.GONE);
+                reviewToolbar.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
                 bundle.putString("PRODUCT_ID", String.valueOf(PRODUCT_ID));
@@ -259,25 +267,23 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
-           // viewStub.setVisibility(View.VISIBLE);
-           // relativeLayout.setVisibility(View.GONE);
+            viewStub.setVisibility(View.VISIBLE);
+            relativeLayout.setVisibility(View.GONE);
         } else {
-          //  viewStub.setVisibility(View.GONE);
-           // relativeLayout.setVisibility(View.VISIBLE);
+            viewStub.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
         }
-       // swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     public void setViewPagerCurrentItem(int pos) {
         String color = colorList.get(pos).trim();
-        stickyScrollView.initFooterView(R.id.fav_layout);
         if (!color.isEmpty()) {
             colorTextView.setVisibility(View.VISIBLE);
             colorTextView.setText("Color: ".concat(color));
 
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
                 if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
-                    stickyScrollView.initFooterView(R.id.fav_layout);
                     viewPager.setCurrentItem(i + 1);
                     price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
                     break;
@@ -289,9 +295,10 @@ public class SingleProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //swipeRefreshLayout.setVisibility(View.VISIBLE);
-        relativeLayout.setVisibility(View.VISIBLE);
+
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
-        toolbar.setTitle("Sweaters & Cardigans");
+        collapsingToolbarLayout.setVisibility(View.VISIBLE);
+        favLinearLayout.setVisibility(View.VISIBLE);
     }
 }
