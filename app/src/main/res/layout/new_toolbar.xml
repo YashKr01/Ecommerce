@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:elevation="@dimen/sb_size_6"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imgToolbarLogo"
+        android:layout_width="@dimen/sb_size_80"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|top"
+        android:elevation="@dimen/sb_size_6"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_bloom"
+        android:contentDescription="@string/desc_app_logo" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/maintoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgMail"
+                android:layout_width="27dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/desc_mail"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_group" />
+
+            <!--<ImageView
+                android:id="@+id/imgToolbarLogo"
+                android:layout_width="@dimen/sb_size_80"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:scaleType="centerInside"
+                android:layout_marginStart="@dimen/sb_size_66"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/toolbar_logo"
+                android:contentDescription="@string/desc_app_logo" />-->
+
+            <ImageView
+                android:id="@+id/imgFavourites"
+                android:layout_width="@dimen/sb_size_25"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginStart="@dimen/sb_size_14"
+                android:contentDescription="@string/desc_favourites"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgMail"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_wishlist_unselected" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <!--<RelativeLayout
+            android:id="@+id/notification_holder"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+
+            <ImageView
+                android:id="@+id/notification_image"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/new_cart" />
+
+
+            <TextView
+                android:id="@+id/notification_count"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/red_400"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/search_holder"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end">
+
+            <ImageView
+                android:id="@+id/search_image"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_search" />
+
+        </RelativeLayout>
+-->
+
+    </androidx.appcompat.widget.Toolbar>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
