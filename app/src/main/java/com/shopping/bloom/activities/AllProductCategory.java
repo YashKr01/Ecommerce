@@ -140,17 +140,17 @@ public class AllProductCategory extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         /*
-        *   filter item list
-        * */
+         *   filter item list
+         * */
         flCategory = new ArrayList<>();
         flColor = new ArrayList<>();
         flSize = new ArrayList<>();
         flType = new ArrayList<>();
         /*
-        *   persistence filter list
-        *      when user open the filter bottom sheet
-        *       populate the last saved filter
-        * */
+         *   persistence filter list
+         *      when user open the filter bottom sheet
+         *       populate the last saved filter
+         * */
         savedCategory = new ArrayList<>();
         savedType = new ArrayList<>();
         savedSize = new ArrayList<>();
@@ -261,7 +261,7 @@ public class AllProductCategory extends AppCompatActivity {
                 updateFilter(SORT_BY.FILTERS);
                 showOrHideSheet(cltFilter, false);
             }
-            if(viewId == R.id.imgClose) {
+            if (viewId == R.id.imgClose) {
                 showOrHideSheet(cltFilter, false);
             }
         }
@@ -269,12 +269,14 @@ public class AllProductCategory extends AppCompatActivity {
 
     private void updateSelection() {
         Log.d(TAG, "updateSelection: ");
-        if (savedCategory.isEmpty()) {
-            for (FilterItem filterItem : flCategory) {
-                filterItem.setSelected(false);
+        if (flCategory != null) {
+            if (savedCategory.isEmpty()) {
+                for (FilterItem filterItem : flCategory) {
+                    filterItem.setSelected(false);
+                }
+            } else {
+                createADeepCopy(savedCategory, flCategory);
             }
-        } else {
-            createADeepCopy(savedCategory, flCategory);
         }
 
         if (savedColor.isEmpty()) {
@@ -304,16 +306,18 @@ public class AllProductCategory extends AppCompatActivity {
     }
 
     private void saveSelectionData() {
-        createADeepCopy(flCategory, savedCategory);
+        if (flCategory != null) {
+            createADeepCopy(flCategory, savedCategory);
+        }
         createADeepCopy(flType, savedType);
         createADeepCopy(flSize, savedSize);
         createADeepCopy(flColor, savedColor);
     }
 
     private void createADeepCopy(List<FilterItem> from, List<FilterItem> to) {
-        if(from == null || to == null) return ;
+        if (from == null || to == null) return;
         to.clear();
-        for(FilterItem item: from) {
+        for (FilterItem item : from) {
             FilterItem f = new FilterItem(item.getCategoryName(),
                     item.getCategoryId(), item.getParentId(),
                     item.isSelected(), item.getFilterType());
