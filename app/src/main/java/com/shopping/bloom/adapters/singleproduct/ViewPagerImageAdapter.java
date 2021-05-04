@@ -1,5 +1,6 @@
 package com.shopping.bloom.adapters.singleproduct;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.utils.Const;
 
 import java.util.List;

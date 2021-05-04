@@ -1,6 +1,8 @@
 package com.shopping.bloom.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.ColorImageArray;
-import com.shopping.bloom.model.LoginWithPassData;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.utils.CommonUtils;
@@ -23,7 +24,11 @@ import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
@@ -31,21 +36,36 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private List<Product> productList;
     private WishListListener wishListListener;
     private Context context;
+    private Map<String, String> colorMap = new HashMap<>();
+    static String DEFAULT_BORDER_COLOR = "#FFFFFF";
+    static int COLOR_SELECTOR_ICON_SIZE = 80;
+    static int DEFAULT_BORDER_RADIUS = 8;
 
     public ProductAdapter(Context context, WishListListener wishListListener) {
         this.context = context;
         this.wishListListener = wishListListener;
         productList = new ArrayList<>();
+        fillColorHashMap();
+    }
+
+    private void fillColorHashMap() {
+        colorMap.put("Blue", "#2A93DF");
+        colorMap.put("Red", "#FD5353");
+        colorMap.put("Black", "#000000");
+        colorMap.put("Brown", "#A0552B");
+        colorMap.put("Green", "#11DF3E");
+        colorMap.put("Yellow", "#FAE423");
+        colorMap.put("White", "#E6E6E6");
     }
 
     public void updateList(List<Product> products) {
-        if(products == null) return ;
+        if (products == null) return;
         this.productList = products;
         notifyDataSetChanged();
     }
 
     public void addProductList(List<Product> products) {
-        if(products == null) return ;
+        if (products == null) return;
         int position = productList.size();
         this.productList.addAll(products);
         notifyItemRangeInserted(position, products.size());
@@ -63,7 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = getItemAt(position);
 
-        holder.setUpData(context, product);
+        holder.setUpData(context, product, colorMap);
 
         holder.viewFavorites.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
@@ -97,12 +117,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             parentColorsLayout = itemView.findViewById(R.id.llColorOptions);
         }
 
-        public void setUpData(Context context, Product product) {
+        public void setUpData(Context context, Product product, Map<String, String> colorMap) {
             //1. show primary image
-            //2. Change wishListIcon (if already added to wishList)
+            //2. Change wishListIcon (if product is previously added to wishList)
             //3. Populate color option
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
-            Log.d(TAG, "setUpData: imageURL "+imageURL);
+            Log.d(TAG, "setUpData: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
             tvPrice.setText(CommonUtils.getSignedAmount(product.getPrice()));
 
@@ -111,7 +131,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             // Populate the color array and pass the callbackListener to change the Image
             List<ColorImageArray> colors = product.getColorsImageArray();
             if (colors != null && !colors.isEmpty()) {
-                addColors(context, colors, (imageUrl -> changeImage(context, imageUrl)));
+                addColors(context, colors, colorMap, (imageUrl -> changeImage(context, imageUrl)));
             } else {
                 parentColorsLayout.removeAllViews();
                 parentColorsLayout.removeAllViewsInLayout();
@@ -132,47 +152,67 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         }
 
         /*
-        *  @params colors is the list of ColorImageArray which contain color, imageURL
-        *  @params callback is used to change the image upon clicking the color
-        */
-        public void addColors(Context context, List<ColorImageArray> colors, ColorClickListener callback) {
+         *  @params colors is the list of ColorImageArray which contain color, imageURL
+         *  @params callback is used to change the image upon clicking the color
+         */
+        public void addColors(Context context, List<ColorImageArray> colors, Map<String, String> colorMap, ColorClickListener callback) {
             Log.d(TAG, "addColors: arraySize " + colors.size());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             parentColorsLayout.removeAllViewsInLayout();
             parentColorsLayout.removeAllViews();
             for (ColorImageArray color : colors) {
-                TextView textView = new TextView(context);
-                textView.setText(color.getColor());
-                textView.setTextColor(ContextCompat.getColor(context, R.color.blue_grey_900));
-                params.rightMargin = 12;
-                textView.setTextSize(12f);
-                textView.setLayoutParams(params);
-                textView.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices));
-                textView.setOnClickListener(new DebouncedOnClickListener(200) {
+                CircleImageView colorCircle = new CircleImageView(context);
+                params.rightMargin = 28;
+                colorCircle.setLayoutParams(params);
+                colorCircle.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_circle_selector));
+                colorCircle.setColorFilter(Color.parseColor(colorMap.get(color.getColor())), PorterDuff.Mode.SRC_ATOP);
+                colorCircle.getLayoutParams().height = COLOR_SELECTOR_ICON_SIZE;
+                colorCircle.getLayoutParams().width = COLOR_SELECTOR_ICON_SIZE;
+                colorCircle.setBorderWidth(DEFAULT_BORDER_RADIUS);
+                colorCircle.setBorderColor(Color.parseColor(DEFAULT_BORDER_COLOR));
+                colorCircle.setOnClickListener(new DebouncedOnClickListener(200) {
                     @Override
                     public void onDebouncedClick(View v) {
-                        changeBackgroundColor(context, v, parentColorsLayout);
+                        changeBackgroundColor(parentColorsLayout, color.getColor(), colors);
                         callback.onColorSelected(color.getImagePath());
                     }
                 });
-                parentColorsLayout.addView(textView);
+                parentColorsLayout.addView(colorCircle);
             }
         }
 
-        private void changeBackgroundColor(Context context, View v, LinearLayout parentLayout) {
+        /*
+         *   Populate circular color options
+         * */
+        private void changeBackgroundColor(LinearLayout parentLayout,
+                                           String colorClicked, List<ColorImageArray> colors) {
+            /*
+             *   return IFF
+             *       colorArray is empty,
+             *       childView count = 0,
+             *       size of colorArray is different from the childViewCount
+             * */
             int childViewCount = parentLayout.getChildCount();
-            if(childViewCount == 0) return ;
-            TextView textView = (TextView) v;
-            String titleClicked = textView.getText().toString().trim();
-            for(int i = 0;  i < childViewCount; i++) {
+            if (childViewCount == 0 || colors == null ||
+                    colors.isEmpty() || colors.size() != childViewCount) return;
+
+            //Border color
+            String BORDER_COLOR_LITE = "#BBBBBB";
+            String BORDER_COLOR_DARK = "#888888";
+
+            for (int i = 0; i < childViewCount; i++) {
                 View view = parentLayout.getChildAt(i);
-                TextView textView1 = (TextView) view;
-                String title = textView1.getText().toString().trim();
-                if(titleClicked.equals(title)) {
-                    textView.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices_selected));
+                CircleImageView colorCircle = (CircleImageView) view;
+                String colorName = colors.get(i).getColor();
+                if (colorClicked.equals(colorName)) {
+                    if (colorClicked.equals("White")) {
+                        colorCircle.setBorderColor(Color.parseColor(BORDER_COLOR_DARK));
+                    } else {
+                        colorCircle.setBorderColor(Color.parseColor(BORDER_COLOR_LITE));
+                    }
                 } else {
-                    textView1.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_color_choices));
+                    colorCircle.setBorderColor(Color.parseColor(DEFAULT_BORDER_COLOR));
                 }
             }
         }

@@ -47,7 +47,7 @@
         android:layout_marginTop="@dimen/sb_size_6"
         android:layout_marginBottom="@dimen/sb_size_16"
         android:scrollbars="none"
-        android:padding="@dimen/sb_size_4"
+        android:paddingVertical="@dimen/sb_size_4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/imgProductImage"
         app:layout_constraintStart_toStartOf="@+id/tvProductPrice"
