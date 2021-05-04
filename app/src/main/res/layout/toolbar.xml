@@ -54,64 +54,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_wishlist_unselected" />
 
-            <!--    <TextView
-                    android:id="@+id/tvTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/new_"
-                    android:textColor="@color/blue_grey_900"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:textStyle="bold"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <EditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/sb_size_32"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginHorizontal="@dimen/sb_size_16"
-                    android:layout_marginVertical="@dimen/sb_size_8"
-                    android:background="@drawable/bg_search_bar"
-                    android:focusedByDefault="false"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:hint="@string/hint_search"
-                    android:inputType="text"
-                    android:paddingHorizontal="@dimen/sb_size_6"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/imgFavourites"
-                    app:layout_constraintTop_toTopOf="parent" />-->
-
-                <!--Right side icon is not needed since they can be inflated with
-                        onOptionMenuCreated -->
-
-                <!--<ImageView
-                    android:id="@+id/imgSetting"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
-                    android:layout_marginEnd="@dimen/sb_size_16"
-                    android:src="@drawable/ic_setting"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgCart"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/desc_setting"/>
-
-                <ImageView
-                    android:id="@+id/imgCart"
-                    android:layout_width="@dimen/sb_size_24"
-                    android:layout_height="@dimen/sb_size_24"
-                    android:layout_marginEnd="@dimen/sb_size_16"
-                    android:src="@drawable/ic_cart"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:contentDescription="@string/desc_cart"/>-->
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>

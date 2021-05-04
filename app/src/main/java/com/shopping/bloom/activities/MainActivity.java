@@ -14,14 +14,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.search.SearchActivity;
 import com.shopping.bloom.activities.wishlist.WishListActivity;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mainView = ActivityMainBinding.inflate(getLayoutInflater());
         View view = mainView.getRoot();
         setContentView(view);
-        MaterialToolbar toolbar = (mainView.layoutToolbar.topAppBar);
+        Toolbar toolbar = (mainView.layoutToolbar.maintoolbar);
         setSupportActionBar(toolbar);
 
         AppBarConfiguration appBarConfiguration =
@@ -86,12 +85,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onDestinationChanged: current fragment Id " + destination.getId());
                 //show the searchBar if current fragment is shopFragment or category Fragment
                 if (destination.getId() == R.id.shopFragment) {
+                   changeToolbarImage(1);
                     bottomsheet_int = 1;
                 } else if (destination.getId() == R.id.categoryFragment) {
+                   changeToolbarImage(1);
                     bottomsheet_int = 2;
                 } else if (destination.getId() == R.id.newTrendFragment) {
+                   changeToolbarImage(0);
                     bottomsheet_int = 3;
                 } else if (destination.getId() == R.id.profileFragment) {
+                   changeToolbarImage(1);
                     bottomsheet_int = 4;
                 }
 
@@ -197,6 +200,19 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // @param imageTo pass 1 for default image
+    private void changeToolbarImage(int imageTo){
+        int DEFAULT_IMAGE = 1;
+        if(imageTo == DEFAULT_IMAGE) {
+            Glide.with(this)
+                    .load(R.drawable.toolbar_logo)
+                    .into(mainView.layoutToolbar.imgToolbarLogo);
+            return;
+        }
+        Glide.with(this)
+                .load(R.drawable.demo)
+                .into(mainView.layoutToolbar.imgToolbarLogo);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
