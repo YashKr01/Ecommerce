@@ -1,6 +1,5 @@
 package com.shopping.bloom.database;
 
-import android.content.Context;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -9,12 +8,13 @@ import androidx.room.RoomDatabase;
 import com.shopping.bloom.App;
 import com.shopping.bloom.database.dao.WishListProductDao;
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.model.shoppingbag.ProductEntity;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {WishListItem.class}, version = 1, exportSchema = false)
+@Database(entities = {WishListItem.class, ProductEntity.class}, version = 1, exportSchema = false)
 public abstract class EcommerceDatabase extends RoomDatabase {
 
     private static String DATABASE_NAME = "ecommerse_databse";
