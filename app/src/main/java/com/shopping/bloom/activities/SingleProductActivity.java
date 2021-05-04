@@ -13,6 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.ProgressDialog;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,10 +48,11 @@ import com.shopping.bloom.viewModels.SingleProductViewModel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
-
+    int i = 0;
     boolean colorClickable, sizeClickable;
     RecyclerView colorRecyclerView;
     RecyclerView sizeRecyclerView;
@@ -60,7 +62,7 @@ public class SingleProductActivity extends AppCompatActivity {
     SingleProductDataResponse singleProductDataResponse;
     List<String> colorList, sizeList;
     LinearLayout linearLayout;
-    TextView productName, price, viewReview, colorTextView;
+    TextView productName, price, viewReview, colorTextView, slideTextView;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
     ViewPager viewPager;
@@ -103,6 +105,8 @@ public class SingleProductActivity extends AppCompatActivity {
         viewStub = findViewById(R.id.vsEmptyScreen);
         toolbar = findViewById(R.id.toolbar);
         reviewToolbar = findViewById(R.id.reviewToolbar);
+        slideTextView = findViewById(R.id.slideTextView);
+
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
@@ -116,7 +120,7 @@ public class SingleProductActivity extends AppCompatActivity {
             onBackPressed();
         });
 
-        reviewToolbar.setNavigationOnClickListener(v ->{
+        reviewToolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
 
@@ -150,6 +154,18 @@ public class SingleProductActivity extends AppCompatActivity {
         viewPagerImageAdapter = new ViewPagerImageAdapter(imageList);
         viewPager.setAdapter(viewPagerImageAdapter);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+
+        double heightInDp = height * 0.4;
+
+        int h = (int) Math.round(heightInDp);
+
+        AppBarLayout.LayoutParams layoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
+        layoutParams.height = h;
+        collapsingToolbarLayout.setLayoutParams(layoutParams);
+
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
         singleProductViewModel.getMutableLiveData().observe(this, singleProductDataResponse -> {
 
@@ -168,29 +184,33 @@ public class SingleProductActivity extends AppCompatActivity {
                     sizeList.add(productVariableResponse.getSize());
                 }
 
-                HashSet<String> colorSet = new HashSet<>(colorList);
+                slideTextView.setText(1 + "/" + imageList.size());
+
+                //System.out.println(colorList);
+                HashSet<String> colorSet = new LinkedHashSet<>(colorList);
+                // System.out.println(colorSet);
                 colorList.clear();
                 colorList.addAll(colorSet);
 
-                if(colorList.size() == 0){
+                if (colorList.size() == 0) {
                     colorClickable = false;
                     String colors = this.singleProductDataResponse.getAvailable_colors();
                     String[] colorArray = colors.split(",");
                     colorList.addAll(Arrays.asList(colorArray));
-                }else{
+                } else {
                     colorClickable = true;
                 }
 
-                HashSet<String> sizeSet = new HashSet<>(sizeList);
+                HashSet<String> sizeSet = new LinkedHashSet<>(sizeList);
                 sizeList.clear();
                 sizeList.addAll(sizeSet);
 
-                if(sizeList.size() == 0){
+                if (sizeList.size() == 0) {
                     sizeClickable = false;
                     String size = this.singleProductDataResponse.getAvailable_sizes();
                     String[] sizeArray = size.split(",");
                     sizeList.addAll(Arrays.asList(sizeArray));
-                }else{
+                } else {
                     sizeClickable = true;
                 }
 
@@ -233,14 +253,51 @@ public class SingleProductActivity extends AppCompatActivity {
                 });
             }
         });
-
         if (PRODUCT_ID != null) {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
 
         viewReview.setOnClickListener(debouncedOnClickListener);
 
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(singleProductDataResponse.getProduct_name());
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                slideTextView.setText((position+1) + "/" + imageList.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
+
 
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
@@ -284,13 +341,14 @@ public class SingleProductActivity extends AppCompatActivity {
 
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
                 if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
-                    viewPager.setCurrentItem(i + 1);
+                    viewPager.setCurrentItem(i + 1, true);
                     price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
                     break;
                 }
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {

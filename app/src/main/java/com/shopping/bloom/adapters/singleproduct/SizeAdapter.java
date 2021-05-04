@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.SingleProductActivity;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     Context context;
     List<String> sizeList;
     boolean clickable;
+    int pos = -1;
 
     public SizeAdapter(Context context, List<String> sizeList) {
         this.context = context;
@@ -41,7 +44,16 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull SizeAdapter.ViewHolder holder, int position) {
         holder.button.setText(sizeList.get(position));
         if (clickable) {
-            //TODO do something when user clicks size button
+            holder.button.setOnClickListener(v -> {
+                pos = position;
+                notifyDataSetChanged();
+            });
+
+            if (pos == position) {
+                holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
+            } else {
+                holder.button.setBackgroundResource(R.drawable.rect_back_button);
+            }
         }
     }
 
