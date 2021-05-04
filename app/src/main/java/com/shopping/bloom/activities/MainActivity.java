@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                    changeToolbarImage(0);
                     bottomsheet_int = 3;
                 } else if (destination.getId() == R.id.profileFragment) {
-                   changeToolbarImage(1);
+                   changeToolbarImage(2);
                     bottomsheet_int = 4;
                 }
 
@@ -204,14 +204,19 @@ public class MainActivity extends AppCompatActivity {
     private void changeToolbarImage(int imageTo){
         int DEFAULT_IMAGE = 1;
         if(imageTo == DEFAULT_IMAGE) {
+            mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(R.drawable.toolbar_logo)
+                    .load(R.drawable.ic_bloom)
                     .into(mainView.layoutToolbar.imgToolbarLogo);
             return;
+        } else if(imageTo == 0) {
+            mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.VISIBLE);
+            Glide.with(this)
+                    .load(R.drawable.demo)
+                    .into(mainView.layoutToolbar.imgToolbarLogo);
+        } else {
+            mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.INVISIBLE);
         }
-        Glide.with(this)
-                .load(R.drawable.demo)
-                .into(mainView.layoutToolbar.imgToolbarLogo);
     }
 
     @Override
