@@ -9,20 +9,23 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.search.SearchActivity;
+import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.databinding.ActivityMainBinding;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     private ActivityMainBinding mainView;
-    private int bottomsheet_int ;
+    private int bottomsheet_int;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         mainView = ActivityMainBinding.inflate(getLayoutInflater());
         View view = mainView.getRoot();
         setContentView(view);
-        MaterialToolbar toolbar = (mainView.layoutToolbar.topAppBar);
+        Toolbar toolbar = (mainView.layoutToolbar.maintoolbar);
         setSupportActionBar(toolbar);
 
         AppBarConfiguration appBarConfiguration =
@@ -61,8 +64,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 */
-    }
 
+        View includedLayout = findViewById(R.id.layoutToolbar);
+        ImageView imgFav = includedLayout.findViewById(R.id.imgFavourites);
+
+        imgFav.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getApplicationContext(), WishListActivity.class));
+            }
+        });
+
+    }
 
 
     /*Customize the toolbar according to the fragment*/
@@ -71,14 +84,18 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onDestinationChanged: current fragment Id " + destination.getId());
                 //show the searchBar if current fragment is shopFragment or category Fragment
-                if (destination.getId() == R.id.shopFragment){
-                    bottomsheet_int =1 ;
-                }else if(destination.getId() == R.id.categoryFragment){
-                    bottomsheet_int =2 ;
-                }else if(destination.getId() == R.id.newTrendFragment){
-                    bottomsheet_int=3;
-                }else if(destination.getId() == R.id.profileFragment){
-                    bottomsheet_int=4 ;
+                if (destination.getId() == R.id.shopFragment) {
+                   changeToolbarImage(1);
+                    bottomsheet_int = 1;
+                } else if (destination.getId() == R.id.categoryFragment) {
+                   changeToolbarImage(1);
+                    bottomsheet_int = 2;
+                } else if (destination.getId() == R.id.newTrendFragment) {
+                   changeToolbarImage(0);
+                    bottomsheet_int = 3;
+                } else if (destination.getId() == R.id.profileFragment) {
+                   changeToolbarImage(1);
+                    bottomsheet_int = 4;
                 }
 
 
@@ -148,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
             mainView.bottomNavigationView.clearAnimation();
             mainView.bottomNavigationView.animate()
                     .translationY(mainView.bottomNavigationView.getHeight())
-                    .setDuration(ANIMATION_DURATION+200)
+                    .setDuration(ANIMATION_DURATION + 200)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -163,19 +180,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
-        if(bottomsheet_int== 1){
+        if (bottomsheet_int == 1) {
             inflater.inflate(R.menu.shop_fragment, menu);
             mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
             mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
-        }else if(bottomsheet_int== 2){
+        } else if (bottomsheet_int == 2) {
             inflater.inflate(R.menu.shop_fragment, menu);
             mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
             mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
-        }else if(bottomsheet_int== 3){
+        } else if (bottomsheet_int == 3) {
             inflater.inflate(R.menu.new_fragment_menu, menu);
             mainView.layoutToolbar.imgFavourites.setVisibility(View.VISIBLE);
             mainView.layoutToolbar.imgMail.setVisibility(View.VISIBLE);
-        }else if(bottomsheet_int== 4){
+        } else if (bottomsheet_int == 4) {
             inflater.inflate(R.menu.profile_fragment_menu, menu);
             mainView.layoutToolbar.imgFavourites.setVisibility(View.GONE);
             mainView.layoutToolbar.imgMail.setVisibility(View.GONE);
@@ -183,6 +200,19 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // @param imageTo pass 1 for default image
+    private void changeToolbarImage(int imageTo){
+        int DEFAULT_IMAGE = 1;
+        if(imageTo == DEFAULT_IMAGE) {
+            Glide.with(this)
+                    .load(R.drawable.toolbar_logo)
+                    .into(mainView.layoutToolbar.imgToolbarLogo);
+            return;
+        }
+        Glide.with(this)
+                .load(R.drawable.demo)
+                .into(mainView.layoutToolbar.imgToolbarLogo);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -194,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.menu_cart) {
             Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_search) {
+            startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

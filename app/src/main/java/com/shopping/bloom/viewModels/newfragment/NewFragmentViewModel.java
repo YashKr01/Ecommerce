@@ -48,10 +48,9 @@ public class NewFragmentViewModel extends AndroidViewModel {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    if (response.body().getNewCategoryList() != null)
+                    if (response.body().isSuccess()) {
                         liveData.postValue(response.body().getNewCategoryList());
-
-                    else liveData.postValue(null);
+                    } else liveData.postValue(null);
 
                 } else liveData.postValue(null);
 

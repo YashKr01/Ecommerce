@@ -54,7 +54,11 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
                 holder.imageView,
                 true);
 
-        setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList(), listener);
+        if (currentItem.getNewProductList() == null || currentItem.getNewProductList().isEmpty()) {
+            holder.recyclerView.setVisibility(View.GONE);
+        } else {
+            setChildRecyclerView(holder.recyclerView, currentItem.getNewProductList(), listener);
+        }
 
 
         holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {

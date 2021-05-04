@@ -67,6 +67,8 @@ public class WishListViewModel extends AndroidViewModel {
                             wishListItems.add(item);
                         }
 
+                    } else {
+                        data.postValue(null);
                     }
 
                     // inserting each product in db

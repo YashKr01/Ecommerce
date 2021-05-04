@@ -256,7 +256,6 @@
                     android:layout_height="0dp"
                     android:background="@color/white"
                     android:clipToPadding="false"
-                    android:paddingHorizontal="@dimen/sb_size_4"
                     android:paddingVertical="@dimen/sb_size_8"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintBottom_toTopOf="@id/llFilterParentLayout"
