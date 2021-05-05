@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -41,6 +42,7 @@ import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
@@ -77,6 +79,7 @@ public class SingleProductActivity extends AppCompatActivity {
     Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
+    Button btnAddToBag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
+        btnAddToBag = findViewById(R.id.btn_add_to_bag);
 
 
         toolbar.setNavigationOnClickListener(v -> {
@@ -296,6 +300,24 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+        btnAddToBag.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                addToShoppingBag();
+            }
+        });
+
+    }
+
+    private void addToShoppingBag() {
+
+        Integer id = singleProductDataResponse.getId();
+        String name = singleProductDataResponse.getProduct_name();
+        String image = singleProductDataResponse.getPrimary_image();
+        String price = singleProductDataResponse.getPrice();
+        ProductEntity productEntity = new ProductEntity(id, image, name, null, price, null);
+
+        singleProductViewModel.addToShoppingBag(productEntity);
     }
 
 
@@ -326,11 +348,16 @@ public class SingleProductActivity extends AppCompatActivity {
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
             relativeLayout.setVisibility(View.GONE);
+            // viewStub.setVisibility(View.VISIBLE);
+            // relativeLayout.setVisibility(View.GONE);
         } else {
             viewStub.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
+            //  viewStub.setVisibility(View.GONE);
+            // relativeLayout.setVisibility(View.VISIBLE);
         }
         swipeRefreshLayout.setRefreshing(false);
+        // swipeRefreshLayout.setRefreshing(false);
     }
 
     public void setViewPagerCurrentItem(int pos) {

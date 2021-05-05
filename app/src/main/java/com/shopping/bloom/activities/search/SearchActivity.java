@@ -7,8 +7,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.search.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
@@ -26,6 +28,7 @@ public class SearchActivity extends AppCompatActivity {
     private SearchViewModel viewModel;
     private SearchAdapter adapter;
     private List<SearchProduct> list;
+    private String LIMIT = "20", PAGE = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,11 @@ public class SearchActivity extends AppCompatActivity {
 
         list = new ArrayList<>();
         adapter = new SearchAdapter(this, list);
+        binding.searchRecyclerView.setHasFixedSize(true);
         binding.searchRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         binding.searchRecyclerView.setAdapter(adapter);
+
+        binding.edittextSearch.requestFocus();
 
 
         binding.txtSearch.setOnClickListener(new DebouncedOnClickListener(200) {
@@ -47,7 +53,8 @@ public class SearchActivity extends AppCompatActivity {
                 if (binding.edittextSearch.getText().toString().trim().isEmpty()) {
                     Toast.makeText(SearchActivity.this, "Empty Search", Toast.LENGTH_SHORT).show();
                 } else {
-                    getSearchedProducts();
+                    binding.edittextSearch.clearFocus();
+                    getSearchedProducts(binding.edittextSearch.getText().toString().trim());
                 }
             }
         });
@@ -62,22 +69,21 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    private void getSearchedProducts() {
+    private void getSearchedProducts(String query) {
 
         binding.progressBar3.setVisibility(View.VISIBLE);
 
         if (NetworkCheck.isConnect(this)) {
-            viewModel.getSearchProducts().observe(this, new Observer<List<SearchProduct>>() {
-                @Override
-                public void onChanged(List<SearchProduct> searchProducts) {
-                    if (searchProducts != null && searchProducts.size() > 0) {
-                        list.size();
-                        list.addAll(searchProducts);
-                        adapter.notifyDataSetChanged();
-                        binding.progressBar3.setVisibility(View.INVISIBLE);
-                    } else {
-                        binding.progressBar3.setVisibility(View.INVISIBLE);
-                    }
+            viewModel.getSearchProducts(LIMIT, PAGE, query).observe(this, searchProducts -> {
+                if (searchProducts != null && searchProducts.size() > 0) {
+                    list.clear();
+                    list.addAll(searchProducts);
+                    adapter.notifyDataSetChanged();
+                    binding.progressBar3.setVisibility(View.INVISIBLE);
+                } else {
+                    list.clear();
+                    binding.progressBar3.setVisibility(View.INVISIBLE);
+                    Snackbar.make(binding.getRoot(), "No matching results found", Snackbar.LENGTH_SHORT).show();
                 }
             });
         } else {

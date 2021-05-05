@@ -1,5 +1,6 @@
 package com.shopping.bloom.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -7,6 +8,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.model.shoppingbag.ProductEntity;
 
 import java.util.List;
 
@@ -30,4 +32,14 @@ public interface WishListProductDao {
 
     @Query("SELECT productId FROM wishListItem")
     List<String> getAllItem();
+
+    @Query("SELECT * FROM shopping_bag")
+    LiveData<List<ProductEntity>> getShoppingBagItems();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addToShoppingBag(ProductEntity productEntity);
+
+    @Delete
+    void deleteShoppingBagItem(ProductEntity productEntity);
+
 }
