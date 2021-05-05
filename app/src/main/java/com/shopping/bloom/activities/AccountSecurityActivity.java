@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shopping.bloom.R;
 import com.shopping.bloom.fragment.changepassword.ChangePasswordFragment;
-import com.shopping.bloom.fragment.ChangePasswordFragment;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
@@ -65,19 +64,6 @@ public class AccountSecurityActivity extends AppCompatActivity {
 
         TextView changePassTextView = findViewById(R.id.changePassTextView);
         changePassTextView.setOnClickListener(view -> AddFragment());
-
-
-
-        TextView txtChangePassword = findViewById(R.id.changePassTextView);
-        txtChangePassword.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                getSupportFragmentManager().beginTransaction().replace(
-                        R.id.account_security_frame_layout,
-                        new ChangePasswordFragment()
-                ).commit();
-            }
-        });
 
     }
 

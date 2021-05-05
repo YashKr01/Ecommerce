@@ -27,7 +27,7 @@ public class SearchViewModel extends AndroidViewModel {
         this.application = application;
     }
 
-    public MutableLiveData<List<SearchProduct>> getSearchProducts() {
+    public MutableLiveData<List<SearchProduct>> getSearchProducts(String limit, String page, String query) {
 
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
@@ -38,8 +38,7 @@ public class SearchViewModel extends AndroidViewModel {
         MutableLiveData<List<SearchProduct>> data = new MutableLiveData<>();
 
         RetrofitBuilder.getInstance(application).getApi()
-                .getSearchedProducts("Bearer " + token, "1", null,
-                        20, 0, null, null, null)
+                .getSearchedProducts("Bearer " + token, limit, page, query)
                 .enqueue(new Callback<SearchResponse>() {
                     @Override
                     public void onResponse(Call<SearchResponse> call, Response<SearchResponse> response) {

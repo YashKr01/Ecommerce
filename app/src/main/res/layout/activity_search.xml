@@ -38,6 +38,7 @@
             android:background="@color/grey_200"
             android:ems="10"
             android:hint="@string/search_here"
+            android:imeOptions="actionDone"
             android:inputType="textPersonName"
             android:maxLines="1"
             android:paddingStart="@dimen/sb_size_14" />
@@ -47,6 +48,7 @@
             android:layout_width="@dimen/sb_size_14"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="@string/search"
             android:textColor="@color/grey_900" />

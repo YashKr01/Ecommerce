@@ -9,9 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.shopping.bloom.R;
 import com.shopping.bloom.databinding.FragmentChangePasswordBinding;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 public class ChangePasswordFragment extends Fragment {
 
@@ -32,6 +33,36 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        binding.btnChangePassword.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                checkInputFields();
+            }
+        });
+
+    }
+
+    private void checkInputFields() {
+        if (binding.txtCurrentPassword.getText().toString().trim().isEmpty())
+            Toast.makeText(getContext(), "Empty Field Detected", Toast.LENGTH_SHORT).show();
+        else if (binding.txtNewPassword.getText().toString().trim().isEmpty())
+            Toast.makeText(getContext(), "Empty Field Detected", Toast.LENGTH_SHORT).show();
+        else if (binding.txtConfirmPassword.getText().toString().trim().isEmpty())
+            Toast.makeText(getContext(), "Empty Field Detected", Toast.LENGTH_SHORT).show();
+        else {
+
+            String newPassword = binding.txtNewPassword.getText().toString().trim();
+            String confirmPassword = binding.txtConfirmPassword.getText().toString().trim();
+
+            if (!newPassword.equals(confirmPassword))
+                Toast.makeText(getContext(), "New Password and Confirm Password does not match", Toast.LENGTH_LONG).show();
+
+            else {
+
+            }
+
+        }
     }
 
     @Override
