@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-@Database(entities = {WishListItem.class, ProductEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {WishListItem.class, ProductEntity.class}, version = 2, exportSchema = false)
 public abstract class EcommerceDatabase extends RoomDatabase {
 
     private static String DATABASE_NAME = "ecommerse_databse";
