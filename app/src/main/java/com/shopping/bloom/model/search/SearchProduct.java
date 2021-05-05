@@ -16,6 +16,13 @@ public class SearchProduct {
     @Expose
     @SerializedName("primary_image")
     private String productImage;
+    @Expose
+    @SerializedName("price")
+    private String price;
+
+    public String getPrice() {
+        return price;
+    }
 
     public Integer getId() {
         return id;
