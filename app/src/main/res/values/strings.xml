@@ -100,6 +100,7 @@
     <string name="enter_your_current_password">Enter Your Current Password</string>
     <string name="enter_new_password">Enter New Password</string>
     <string name="confirm_password">Confirm New Password</string>
+    <string name="feedback">Feedback</string>
 
 
 </resources>
