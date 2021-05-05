@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shopping.bloom.R;
+import com.shopping.bloom.fragment.changepassword.ChangePasswordFragment;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
@@ -56,19 +57,31 @@ public class AccountSecurityActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
         emailVerificationTextView.setOnClickListener(debouncedOnClickListener);
+
+        TextView txtChangePassword = findViewById(R.id.changePassTextView);
+        txtChangePassword.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                getSupportFragmentManager().beginTransaction().replace(
+                        R.id.account_security_frame_layout,
+                        new ChangePasswordFragment()
+                ).commit();
+            }
+        });
+
     }
 
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
-            if (v.getId() == R.id.emailVerifyTextView){
+            if (v.getId() == R.id.emailVerifyTextView) {
                 String email = loginManager.getEmailid();
                 emailVerify(email);
             }
         }
     };
 
-    private void emailVerify(String email){
+    private void emailVerify(String email) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         View bottomSheet = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_email, findViewById(R.id.bottomSheet));
         TextView emailTextView = bottomSheet.findViewById(R.id.emailTextView);
@@ -84,7 +97,7 @@ public class AccountSecurityActivity extends AppCompatActivity {
                         viewStub.setVisibility(View.VISIBLE);
                         linearLayout.setVisibility(View.GONE);
                     }
-                }else{
+                } else {
                     ShowToast.showToast(this, "Email Already Verified");
                     new Handler().postDelayed(new Runnable() {
                         @Override

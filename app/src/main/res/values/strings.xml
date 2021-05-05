@@ -95,6 +95,11 @@
     <string name="shopping_bag_image">shopping bag image</string>
     <string name="desc_app_logo">App logo</string>
     <string name="wishlist">WishList</string>
+    <string name="change_your_existing_password">Change Your Existing Password</string>
+    <string name="change_password">Change Password</string>
+    <string name="enter_your_current_password">Enter Your Current Password</string>
+    <string name="enter_new_password">Enter New Password</string>
+    <string name="confirm_password">Confirm New Password</string>
 
 
 </resources>
