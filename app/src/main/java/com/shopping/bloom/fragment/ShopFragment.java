@@ -26,20 +26,24 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.NestedProductAdapter;
+import com.shopping.bloom.adapters.RandomProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.Category;
 import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
+import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
+import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.CategoryViewModel;
+import com.shopping.bloom.viewModels.ShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,14 +62,14 @@ public class ShopFragment extends Fragment {
     private Runnable runnable;
     private Handler handler = new Handler();
 
-    private CategoryViewModel viewModel;
+    private ShopViewModel viewModel;
 
     private RecyclerView rvCategoryImages;          //At Top Category suggestion Horizontal Scroll
     private RecyclerView rvTopProductSuggestion;    //Categories
     private RecyclerView rvBottomProductSuggestion; //At bottom Category suggestion
 
     private CategoryImagesAdapter categoryImagesAdapter;
-    private NestedProductAdapter topProductSuggestionAdapter;
+    private RandomProductAdapter topProductSuggestionAdapter;
     private NestedProductAdapter bottomProductSuggestionAdapter;
     private ViewStub vsEmptyScreen;
     ImageView offerImage1;
@@ -146,7 +150,7 @@ public class ShopFragment extends Fragment {
         offerImage3.setOnClickListener(offerClickListener);
         offerImage4.setOnClickListener(offerClickListener);
 
-        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
     }
 
     private void setUpViewPager() {
@@ -188,12 +192,12 @@ public class ShopFragment extends Fragment {
 
         rvTopProductSuggestion.setHasFixedSize(true);
         rvTopProductSuggestion.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        topProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener, loadMoreItems);
+        topProductSuggestionAdapter = new RandomProductAdapter(getContext(), new ArrayList<>(), randomProductClickListener, loadMoreItems);
         rvTopProductSuggestion.setAdapter(topProductSuggestionAdapter);
 
         rvBottomProductSuggestion.setHasFixedSize(true);
         rvBottomProductSuggestion.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedProductClickListener, null);
+        bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedCategoryClickListener, null);
         rvBottomProductSuggestion.setAdapter(bottomProductSuggestionAdapter);
     }
 
@@ -243,8 +247,10 @@ public class ShopFragment extends Fragment {
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(getContext())) {
             int PAGE_NO = 0;
-            viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("1", 10, PAGE_NO, "");
+            viewModel.setResponseListener(categoriesResponseListener);
+            viewModel.setRandomProductListener(randomProductResponseListener);
+            viewModel.fetchCategoryItems("1", 10, PAGE_NO, "");
+            viewModel.fetchRandomProduct(1, 20);
         } else {
             RETRY_ATTEMPT = 0;
             setNoInternetLayout(true);
@@ -252,12 +258,11 @@ public class ShopFragment extends Fragment {
         }
     }
 
-    private final CategoryResponseListener responseListener = new CategoryResponseListener() {
+    private final CategoryResponseListener categoriesResponseListener = new CategoryResponseListener() {
         @Override
         public void onSuccess(List<Category> category) {
             setNoInternetLayout(false);
             categoryImagesAdapter.updateList(category, true);
-            Log.d(TAG, "onSuccess: productSize " + category.size());
         }
 
         @Override
@@ -275,20 +280,37 @@ public class ShopFragment extends Fragment {
         }
     };
 
+    private final ProductResponseListener randomProductResponseListener = new ProductResponseListener() {
+        @Override
+        public void onSuccess(List<Product> products) {
+            Log.d(TAG, "onSuccess: randomProductAPI " + products.toString());
+            topProductSuggestionAdapter.updateList(products);
+        }
+
+        @Override
+        public void onFailure(int errorCode, String message) {
+            Log.d(TAG, "onFailure: randomProductAPI " + errorCode + " , message " + message);
+        }
+    };
+
     private final LoadMoreItems loadMoreItems = () -> {
         Log.d(TAG, "loadMoreItems: ");
     };
 
-    private final ProductClickListener suggestedProductClickListener = new ProductClickListener() {
+    private final CategoryClickListener suggestedCategoryClickListener = new CategoryClickListener() {
         @Override
-        public void onProductClick(Category categoryCategory) {
+        public void onCategoryClicked(Category categoryCategory) {
             Log.d(TAG, "onProductClick: " + categoryCategory);
         }
 
         @Override
-        public void onSubProductClick(SubCategory product) {
+        public void onSubCategoryClicked(SubCategory product) {
             Log.d(TAG, "onSubProductClick: " + product);
         }
+    };
+
+    private final ProductClickListener randomProductClickListener = product -> {
+        //TODO: Goto single product screen
     };
 
     @Override

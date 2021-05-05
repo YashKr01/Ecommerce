@@ -10,6 +10,7 @@ import com.google.gson.Gson
 
 import com.shopping.bloom.BuildConfig
 import com.shopping.bloom.model.MainScreenConfig
+import com.shopping.bloom.model.faq.ColorPalletConfig
 import com.shopping.bloom.model.faq.FaqConfig
 import com.shopping.bloom.model.newfragment.NewFragmentConfig
 import com.shopping.bloom.utils.CommonUtils
@@ -75,6 +76,15 @@ open class RemoteConfig {
                 json = RemoteConfigDefaults.FAQ_CONFIG.value().toString()
             }
             return Gson().fromJson(json, FaqConfig::class.java)
+        }
+
+        @JvmStatic
+        fun getColorPalletConfig(context: Context): ColorPalletConfig {
+            var json = getInstance(context).getString(RemoteConfigDefaults.COLOR_PALLET_CONFIG.key())
+            if (CommonUtils.isNull(json)) {
+                json = RemoteConfigDefaults.COLOR_PALLET_CONFIG.value().toString()
+            }
+            return Gson().fromJson(json, ColorPalletConfig::class.java)
         }
 
         /*  @JvmStatic

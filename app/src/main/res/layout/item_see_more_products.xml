@@ -4,15 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clProductRootView"
     android:layout_width="wrap_content"
+    android:layout_gravity="center"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvDummy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/sb_size_6"
-        android:background="@color/grey_300"
-        app:cardCornerRadius="@dimen/sb_size_8"
+        app:cardCornerRadius="@dimen/sb_size_6"
         app:cardElevation="@dimen/sb_size_0"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,10 +21,10 @@
 
         <TextView
             android:id="@+id/tvSeeMore"
-            android:layout_width="120dp"
-            android:layout_height="165dp"
+            android:layout_width="160dp"
+            android:layout_height="220dp"
             android:layout_gravity="center"
-            android:background="@color/grey_300"
+            android:background="@color/grey_100"
             android:gravity="center"
             android:text="@string/see_more"
             android:textColor="@color/grey_800"

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Category;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
-import com.shopping.bloom.restService.callback.ProductClickListener;
+import com.shopping.bloom.restService.callback.CategoryClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +25,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     Context context;
     ArrayList<Category> categories;
-    ProductClickListener mListener;
+    CategoryClickListener mListener;
 
-    public CategoryAdapter(Context context, ProductClickListener mListener) {
+    public CategoryAdapter(Context context, CategoryClickListener mListener) {
         this.context = context;
         this.mListener = mListener;
         categories = new ArrayList<>();
@@ -57,7 +57,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         holder.setUpData(context, category, mListener, null);
         //attach the click listener to the category category
-        holder.tvProductCategory.setOnClickListener((view -> mListener.onProductClick(category)));
+        holder.tvProductCategory.setOnClickListener((view -> mListener.onCategoryClicked(category)));
     }
 
     private Category getItemAt(int position) {
@@ -77,7 +77,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             rvSubProduct = itemView.findViewById(R.id.rv_Products);
         }
 
-        public void setUpData(Context context, Category category, ProductClickListener mListener, LoadMoreItems listener) {
+        public void setUpData(Context context, Category category, CategoryClickListener mListener, LoadMoreItems listener) {
             tvProductCategory.setText(category.getCategory_name());
 
             NestedProductAdapter nestedProductAdapter = new NestedProductAdapter(context, category.getSub_category(),
