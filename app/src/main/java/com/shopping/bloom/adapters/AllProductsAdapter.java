@@ -30,9 +30,9 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.ProductViewHolder> {
 
-    private static final String TAG = ProductAdapter.class.getName();
+    private static final String TAG = AllProductsAdapter.class.getName();
     private List<Product> productList;
     private WishListListener wishListListener;
     private Context context;
@@ -41,7 +41,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     static int COLOR_SELECTOR_ICON_SIZE = 80;
     static int DEFAULT_BORDER_RADIUS = 8;
 
-    public ProductAdapter(Context context, WishListListener wishListListener) {
+    public AllProductsAdapter(Context context, WishListListener wishListListener) {
         this.context = context;
         this.wishListListener = wishListListener;
         productList = new ArrayList<>();

@@ -53,6 +53,14 @@ public interface ApiInterface {
             @Query("category_name") String category_name
     );
 
+    @GET("/api/frontend/getRandomProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetProductsResponse> getRandomProducts(
+            @Header("Authorization") String authToken,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
+    );
+
     @POST("auth/customerRegistration")
     @Headers("Content-type: application/json")
     Call<RegisterResponseModel> sendRegisterData(@Body RegistrationModel registrationModel);
