@@ -616,6 +616,7 @@ public class AllProductCategory extends AppCompatActivity {
     private void openSingleProductActivity(Product product) {
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
+        intent.putExtra("CATEGORY_ID",PARENT_ID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

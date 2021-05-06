@@ -114,6 +114,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialoganimation</item>
+    </style>
 
 </resources>

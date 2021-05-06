@@ -199,4 +199,10 @@ public interface ApiInterface {
             //TODO: Add two more filter option here Most Popular, New Arrival
     );
 
+    @FormUrlEncoded
+    @POST("metadata/createUserActivity")
+    Call<LoginResponseModel> createUserActivity(
+            @Field("product_id") String product_id,
+            @Field("category_id") String category_id,
+            @Header("Authorization") String bearer);
 }

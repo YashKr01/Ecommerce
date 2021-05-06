@@ -30,4 +30,7 @@ public interface WishListProductDao {
 
     @Query("SELECT productId FROM wishListItem")
     List<String> getAllItem();
+
+    @Query("SELECT * FROM wishListItem WHERE productId = :productId")
+    List<String> getData(String productId);
 }
