@@ -220,24 +220,6 @@ public class ShopFragment extends Fragment {
                 }
             }
         });
-
-        /*rvBottomProductSuggestion.addOnScrollListener(new PaginationListener(layoutManager) {
-            @Override
-            protected void loadMoreItems() {
-                Log.d(TAG, "loadMoreItems: ");
-            }
-
-            @Override
-            public boolean isLastPage() {
-                return false;
-            }
-
-            @Override
-            public boolean isLoading() {
-                return false;
-            }
-        });*/
-
     }
 
     private void gotoProductScreen(Category product) {
@@ -287,6 +269,7 @@ public class ShopFragment extends Fragment {
         if (NetworkCheck.isConnect(getContext())) {
             int PAGE_NO = 0;
             RECOMMEND_PRODUCT_CURRENT_PAGE = RECOMMEND_PRODUCT_START_PAGE;
+            recommendProductAdapter.clearData();
             viewModel.setResponseListener(categoriesResponseListener);
             viewModel.setRandomProductListener(randomProductResponseListener);
             viewModel.setRecommendedProductListener(recommendProductListener);

@@ -36,7 +36,7 @@
         android:ellipsize="end"
         android:paddingHorizontal="@dimen/sb_size_8"
         android:maxLines="1"
-        android:textColor="@color/grey_900"
+        android:textColor="@color/blue_grey_700"
         android:textStyle="bold"
         android:layout_marginBottom="@dimen/sb_size_8"
         android:layout_marginTop="@dimen/sb_size_4"

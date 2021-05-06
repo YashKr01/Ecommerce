@@ -23,13 +23,11 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
     private static final String TAG = FilterItemAdapter.class.getName();
 
     private List<FilterItem> filterItemList;
-    private FilterItemClicked filterListener;
     Context context;
 
-    public FilterItemAdapter(Context context, FilterItemClicked filterItemClicked) {
+    public FilterItemAdapter(Context context) {
         this.context = context;
         filterItemList = new ArrayList<>();
-        this.filterListener = filterItemClicked;
     }
 
     @NonNull
@@ -52,7 +50,6 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
                 boolean isSelected = filterItemList.get(position).isSelected();
                 filterItemList.get(position).setSelected(!isSelected);
                 holder.changeBackground(!isSelected);
-                filterListener.onItemClicked(filterItemList.get(position));
             }
         });
     }
@@ -96,30 +93,6 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
             filterItemList.get(i).setSelected(false);
         }
         notifyDataSetChanged();
-    }
-
-    public List<FilterItem> getSelectedItems() {
-        List<FilterItem> selectedItems = new ArrayList<>();
-        if (filterItemList == null || filterItemList.size() == 0) return selectedItems;
-        for (int i = 0; i < filterItemList.size(); i++) {
-            if (filterItemList.get(i).isSelected()) {
-                selectedItems.add(filterItemList.get(i));
-            }
-        }
-        return selectedItems;
-    }
-
-    public String getSelectedItemsString() {
-        StringBuilder selectedItems = new StringBuilder();
-        if (filterItemList == null || filterItemList.size() == 0) return "";
-        for (int i = 0; i < filterItemList.size(); i++) {
-            if (filterItemList.get(i).isSelected()) {
-                selectedItems.append(filterItemList.get(i).getCategoryId());
-                selectedItems.append(",");
-            }
-        }
-        if (selectedItems.toString().isEmpty()) return "";
-        return selectedItems.toString().substring(0, selectedItems.length() - 1);
     }
 
     public void updateList(List<FilterItem> list) {

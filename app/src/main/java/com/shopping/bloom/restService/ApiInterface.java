@@ -104,8 +104,9 @@ public interface ApiInterface {
             @Query("pageNo") int pageNo,
             @Query("sortByPrice") String sortByPrice,
             @Query("colors") String colors,
-            @Query("sizes") String sizes
-            //TODO: Add two more filter option here Most Popular, New Arrival
+            @Query("sizes") String sizes,
+            @Query("bestSelling") String mostPopular
+            //TODO: Add one more filter option here New Arrival
     );
 
     @GET("/api/frontend/getSizeColorData")

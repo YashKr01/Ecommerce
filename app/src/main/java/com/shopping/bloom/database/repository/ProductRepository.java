@@ -60,8 +60,8 @@ public class ProductRepository {
         String authToken = getToken();
         Call<GetProductsResponse> responseCall =
                 apiInterface.getProducts(authToken, categoryId, filter.getSubCategoryIds(), limit, pageNo,
-                        filter.getPriceHtoL(), filter.getColors(), filter.getSizes());
-
+                        filter.getPriceHtoL(), filter.getColors(), filter.getSizes(), filter.getMostPopular());
+        
         if (responseCall != null) {
             responseCall.enqueue(new Callback<GetProductsResponse>() {
                 @Override

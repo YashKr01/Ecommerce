@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/sb_size_6"
         android:layout_marginStart="@dimen/sb_size_12"
         android:text="₹ 1000"
-        android:textColor="@color/blue_grey_900"
+        android:textColor="@color/blue_grey_700"
         android:textSize="@dimen/sb_text_size_14"
         android:fontFamily="@font/gothamblack"
         android:textStyle="bold"
