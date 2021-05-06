@@ -207,12 +207,7 @@ public class AllProductCategory extends AppCompatActivity {
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(productAdapter);
 
-        filterItemAdapter = new FilterItemAdapter(this, new FilterItemClicked() {
-            @Override
-            public void onItemClicked(FilterItem filterItem) {
-
-            }
-        });
+        filterItemAdapter = new FilterItemAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvFilter.setHasFixedSize(true);
         rvFilter.setLayoutManager(linearLayoutManager);
