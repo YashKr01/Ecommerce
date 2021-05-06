@@ -27,7 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
-import com.shopping.bloom.adapters.ProductAdapter;
+import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.FilterArrayValues;
@@ -61,7 +61,7 @@ public class AllProductCategory extends AppCompatActivity {
     //views
     private SwipeRefreshLayout refreshLayout, retryConnecting;
     private RecyclerView rvProducts;
-    private ProductAdapter productAdapter;
+    private AllProductsAdapter productAdapter;
     private RecyclerView rvFilter;
     private FilterItemAdapter filterItemAdapter;
     private Toolbar toolbar;
@@ -201,18 +201,13 @@ public class AllProductCategory extends AppCompatActivity {
     }
 
     private void setUpRecycleView() {
-        productAdapter = new ProductAdapter(this, updateWishList);
+        productAdapter = new AllProductsAdapter(this, updateWishList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvProducts.setLayoutManager(layoutManager);
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(productAdapter);
 
-        filterItemAdapter = new FilterItemAdapter(this, new FilterItemClicked() {
-            @Override
-            public void onItemClicked(FilterItem filterItem) {
-
-            }
-        });
+        filterItemAdapter = new FilterItemAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvFilter.setHasFixedSize(true);
         rvFilter.setLayoutManager(linearLayoutManager);
@@ -488,6 +483,7 @@ public class AllProductCategory extends AppCompatActivity {
                 sortBottomSheet.setListenerAndDefaultValue((sortBy, value) -> {
                     DEFAULT_SORT_VALUE = sortBy;
                     tvSortBy.setText(value);
+                    tvSortBy.setVisibility(View.VISIBLE);
                     updateFilter(sortBy);
                     sortBottomSheet.dismiss();
                 }, DEFAULT_SORT_VALUE);

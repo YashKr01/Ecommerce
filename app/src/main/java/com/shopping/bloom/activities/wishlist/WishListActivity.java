@@ -3,10 +3,8 @@ package com.shopping.bloom.activities.wishlist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
@@ -14,34 +12,38 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.shopping.bloom.activities.MainActivity;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
 import com.shopping.bloom.adapters.wishlist.WishListActivityAdapter;
 import com.shopping.bloom.databinding.ActivityWishListBinding;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
-import com.shopping.bloom.model.wishlist.recommendations.RecommendationsItem;
+import com.shopping.bloom.model.wishlist.recommendations.RecommendationItem;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewModels.recommendation.RecommendationViewModel;
 import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ActivityWishListBinding binding;
+
     private List<WishListData> list;
-    private List<RecommendationsItem> recommendationsItemList;
+    private List<RecommendationItem> recommendationsItemList;
+
     private WishListActivityAdapter adapter;
     private RecommendationsAdapter recommendationsAdapter;
+
     private WishListViewModel viewModel;
+    private RecommendationViewModel recommendationViewModel;
+
     private String PAGE = "0", LIMIT = "30";
     private AlertDialog.Builder builder;
 
-    private String IMAGE_URL = "http://bloomapp.in/images/product/product1619491000.png";
+    private final String RECOMMENDATION_LIMIT = "12", RECOMMENDATION_PAGE = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
         //view model
         viewModel = new ViewModelProvider(this).get(WishListViewModel.class);
+        recommendationViewModel = new ViewModelProvider(this).get(RecommendationViewModel.class);
 
         // setup toolbar
         setSupportActionBar(binding.toolbar);
@@ -67,7 +70,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
         recommendationsItemList = new ArrayList<>();
-
         recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this);
         adapter = new WishListActivityAdapter(this, list, this);
 
@@ -80,24 +82,14 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         binding.recommendationRecyclerView.setNestedScrollingEnabled(false);
 
         getWishList();
+        getRecommendedList();
 
     }
 
-    private List<RecommendationsItem> tempList() {
+    // GET wishlist from server
+    private void getWishList() {
 
-        List<RecommendationsItem> recommendationsItems = new ArrayList<>();
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-        recommendationsItems.add(new RecommendationsItem(1, "Product 1", IMAGE_URL));
-
-        return recommendationsItems;
-    }
-
-    public void getWishList() {
+        binding.progressBar6.setVisibility(View.VISIBLE);
 
         if (NetworkCheck.isConnect(this)) {
             viewModel.getWishList(PAGE, LIMIT).observe(this, wishListData -> {
@@ -105,18 +97,43 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
                     list.clear();
                     list.addAll(wishListData);
                     adapter.notifyDataSetChanged();
-                    binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
+                    if (list.isEmpty()) binding.txtWishlistEmpty.setVisibility(View.GONE);
                 } else {
-                    binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
+                    binding.txtWishlistEmpty.setVisibility(View.VISIBLE);
                 }
+
+                binding.progressBar6.setVisibility(View.INVISIBLE);
             });
-            recommendationsItemList.addAll(tempList());
-            recommendationsAdapter.notifyDataSetChanged();
+
         } else {
-            binding.txtEmptyWishlist.setVisibility(View.INVISIBLE);
             showNoConnectionLayout(true);
+            binding.progressBar6.setVisibility(View.INVISIBLE);
         }
 
+
+    }
+
+    // GET recommended product list from server
+    private void getRecommendedList() {
+
+        binding.progressBar6.setVisibility(View.VISIBLE);
+
+        if (NetworkCheck.isConnect(this)) {
+            recommendationViewModel.getRecommendationList(RECOMMENDATION_LIMIT, RECOMMENDATION_PAGE).observe(this, recommendationItems -> {
+                if (recommendationItems != null && !recommendationItems.isEmpty()) {
+                    recommendationsItemList.addAll(recommendationItems);
+                    recommendationsAdapter.notifyDataSetChanged();
+                    binding.txtRecommendations.setVisibility(View.VISIBLE);
+                } else {
+                    binding.txtRecommendations.setVisibility(View.GONE);
+                }
+
+                binding.progressBar6.setVisibility(View.INVISIBLE);
+            });
+        } else {
+            binding.progressBar6.setVisibility(View.INVISIBLE);
+            showNoConnectionLayout(true);
+        }
 
     }
 
@@ -139,10 +156,9 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         builder.setPositiveButton("YES", (dialog, which) -> {
 
             deleteItem(String.valueOf(wishListData.getId()));
-            list.remove(position);
-            adapter.notifyItemRemoved(position);
-
-            if (list.isEmpty()) binding.txtEmptyWishlist.setVisibility(View.VISIBLE);
+            list.remove(wishListData);
+            adapter.notifyDataSetChanged();
+            if (list.isEmpty()) binding.txtWishlistEmpty.setVisibility(View.VISIBLE);
         });
 
         AlertDialog dialog = builder.create();

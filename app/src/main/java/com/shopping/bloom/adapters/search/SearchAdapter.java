@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.search.SearchProduct;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
@@ -37,11 +38,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
         ));
     }
 
+    public void updateList(List<SearchProduct> searchProducts) {
+        if (searchProducts == null) return;
+        this.list = searchProducts;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
         SearchProduct currentItem = list.get(position);
-        holder.textView.setText(currentItem.getProductName());
+        holder.textView.setText(currentItem.getPrice());
 
         CommonUtils.loadImageWithGlide(
                 context,

@@ -256,7 +256,8 @@
                     android:layout_height="0dp"
                     android:background="@color/white"
                     android:clipToPadding="false"
-                    android:paddingVertical="@dimen/sb_size_8"
+                    android:paddingTop="@dimen/sb_size_8"
+                    android:paddingBottom="@dimen/sb_size_30"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintBottom_toTopOf="@id/llFilterParentLayout"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -290,7 +291,7 @@
                             android:layout_width="@dimen/sb_size_24"
                             android:layout_height="@dimen/sb_size_24"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_filter" />
+                            android:src="@drawable/ic_sort" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -314,6 +315,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/sb_size_2"
                                 android:text=""
+                                android:visibility="gone"
                                 android:textColor="@color/grey_900"
                                 android:textSize="@dimen/sb_text_size_10" />
                         </LinearLayout>

@@ -4,13 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +71,14 @@ public class SettingsActivity extends AppCompatActivity {
             nameTextView.setText(name);
             emailTextView.setText(email);
         }
+
+        TextView txtFeedback = findViewById(R.id.ratingTextView);
+        txtFeedback.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                showDialog(SettingsActivity.this);
+            }
+        });
 
     }
 
@@ -138,6 +149,48 @@ public class SettingsActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("Cancel", null);
         builder.show();
+    }
+
+    // show custom dialog
+    private void showDialog(Context context) {
+
+        Dialog dialog = new Dialog(context);
+        dialog.setCancelable(false);
+        View view = getLayoutInflater().inflate(R.layout.custom_feedback_dialog, null);
+        dialog.setContentView(view);
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        Button cancel = view.findViewById(R.id.btn_feedback_cancel);
+        Button submit = view.findViewById(R.id.btn_feedback_submit);
+        EditText feedback = view.findViewById(R.id.txt_feedback);
+
+        submit.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+
+                String inputFeedback = feedback.getText().toString().trim();
+
+                if (inputFeedback.isEmpty())
+                    Toast.makeText(context, "Feedback is Empty", Toast.LENGTH_SHORT).show();
+
+                else {
+                    Toast.makeText(context, "Feedback Submitted", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+
+            }
+        });
+
+        cancel.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
     }
 
 }

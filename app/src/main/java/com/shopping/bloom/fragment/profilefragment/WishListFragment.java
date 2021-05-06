@@ -80,6 +80,8 @@ public class WishListFragment extends Fragment implements WishListProductListene
 
     private void getWishList(String page_no, String limit) {
 
+        binding.progressBar4.setVisibility(View.VISIBLE);
+
         if (NetworkCheck.isConnect(getContext())) {
             viewModel.getWishList(page_no, limit).observe(getViewLifecycleOwner(), wishListData -> {
                 if (wishListData != null && wishListData.size() > 0) {
@@ -88,14 +90,17 @@ public class WishListFragment extends Fragment implements WishListProductListene
                     list.clear();
                     list.addAll(wishListData);
                     adapter.notifyDataSetChanged();
+                    binding.progressBar4.setVisibility(View.INVISIBLE);
                 } else {
                     binding.txtEmpty.setVisibility(View.VISIBLE);
                     binding.viewMore.setVisibility(View.INVISIBLE);
+                    binding.progressBar4.setVisibility(View.INVISIBLE);
                 }
             });
         } else {
             //handle no connection
             Toast.makeText(getContext(), "Connection Error", Toast.LENGTH_SHORT).show();
+            binding.progressBar4.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -125,7 +130,6 @@ public class WishListFragment extends Fragment implements WishListProductListene
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_CODE){
-            list.clear();
             getWishList(PAGE_NO, LIMIT);
         }
 

@@ -1,15 +1,22 @@
 package com.shopping.bloom.activities.search;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.search.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
 import com.shopping.bloom.model.search.SearchProduct;
@@ -20,12 +27,17 @@ import com.shopping.bloom.viewModels.search.SearchViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private ActivitySearchBinding binding;
     private SearchViewModel viewModel;
     private SearchAdapter adapter;
     private List<SearchProduct> list;
+    private GridLayoutManager layoutManager;
+    private String LIMIT = "20";
+    private String PAGE = "0";
+    private boolean IS_LOADING = false;
+    private boolean IS_LAST_PAGE = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,25 +45,35 @@ public class SearchActivity extends AppCompatActivity {
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // initialise view model
         viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
 
+        // swipe layout
+        binding.swipeRefresh.setOnRefreshListener(this);
+
+        // initialise list, adapter and recyclerview
         list = new ArrayList<>();
         adapter = new SearchAdapter(this, list);
-        binding.searchRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        layoutManager = new GridLayoutManager(this, 2);
+        binding.searchRecyclerView.setHasFixedSize(true);
+        binding.searchRecyclerView.setLayoutManager(layoutManager);
         binding.searchRecyclerView.setAdapter(adapter);
 
+        binding.edittextSearch.requestFocus();
 
+        // search text view click listener
         binding.txtSearch.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                if (binding.edittextSearch.getText().toString().trim().isEmpty()) {
+                if (!validInput()) {
                     Toast.makeText(SearchActivity.this, "Empty Search", Toast.LENGTH_SHORT).show();
                 } else {
-                    getSearchedProducts();
+                    getSearchedProducts(binding.edittextSearch.getText().toString().trim());
                 }
             }
         });
 
+        // back image click listener
         binding.imgBack.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
@@ -59,32 +81,90 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
+        // For pagination
+        binding.searchRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                // get input query
+                String query = binding.edittextSearch.getText().toString().trim();
+
+                if (!binding.searchRecyclerView.canScrollVertically(1)) {
+
+                    if (!IS_LAST_PAGE && !IS_LOADING) {
+
+                        // Increase page number
+                        PAGE = String.valueOf(Integer.parseInt(PAGE) + 1);
+
+                        // get next page products
+                        getSearchedProducts(query);
+                    }
+                }
+            }
+
+        });
 
     }
 
-    private void getSearchedProducts() {
+    // get searched query product list
+    private void getSearchedProducts(String query) {
 
+        IS_LOADING = true;
         binding.progressBar3.setVisibility(View.VISIBLE);
 
         if (NetworkCheck.isConnect(this)) {
-            viewModel.getSearchProducts().observe(this, new Observer<List<SearchProduct>>() {
-                @Override
-                public void onChanged(List<SearchProduct> searchProducts) {
-                    if (searchProducts != null && searchProducts.size() > 0) {
-                        list.size();
-                        list.addAll(searchProducts);
-                        adapter.notifyDataSetChanged();
-                        binding.progressBar3.setVisibility(View.INVISIBLE);
-                    } else {
-                        binding.progressBar3.setVisibility(View.INVISIBLE);
-                    }
+            viewModel.getSearchProducts(LIMIT, PAGE, query).observe(this, searchProducts -> {
+                if (searchProducts != null && searchProducts.size() > 0) {
+                    int oldListSize = list.size();
+                    list.addAll(searchProducts);
+                    adapter.notifyItemRangeInserted(oldListSize, list.size());
+                } else {
+                    IS_LAST_PAGE = true;
                 }
+                IS_LOADING = false;
+                binding.progressBar3.setVisibility(View.INVISIBLE);
             });
+            showNoConnection(false);
         } else {
-            Toast.makeText(this, "No Connection", Toast.LENGTH_SHORT).show();
+            // no connection handling
+            showNoConnection(true);
         }
 
+    }
 
+    private boolean validInput() {
+        String input = binding.edittextSearch.getText().toString().trim();
+        if (input.isEmpty()) {
+            Toast.makeText(this, "Empty Search!!", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private void showNoConnection(boolean show) {
+        if (show) {
+            binding.newFragmentNoConnectionLayout.setVisibility(View.VISIBLE);
+            binding.progressBar3.setVisibility(View.INVISIBLE);
+        } else binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onRefresh() {
+        if (!NetworkCheck.isConnect(this)) {
+            showNoConnection(true);
+        } else {
+            showNoConnection(false);
+            list.clear();
+            PAGE = "0";
+
+            if (validInput())
+                getSearchedProducts(binding.edittextSearch.getText().toString().trim());
+
+        }
+        binding.swipeRefresh.setRefreshing(false);
     }
 
 }

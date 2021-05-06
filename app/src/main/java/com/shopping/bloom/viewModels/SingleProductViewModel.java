@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.App;
+import com.shopping.bloom.R;
+import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.model.SingleProductDataResponse;
@@ -86,4 +89,13 @@ public class SingleProductViewModel extends ViewModel {
             }
         });
     }
+
+    public void addToShoppingBag(ProductEntity productEntity) {
+
+        EcommerceDatabase.databaseWriteExecutor.execute(() ->
+                EcommerceDatabase.getInstance().wishListProductDao().addToShoppingBag(productEntity)
+        );
+
+    }
+
 }

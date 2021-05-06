@@ -17,8 +17,12 @@ public class SearchProduct {
     @SerializedName("primary_image")
     private String productImage;
     @Expose
-    @SerializedName("colorsImageArray")
-    private List<ColorImages> colorImages;
+    @SerializedName("price")
+    private String price;
+
+    public String getPrice() {
+        return price;
+    }
 
     public Integer getId() {
         return id;
@@ -32,7 +36,4 @@ public class SearchProduct {
         return productImage;
     }
 
-    public List<ColorImages> getColorImages() {
-        return colorImages;
-    }
 }

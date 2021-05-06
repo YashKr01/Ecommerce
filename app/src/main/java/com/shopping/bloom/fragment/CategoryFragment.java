@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,21 +19,19 @@ import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
-import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
-import com.shopping.bloom.restService.callback.ProductClickListener;
+import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.CategoryViewModel;
+import com.shopping.bloom.viewModels.ShopViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryFragment extends Fragment implements ProductClickListener {
+public class CategoryFragment extends Fragment implements CategoryClickListener {
 
     private static final String TAG = CategoryFragment.class.getName();
 
-    private CategoryViewModel viewModel;
+    private ShopViewModel viewModel;
     private FragmentCategoryBinding mainBinding;
     private CategoryAdapter categoryImagesAdapter;
 
@@ -76,7 +73,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         super.onViewCreated(view, savedInstanceState);
         getActivity().invalidateOptionsMenu();
 
-        viewModel = new ViewModelProvider(this).get(CategoryViewModel.class);
+        viewModel = new ViewModelProvider(this).get(ShopViewModel.class);
         initRecyclerView();
 
         checkNetworkAndFetchData();
@@ -97,7 +94,7 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
         PAGE_NO = START_PAGE;
         if (NetworkCheck.isConnect(getContext())) {
             viewModel.setResponseListener(responseListener);
-            viewModel.fetchData("1", 20, PAGE_NO, "");
+            viewModel.fetchCategoryItems("1", 20, PAGE_NO, "");
         } else {
             Log.d(TAG, "checkNetworkAndFetchData: No internet Available");
             setNoInternetLayout(true);
@@ -130,14 +127,14 @@ public class CategoryFragment extends Fragment implements ProductClickListener {
 
     //when product header/category is clicked
     @Override
-    public void onProductClick(Category categoryCategory) {
+    public void onCategoryClicked(Category categoryCategory) {
         Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
         gotoAllProductScreen(String.valueOf(categoryCategory.getId()));
     }
 
     //When particular product image is clicked
     @Override
-    public void onSubProductClick(SubCategory product) {
+    public void onSubCategoryClicked(SubCategory product) {
         Log.d(TAG, "onSubProductClick: "+ product.toString());
         if(getContext() != null) {
             gotoAllProductScreen(product);

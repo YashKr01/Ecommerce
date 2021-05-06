@@ -14,6 +14,7 @@ import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.search.SearchResponse;
 import com.shopping.bloom.model.wishlist.WishList;
+import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
@@ -53,6 +54,22 @@ public interface ApiInterface {
             @Query("category_name") String category_name
     );
 
+    @GET("/api/frontend/getRandomProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetProductsResponse> getRandomProducts(
+            @Header("Authorization") String authToken,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
+    );
+
+    @GET("/api/frontend/getRecommendedProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetProductsResponse> getRecommendedProducts(
+            @Header("Authorization") String authToken,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
+    );
+
     @POST("auth/customerRegistration")
     @Headers("Content-type: application/json")
     Call<RegisterResponseModel> sendRegisterData(@Body RegistrationModel registrationModel);
@@ -87,8 +104,9 @@ public interface ApiInterface {
             @Query("pageNo") int pageNo,
             @Query("sortByPrice") String sortByPrice,
             @Query("colors") String colors,
-            @Query("sizes") String sizes
-            //TODO: Add two more filter option here Most Popular, New Arrival
+            @Query("sizes") String sizes,
+            @Query("bestSelling") String mostPopular
+            //TODO: Add one more filter option here New Arrival
     );
 
     @GET("/api/frontend/getSizeColorData")
@@ -185,18 +203,19 @@ public interface ApiInterface {
     @GET("frontend/checkTokenExpiry")
     Call<RefreshTokenResponse> checkBearerToken(@Header("Authorization") String bearer);
 
-    @GET("/api/frontend/getProducts")
-    @Headers("Accept-type: application/json")
+    @GET("/api/frontend/searchProductByName")
     Call<SearchResponse> getSearchedProducts(
             @Header("Authorization") String authToken,
-            @Query("category_id") String categoryId,
-            @Query("sub_category_id") String subCategoryId,
-            @Query("limit") int limit,
-            @Query("pageNo") int pageNo,
-            @Query("sortByPrice") String sortByPrice,
-            @Query("colors") String colors,
-            @Query("sizes") String sizes
-            //TODO: Add two more filter option here Most Popular, New Arrival
+            @Query("limit") String limit,
+            @Query("pageNo") String pageNo,
+            @Query("searchTerm") String searchQuery
+    );
+
+    @GET("/api/frontend/getRandomProducts")
+    Call<RecommendationResponse> getRecommendationResponse(
+            @Header("Authorization") String authToken,
+            @Query("limit") String limit,
+            @Query("pageNo") String page
     );
 
     @FormUrlEncoded

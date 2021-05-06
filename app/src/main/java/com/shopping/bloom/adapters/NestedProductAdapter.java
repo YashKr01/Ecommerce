@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
-import com.shopping.bloom.restService.callback.ProductClickListener;
+import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.ArrayList;
@@ -26,11 +26,11 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
 
     Context context;
     ArrayList<SubCategory> subCategories;
-    ProductClickListener mListener;
+    CategoryClickListener mListener;
     LoadMoreItems loadMoreItems;
     private int LAST_ITEM = -1;
 
-    public NestedProductAdapter(Context context, List<SubCategory> subCategories, ProductClickListener mListener, LoadMoreItems loadMoreItems) {
+    public NestedProductAdapter(Context context, List<SubCategory> subCategories, CategoryClickListener mListener, LoadMoreItems loadMoreItems) {
         this.context = context;
         this.subCategories = new ArrayList<>(subCategories);
         this.mListener = mListener;
@@ -42,7 +42,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
     public NestedProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == LAST_ITEM) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more_products, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more, parent, false);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         }
@@ -66,7 +66,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
             }
         } else {
             holder.setUpData(context, subCategory);
-            holder.rootView.setOnClickListener((view -> mListener.onSubProductClick(subCategory)));
+            holder.rootView.setOnClickListener((view -> mListener.onSubCategoryClicked(subCategory)));
         }
     }
 

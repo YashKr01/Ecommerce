@@ -43,6 +43,14 @@ public class SingleProductDataResponse {
     @Expose
     List<SingleProductDescResponse> singleProductDescResponseList;
 
+    @SerializedName("id")
+    @Expose
+    Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
     public List<SingleProductDescResponse> getSingleProductDescResponseList() {
         return singleProductDescResponseList;
     }
