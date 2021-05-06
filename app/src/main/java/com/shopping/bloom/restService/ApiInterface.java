@@ -14,6 +14,7 @@ import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.search.SearchResponse;
 import com.shopping.bloom.model.wishlist.WishList;
+import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
@@ -207,6 +208,13 @@ public interface ApiInterface {
             @Query("limit") String limit,
             @Query("pageNo") String pageNo,
             @Query("searchTerm") String searchQuery
+    );
+
+    @GET("/api/frontend/getRandomProducts")
+    Call<RecommendationResponse> getRecommendationResponse(
+            @Header("Authorization") String authToken,
+            @Query("limit") String limit,
+            @Query("pageNo") String page
     );
 
 }

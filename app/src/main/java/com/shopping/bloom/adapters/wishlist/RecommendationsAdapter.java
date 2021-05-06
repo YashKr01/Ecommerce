@@ -11,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.wishlist.recommendations.RecommendationsItem;
+import com.shopping.bloom.model.wishlist.recommendations.RecommendationItem;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.List;
 
 public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ItemViewHolder> {
 
-    private List<RecommendationsItem> list;
+    private List<RecommendationItem> list;
     private Context context;
 
-    public RecommendationsAdapter(List<RecommendationsItem> list, Context context) {
+    public RecommendationsAdapter(List<RecommendationItem> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -39,15 +40,15 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
-        RecommendationsItem currentItem = list.get(position);
+        RecommendationItem currentItem = list.get(position);
 
         holder.textView.setText(currentItem.getPrice());
 
         CommonUtils.loadImageWithGlide(
                 context,
-                currentItem.getImagePath(),
+                Const.GET_CATEGORY_DATA + currentItem.getImagePath(),
                 holder.imageView,
-                true
+                false
         );
 
     }
