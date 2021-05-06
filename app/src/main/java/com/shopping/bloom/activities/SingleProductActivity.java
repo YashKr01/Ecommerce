@@ -467,4 +467,5 @@ public class SingleProductActivity extends AppCompatActivity {
         collapsingToolbarLayout.setVisibility(View.VISIBLE);
         favLinearLayout.setVisibility(View.VISIBLE);
     }
+
 }

@@ -19,6 +19,7 @@ import com.shopping.bloom.databinding.ActivityWishListBinding;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationItem;
+import com.shopping.bloom.restService.callback.RecommendationProductClickListener;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.recommendation.RecommendationViewModel;
@@ -27,7 +28,7 @@ import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener {
+public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener , RecommendationProductClickListener {
 
     private ActivityWishListBinding binding;
 
@@ -70,7 +71,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
         recommendationsItemList = new ArrayList<>();
-        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this);
+        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this,this);
         adapter = new WishListActivityAdapter(this, list, this);
 
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -211,12 +212,15 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     }
 
     private void showNoConnectionLayout(boolean show) {
-        if (show) {
-            binding.noConnectionLayout.setVisibility(View.VISIBLE);
-        } else {
-            binding.noConnectionLayout.setVisibility(View.GONE);
-        }
+        if (show) binding.noConnectionLayout.setVisibility(View.VISIBLE);
+         else binding.noConnectionLayout.setVisibility(View.GONE);
     }
 
+    @Override
+    public void recommendationProductClickListener(RecommendationItem item) {
+        Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", item.getId());
+        startActivity(intent);
+    }
 
 }
