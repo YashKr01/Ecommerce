@@ -24,6 +24,7 @@ import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.PutWishListRequest;
+import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.restService.response.SingleProductResponse;
@@ -223,5 +224,11 @@ public interface ApiInterface {
     Call<LoginResponseModel> createUserActivity(
             @Field("product_id") String product_id,
             @Field("category_id") String category_id,
+            @Header("Authorization") String bearer);
+
+    @GET("frontend/getRandomProducts")
+    Call<RandomImageResponse> getRandomImage(
+            @Query("limit") int limit,
+            @Query("pageNo") int pageNo,
             @Header("Authorization") String bearer);
 }

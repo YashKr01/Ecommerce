@@ -1,11 +1,13 @@
 package com.shopping.bloom.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,14 +25,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,11 +50,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
+import com.shopping.bloom.adapters.singleproduct.RandomImageAdapter;
 import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
 import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.ProductVariableResponse;
+import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
@@ -65,26 +73,26 @@ import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
     boolean colorClickable, sizeClickable;
-    RecyclerView colorRecyclerView;
-    RecyclerView sizeRecyclerView;
+    NestedScrollView scrollView;
+    RecyclerView colorRecyclerView, sizeRecyclerView, randomRecyclerView;
     SingleProductViewModel singleProductViewModel;
     ColorAdapter colorAdapter;
     SizeAdapter sizeAdapter;
     SingleProductDataResponse singleProductDataResponse;
-    List<String> colorList, sizeList;
+    List<String> colorList, sizeList, imageList;
+    List<RandomImageDataResponse> randomImageList;
     LinearLayout linearLayout;
-    TextView productName, price, viewReview, colorTextView, slideTextView;
+    TextView productName, price, viewReview, colorTextView, slideTextView, desc;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
+    ProgressBar progressBar;
     ViewPager viewPager;
-    List<String> imageList;
     List<ProductVariableResponse> productVariableResponseList;
     ViewPagerImageAdapter viewPagerImageAdapter;
     CollapsingToolbarLayout collapsingToolbarLayout;
     ViewStub viewStub;
-    LinearLayout favLinearLayout;
-    SwipeRefreshLayout swipeRefreshLayout;
-    RelativeLayout relativeLayout;
+    LinearLayout favLinearLayout, linearLayoutDesc;
+    RelativeLayout relativeLayout, hideRelativeLayout;
     Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
@@ -93,6 +101,9 @@ public class SingleProductActivity extends AppCompatActivity {
     Dialog dialog;
     ImageButton wishListButton, selectedWishListButton;
     Button btnAddToBag;
+    RandomImageAdapter randomImageAdapter;
+    List<SingleProductDescResponse> list;
+    int limit = 21, pageNo = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,27 +118,33 @@ public class SingleProductActivity extends AppCompatActivity {
         Log.d("SEND", "onCreate: " + CATEGORY_ID);
 
         productName = findViewById(R.id.product_name);
+        scrollView = findViewById(R.id.scrollView);
         price = findViewById(R.id.price);
         colorTextView = findViewById(R.id.color);
         ratingBar = findViewById(R.id.ratingBar4);
         viewReview = findViewById(R.id.viewAllReviewTextView);
         linearLayout = findViewById(R.id.linearLayout);
         favLinearLayout = findViewById(R.id.fav_layout);
+        linearLayoutDesc = findViewById(R.id.linearLayoutDescription);
         relativeLayout = findViewById(R.id.relative);
         viewPager = findViewById(R.id.viewpager);
         viewStub = findViewById(R.id.vsEmptyScreen);
         toolbar = findViewById(R.id.toolbar);
+        desc = findViewById(R.id.textViewDesc);
         reviewToolbar = findViewById(R.id.reviewToolbar);
         slideTextView = findViewById(R.id.slideTextView);
         changePinCode = findViewById(R.id.changePinCode);
         wishListButton = findViewById(R.id.wishListButton);
         selectedWishListButton = findViewById(R.id.selectWishListButton);
+        randomRecyclerView = findViewById(R.id.randomRecyclerView);
+        progressBar = findViewById(R.id.progressBar);
+        hideRelativeLayout = findViewById(R.id.hideRelative);
 
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
         collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
 
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         btnAddToBag = findViewById(R.id.btn_add_to_bag);
 
@@ -139,7 +156,7 @@ public class SingleProductActivity extends AppCompatActivity {
             onBackPressed();
         });
 
-        swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
+        //swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
@@ -164,16 +181,34 @@ public class SingleProductActivity extends AppCompatActivity {
         sizeAdapter = new SizeAdapter(this, sizeList);
         sizeRecyclerView.setAdapter(sizeAdapter);
 
+        //view pager
         productVariableResponseList = new ArrayList<>();
         imageList = new ArrayList<>();
         viewPagerImageAdapter = new ViewPagerImageAdapter(imageList);
         viewPager.setAdapter(viewPagerImageAdapter);
 
+        //random Product
+        LinearLayoutManager randomLinearLayoutManager = new GridLayoutManager(this, 3);
+        randomImageList = new ArrayList<>();
+        randomRecyclerView.setLayoutManager(randomLinearLayoutManager);
+        randomImageAdapter = new RandomImageAdapter(this, randomImageList);
+        randomRecyclerView.setAdapter(randomImageAdapter);
+
+        TextView textView = findViewById(R.id.description);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewDescription);
+        LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager3);
+
+        list = new ArrayList<>();
+        ProductDescAdapter productDescAdapter = new ProductDescAdapter(this, list);
+        recyclerView.setAdapter(productDescAdapter);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
-        double heightInDp = height * 0.4;
+        double heightInDp = height * 0.5;
 
         int h = (int) Math.round(heightInDp);
 
@@ -182,6 +217,7 @@ public class SingleProductActivity extends AppCompatActivity {
         collapsingToolbarLayout.setLayoutParams(layoutParams);
 
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
+
         singleProductViewModel.getMutableLiveData().observe(this, singleProductDataResponse -> {
 
             this.singleProductDataResponse = singleProductDataResponse;
@@ -229,6 +265,11 @@ public class SingleProductActivity extends AppCompatActivity {
                     sizeClickable = true;
                 }
 
+                textView.setText(this.singleProductDataResponse.getDescription());
+                list = this.singleProductDataResponse.getSingleProductDescResponseList();
+                productDescAdapter.setSingleProductDescResponseList(list);
+                productDescAdapter.notifyDataSetChanged();
+
                 viewPagerImageAdapter.setImageList(imageList);
                 viewPagerImageAdapter.notifyDataSetChanged();
 
@@ -244,30 +285,36 @@ public class SingleProductActivity extends AppCompatActivity {
                 ratingBar.setRating(Float.parseFloat(this.singleProductDataResponse.getAvg_rating()));
 
                 linearLayout.setOnClickListener(v -> {
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-                    View bottomSheet = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_productdesc, findViewById(R.id.bottomSheet));
-
-                    ImageButton imageButton = bottomSheet.findViewById(R.id.imgClose);
-                    imageButton.setOnClickListener(v1 -> bottomSheetDialog.dismiss());
-
-                    TextView textView = bottomSheet.findViewById(R.id.description);
-                    textView.setText(this.singleProductDataResponse.getDescription());
-
-                    RecyclerView recyclerView = bottomSheet.findViewById(R.id.recyclerView);
-                    LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-                    recyclerView.setLayoutManager(linearLayoutManager3);
-
-                    List<SingleProductDescResponse> list = this.singleProductDataResponse.getSingleProductDescResponseList();
-                    ProductDescAdapter productDescAdapter = new ProductDescAdapter(this, list);
-                    productDescAdapter.setSingleProductDescResponseList(list);
-                    recyclerView.setAdapter(productDescAdapter);
-
-                    bottomSheetDialog.setContentView(bottomSheet);
-                    bottomSheetDialog.show();
-
+                    if (linearLayoutDesc.getVisibility() == View.VISIBLE) {
+                        desc.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_drop_down_24, 0);
+                        linearLayoutDesc.setVisibility(View.GONE);
+                    } else {
+                        desc.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_drop_up_24, 0);
+                        linearLayoutDesc.setVisibility(View.VISIBLE);
+                    }
                 });
+
+                if (linearLayoutDesc.getVisibility() == View.VISIBLE) {
+                    desc.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_drop_up_24, 0);
+                } else {
+                    desc.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_drop_down_24, 0);
+                }
+
             }
         });
+
+        singleProductViewModel.getRandomImageDataResponseMutableLiveData().observe(this, randomImageDataResponses -> {
+            if (randomImageDataResponses == null) {
+                System.out.println("Empty");
+            } else {
+                randomImageList.addAll(randomImageDataResponses);
+                randomImageAdapter.setImageList(randomImageList);
+                randomImageAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
             if (loginResponseModel != null) {
@@ -282,7 +329,24 @@ public class SingleProductActivity extends AppCompatActivity {
         if (CATEGORY_ID == null) {
             CATEGORY_ID = "1";
         }
-        singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
+
+        singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
+
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = scrollView.getChildAt(scrollView.getChildCount() - 1);
+
+                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView
+                        .getScrollY()));
+
+                if (diff == 0) {
+                    pageNo++;
+                    System.out.println(pageNo);
+                    singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
+                }
+            }
+        });
 
         viewReview.setOnClickListener(debouncedOnClickListener);
 
@@ -348,6 +412,8 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+        checkNetworkConnectivity();
+
     }
 
     private void addToShoppingBag() {
@@ -366,8 +432,8 @@ public class SingleProductActivity extends AppCompatActivity {
         @Override
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.viewAllReviewTextView) {
+                hideRelativeLayout.setVisibility(View.GONE);
                 frameLayout.setVisibility(View.VISIBLE);
-                swipeRefreshLayout.setVisibility(View.GONE);
                 collapsingToolbarLayout.setVisibility(View.GONE);
                 favLinearLayout.setVisibility(View.GONE);
                 reviewToolbar.setVisibility(View.VISIBLE);
@@ -389,6 +455,8 @@ public class SingleProductActivity extends AppCompatActivity {
             } else if (v.getId() == R.id.selectWishListButton) {
                 wishListButton.setVisibility(View.VISIBLE);
                 selectedWishListButton.setVisibility(View.GONE);
+            } else if (v.getId() == R.id.vsEmptyScreen) {
+                checkNetworkConnectivity();
             }
         }
     };
@@ -397,19 +465,14 @@ public class SingleProductActivity extends AppCompatActivity {
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
+            viewStub.setOnClickListener(debouncedOnClickListener);
             relativeLayout.setVisibility(View.GONE);
-            // viewStub.setVisibility(View.VISIBLE);
-            // relativeLayout.setVisibility(View.GONE);
             favLinearLayout.setVisibility(View.GONE);
         } else {
             viewStub.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
-            //  viewStub.setVisibility(View.GONE);
-            // relativeLayout.setVisibility(View.VISIBLE);
             favLinearLayout.setVisibility(View.VISIBLE);
         }
-        swipeRefreshLayout.setRefreshing(false);
-        // swipeRefreshLayout.setRefreshing(false);
     }
 
     public void setViewPagerCurrentItem(int pos) {
@@ -421,6 +484,7 @@ public class SingleProductActivity extends AppCompatActivity {
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
                 if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
                     viewPager.setCurrentItem(i + 1, true);
+                    //viewPagerImageAdapter.notifyDataSetChanged();
                     price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
                     break;
                 }
@@ -462,7 +526,8 @@ public class SingleProductActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        swipeRefreshLayout.setVisibility(View.VISIBLE);
+        //swipeRefreshLayout.setVisibility(View.VISIBLE);
+        hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         collapsingToolbarLayout.setVisibility(View.VISIBLE);
         favLinearLayout.setVisibility(View.VISIBLE);

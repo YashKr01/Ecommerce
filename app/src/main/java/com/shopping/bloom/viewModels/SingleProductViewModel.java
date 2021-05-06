@@ -8,13 +8,17 @@ import androidx.lifecycle.ViewModel;
 import com.shopping.bloom.App;
 import com.shopping.bloom.R;
 import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
+import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.SingleProductResponse;
 import com.shopping.bloom.utils.LoginManager;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,13 +28,19 @@ public class SingleProductViewModel extends ViewModel {
 
     private final MutableLiveData<SingleProductDataResponse> mutableLiveData;
     private final MutableLiveData<LoginResponseModel> loginResponseModelMutableLiveData;
+    private final MutableLiveData<List<RandomImageDataResponse>> randomImageDataResponseMutableLiveData;
 
     public SingleProductViewModel() {
         mutableLiveData = new MutableLiveData<>();
         loginResponseModelMutableLiveData = new MutableLiveData<>();
+        randomImageDataResponseMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<LoginResponseModel> getLoginResponseModelMutableLiveData(){
+    public MutableLiveData<List<RandomImageDataResponse>> getRandomImageDataResponseMutableLiveData(){
+        return randomImageDataResponseMutableLiveData;
+    }
+
+    public MutableLiveData<LoginResponseModel> getLoginResponseModelMutableLiveData() {
         return loginResponseModelMutableLiveData;
     }
 
@@ -85,7 +95,34 @@ public class SingleProductViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<LoginResponseModel> call, Throwable t) {
-                mutableLiveData.postValue(null);
+                loginResponseModelMutableLiveData.postValue(null);
+            }
+        });
+    }
+
+    public void makeApiCallRandomImage(int limit, int pageNo, Application application) {
+
+        LoginManager loginManager = new LoginManager(App.getContext());
+        String token;
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
+
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<RandomImageResponse> call = apiService.getRandomImage(limit, pageNo, "Bearer " + token);
+        call.enqueue(new Callback<RandomImageResponse>() {
+            @Override
+            public void onResponse(Call<RandomImageResponse> call, Response<RandomImageResponse> response) {
+                randomImageDataResponseMutableLiveData.postValue(response.body().getImageDataResponseList());
+
+            }
+
+            @Override
+            public void onFailure(Call<RandomImageResponse> call, Throwable t) {
+                randomImageDataResponseMutableLiveData.postValue(null);
             }
         });
     }
