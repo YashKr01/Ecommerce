@@ -15,6 +15,7 @@ public class ShopViewModel extends AndroidViewModel {
     CategoryRepository repository;
     CategoryResponseListener responseListener;
     ProductResponseListener randomProductListener;
+    ProductResponseListener recommendedProductListener;
 
     public ShopViewModel(@NonNull Application context){
         super(context);
@@ -30,6 +31,10 @@ public class ShopViewModel extends AndroidViewModel {
         this.randomProductListener = randomProductListener;
     }
 
+    public void setRecommendedProductListener(ProductResponseListener recommendedProductListener) {
+        this.recommendedProductListener = recommendedProductListener;
+    }
+
 
     /*
     *   fetch all the category Items
@@ -40,6 +45,10 @@ public class ShopViewModel extends AndroidViewModel {
 
     public void fetchRandomProduct(int pageNo, int limit) {
         repository.getRandomProduct(context, pageNo, limit, randomProductListener);
+    }
+
+    public void fetchRecommendProduct(int pageNo, int limit) {
+        repository.getRecommendedProducts(context, pageNo, limit, recommendedProductListener);
     }
 
 

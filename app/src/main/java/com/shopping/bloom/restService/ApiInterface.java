@@ -61,6 +61,14 @@ public interface ApiInterface {
             @Query("limit") int limit
     );
 
+    @GET("/api/frontend/getRecommendedProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetProductsResponse> getRecommendedProducts(
+            @Header("Authorization") String authToken,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
+    );
+
     @POST("auth/customerRegistration")
     @Headers("Content-type: application/json")
     Call<RegisterResponseModel> sendRegisterData(@Body RegistrationModel registrationModel);

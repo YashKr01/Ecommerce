@@ -107,6 +107,44 @@ public class CategoryRepository {
 
     }
 
+
+    public void getRecommendedProducts(Application context, int pageNo, int limit, ProductResponseListener recommendedProducts) {
+        ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
+        String authToken = getToken();
+        Call<GetProductsResponse> responseCall = apiInterface.getRecommendedProducts(
+                authToken, pageNo, limit
+        );
+
+        if(responseCall != null) {
+            responseCall.enqueue(new Callback<GetProductsResponse>() {
+                @Override
+                public void onResponse(Call<GetProductsResponse> call, Response<GetProductsResponse> response) {
+                    if(!response.isSuccessful()){
+                        //... return
+                        recommendedProducts.onFailure(-1, response.errorBody().toString());
+                        return;
+                    }
+
+                    if(response.body() != null && response.code() == SUCCESS_CODE) {
+                        GetProductsResponse categoryResponse = response.body();
+                        if(categoryResponse != null && categoryResponse.isSuccess()) {
+                            recommendedProducts.onSuccess(categoryResponse.getData());
+                            return ;
+                        }
+                    }
+                    recommendedProducts.onFailure(response.code(), response.message());
+                }
+
+                @Override
+                public void onFailure(Call<GetProductsResponse> call, Throwable t) {
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                    recommendedProducts.onFailure(-1, t.getMessage());
+                }
+            });
+        }
+
+    }
+
     private String getToken() {
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;

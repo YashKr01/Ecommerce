@@ -42,7 +42,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
     public NestedProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (viewType == LAST_ITEM) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more_products, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more, parent, false);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         }

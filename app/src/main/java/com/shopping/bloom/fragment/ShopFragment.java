@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -24,9 +25,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.AllProductCategory;
+import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
-import com.shopping.bloom.adapters.NestedProductAdapter;
 import com.shopping.bloom.adapters.RandomProductAdapter;
+import com.shopping.bloom.adapters.RecommendProductAdapter;
 import com.shopping.bloom.adapters.ViewpagerAdapter;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.Category;
@@ -55,6 +57,7 @@ public class ShopFragment extends Fragment {
     private ViewPager2 vpHeaderImages;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SwipeRefreshLayout srlNoInternet;
+    private NestedScrollView nestedScrollView;
     private MainScreenConfig mainScreenConfig;
     private ViewpagerAdapter viewpagerAdapter;
     private ImageView imgHeaderImage;
@@ -70,7 +73,7 @@ public class ShopFragment extends Fragment {
 
     private CategoryImagesAdapter categoryImagesAdapter;
     private RandomProductAdapter topProductSuggestionAdapter;
-    private NestedProductAdapter bottomProductSuggestionAdapter;
+    private RecommendProductAdapter recommendProductAdapter;
     private ViewStub vsEmptyScreen;
     ImageView offerImage1;
     ImageView offerImage2;
@@ -88,6 +91,10 @@ public class ShopFragment extends Fragment {
      * */
     private int RETRY_ATTEMPT = 0;
     private final int MAX_RETRY_ATTEMPT = 3;
+    private final int RECOMMEND_ITEM_LIMIT = 15;
+
+    private final int RECOMMEND_PRODUCT_START_PAGE = 0;
+    private int RECOMMEND_PRODUCT_CURRENT_PAGE = 0;
 
     public ShopFragment() {
         // Required empty public constructor
@@ -135,6 +142,7 @@ public class ShopFragment extends Fragment {
         imgHeaderImage = view.findViewById(R.id.imgNewArrival);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         srlNoInternet = view.findViewById(R.id.srlNoInternet);
+        nestedScrollView = view.findViewById(R.id.nestedScrollView);
 
         //below are the three recyclerView used in shop fragment
         rvTopProductSuggestion = view.findViewById(R.id.rvTopProductSuggestion);        //At Top Category suggestion Horizontal Scroll
@@ -196,9 +204,40 @@ public class ShopFragment extends Fragment {
         rvTopProductSuggestion.setAdapter(topProductSuggestionAdapter);
 
         rvBottomProductSuggestion.setHasFixedSize(true);
-        rvBottomProductSuggestion.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        bottomProductSuggestionAdapter = new NestedProductAdapter(getContext(), getDummyData(), suggestedCategoryClickListener, null);
-        rvBottomProductSuggestion.setAdapter(bottomProductSuggestionAdapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
+        rvBottomProductSuggestion.setLayoutManager(layoutManager);
+        recommendProductAdapter = new RecommendProductAdapter(getContext(), randomProductClickListener);
+        rvBottomProductSuggestion.setAdapter(recommendProductAdapter);
+
+
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if(v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    //code to fetch more data for endless scrolling
+                    Log.d(TAG, "setUpRecyclerView: ");
+                    fetchRecommendProducts();
+                }
+            }
+        });
+
+        /*rvBottomProductSuggestion.addOnScrollListener(new PaginationListener(layoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                Log.d(TAG, "loadMoreItems: ");
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return false;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return false;
+            }
+        });*/
+
     }
 
     private void gotoProductScreen(Category product) {
@@ -247,10 +286,23 @@ public class ShopFragment extends Fragment {
     private void checkNetworkAndFetchData() {
         if (NetworkCheck.isConnect(getContext())) {
             int PAGE_NO = 0;
+            RECOMMEND_PRODUCT_CURRENT_PAGE = RECOMMEND_PRODUCT_START_PAGE;
             viewModel.setResponseListener(categoriesResponseListener);
             viewModel.setRandomProductListener(randomProductResponseListener);
+            viewModel.setRecommendedProductListener(recommendProductListener);
             viewModel.fetchCategoryItems("1", 10, PAGE_NO, "");
             viewModel.fetchRandomProduct(1, 20);
+            viewModel.fetchRecommendProduct(RECOMMEND_PRODUCT_CURRENT_PAGE, RECOMMEND_ITEM_LIMIT);
+        } else {
+            RETRY_ATTEMPT = 0;
+            setNoInternetLayout(true);
+            Log.d(TAG, "onRefresh: NO INTERNET CONNECTION");
+        }
+    }
+
+    private void fetchRecommendProducts() {
+        if (NetworkCheck.isConnect(getContext())) {
+            viewModel.fetchRecommendProduct(RECOMMEND_PRODUCT_CURRENT_PAGE, RECOMMEND_ITEM_LIMIT);
         } else {
             RETRY_ATTEMPT = 0;
             setNoInternetLayout(true);
@@ -293,6 +345,20 @@ public class ShopFragment extends Fragment {
         }
     };
 
+    private final ProductResponseListener recommendProductListener = new ProductResponseListener() {
+        @Override
+        public void onSuccess(List<Product> products) {
+            Log.d(TAG, "onSuccess: " + products.toString());
+            RECOMMEND_PRODUCT_CURRENT_PAGE++;
+            recommendProductAdapter.updateList(products);
+        }
+
+        @Override
+        public void onFailure(int errorCode, String message) {
+            Log.d(TAG, "onFailure: recommend products");
+        }
+    };
+
     private final LoadMoreItems loadMoreItems = () -> {
         Log.d(TAG, "loadMoreItems: ");
     };
@@ -310,7 +376,10 @@ public class ShopFragment extends Fragment {
     };
 
     private final ProductClickListener randomProductClickListener = product -> {
-        //TODO: Goto single product screen
+        String ARG_CATEGORY = "PRODUCT_ID";
+        Intent intent = new Intent(getContext(), SingleProductActivity.class);
+        intent.putExtra(ARG_CATEGORY, product.getId());
+        startActivity(intent);
     };
 
     @Override
@@ -406,9 +475,6 @@ public class ShopFragment extends Fragment {
                     , "", "", "", "");
             list.add(subCategory);
         }
-        SubCategory dummyItem = new SubCategory(-1, "", "", thumbNail, ""
-                , "", "", "", "");
-        list.add(dummyItem);
         return list;
     }
 

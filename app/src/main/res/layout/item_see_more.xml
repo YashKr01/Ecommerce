@@ -4,32 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clProductRootView"
     android:layout_width="wrap_content"
-    android:layout_gravity="center"
-    android:layout_height="wrap_content">
-
+    android:layout_height="match_parent">
+    <!--
+        This is layout only for horizontal recyclerView
+    -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cvDummy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/sb_size_6"
         app:cardElevation="@dimen/sb_size_0"
+        android:layout_marginHorizontal="@dimen/sb_size_16"
         app:cardUseCompatPadding="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:viewBindingIgnore="false">
 
-        <TextView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/tvSeeMore"
-            android:layout_width="160dp"
-            android:layout_height="220dp"
+            android:layout_width="@dimen/sb_size_60"
+            android:layout_height="@dimen/sb_size_60"
             android:layout_gravity="center"
-            android:background="@color/grey_100"
-            android:gravity="center"
-            android:text="@string/see_more"
-            android:textColor="@color/grey_800"
-            android:textSize="@dimen/sb_text_size_15"
-            android:textStyle="bold" />
+            android:background="@drawable/bg_blue_circle"
+            android:src="@drawable/ic_right_arrow"
+            android:padding="@dimen/sb_size_16"
+            android:gravity="center" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

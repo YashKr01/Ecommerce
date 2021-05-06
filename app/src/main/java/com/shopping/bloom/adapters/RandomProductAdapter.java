@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
-import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 
@@ -58,7 +57,7 @@ public class RandomProductAdapter extends RecyclerView.Adapter<RandomProductAdap
         View view;
         if (viewType == LAST_ITEM) {
             Log.d(TAG, "onCreateViewHolder: ");
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more_products, parent, false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more, parent, false);
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_random_product, parent, false);
         }
