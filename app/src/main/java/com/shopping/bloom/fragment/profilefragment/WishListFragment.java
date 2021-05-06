@@ -130,7 +130,6 @@ public class WishListFragment extends Fragment implements WishListProductListene
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_CODE){
-            list.clear();
             getWishList(PAGE_NO, LIMIT);
         }
 

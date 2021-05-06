@@ -47,6 +47,9 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
             holder.button.setOnClickListener(v -> {
                 pos = position;
                 notifyDataSetChanged();
+                if (context instanceof SingleProductActivity) {
+                    ((SingleProductActivity) context).setSizeCurrentItem(position);
+                }
             });
 
             if (pos == position) {

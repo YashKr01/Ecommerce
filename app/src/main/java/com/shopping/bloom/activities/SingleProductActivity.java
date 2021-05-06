@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -10,14 +11,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -26,6 +33,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amar.library.ui.StickyScrollView;
 import com.google.android.material.appbar.AppBarLayout;
@@ -38,6 +46,7 @@ import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
 import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
 import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
+import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
@@ -45,6 +54,7 @@ import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
 
 import java.util.ArrayList;
@@ -54,7 +64,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
-    int i = 0;
     boolean colorClickable, sizeClickable;
     RecyclerView colorRecyclerView;
     RecyclerView sizeRecyclerView;
@@ -79,6 +88,10 @@ public class SingleProductActivity extends AppCompatActivity {
     Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
+    String CATEGORY_ID;
+    Button changePinCode;
+    Dialog dialog;
+    ImageButton wishListButton, selectedWishListButton;
     Button btnAddToBag;
 
     @Override
@@ -86,15 +99,12 @@ public class SingleProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product);
 
-
-        /*
-        Product ID received
-         */
         if (getIntent() != null) {
             PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
+            CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
         }
         Log.d("SEND", "onCreate: " + PRODUCT_ID);
-
+        Log.d("SEND", "onCreate: " + CATEGORY_ID);
 
         productName = findViewById(R.id.product_name);
         price = findViewById(R.id.price);
@@ -109,7 +119,9 @@ public class SingleProductActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         reviewToolbar = findViewById(R.id.reviewToolbar);
         slideTextView = findViewById(R.id.slideTextView);
-
+        changePinCode = findViewById(R.id.changePinCode);
+        wishListButton = findViewById(R.id.wishListButton);
+        selectedWishListButton = findViewById(R.id.selectWishListButton);
 
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
@@ -118,7 +130,6 @@ public class SingleProductActivity extends AppCompatActivity {
         swipeRefreshLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         btnAddToBag = findViewById(R.id.btn_add_to_bag);
-
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -257,13 +268,25 @@ public class SingleProductActivity extends AppCompatActivity {
                 });
             }
         });
+
+        singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
+            if (loginResponseModel != null) {
+                ShowToast.showToast(this, loginResponseModel.getMessage());
+            }
+        });
+
         if (PRODUCT_ID != null) {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
 
+        if (CATEGORY_ID == null) {
+            CATEGORY_ID = "1";
+        }
+        singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
+
         viewReview.setOnClickListener(debouncedOnClickListener);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+        AppBarLayout appBarLayout = findViewById(R.id.appbarLayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;
@@ -291,7 +314,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                slideTextView.setText((position+1) + "/" + imageList.size());
+                slideTextView.setText((position + 1) + "/" + imageList.size());
             }
 
             @Override
@@ -300,6 +323,24 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.layout_change_pincode);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        EditText editText = dialog.findViewById(R.id.pinCodeEditText);
+        Button button = dialog.findViewById(R.id.changePinCodeButton);
+        button.setOnClickListener(v1 -> {
+            Toast.makeText(SingleProductActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+        });
+
+        changePinCode.setOnClickListener(debouncedOnClickListener);
+        wishListButton.setOnClickListener(debouncedOnClickListener);
+        selectedWishListButton.setOnClickListener(debouncedOnClickListener);
         btnAddToBag.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
@@ -339,6 +380,15 @@ public class SingleProductActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
+            } else if (v.getId() == R.id.changePinCode) {
+
+                dialog.show();
+            } else if (v.getId() == R.id.wishListButton) {
+                selectedWishListButton.setVisibility(View.VISIBLE);
+                wishListButton.setVisibility(View.GONE);
+            } else if (v.getId() == R.id.selectWishListButton) {
+                wishListButton.setVisibility(View.VISIBLE);
+                selectedWishListButton.setVisibility(View.GONE);
             }
         }
     };
@@ -350,11 +400,13 @@ public class SingleProductActivity extends AppCompatActivity {
             relativeLayout.setVisibility(View.GONE);
             // viewStub.setVisibility(View.VISIBLE);
             // relativeLayout.setVisibility(View.GONE);
+            favLinearLayout.setVisibility(View.GONE);
         } else {
             viewStub.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
             //  viewStub.setVisibility(View.GONE);
             // relativeLayout.setVisibility(View.VISIBLE);
+            favLinearLayout.setVisibility(View.VISIBLE);
         }
         swipeRefreshLayout.setRefreshing(false);
         // swipeRefreshLayout.setRefreshing(false);
@@ -373,9 +425,38 @@ public class SingleProductActivity extends AppCompatActivity {
                     break;
                 }
             }
+            sizeList.clear();
+            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                if (productVariableResponse.getColor().equals(color)) {
+                    System.out.println(productVariableResponse.getSize());
+                    sizeList.add(productVariableResponse.getSize());
+                }
+            }
+            HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
+            sizeList.clear();
+            sizeList.addAll(hashSet);
+            sizeAdapter.setSizeList(sizeList, sizeClickable);
+            sizeAdapter.notifyDataSetChanged();
         }
     }
 
+    public void setSizeCurrentItem(int position) {
+        String size = sizeList.get(position);
+        if (!size.isEmpty()) {
+            colorList.clear();
+            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                if (productVariableResponse.getSize().equals(size)) {
+                    System.out.println(productVariableResponse.getColor());
+                    colorList.add(productVariableResponse.getColor());
+                }
+            }
+            HashSet<String> hashSet = new LinkedHashSet<>(colorList);
+            colorList.clear();
+            colorList.addAll(hashSet);
+            colorAdapter.setColorList(colorList, colorClickable);
+            colorAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public void onBackPressed() {

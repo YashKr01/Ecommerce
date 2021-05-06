@@ -6,4 +6,10 @@
         android:icon="@drawable/ic_group_627"
         app:showAsAction="always"
         android:title="Share" />
+
+    <item android:id="@+id/shoppingCart"
+        android:icon="@drawable/ic_group_721"
+        app:showAsAction="always"
+        android:title="Shopping cart"/>
+
 </menu>
