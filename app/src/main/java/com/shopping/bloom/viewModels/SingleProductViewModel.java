@@ -85,6 +85,7 @@ public class SingleProductViewModel extends ViewModel {
             token = loginManager.getGuest_token();
         }
 
+        //todo here category id is optional if category id value is null then there will be no category id parameter
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<LoginResponseModel> call = apiService.createUserActivity(product_id, category_id, "Bearer " + token);
         call.enqueue(new Callback<LoginResponseModel>() {
