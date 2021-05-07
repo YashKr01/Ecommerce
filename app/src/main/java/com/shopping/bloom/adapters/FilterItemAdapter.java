@@ -95,6 +95,14 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
         notifyDataSetChanged();
     }
 
+    public void clearAllSelection(List<FilterItem> filterItems) {
+        if (filterItems == null || filterItems.size() == 0) return;
+        for (int i = 0; i < filterItems.size(); i++) {
+            filterItems.get(i).setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
+
     public void updateList(List<FilterItem> list) {
         if (list == null) return;
         filterItemList = list;
