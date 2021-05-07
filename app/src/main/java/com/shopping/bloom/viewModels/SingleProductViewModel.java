@@ -36,7 +36,7 @@ public class SingleProductViewModel extends ViewModel {
         randomImageDataResponseMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<RandomImageDataResponse>> getRandomImageDataResponseMutableLiveData(){
+    public MutableLiveData<List<RandomImageDataResponse>> getRandomImageDataResponseMutableLiveData() {
         return randomImageDataResponseMutableLiveData;
     }
 
@@ -64,7 +64,11 @@ public class SingleProductViewModel extends ViewModel {
         call.enqueue(new Callback<SingleProductResponse>() {
             @Override
             public void onResponse(Call<SingleProductResponse> call, Response<SingleProductResponse> response) {
-                mutableLiveData.postValue(response.body().getSingleProductDataResponse());
+                if (response.body() == null) {
+                    System.out.println("NO DATA");
+                } else {
+                    mutableLiveData.postValue(response.body().getSingleProductDataResponse());
+                }
             }
 
             @Override
@@ -87,11 +91,20 @@ public class SingleProductViewModel extends ViewModel {
 
         //todo here category id is optional if category id value is null then there will be no category id parameter
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
-        Call<LoginResponseModel> call = apiService.createUserActivity(product_id, category_id, "Bearer " + token);
+        Call<LoginResponseModel> call;
+        if (category_id == null) {
+            call = apiService.createUserActivity(product_id, "Bearer " + token);
+        } else {
+            call = apiService.createUserActivity(product_id, category_id, "Bearer " + token);
+        }
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                loginResponseModelMutableLiveData.postValue(response.body());
+                if (response.body() == null) {
+                    System.out.println("NO DATA");
+                } else {
+                    loginResponseModelMutableLiveData.postValue(response.body());
+                }
             }
 
             @Override
@@ -117,7 +130,11 @@ public class SingleProductViewModel extends ViewModel {
         call.enqueue(new Callback<RandomImageResponse>() {
             @Override
             public void onResponse(Call<RandomImageResponse> call, Response<RandomImageResponse> response) {
-                randomImageDataResponseMutableLiveData.postValue(response.body().getImageDataResponseList());
+                if (response.body() == null) {
+                    System.out.println("NO DATA");
+                }else{
+                    randomImageDataResponseMutableLiveData.postValue(response.body().getImageDataResponseList());
+                }
 
             }
 

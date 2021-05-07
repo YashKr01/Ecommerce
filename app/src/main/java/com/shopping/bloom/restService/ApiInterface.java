@@ -219,11 +219,19 @@ public interface ApiInterface {
             @Query("pageNo") String page
     );
 
+    //for category id
     @FormUrlEncoded
     @POST("metadata/createUserActivity")
     Call<LoginResponseModel> createUserActivity(
             @Field("product_id") String product_id,
             @Field("category_id") String category_id,
+            @Header("Authorization") String bearer);
+
+    //if category id is null
+    @FormUrlEncoded
+    @POST("metadata/createUserActivity")
+    Call<LoginResponseModel> createUserActivity(
+            @Field("product_id") String product_id,
             @Header("Authorization") String bearer);
 
     @GET("frontend/getRandomProducts")
