@@ -45,7 +45,7 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
 
         WishListData currentItem = list.get(position);
 
-        holder.textView.setText(currentItem.getProductName());
+        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
         String imagePath = "http://bloomapp.in" + currentItem.getImage();
         CommonUtils.loadImageWithGlide(context,
@@ -57,7 +57,7 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
         holder.imgDelete.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                listener.wishListItemDelete(currentItem,position);
+                listener.wishListItemDelete(currentItem, position);
             }
         });
 

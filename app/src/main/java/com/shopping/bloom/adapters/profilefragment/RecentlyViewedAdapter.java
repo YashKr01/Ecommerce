@@ -46,7 +46,7 @@ public class RecentlyViewedAdapter extends RecyclerView.Adapter<RecentlyViewedAd
 
         RecentlyViewedItem currentItem = list.get(position);
 
-        holder.textView.setText(currentItem.getPrice());
+        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
         CommonUtils.loadImageWithGlide(
                 context,

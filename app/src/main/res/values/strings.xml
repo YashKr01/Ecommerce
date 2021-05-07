@@ -101,6 +101,7 @@
     <string name="enter_new_password">Enter New Password</string>
     <string name="confirm_password">Confirm New Password</string>
     <string name="feedback">Feedback</string>
+    <string name="search_product">search product</string>
 
 
 </resources>

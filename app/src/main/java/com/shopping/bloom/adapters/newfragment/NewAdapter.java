@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {

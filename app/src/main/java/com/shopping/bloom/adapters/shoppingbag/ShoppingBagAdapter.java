@@ -49,7 +49,7 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
         ProductEntity currentItem = list.get(position);
 
         holder.txtSize.setText("S(8)/");
-        holder.txtPrice.setText(currentItem.getProductPrice());
+        holder.txtPrice.setText(CommonUtils.getSignedAmount(currentItem.getProductPrice()));
         holder.txtName.setText(currentItem.getProductName());
 
         CommonUtils.loadImageWithGlide(
