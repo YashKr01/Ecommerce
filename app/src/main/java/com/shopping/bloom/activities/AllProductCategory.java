@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
-import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.FilterArrayValues;
@@ -36,7 +36,6 @@ import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
-import com.shopping.bloom.restService.callback.FilterItemClicked;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.restService.callback.WishListUploadedCallback;
@@ -54,6 +53,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class AllProductCategory extends AppCompatActivity {
+
+
+    //todo end case-> if filters are added and then user select price low to high in that case filters are getting reset: completed
+    // api should be same just price sorting filter should be added in that
+    // later search to be implemented as well
+    // in filer sheet, close button should be clear all button and all filter will be removed on click: completed
+    // later onclick listenr to shopping bag activity
+    //
+
 
     private static final String TAG = AllProductCategory.class.getName();
 
@@ -156,7 +164,7 @@ public class AllProductCategory extends AppCompatActivity {
         savedSize = new ArrayList<>();
         savedColor = new ArrayList<>();
 
-        findViewById(R.id.btClose).setOnClickListener(clickListener);
+        findViewById(R.id.btClearAll).setOnClickListener(clickListener);
         findViewById(R.id.btApplyFilter).setOnClickListener(clickListener);
         findViewById(R.id.imgClose).setOnClickListener(clickListener);
         llSort.setOnClickListener(clickListener);
@@ -239,6 +247,7 @@ public class AllProductCategory extends AppCompatActivity {
     private final DebouncedOnClickListener clickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
+            Log.d(TAG, "onDebouncedClick: ");
             int viewId = v.getId();
             if (viewId == R.id.llSortLayout) {
                 openBottomSheet(SORT_BOTTOM_SHEET);
@@ -247,8 +256,10 @@ public class AllProductCategory extends AppCompatActivity {
                 updateSelection();
                 openBottomSheet(FILTER_BOTTOM_SHEET);
             }
-            if (viewId == R.id.btClose) {
-                showOrHideSheet(cltFilter, false);
+            if (viewId == R.id.btClearAll) {
+                clearAllFilter();
+                updateFilter(DEFAULT_SORT_VALUE);
+                //showOrHideSheet(cltFilter, false);
             }
             if (viewId == R.id.btApplyFilter) {
                 //save list data
@@ -261,6 +272,14 @@ public class AllProductCategory extends AppCompatActivity {
             }
         }
     };
+
+    private void clearAllFilter() {
+        filterItemAdapter.clearAllSelection(flCategory);
+        filterItemAdapter.clearAllSelection(flSize);
+        filterItemAdapter.clearAllSelection(flType);
+        filterItemAdapter.clearAllSelection(flColor);
+        saveSelectionData();
+    }
 
     private void updateSelection() {
         Log.d(TAG, "updateSelection: ");
@@ -528,44 +547,35 @@ public class AllProductCategory extends AppCompatActivity {
         }
     }
 
+    /*
+    *   Update the filter and check for sort by option
+    * */
     private void updateFilter(SORT_BY sortBy) {
         Log.d(TAG, "updateFilter: updating filter... " + sortBy);
         CURRENT_PAGE = 0;
         RETRY_ATTEMPT = 0;
         IS_LAST_PAGE = false;
         ProductFilter newFilter = new ProductFilter();
-        if (sortBy == SORT_BY.FILTERS) {
-            String categoryIds = getQueryStringFor(flCategory, FILTER.CATEGORY);
-            if (!categoryIds.isEmpty()) {
-                MAIN_FILTER.setSubCategoryIds(categoryIds);
-            } else {
-                MAIN_FILTER.setSubCategoryIds(null);
-            }
-
-            String colors = getQueryStringFor(flColor, FILTER.COLOR);
-            if (!colors.isEmpty()) {
-                MAIN_FILTER.setColors(colors);
-            } else {
-                MAIN_FILTER.setColors(null);
-            }
-
-            String type = getQueryStringFor(flType, FILTER.TYPE);
-            if (!type.isEmpty()) {
-                MAIN_FILTER.setTypes(type);
-            } else {
-                MAIN_FILTER.setTypes(null);
-            }
-
-            String size = getQueryStringFor(flSize, FILTER.LENGTH);
-            if (!size.isEmpty()) {
-                MAIN_FILTER.setSizes(size);
-            } else {
-                MAIN_FILTER.setSizes(null);
-            }
-            Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
-            checkNetworkAndFetchData();
-            return;
+        String categoryIds = getQueryStringFor(flCategory, FILTER.CATEGORY);
+        if (!categoryIds.isEmpty()) {
+            newFilter.setSubCategoryIds(categoryIds);
         }
+
+        String colors = getQueryStringFor(flColor, FILTER.COLOR);
+        if (!colors.isEmpty()) {
+            newFilter.setColors(colors);
+        }
+
+        String type = getQueryStringFor(flType, FILTER.TYPE);
+        if (!type.isEmpty()) {
+            newFilter.setTypes(type);
+        }
+
+        String size = getQueryStringFor(flSize, FILTER.LENGTH);
+        if (!size.isEmpty()) {
+            newFilter.setSizes(size);
+        }
+        Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
 
         if (sortBy == SORT_BY.NEW_ARRIVAL) {
             newFilter.setNewArrival("1");
@@ -612,7 +622,7 @@ public class AllProductCategory extends AppCompatActivity {
     private void openSingleProductActivity(Product product) {
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        intent.putExtra("CATEGORY_ID",PARENT_ID);
+        intent.putExtra("CATEGORY_ID", PARENT_ID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }

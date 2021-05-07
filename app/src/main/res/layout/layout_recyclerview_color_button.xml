@@ -8,8 +8,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="@dimen/sb_size_40"
-        android:layout_height="@dimen/sb_size_40"
+        android:layout_width="@dimen/sb_size_25"
+        android:layout_height="@dimen/sb_size_25"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/sb_size_15"
         android:layout_margin="@dimen/sb_size_10"

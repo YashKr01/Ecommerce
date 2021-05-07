@@ -74,9 +74,12 @@
                             android:layout_marginBottom="@dimen/sb_size_20"
                             android:alpha="0.7"
                             android:background="@drawable/bg_viewpager_pos"
-                            android:padding="@dimen/sb_size_10"
+                           android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:paddingLeft="18dp"
+                            android:paddingRight="18dp"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/sb_text_size_16"
+                            android:textSize="@dimen/sb_text_size_12"
                             android:textStyle="bold" />
 
                         <androidx.appcompat.widget.Toolbar
@@ -101,14 +104,16 @@
                         android:id="@+id/scrollView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/grey_300"
+                        android:fillViewport="true"
+                        android:background="#EEEEEE"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/grey_300">
+                            android:background="#EEEEEE">
 
                             <RelativeLayout
                                 android:id="@+id/relativeLayout1"
@@ -124,7 +129,9 @@
                                     android:layout_marginTop="@dimen/sb_size_20"
                                     android:fontFamily="@font/gothamblack"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_18"
+                                    android:ellipsize="end"
+                                    android:maxLines="2"
+                                    android:textSize="@dimen/sb_text_size_16"
                                     android:textStyle="bold" />
 
                                 <TextView
@@ -183,7 +190,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/colorRecyclerView"
                                     android:layout_marginStart="@dimen/sb_size_20"
-                                    android:layout_marginTop="@dimen/sb_size_15"
+                                    android:layout_marginTop="@dimen/sb_size_12"
                                     android:text="Size"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/sb_text_size_15"
@@ -227,6 +234,7 @@
                                     android:layout_alignParentEnd="true"
                                     android:layout_marginTop="@dimen/sb_size_10"
                                     android:layout_marginEnd="@dimen/sb_size_20"
+                                    android:textSize="12sp"
                                     android:background="@drawable/rect_back_button"
                                     android:paddingHorizontal="@dimen/sb_size_10"
                                     android:text="Change pincode"
@@ -237,13 +245,13 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/shippingToTextView"
                                     android:layout_marginStart="@dimen/sb_size_20"
-                                    android:layout_marginTop="@dimen/sb_text_size_15"
+                                    android:layout_marginTop="@dimen/sb_text_size_8"
                                     android:orientation="vertical">
 
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginVertical="@dimen/sb_size_10"
+
                                         android:drawablePadding="@dimen/sb_size_10"
                                         android:gravity="start|center"
                                         android:padding="@dimen/sb_size_10"
@@ -260,7 +268,7 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/sb_size_20"
+                                        android:layout_marginBottom="@dimen/sb_size_4"
                                         android:drawablePadding="@dimen/sb_size_25"
                                         android:gravity="start|center"
                                         android:padding="@dimen/sb_size_20"
@@ -288,7 +296,7 @@
                                     android:text="Description"
                                     android:gravity="start|center"
                                     android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_17"
+                                    android:textSize="@dimen/sb_text_size_16"
                                     app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_up_24" />
 
                                 <LinearLayout
@@ -316,7 +324,6 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:paddingVertical="@dimen/sb_size_10"
-                                        android:layout_marginTop="@dimen/sb_size_10"
                                         android:paddingHorizontal="@dimen/sb_size_10"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
@@ -579,17 +586,27 @@
                                     android:text="@string/loren_ipsum_placeholder_text"
                                     android:textColor="@color/black" />
 
+
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:id="@+id/viewdivider"
+                                    android:layout_below="@+id/reviewDescTextView2"
+                                    android:layout_marginTop="8dp"
+                                    android:background="#EEEEEE"/>
+
                                 <TextView
                                     android:id="@+id/viewAllReviewTextView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:padding="@dimen/sb_size_10"
-                                    android:layout_marginTop="@dimen/sb_size_10"
-                                    android:layout_below="@id/reviewDescTextView2"
+                                    android:paddingTop="@dimen/sb_size_6"
+
+                                    android:layout_marginTop="@dimen/sb_size_8"
+                                    android:layout_below="@id/viewdivider"
                                     android:layout_alignParentBottom="true"
                                     android:layout_centerHorizontal="true"
                                     android:gravity="center"
-                                    android:background="@drawable/rect_back_button"
                                     android:textStyle="bold"
                                     android:fontFamily="@font/gothamblack"
                                     android:text="View All"
@@ -613,12 +630,14 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginVertical="@dimen/sb_size_10"
                                     android:text="Recommendations For You"
+                                    android:textSize="14sp"
                                     android:textColor="@color/black"
                                     android:textStyle="bold" />
 
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/randomRecyclerView"
                                     android:layout_width="match_parent"
+                                    android:layout_marginTop="6dp"
                                     android:nestedScrollingEnabled="false"
                                     android:layout_height="match_parent"/>
 

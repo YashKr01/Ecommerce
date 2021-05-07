@@ -107,6 +107,13 @@ public class SingleProductActivity extends AppCompatActivity {
     int limit = 21, pageNo = 0;
     View inflated;
 
+
+
+    //todo collapsing issue with toolbar when scrolling
+    // todo add price in recommended section
+    // handle text view for long text in product name
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +157,8 @@ public class SingleProductActivity extends AppCompatActivity {
         hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         btnAddToBag = findViewById(R.id.btn_add_to_bag);
+
+        toolbar.setNavigationIcon(R.drawable.ic_back_background);
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();

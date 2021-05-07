@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         } else if(imageTo == 0) {
             mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.VISIBLE);
             Glide.with(this)
-                    .load(R.drawable.demo)
+                    .load(R.drawable.ic_bloom_new)
                     .into(mainView.layoutToolbar.imgToolbarLogo);
         } else {
             mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.INVISIBLE);

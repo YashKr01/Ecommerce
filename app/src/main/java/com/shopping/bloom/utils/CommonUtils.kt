@@ -3,6 +3,7 @@ package com.shopping.bloom.utils
 import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.shopping.bloom.R
 import org.json.JSONArray
 import org.json.JSONObject
@@ -37,12 +38,14 @@ class CommonUtils {
             val builder = Glide.with(context)
             if (showPlaceHolder) {
                 builder.load(url)
-                        .placeholder(R.drawable.ic_placeholder_product)
-                        .thumbnail(0.3f)
+                        .placeholder(R.drawable.placeholder_image)
+                        .thumbnail(0.7f)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(imageView)
             } else {
                 builder.load(url)
-                        .thumbnail(0.3f)
+                        .thumbnail(0.7f)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(imageView)
             }
         }
