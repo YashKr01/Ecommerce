@@ -217,14 +217,14 @@
                             android:layout_weight="35">
 
                             <Button
-                                android:id="@+id/btClose"
+                                android:id="@+id/btClearAll"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_gravity="center"
                                 android:backgroundTint="@color/grey_400"
                                 android:textColor="@color/black"
-                                android:text="@string/close"/>
+                                android:text="@string/clear"/>
                         </RelativeLayout>
 
                         <RelativeLayout

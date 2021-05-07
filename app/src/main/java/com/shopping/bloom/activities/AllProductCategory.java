@@ -25,9 +25,9 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
-import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.FilterArrayValues;
@@ -36,7 +36,6 @@ import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
-import com.shopping.bloom.restService.callback.FilterItemClicked;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.restService.callback.WishListUploadedCallback;
@@ -156,7 +155,7 @@ public class AllProductCategory extends AppCompatActivity {
         savedSize = new ArrayList<>();
         savedColor = new ArrayList<>();
 
-        findViewById(R.id.btClose).setOnClickListener(clickListener);
+        findViewById(R.id.btClearAll).setOnClickListener(clickListener);
         findViewById(R.id.btApplyFilter).setOnClickListener(clickListener);
         findViewById(R.id.imgClose).setOnClickListener(clickListener);
         llSort.setOnClickListener(clickListener);
@@ -239,6 +238,7 @@ public class AllProductCategory extends AppCompatActivity {
     private final DebouncedOnClickListener clickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
+            Log.d(TAG, "onDebouncedClick: ");
             int viewId = v.getId();
             if (viewId == R.id.llSortLayout) {
                 openBottomSheet(SORT_BOTTOM_SHEET);
@@ -247,8 +247,10 @@ public class AllProductCategory extends AppCompatActivity {
                 updateSelection();
                 openBottomSheet(FILTER_BOTTOM_SHEET);
             }
-            if (viewId == R.id.btClose) {
-                showOrHideSheet(cltFilter, false);
+            if (viewId == R.id.btClearAll) {
+                clearAllFilter();
+                updateFilter(SORT_BY.FILTERS);
+                //showOrHideSheet(cltFilter, false);
             }
             if (viewId == R.id.btApplyFilter) {
                 //save list data
@@ -261,6 +263,13 @@ public class AllProductCategory extends AppCompatActivity {
             }
         }
     };
+
+    private void clearAllFilter() {
+        filterItemAdapter.clearAllSelection(flCategory);
+        filterItemAdapter.clearAllSelection(flSize);
+        filterItemAdapter.clearAllSelection(flType);
+        filterItemAdapter.clearAllSelection(flColor);
+    }
 
     private void updateSelection() {
         Log.d(TAG, "updateSelection: ");
@@ -612,7 +621,7 @@ public class AllProductCategory extends AppCompatActivity {
     private void openSingleProductActivity(Product product) {
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        intent.putExtra("CATEGORY_ID",PARENT_ID);
+        intent.putExtra("CATEGORY_ID", PARENT_ID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
