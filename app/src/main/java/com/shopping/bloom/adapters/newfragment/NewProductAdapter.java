@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
@@ -33,35 +35,47 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
     @NonNull
     @Override
     public ChildViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ChildViewHolder(LayoutInflater.from(context).inflate(R.layout.item_new_product
-                , parent, false));
+        View itemView;
+
+        if (viewType == R.layout.item_see_more) {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_see_more, parent, false);
+        } else {
+            itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_new_product, parent, false);
+        }
+
+        return new ChildViewHolder(itemView);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == list.size()) ? R.layout.item_see_more : R.layout.item_new_product;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
 
-        NewProduct currentItem = list.get(position);
+        if (position == list.size()) {
 
-        String imagePath = "http://bloomapp.in" + currentItem.getImagePath();
-        CommonUtils.loadImageWithGlide(context,
-                imagePath,
-                holder.imageView,
-                true);
+        } else {
+            NewProduct currentItem = list.get(position);
 
-        holder.textView.setText(currentItem.getPrice());
-
-        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                listener.newProductListener(currentItem);
-            }
-        });
-
+            CommonUtils.loadImageWithGlide(context,
+                    Const.GET_CATEGORY_DATA + currentItem.getImagePath(),
+                    holder.imageView,
+                    true);
+            holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
+            holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
+                @Override
+                public void onDebouncedClick(View v) {
+                    listener.newProductListener(currentItem);
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return list.size() + 1;
     }
 
     public static class ChildViewHolder extends RecyclerView.ViewHolder {

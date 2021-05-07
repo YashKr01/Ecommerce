@@ -46,7 +46,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
 
         RecommendationItem currentItem = list.get(position);
 
-        holder.textView.setText(currentItem.getPrice());
+        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
         CommonUtils.loadImageWithGlide(
                 context,
