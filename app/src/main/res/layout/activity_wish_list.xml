@@ -43,6 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.core.widget.NestedScrollView
+                android:id="@+id/nestedScrollView"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="@dimen/sb_size_0"
                 app:layout_constraintBottom_toBottomOf="parent"

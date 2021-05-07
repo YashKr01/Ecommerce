@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
@@ -88,12 +89,14 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         getWishList();
         getRecommendedList();
 
-        // for pagination in recommendation list
-        binding.recommendationRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+        // scrollview pagination (recommendation list)
+        binding.nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
 
+            View view = binding.nestedScrollView.getChildAt(binding.nestedScrollView.getChildCount() - 1);
+            int diff = (view.getBottom() - (binding.nestedScrollView.getHeight() + binding.nestedScrollView
+                    .getScrollY()));
+
+            if (diff == 0) {
                 if (!binding.recommendationRecyclerView.canScrollVertically(1)) {
                     if (!IS_LAST_PAGE && !IS_LOADING) {
                         // increasing page number
@@ -102,8 +105,8 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
                         Log.d("CALLED", "onScrollStateChanged: ");
                     }
                 }
-
             }
+
         });
 
     }
