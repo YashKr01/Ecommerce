@@ -5,10 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -28,7 +30,7 @@ import com.shopping.bloom.viewModels.wishlist.WishListViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener , RecommendationProductClickListener {
+public class WishListActivity extends AppCompatActivity implements WishListProductListener, SwipeRefreshLayout.OnRefreshListener, RecommendationProductClickListener {
 
     private ActivityWishListBinding binding;
 
@@ -44,7 +46,8 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     private String PAGE = "0", LIMIT = "30";
     private AlertDialog.Builder builder;
 
-    private final String RECOMMENDATION_LIMIT = "12", RECOMMENDATION_PAGE = "0";
+    private String RECOMMENDATION_LIMIT = "30", RECOMMENDATION_PAGE = "0";
+    private boolean IS_LAST_PAGE = false, IS_LOADING = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
         recommendationsItemList = new ArrayList<>();
-        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this,this);
+        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this, this);
         adapter = new WishListActivityAdapter(this, list, this);
 
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -80,10 +83,28 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
         binding.recommendationRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         binding.recommendationRecyclerView.setAdapter(recommendationsAdapter);
-        binding.recommendationRecyclerView.setNestedScrollingEnabled(false);
 
+        // getting list from server
         getWishList();
         getRecommendedList();
+
+        // for pagination in recommendation list
+        binding.recommendationRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!binding.recommendationRecyclerView.canScrollVertically(1)) {
+                    if (!IS_LAST_PAGE && !IS_LOADING) {
+                        // increasing page number
+                        RECOMMENDATION_PAGE = String.valueOf(Integer.parseInt(RECOMMENDATION_PAGE) + 1);
+                        getRecommendedList();
+                        Log.d("CALLED", "onScrollStateChanged: ");
+                    }
+                }
+
+            }
+        });
 
     }
 
@@ -98,7 +119,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
                     list.clear();
                     list.addAll(wishListData);
                     adapter.notifyDataSetChanged();
-                    if (list.isEmpty()) binding.txtWishlistEmpty.setVisibility(View.GONE);
+                    if (list.isEmpty()) binding.txtWishlistEmpty.setVisibility(View.VISIBLE);
                 } else {
                     binding.txtWishlistEmpty.setVisibility(View.VISIBLE);
                 }
@@ -117,19 +138,25 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
     // GET recommended product list from server
     private void getRecommendedList() {
 
+        IS_LOADING = true;
         binding.progressBar6.setVisibility(View.VISIBLE);
 
         if (NetworkCheck.isConnect(this)) {
             recommendationViewModel.getRecommendationList(RECOMMENDATION_LIMIT, RECOMMENDATION_PAGE).observe(this, recommendationItems -> {
-                if (recommendationItems != null && !recommendationItems.isEmpty()) {
+                if (recommendationItems != null && recommendationItems.size() > 0) {
+                    int oldListSize = recommendationsItemList.size();
                     recommendationsItemList.addAll(recommendationItems);
-                    recommendationsAdapter.notifyDataSetChanged();
-                    binding.txtRecommendations.setVisibility(View.VISIBLE);
+                    recommendationsAdapter.notifyItemRangeChanged(oldListSize, recommendationsItemList.size());
                 } else {
-                    binding.txtRecommendations.setVisibility(View.GONE);
+                    IS_LAST_PAGE = true;
                 }
 
+                IS_LOADING = false;
                 binding.progressBar6.setVisibility(View.INVISIBLE);
+
+                if (recommendationsItemList.size() == 0)
+                    binding.txtRecommendedEmptyList.setVisibility(View.VISIBLE);
+
             });
         } else {
             binding.progressBar6.setVisibility(View.INVISIBLE);
@@ -213,7 +240,7 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
 
     private void showNoConnectionLayout(boolean show) {
         if (show) binding.noConnectionLayout.setVisibility(View.VISIBLE);
-         else binding.noConnectionLayout.setVisibility(View.GONE);
+        else binding.noConnectionLayout.setVisibility(View.GONE);
     }
 
     @Override

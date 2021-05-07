@@ -98,6 +98,18 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <TextView
+                        android:id="@+id/txt_recommended_empty_list"
+                        style="@style/BoldText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/sb_size_24"
+                        android:text="@string/no_items_here"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textSize="@dimen/sb_text_size_16"
+                        android:visibility="gone" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recommendation_recycler_view"
                         android:layout_width="match_parent"
