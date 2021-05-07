@@ -12,9 +12,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +47,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
     private String PAGE = "0";
     private boolean IS_LOADING = false;
     private boolean IS_LAST_PAGE = false;
+    private LinearLayout parentLayout;
 
     private SearchActivityConfig config;
 
@@ -59,6 +62,19 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
 
         // Remote Config data
         config = RemoteConfig.getTopSearchConfig(this);
+        List<String> topSearchesList = config.getTop_searches();
+
+        // setting custom layout of top searches
+        parentLayout = (LinearLayout) findViewById(R.id.top_search_layout);
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View view;
+
+        for (int i = 0; i < topSearchesList.size(); i++) {
+            view = layoutInflater.inflate(R.layout.item_top_searches, parentLayout, false);
+            TextView textView = (TextView) view.findViewById(R.id.txt_top_search);
+            textView.setText(topSearchesList.get(i));
+            parentLayout.addView(textView);
+        }
 
         // swipe layout
         binding.swipeRefresh.setOnRefreshListener(this);
@@ -121,12 +137,12 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                         PAGE = String.valueOf(Integer.parseInt(PAGE) + 1);
                         // get next page products
                         getSearchedProducts(query);
-                        Log.d("ffffffffff", "onScrollStateChanged: called");
                     }
                 }
             }
 
         });
+
 
     }
 
@@ -143,14 +159,14 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                     list.addAll(searchProducts);
                     adapter.notifyItemRangeInserted(oldListSize, list.size());
                     binding.txtEmpty.setVisibility(View.GONE);
+                    parentLayout.setVisibility(View.GONE);
                 } else {
-
                     IS_LAST_PAGE = true;
                     if (list.isEmpty() && searchProducts == null) {
+                        parentLayout.setVisibility(View.GONE);
                         IS_LAST_PAGE = false;
                         binding.txtEmpty.setVisibility(View.VISIBLE);
                     }
-
                 }
                 IS_LOADING = false;
                 binding.progressBar3.setVisibility(View.INVISIBLE);
@@ -176,11 +192,10 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
     private boolean validInput() {
         String input = binding.edittextSearch.getText().toString().trim();
         if (input.isEmpty()) {
-            Toast.makeText(this, "Empty Search!!", Toast.LENGTH_SHORT).show();
             return false;
-        } else {
+        } else
             return true;
-        }
+
     }
 
     private void showNoConnection(boolean show) {
@@ -190,7 +205,6 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
         } else binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onRefresh() {
         if (!NetworkCheck.isConnect(this)) {
@@ -199,10 +213,6 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
             showNoConnection(false);
             list.clear();
             PAGE = "0";
-
-            if (validInput())
-                getSearchedProducts(binding.edittextSearch.getText().toString().trim());
-
         }
         binding.swipeRefresh.setRefreshing(false);
     }

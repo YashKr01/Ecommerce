@@ -14,6 +14,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 
@@ -42,10 +43,9 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         WishListData currentItem = wishList.get(position);
-        holder.textView.setText(currentItem.getProductName());
+        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
-        String image_path = "http://bloomapp.in" + currentItem.getImage();
-        CommonUtils.loadImageWithGlide(context, image_path,
+        CommonUtils.loadImageWithGlide(context, Const.GET_CATEGORY_DATA + currentItem.getImage(),
                 holder.imageView, false);
 
         holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
@@ -62,7 +62,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         return wishList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textView;

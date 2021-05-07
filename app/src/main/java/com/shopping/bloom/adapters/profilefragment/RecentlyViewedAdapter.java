@@ -46,7 +46,7 @@ public class RecentlyViewedAdapter extends RecyclerView.Adapter<RecentlyViewedAd
 
         RecentlyViewedItem currentItem = list.get(position);
 
-        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
+        holder.textView.setText(currentItem.getProductName());
 
         CommonUtils.loadImageWithGlide(
                 context,
@@ -55,7 +55,7 @@ public class RecentlyViewedAdapter extends RecyclerView.Adapter<RecentlyViewedAd
                 true
         );
 
-        holder.imageView.setOnClickListener(new DebouncedOnClickListener(1000) {
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(300) {
             @Override
             public void onDebouncedClick(View v) {
                 listener.recentlyViewedOnClicked(currentItem);
