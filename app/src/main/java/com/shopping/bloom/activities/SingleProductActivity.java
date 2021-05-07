@@ -3,6 +3,7 @@ package com.shopping.bloom.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -104,6 +105,7 @@ public class SingleProductActivity extends AppCompatActivity {
     RandomImageAdapter randomImageAdapter;
     List<SingleProductDescResponse> list;
     int limit = 21, pageNo = 0;
+    View inflated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,7 @@ public class SingleProductActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
 
+        inflated = viewStub.inflate();
         //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
         collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
@@ -414,6 +417,16 @@ public class SingleProductActivity extends AppCompatActivity {
 
         checkNetworkConnectivity();
 
+        TextView textViewVS = inflated.findViewById(R.id.tvSwipeToRefresh);
+        textViewVS.setText("Click to Refresh");
+        ConstraintLayout constraintLayout = inflated.findViewById(R.id.constraintLayout);
+        constraintLayout.setOnClickListener(new DebouncedOnClickListener(150) {
+            @Override
+            public void onDebouncedClick(View v) {
+                checkNetworkConnectivity();
+            }
+        });
+
     }
 
     private void addToShoppingBag() {
@@ -425,6 +438,7 @@ public class SingleProductActivity extends AppCompatActivity {
         ProductEntity productEntity = new ProductEntity(id, image, name, null, price, null);
 
         singleProductViewModel.addToShoppingBag(productEntity);
+
     }
 
 
@@ -455,8 +469,6 @@ public class SingleProductActivity extends AppCompatActivity {
             } else if (v.getId() == R.id.selectWishListButton) {
                 wishListButton.setVisibility(View.VISIBLE);
                 selectedWishListButton.setVisibility(View.GONE);
-            } else if (v.getId() == R.id.vsEmptyScreen) {
-                checkNetworkConnectivity();
             }
         }
     };
@@ -464,8 +476,9 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
+
             viewStub.setVisibility(View.VISIBLE);
-            viewStub.setOnClickListener(debouncedOnClickListener);
+
             relativeLayout.setVisibility(View.GONE);
             favLinearLayout.setVisibility(View.GONE);
         } else {

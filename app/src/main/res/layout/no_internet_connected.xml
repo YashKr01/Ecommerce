@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
+    android:id="@+id/constraintLayout"
     android:elevation="@dimen/sb_size_10"
     android:background="@color/white">
 
