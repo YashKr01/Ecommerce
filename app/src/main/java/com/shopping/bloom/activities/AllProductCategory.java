@@ -55,10 +55,10 @@ import java.util.Objects;
 public class AllProductCategory extends AppCompatActivity {
 
 
-    //todo end case-> if filters are added and then user select price low to high in that case filters are geting reset
+    //todo end case-> if filters are added and then user select price low to high in that case filters are getting reset: completed
     // api should be same just price sorting filter should be added in that
     // later search to be implemented as well
-    // in filer sheet, close button should be clear all button and all filter will be removed on click
+    // in filer sheet, close button should be clear all button and all filter will be removed on click: completed
     // later onclick listenr to shopping bag activity
     //
 
@@ -258,7 +258,7 @@ public class AllProductCategory extends AppCompatActivity {
             }
             if (viewId == R.id.btClearAll) {
                 clearAllFilter();
-                updateFilter(SORT_BY.FILTERS);
+                updateFilter(DEFAULT_SORT_VALUE);
                 //showOrHideSheet(cltFilter, false);
             }
             if (viewId == R.id.btApplyFilter) {
@@ -278,6 +278,7 @@ public class AllProductCategory extends AppCompatActivity {
         filterItemAdapter.clearAllSelection(flSize);
         filterItemAdapter.clearAllSelection(flType);
         filterItemAdapter.clearAllSelection(flColor);
+        saveSelectionData();
     }
 
     private void updateSelection() {
@@ -546,44 +547,35 @@ public class AllProductCategory extends AppCompatActivity {
         }
     }
 
+    /*
+    *   Update the filter and check for sort by option
+    * */
     private void updateFilter(SORT_BY sortBy) {
         Log.d(TAG, "updateFilter: updating filter... " + sortBy);
         CURRENT_PAGE = 0;
         RETRY_ATTEMPT = 0;
         IS_LAST_PAGE = false;
         ProductFilter newFilter = new ProductFilter();
-        if (sortBy == SORT_BY.FILTERS) {
-            String categoryIds = getQueryStringFor(flCategory, FILTER.CATEGORY);
-            if (!categoryIds.isEmpty()) {
-                MAIN_FILTER.setSubCategoryIds(categoryIds);
-            } else {
-                MAIN_FILTER.setSubCategoryIds(null);
-            }
-
-            String colors = getQueryStringFor(flColor, FILTER.COLOR);
-            if (!colors.isEmpty()) {
-                MAIN_FILTER.setColors(colors);
-            } else {
-                MAIN_FILTER.setColors(null);
-            }
-
-            String type = getQueryStringFor(flType, FILTER.TYPE);
-            if (!type.isEmpty()) {
-                MAIN_FILTER.setTypes(type);
-            } else {
-                MAIN_FILTER.setTypes(null);
-            }
-
-            String size = getQueryStringFor(flSize, FILTER.LENGTH);
-            if (!size.isEmpty()) {
-                MAIN_FILTER.setSizes(size);
-            } else {
-                MAIN_FILTER.setSizes(null);
-            }
-            Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
-            checkNetworkAndFetchData();
-            return;
+        String categoryIds = getQueryStringFor(flCategory, FILTER.CATEGORY);
+        if (!categoryIds.isEmpty()) {
+            newFilter.setSubCategoryIds(categoryIds);
         }
+
+        String colors = getQueryStringFor(flColor, FILTER.COLOR);
+        if (!colors.isEmpty()) {
+            newFilter.setColors(colors);
+        }
+
+        String type = getQueryStringFor(flType, FILTER.TYPE);
+        if (!type.isEmpty()) {
+            newFilter.setTypes(type);
+        }
+
+        String size = getQueryStringFor(flSize, FILTER.LENGTH);
+        if (!size.isEmpty()) {
+            newFilter.setSizes(size);
+        }
+        Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
 
         if (sortBy == SORT_BY.NEW_ARRIVAL) {
             newFilter.setNewArrival("1");
