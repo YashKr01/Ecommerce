@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import com.shopping.bloom.App;
 import com.shopping.bloom.R;
 import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.restService.ApiInterface;
@@ -128,11 +129,9 @@ public class SingleProductViewModel extends ViewModel {
         });
     }
 
-    public void addToShoppingBag(ProductEntity productEntity) {
-
+    public void addToShoppingBag(CartItem cartItem) {
         EcommerceDatabase.databaseWriteExecutor.execute(() ->
-                EcommerceDatabase.getInstance().wishListProductDao().addToShoppingBag(productEntity)
-        );
+                EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem));
 
     }
 

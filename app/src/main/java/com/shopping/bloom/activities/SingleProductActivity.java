@@ -1,52 +1,39 @@
 package com.shopping.bloom.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amar.library.ui.StickyScrollView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
@@ -55,11 +42,11 @@ import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
 import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
+import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
-import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
@@ -72,6 +59,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
+
+    private static final String TAG = SingleProductActivity.class.getName();
+
     boolean colorClickable, sizeClickable;
     NestedScrollView scrollView;
     RecyclerView colorRecyclerView, sizeRecyclerView, randomRecyclerView;
@@ -104,7 +94,8 @@ public class SingleProductActivity extends AppCompatActivity {
     RandomImageAdapter randomImageAdapter;
     List<SingleProductDescResponse> list;
     int limit = 21, pageNo = 0;
-
+    String SELECTED_COLOR = "";
+    String SELECTED_SIZE = "";
 
 
     //todo collapsing issue with toolbar when scrolling
@@ -426,14 +417,65 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     private void addToShoppingBag() {
+        if (isColorSizeSelected()) {
+            Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
+            ProductVariableResponse product = new ProductVariableResponse();
+            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                Log.d(TAG, "addToShoppingBag: #!: " + product.toString());
+                if (productVariableResponse.getSize().equals(SELECTED_SIZE) &&
+                        productVariableResponse.getColor().equals(SELECTED_COLOR)) {
+                    Log.d(TAG, "addToShoppingBag: MATCHED");
+                    product = productVariableResponse;
+                    break;
+                }
+            }
+            if (product != null) {
+                Log.d(TAG, "addToShoppingBag: product: " + product.toString());
+                Log.d(TAG, "addToShoppingBag: FOUND");
+            } else {
+                Log.d(TAG, "addToShoppingBag: NOT FOUND");
 
-        Integer id = singleProductDataResponse.getId();
-        String name = singleProductDataResponse.getProduct_name();
-        String image = singleProductDataResponse.getPrimary_image();
-        String price = singleProductDataResponse.getPrice();
-        ProductEntity productEntity = new ProductEntity(id, image, name, null, price, null);
+            }
+            String parentId = product.getParentId();
+            String childId = product.getChildId();
+            String primaryImage = product.getPrimary_image();
+            String color = product.getColor();
+            String size = product.getSize();
+            String price = product.getPrice();
+            String name = singleProductDataResponse.getProduct_name();
+            Log.d(TAG, "addToShoppingBag: product: " + product.toString());
+            CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price);
+            if (validateCartItem(cartItem)) {
+                singleProductViewModel.addToShoppingBag(cartItem);
+            } else {
+                Toast.makeText(this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d(TAG, "addToShoppingBag: color and size " + SELECTED_SIZE + ", " + SELECTED_COLOR);
+            if (SELECTED_SIZE.isEmpty()) {
+                Toast.makeText(this, getString(R.string.select_size), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.select_color), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
-        singleProductViewModel.addToShoppingBag(productEntity);
+    /*
+     *   Check if size or color is selected or not
+     * */
+    private boolean isColorSizeSelected() {
+        return (SELECTED_COLOR.length() > 0 && SELECTED_SIZE.length() > 0);
+    }
+
+    private boolean validateCartItem(CartItem cartItem) {
+        if (cartItem.getParentId().isEmpty() || cartItem.getChildId().isEmpty() ||
+                cartItem.getName().isEmpty() || cartItem.getPrimaryImage().isEmpty() ||
+                cartItem.getProductPrice().isEmpty()) {
+            //Something is wrong
+            Log.d(TAG, "validateCartItem: SOMETHING IS WRONG INVALID data received");
+            return false;
+        }
+        return true;
     }
 
 
@@ -485,13 +527,13 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     public void setViewPagerCurrentItem(int pos) {
-        String color = colorList.get(pos).trim();
-        if (!color.isEmpty()) {
+        SELECTED_COLOR = colorList.get(pos).trim();
+        if (!SELECTED_COLOR.isEmpty()) {
             colorTextView.setVisibility(View.VISIBLE);
-            colorTextView.setText("Color: ".concat(color));
+            colorTextView.setText("Color: ".concat(SELECTED_COLOR));
 
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
-                if (color.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
                     viewPager.setCurrentItem(i + 1, true);
                     //viewPagerImageAdapter.notifyDataSetChanged();
                     price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
@@ -500,7 +542,7 @@ public class SingleProductActivity extends AppCompatActivity {
             }
             sizeList.clear();
             for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getColor().equals(color)) {
+                if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
                     System.out.println(productVariableResponse.getSize());
                     sizeList.add(productVariableResponse.getSize());
                 }
@@ -514,11 +556,11 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     public void setSizeCurrentItem(int position) {
-        String size = sizeList.get(position);
-        if (!size.isEmpty()) {
+        SELECTED_SIZE = sizeList.get(position);
+        if (!SELECTED_SIZE.isEmpty()) {
             colorList.clear();
             for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getSize().equals(size)) {
+                if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
                     System.out.println(productVariableResponse.getColor());
                     colorList.add(productVariableResponse.getColor());
                 }

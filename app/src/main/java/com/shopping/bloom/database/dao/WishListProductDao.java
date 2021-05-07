@@ -33,13 +33,4 @@ public interface WishListProductDao {
     @Query("SELECT productId FROM wishListItem")
     List<String> getAllItem();
 
-    @Query("SELECT * FROM shopping_bag")
-    LiveData<List<ProductEntity>> getShoppingBagItems();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addToShoppingBag(ProductEntity productEntity);
-
-    @Delete
-    void deleteShoppingBagItem(ProductEntity productEntity);
-
 }
