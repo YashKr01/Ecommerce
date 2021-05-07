@@ -2,21 +2,24 @@ package com.shopping.bloom.adapters.singleproduct;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
 
+import java.util.HashMap;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
 
@@ -24,10 +27,13 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     List<String> colorList;
     int pos = -1;
     boolean clickable;
+    HashMap<String, String> colorMap;
 
     public ColorAdapter(Context context, List<String> colorList) {
         this.context = context;
         this.colorList = colorList;
+        colorMap = new HashMap<>();
+        fillColorHashMap();
     }
 
     public void setColorList(List<String> colorList, boolean clickable) {
@@ -39,16 +45,33 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @NonNull
     @Override
     public ColorAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recyclerview_button, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recyclerview_color_button, parent, false);
         return new ViewHolder(view);
+    }
+
+    private void fillColorHashMap() {
+        colorMap.put("Blue", "#2A93DF");
+        colorMap.put("Red", "#FD5353");
+        colorMap.put("Black", "#000000");
+        colorMap.put("Brown", "#A0552B");
+        colorMap.put("Green", "#11DF3E");
+        colorMap.put("Yellow", "#FAE423");
+        colorMap.put("White", "#E6E6E6");
     }
 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
-        holder.button.setText(colorList.get(position));
+        String color = colorMap.get(colorList.get(position));
+        System.out.println(color);
+        if (color == null) {
+            System.out.println("Empty color");
+        } else {
+            holder.button.setCardBackgroundColor(Color.parseColor(color));
+        }
+
         if (clickable) {
 
-            holder.button.setOnClickListener(v -> {
+            holder.cardView.setOnClickListener(v -> {
                 pos = position;
                 notifyDataSetChanged();
                 if (context instanceof SingleProductActivity) {
@@ -57,9 +80,9 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             });
 
             if (pos == position) {
-                holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
+                holder.cardView.setContentPadding(10,10,10,10);
             } else {
-                holder.button.setBackgroundResource(R.drawable.rect_back_button);
+                holder.cardView.setContentPadding(0,0,0,0);
             }
 
         }
@@ -74,12 +97,13 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        Button button;
+        CardView button;
+        CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.colorButton);
-
+            cardView = itemView.findViewById(R.id.cardView);
         }
 
     }

@@ -54,6 +54,15 @@ import java.util.Objects;
 
 public class AllProductCategory extends AppCompatActivity {
 
+
+    //todo end case-> if filters are added and then user select price low to high in that case filters are geting reset
+    // api should be same just price sorting filter should be added in that
+    // later search to be implemented as well
+    // in filer sheet, close button should be clear all button and all filter will be removed on click
+    // later onclick listenr to shopping bag activity
+    //
+
+
     private static final String TAG = AllProductCategory.class.getName();
 
     private ProductsViewModel viewModel;

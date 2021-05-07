@@ -36,7 +36,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     @NonNull
     @Override
     public SizeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recyclerview_button, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_recyclerview_size_button, parent, false);
         return new ViewHolder(view);
     }
 

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -36,8 +35,9 @@ public class WishListFragment extends Fragment implements WishListProductListene
     private WishListAdapter adapter;
     private List<WishListData> list;
     private WishListViewModel viewModel;
-    private String PAGE_NO = "0", LIMIT = "8";
-    private int RESULT_CODE = 123;
+    private final String PAGE_NO = "0";
+    private final String LIMIT = "8";
+    private final int RESULT_CODE = 123;
 
     public WishListFragment() {
         // Required empty public constructor
@@ -90,12 +90,11 @@ public class WishListFragment extends Fragment implements WishListProductListene
                     list.clear();
                     list.addAll(wishListData);
                     adapter.notifyDataSetChanged();
-                    binding.progressBar4.setVisibility(View.INVISIBLE);
                 } else {
                     binding.txtEmpty.setVisibility(View.VISIBLE);
                     binding.viewMore.setVisibility(View.INVISIBLE);
-                    binding.progressBar4.setVisibility(View.INVISIBLE);
                 }
+                binding.progressBar4.setVisibility(View.INVISIBLE);
             });
         } else {
             //handle no connection

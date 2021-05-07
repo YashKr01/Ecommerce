@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationItem;
+import com.shopping.bloom.restService.callback.RecommendationProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
 
     private List<RecommendationItem> list;
     private Context context;
+    private RecommendationProductClickListener listener;
 
-    public RecommendationsAdapter(List<RecommendationItem> list, Context context) {
+    public RecommendationsAdapter(List<RecommendationItem> list, Context context, RecommendationProductClickListener listener) {
         this.list = list;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +54,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
                 holder.imageView,
                 false
         );
+
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                listener.recommendationProductClickListener(currentItem);
+            }
+        });
 
     }
 
