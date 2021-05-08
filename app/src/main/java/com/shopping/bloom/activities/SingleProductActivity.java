@@ -1,46 +1,22 @@
 package com.shopping.bloom.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,18 +24,24 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amar.library.ui.StickyScrollView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
-import com.shopping.bloom.App;
 import com.shopping.bloom.BuildConfig;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
@@ -69,20 +51,18 @@ import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
 import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
+import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.WishListItem;
-import com.shopping.bloom.model.shoppingbag.ProductEntity;
-import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
@@ -92,6 +72,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 public class SingleProductActivity extends AppCompatActivity {
+
+    private static final String TAG = SingleProductActivity.class.getName();
+
     boolean colorClickable, sizeClickable;
     NestedScrollView scrollView;
     RecyclerView colorRecyclerView, sizeRecyclerView, randomRecyclerView;
@@ -124,13 +107,13 @@ public class SingleProductActivity extends AppCompatActivity {
     RandomImageAdapter randomImageAdapter;
     List<SingleProductDescResponse> list;
     int limit = 21, pageNo = 0;
+    String SELECTED_COLOR = "";
+    String SELECTED_SIZE = "";
     View inflated;
     List<String> wishList;
     String selectedColor, selectedSize, token;
     WishListItem wishListItem;
 
-    //todo collapsing issue with toolbar when scrolling
-    // done add price in recommended section
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,7 +239,7 @@ public class SingleProductActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
-        double heightInDp = height * 0.5;
+        double heightInDp = height * 0.55;
 
         int h = (int) Math.round(heightInDp);
 
@@ -363,6 +346,11 @@ public class SingleProductActivity extends AppCompatActivity {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
 
+        if (CATEGORY_ID == null) {
+            CATEGORY_ID = "-1";
+        }
+
+        //todo categoryid will be -1 incase there is no cateogry id in intent
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
@@ -469,8 +457,8 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
-        for(String s: wishList){
-            if(s.equals(String.valueOf(PRODUCT_ID))){
+        for (String s : wishList) {
+            if (s.equals(String.valueOf(PRODUCT_ID))) {
                 System.out.println("Visible");
                 wishListButton.setVisibility(View.GONE);
                 selectedWishListButton.setVisibility(View.VISIBLE);
@@ -481,15 +469,65 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     private void addToShoppingBag() {
+        if (isColorSizeSelected()) {
+            Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
+            ProductVariableResponse product = new ProductVariableResponse();
+            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                Log.d(TAG, "addToShoppingBag: #!: " + product.toString());
+                if (productVariableResponse.getSize().equals(SELECTED_SIZE) &&
+                        productVariableResponse.getColor().equals(SELECTED_COLOR)) {
+                    Log.d(TAG, "addToShoppingBag: MATCHED");
+                    product = productVariableResponse;
+                    break;
+                }
+            }
+            if (product != null) {
+                Log.d(TAG, "addToShoppingBag: product: " + product.toString());
+                Log.d(TAG, "addToShoppingBag: FOUND");
+            } else {
+                Log.d(TAG, "addToShoppingBag: NOT FOUND");
 
-        Integer id = singleProductDataResponse.getId();
-        String name = singleProductDataResponse.getProduct_name();
-        String image = singleProductDataResponse.getPrimary_image();
-        String price = singleProductDataResponse.getPrice();
-        ProductEntity productEntity = new ProductEntity(id, image, name, null, price, null);
+            }
+            String parentId = product.getParentId();
+            String childId = product.getChildId();
+            String primaryImage = product.getPrimary_image();
+            String color = product.getColor();
+            String size = product.getSize();
+            String price = product.getPrice();
+            String name = singleProductDataResponse.getProduct_name();
+            Log.d(TAG, "addToShoppingBag: product: " + product.toString());
+            CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price);
+            if (validateCartItem(cartItem)) {
+                singleProductViewModel.addToShoppingBag(cartItem);
+            } else {
+                Toast.makeText(this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d(TAG, "addToShoppingBag: color and size " + SELECTED_SIZE + ", " + SELECTED_COLOR);
+            if (SELECTED_SIZE.isEmpty()) {
+                Toast.makeText(this, getString(R.string.select_size), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.select_color), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
-        singleProductViewModel.addToShoppingBag(productEntity);
+    /*
+     *   Check if size or color is selected or not
+     * */
+    private boolean isColorSizeSelected() {
+        return (SELECTED_COLOR.length() > 0 && SELECTED_SIZE.length() > 0);
+    }
 
+    private boolean validateCartItem(CartItem cartItem) {
+        if (cartItem.getParentId().isEmpty() || cartItem.getChildId().isEmpty() ||
+                cartItem.getName().isEmpty() || cartItem.getPrimaryImage().isEmpty() ||
+                cartItem.getProductPrice().isEmpty()) {
+            //Something is wrong
+            Log.d(TAG, "validateCartItem: SOMETHING IS WRONG INVALID data received");
+            return false;
+        }
+        return true;
     }
 
 
@@ -516,21 +554,22 @@ public class SingleProductActivity extends AppCompatActivity {
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                    EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
                 });
             } else if (v.getId() == R.id.selectWishListButton) {
                 wishListButton.setVisibility(View.VISIBLE);
                 selectedWishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);});
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                    EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);
+                });
             }
         }
     };
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
-
             viewStub.setVisibility(View.VISIBLE);
-
             relativeLayout.setVisibility(View.GONE);
             favLinearLayout.setVisibility(View.GONE);
         } else {
@@ -541,13 +580,13 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     public void setViewPagerCurrentItem(int pos) {
-        selectedColor = colorList.get(pos).trim();
-        if (!selectedColor.isEmpty()) {
+        SELECTED_COLOR = colorList.get(pos).trim();
+        if (!SELECTED_COLOR.isEmpty()) {
             colorTextView.setVisibility(View.VISIBLE);
-            colorTextView.setText("Color: ".concat(selectedColor));
+            colorTextView.setText("Color: ".concat(SELECTED_COLOR));
 
             for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
-                if (selectedColor.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
                     viewPager.setCurrentItem(i + 1, true);
                     //viewPagerImageAdapter.notifyDataSetChanged();
                     price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
@@ -556,7 +595,7 @@ public class SingleProductActivity extends AppCompatActivity {
             }
             sizeList.clear();
             for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getColor().equals(selectedColor)) {
+                if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
                     System.out.println(productVariableResponse.getSize());
                     sizeList.add(productVariableResponse.getSize());
                 }
@@ -570,11 +609,11 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     public void setSizeCurrentItem(int position) {
-        selectedSize = sizeList.get(position);
-        if (!selectedSize.isEmpty()) {
+        SELECTED_SIZE = sizeList.get(position);
+        if (!SELECTED_SIZE.isEmpty()) {
             colorList.clear();
             for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getSize().equals(selectedSize)) {
+                if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
                     System.out.println(productVariableResponse.getColor());
                     colorList.add(productVariableResponse.getColor());
                 }
@@ -589,25 +628,26 @@ public class SingleProductActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       getMenuInflater().inflate(R.menu.menu_single_product, menu);
-       return true;
+        getMenuInflater().inflate(R.menu.menu_single_product, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.share){
+        if (id == R.id.share) {
             share();
         }
 
-            return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 
     }
+
     Bitmap bitmap1;
 
     public void share() {
         try {
-            ImageView imageView = (ImageView)viewPager.findViewWithTag(viewPager.getCurrentItem());
+            ImageView imageView = (ImageView) viewPager.findViewWithTag(viewPager.getCurrentItem());
             bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         } catch (Exception e) {
             Toast.makeText(this, "No image available", Toast.LENGTH_SHORT).show();
@@ -632,6 +672,36 @@ public class SingleProductActivity extends AppCompatActivity {
             Toast.makeText(this, "No image available2", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    /*
+    *   This method is use to identify if the Product is already added into the
+    *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
+    *   call this method after inflating the UI and update the
+    *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
+    * */
+    private void checkIfExist(String parentID, String childID) {
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().checkIfExist(parentID, childID);
+            itemAlreadyAddedToCart(cartItems != null && !cartItems.isEmpty());
+        });
+    }
+
+    private void itemAlreadyAddedToCart(boolean alreadyAdded) {
+        //TODO: handle the UI accordingly
+        if(alreadyAdded) {
+            Log.d(TAG, "itemAlreadyAddedToCart: ADDED");
+        } else {
+            //Show add to cart button
+            Log.d(TAG, "itemAlreadyAddedToCart: NOT ADDED");
+        }
+    }
+
+    /*
+     *   You can check if the item is already present with this overloaded function
+     * */
+    private void checkIfExist(CartItem cartItem) {
+        checkIfExist(cartItem.getParentId(), cartItem.getChildId());
     }
 
     @Override

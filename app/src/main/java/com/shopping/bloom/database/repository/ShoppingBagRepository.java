@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ShoppingBagRepository {
 
-    public LiveData<List<ProductEntity>> getShoppingBagItems() {
+    /*public LiveData<List<ProductEntity>> getShoppingBagItems() {
 
         return EcommerceDatabase.getInstance().wishListProductDao().getShoppingBagItems();
     }
@@ -18,6 +18,6 @@ public class ShoppingBagRepository {
         EcommerceDatabase.databaseWriteExecutor.execute(() ->
                 EcommerceDatabase.getInstance().wishListProductDao().deleteShoppingBagItem(productEntity)
         );
-    }
+    }*/
 
 }

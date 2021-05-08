@@ -54,7 +54,9 @@ public class LoginWithPassViewModel extends ViewModel {
                         loginManager.settoken(response.body().getData().getToken());
                         loginManager.SetLoginStatus(false);
                         String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
-                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                        if(email_verified_at == null || email_verified_at.isEmpty()|| email_verified_at.equals("")){
+                            System.out.println("EmailVerified Empty");
+                        }else{
                             loginManager.setEmail_verified_at(true);
                         }
 

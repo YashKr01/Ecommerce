@@ -3,112 +3,95 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginHorizontal="@dimen/sb_size_8"
     android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/img_shopping_bag"
-        android:layout_width="@dimen/sb_size_90"
-        android:layout_height="@dimen/sb_size_140"
-        android:layout_marginStart="@dimen/sb_size_4"
-        android:layout_marginTop="@dimen/sb_size_4"
-        android:layout_marginBottom="@dimen/sb_size_4"
-        android:contentDescription="@string/shopping_bag_image"
-        android:padding="@dimen/sb_size_8"
-        android:scaleType="centerCrop"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/sb_size_2"
+        app:cardElevation="@dimen/sb_size_0"
+        android:layout_marginVertical="@dimen/sb_size_8"
+        android:layout_marginStart="@dimen/sb_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_shopping_bag"
+            android:layout_width="@dimen/sb_size_85"
+            android:layout_height="@dimen/sb_size_100"
+            android:contentDescription="@string/shopping_bag_image"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/txt_shopping_bag_product_name"
-        style="@style/MediumText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/sb_size_4"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="@dimen/sb_size_4"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:layout_marginEnd="@dimen/sb_size_12"
+        android:layout_marginTop="@dimen/sb_size_2"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="@dimen/sb_text_size_14"
-        app:layout_constraintEnd_toStartOf="@+id/imageView9"
-        app:layout_constraintStart_toEndOf="@+id/img_shopping_bag"
-        app:layout_constraintTop_toTopOf="@+id/img_shopping_bag"
+        android:textColor="@color/blue_grey_900"
+        android:textSize="@dimen/sb_text_size_15"
+        app:layout_constraintEnd_toStartOf="@+id/txt_shopping_bag_price"
+        app:layout_constraintStart_toEndOf="@+id/cvImage"
+        app:layout_constraintTop_toTopOf="@+id/cvImage"
         tools:text="Letter Graphic Drop Shoulder Tee" />
 
     <TextView
         android:id="@+id/txt_shopping_bag_price"
-        style="@style/NormalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        app:layout_constraintStart_toStartOf="@+id/txt_shopping_bag_product_name"
-        app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_product_name"
-        tools:text="500" />
-
-    <TextView
-        android:id="@+id/txt_shopping_bag_size"
-        style="@style/NormalText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_shopping_bag"
-        app:layout_constraintStart_toStartOf="@+id/txt_shopping_bag_product_name"
-        tools:text="S(B)/" />
-
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/sb_size_10"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/sb_text_size_14"
+        android:layout_marginEnd="@dimen/sb_size_12"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_shopping_bag_product_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_shopping_bag_product_name"
-        app:srcCompat="@drawable/ic_wishlist_unselected" />
+        tools:text="$ 500" />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="@dimen/sb_size_8"
-        android:layout_marginEnd="@dimen/sb_size_8"
-        android:background="@color/grey_300"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/img_shopping_bag_add"
-        android:layout_width="@dimen/sb_size_24"
-        android:layout_height="@dimen/sb_size_24"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/sb_size_4"
-        app:layout_constraintBottom_toBottomOf="@+id/txt_shopping_bag_size"
-        app:layout_constraintEnd_toEndOf="@+id/imageView9"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/black" />
+    <TextView
+        android:id="@+id/tv_color_size"
+        android:layout_marginTop="@dimen/sb_size_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_700"
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintStart_toStartOf="@+id/txt_shopping_bag_product_name"
+        app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_product_name"
+        tools:text="S(B)/" />
 
     <TextView
         android:id="@+id/txt_shopping_bag_quantity"
-        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:text="1"
-        android:textSize="@dimen/sb_text_size_16"
-        app:layout_constraintBottom_toBottomOf="@+id/img_shopping_bag_add"
-        app:layout_constraintEnd_toStartOf="@+id/img_shopping_bag_add"
-        app:layout_constraintTop_toTopOf="@+id/img_shopping_bag_add" />
+        android:textColor="@color/grey_700"
+        android:textSize="@dimen/sb_text_size_12"
+        app:layout_constraintStart_toStartOf="@id/tv_color_size"
+        app:layout_constraintTop_toBottomOf="@+id/tv_color_size" />
 
-    <ImageView
-        android:id="@+id/img_shopping_bag_remove"
-        android:layout_width="@dimen/sb_size_24"
-        android:layout_height="@dimen/sb_size_24"
-        android:layout_marginEnd="8dp"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:padding="@dimen/sb_size_4"
-        app:layout_constraintBottom_toBottomOf="@+id/img_shopping_bag_add"
-        app:layout_constraintEnd_toStartOf="@+id/txt_shopping_bag_quantity"
-        app:layout_constraintTop_toTopOf="@+id/img_shopping_bag_add"
-        app:srcCompat="@drawable/ic_remove"
-        app:tint="@color/black" />
+    <TextView
+        android:id="@+id/tvRemoveCartItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:text="@string/remove"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/sb_text_size_13"
+        android:gravity="start|bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/cvImage"
+        app:layout_constraintStart_toEndOf="@+id/cvImage"
+        app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_quantity" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

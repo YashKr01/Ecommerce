@@ -20,6 +20,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
@@ -68,7 +69,14 @@ public class ViewPagerImageAdapter extends PagerAdapter {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.layout_image_single_product, container, false);
         ImageView imageView = view.findViewById(R.id.imageView);
         imageView.setTag(position);
-        Glide.with(container.getContext()).load(Const.GET_CATEGORY_DATA + imageList.get(position))
+
+        CommonUtils.loadImageWithGlide(container.getContext() ,
+                Const.GET_CATEGORY_DATA + imageList.get(position) ,
+                imageView,
+                true
+                );
+
+/*        Glide.with(container.getContext()).load(Const.GET_CATEGORY_DATA + imageList.get(position))
                 .placeholder(R.drawable.placeholder_image)
                 .listener(new RequestListener<Drawable>() {
                     @Override
@@ -81,7 +89,7 @@ public class ViewPagerImageAdapter extends PagerAdapter {
                         return false;
                     }
                 })
-                .into(imageView);
+                .into(imageView);*/
         container.addView(view);
         return view;
     }
