@@ -102,6 +102,8 @@
     <string name="confirm_password">Confirm New Password</string>
     <string name="feedback">Feedback</string>
     <string name="search_product">search product</string>
+    <string name="click_to_refresh">Click To Refresh</string>
+    <string name="hot_search">Hot Search</string>
 
 
 </resources>

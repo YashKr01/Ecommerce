@@ -2,28 +2,23 @@ package com.shopping.bloom.activities.search;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.adapters.search.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
@@ -36,7 +31,7 @@ import com.shopping.bloom.viewModels.search.SearchViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class SearchActivity extends AppCompatActivity {
 
     private ActivitySearchBinding binding;
     private SearchViewModel viewModel;
@@ -48,6 +43,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
     private boolean IS_LOADING = false;
     private boolean IS_LAST_PAGE = false;
     private LinearLayout parentLayout;
+    private View noConnectionLayout;
 
     private SearchActivityConfig config;
 
@@ -76,8 +72,6 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
             parentLayout.addView(textView);
         }
 
-        // swipe layout
-        binding.swipeRefresh.setOnRefreshListener(this);
 
         // initialise list, adapter and recyclerview
         list = new ArrayList<>();
@@ -132,7 +126,7 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
                 // get input query
                 String query = binding.edittextSearch.getText().toString().trim();
                 if (!binding.searchRecyclerView.canScrollVertically(1)) {
-                    if (!IS_LAST_PAGE && !IS_LOADING) {
+                    if (!IS_LAST_PAGE && !IS_LOADING && !query.isEmpty()) {
                         // Increase page number
                         PAGE = String.valueOf(Integer.parseInt(PAGE) + 1);
                         // get next page products
@@ -144,6 +138,50 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
         });
 
 
+        noConnectionLayout = binding.newFragmentNoConnectionLayout.inflate();
+        TextView textView = noConnectionLayout.findViewById(R.id.tvSwipeToRefresh);
+        textView.setText(R.string.click_to_refresh);
+        textView.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                if (!binding.edittextSearch.getText().toString().trim().isEmpty()) {
+                    getSearchedProducts(binding.edittextSearch.getText().toString().trim());
+                    closeKeyboard();
+                }
+                checkConnection(SearchActivity.this);
+            }
+        });
+
+        checkConnection(this);
+
+        binding.edittextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                list.clear();
+                adapter.notifyDataSetChanged();
+                if (s.toString().isEmpty()) {
+                    binding.topLayout.setVisibility(View.VISIBLE);
+                    binding.txtEmpty.setVisibility(View.GONE);
+                }
+                PAGE = "0";
+                IS_LAST_PAGE = false;
+            }
+        });
+
+    }
+
+    private void checkConnection(Context context) {
+        if (NetworkCheck.isConnect(context)) {
+            showNoConnection(false);
+        } else showNoConnection(true);
     }
 
     // get searched query product list
@@ -155,18 +193,22 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
         if (NetworkCheck.isConnect(this)) {
             viewModel.getSearchProducts(LIMIT, PAGE, query).observe(this, searchProducts -> {
                 if (searchProducts != null && searchProducts.size() > 0) {
+
                     int oldListSize = list.size();
                     list.addAll(searchProducts);
                     adapter.notifyItemRangeInserted(oldListSize, list.size());
                     binding.txtEmpty.setVisibility(View.GONE);
-                    parentLayout.setVisibility(View.GONE);
+                    binding.topLayout.setVisibility(View.GONE);
+
                 } else {
                     IS_LAST_PAGE = true;
+
                     if (list.isEmpty() && searchProducts == null) {
-                        parentLayout.setVisibility(View.GONE);
+                        binding.topLayout.setVisibility(View.GONE);
                         IS_LAST_PAGE = false;
                         binding.txtEmpty.setVisibility(View.VISIBLE);
                     }
+
                 }
                 IS_LOADING = false;
                 binding.progressBar3.setVisibility(View.INVISIBLE);
@@ -203,18 +245,6 @@ public class SearchActivity extends AppCompatActivity implements SwipeRefreshLay
             binding.newFragmentNoConnectionLayout.setVisibility(View.VISIBLE);
             binding.progressBar3.setVisibility(View.INVISIBLE);
         } else binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onRefresh() {
-        if (!NetworkCheck.isConnect(this)) {
-            showNoConnection(true);
-        } else {
-            showNoConnection(false);
-            list.clear();
-            PAGE = "0";
-        }
-        binding.swipeRefresh.setRefreshing(false);
     }
 
 }
