@@ -130,7 +130,6 @@ public class SingleProductActivity extends AppCompatActivity {
     WishListItem wishListItem;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +139,7 @@ public class SingleProductActivity extends AppCompatActivity {
             PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
             CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
         }
-        Log.d("SEND", "onCreate: " + PRODUCT_ID );
+        Log.d("SEND", "onCreate: " + PRODUCT_ID);
         Log.d("SEND", "onCreate: " + CATEGORY_ID);
 
         wishList = new ArrayList<>();
@@ -362,6 +361,10 @@ public class SingleProductActivity extends AppCompatActivity {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
 
+        if (CATEGORY_ID == null) {
+            CATEGORY_ID = "-1";
+        }
+
         //todo categoryid will be -1 incase there is no cateogry id in intent
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
@@ -469,8 +472,8 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
-        for(String s: wishList){
-            if(s.equals(String.valueOf(PRODUCT_ID))){
+        for (String s : wishList) {
+            if (s.equals(String.valueOf(PRODUCT_ID))) {
                 System.out.println("Visible");
                 wishListButton.setVisibility(View.GONE);
                 selectedWishListButton.setVisibility(View.VISIBLE);
@@ -516,12 +519,15 @@ public class SingleProductActivity extends AppCompatActivity {
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                    EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
                 });
             } else if (v.getId() == R.id.selectWishListButton) {
                 wishListButton.setVisibility(View.VISIBLE);
                 selectedWishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);});
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                    EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);
+                });
             }
         }
     };
@@ -589,25 +595,26 @@ public class SingleProductActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-       getMenuInflater().inflate(R.menu.menu_single_product, menu);
-       return true;
+        getMenuInflater().inflate(R.menu.menu_single_product, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.share){
+        if (id == R.id.share) {
             share();
         }
 
-            return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
 
     }
+
     Bitmap bitmap1;
 
     public void share() {
         try {
-            ImageView imageView = (ImageView)viewPager.findViewWithTag(viewPager.getCurrentItem());
+            ImageView imageView = (ImageView) viewPager.findViewWithTag(viewPager.getCurrentItem());
             bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         } catch (Exception e) {
             Toast.makeText(this, "No image available", Toast.LENGTH_SHORT).show();

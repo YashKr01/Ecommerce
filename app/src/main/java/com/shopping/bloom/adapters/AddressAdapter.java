@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.App;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.MyAddressActivity;
 import com.shopping.bloom.activities.UpdateAddressActivity;
 import com.shopping.bloom.model.AddressDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
@@ -53,7 +54,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_address, parent, false);
-        return new AddressAdapter.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -105,7 +106,12 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             context.startActivity(intent);
         });
 
-        holder.radioButton.setChecked(lastSelectedPosition == position);
+        holder.radioButton.setClickable(addressList.size() != 1);
+        if(lastSelectedPosition != -1){
+            holder.radioButton.setChecked(lastSelectedPosition == position);
+        }else{
+            holder.radioButton.setChecked(address.getIs_primary().equals("1"));
+        }
     }
 
     @Override
@@ -137,9 +143,12 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             radioButton.setOnClickListener(v -> {
                 lastSelectedPosition = getAdapterPosition();
                 notifyDataSetChanged();
-
-                Toast.makeText(context, nameTextView.getText(), Toast.LENGTH_SHORT).show();
+                if(context instanceof MyAddressActivity){
+                    ((MyAddressActivity)context).getData(lastSelectedPosition);
+                }
             });
+
         }
+
     }
 }

@@ -9,12 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.AddressAdapter;
+import com.shopping.bloom.model.AddAddressModel;
 import com.shopping.bloom.model.AddressDataResponse;
+import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.viewModels.MyAddressViewModel;
 
 import java.util.ArrayList;
@@ -52,6 +56,19 @@ public class MyAddressActivity extends AppCompatActivity {
         });
         myAddressViewModel.makeApiCall(0, 10, getApplication());
 
+        myAddressViewModel.getUpdateLiveData().observe(this, new Observer<LoginResponseModel>() {
+            @Override
+            public void onChanged(LoginResponseModel loginResponseModel) {
+                if(loginResponseModel == null){
+                    System.out.println("Null response");
+                }else{
+                    if(loginResponseModel.getSuccess().equals("true")){
+                        Toast.makeText(MyAddressActivity.this, loginResponseModel.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
         setNavigationIcon();
 
     }
@@ -64,9 +81,14 @@ public class MyAddressActivity extends AppCompatActivity {
         });
     }
 
-
     public void addShippingAddress(View view) {
         Intent intent = new Intent(this, AddShippingAddressActivity.class);
         startActivity(intent);
+    }
+
+    public void getData(int pos){
+        AddressDataResponse addressDataResponse = addressList.get(pos);
+        AddAddressModel addAddressModel = new AddAddressModel(addressDataResponse.getAddress_name(),1,addressDataResponse.getPincode(), addressDataResponse.getAddress_line_1(), addressDataResponse.getCity(), addressDataResponse.getContact_number());
+        myAddressViewModel.updateAddressApiCall(addressDataResponse.getId(), addAddressModel, getApplication());
     }
 }
