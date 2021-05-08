@@ -20,9 +20,11 @@
         android:id="@+id/shopping_bag_recycler_view"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/clBillDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="@dimen/sb_size_40"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:listitem="@layout/item_shopping_bag" />
 
@@ -36,5 +38,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBillDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="@dimen/sb_size_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/sb_size_16"
+            android:layout_marginVertical="@dimen/sb_size_6"
+            android:text="$ 500"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sb_size_16"
+            app:layout_constraintBottom_toTopOf="@+id/btCheckOut"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btCheckOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/sb_size_16"
+            android:paddingVertical="@dimen/sb_size_12"
+            android:layout_marginBottom="@dimen/sb_size_8"
+            android:text="Checkout"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:background="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

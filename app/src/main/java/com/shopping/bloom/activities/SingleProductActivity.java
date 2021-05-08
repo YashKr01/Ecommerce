@@ -2,10 +2,15 @@ package com.shopping.bloom.activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -14,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -21,11 +27,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.FileProvider;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,6 +42,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.shopping.bloom.BuildConfig;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
@@ -47,11 +56,15 @@ import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
+import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -96,11 +109,11 @@ public class SingleProductActivity extends AppCompatActivity {
     int limit = 21, pageNo = 0;
     String SELECTED_COLOR = "";
     String SELECTED_SIZE = "";
+    View inflated;
+    List<String> wishList;
+    String selectedColor, selectedSize, token;
+    WishListItem wishListItem;
 
-
-    //todo collapsing issue with toolbar when scrolling
-    // todo add price in recommended section
-    // handle text view for long text in product name
 
 
     @Override
@@ -112,8 +125,25 @@ public class SingleProductActivity extends AppCompatActivity {
             PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
             CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
         }
-        Log.d("SEND", "onCreate: " + PRODUCT_ID);
+        Log.d("SEND", "onCreate: " + PRODUCT_ID );
         Log.d("SEND", "onCreate: " + CATEGORY_ID);
+
+        wishList = new ArrayList<>();
+
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            wishList = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
+            System.out.println(wishList);
+        });
+
+        LoginManager loginManager = new LoginManager(SingleProductActivity.this);
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
+
+        wishListItem = new WishListItem(String.valueOf(PRODUCT_ID), token);
 
         productName = findViewById(R.id.product_name);
         scrollView = findViewById(R.id.scrollView);
@@ -138,6 +168,7 @@ public class SingleProductActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
 
+        inflated = viewStub.inflate();
         //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         frameLayout = findViewById(R.id.fragment);
         collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
@@ -147,6 +178,7 @@ public class SingleProductActivity extends AppCompatActivity {
         btnAddToBag = findViewById(R.id.btn_add_to_bag);
 
         toolbar.setNavigationIcon(R.drawable.ic_back_background);
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
 
         toolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
@@ -184,7 +216,7 @@ public class SingleProductActivity extends AppCompatActivity {
         //view pager
         productVariableResponseList = new ArrayList<>();
         imageList = new ArrayList<>();
-        viewPagerImageAdapter = new ViewPagerImageAdapter(imageList);
+        viewPagerImageAdapter = new ViewPagerImageAdapter(imageList, this);
         viewPager.setAdapter(viewPagerImageAdapter);
 
         //random Product
@@ -208,7 +240,7 @@ public class SingleProductActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
-        double heightInDp = height * 0.5;
+        double heightInDp = height * 0.55;
 
         int h = (int) Math.round(heightInDp);
 
@@ -237,9 +269,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
                 slideTextView.setText(1 + "/" + imageList.size());
 
-                //System.out.println(colorList);
                 HashSet<String> colorSet = new LinkedHashSet<>(colorList);
-                // System.out.println(colorSet);
                 colorList.clear();
                 colorList.addAll(colorSet);
 
@@ -313,7 +343,11 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+        if (PRODUCT_ID != null) {
+            singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
+        }
 
+        //todo categoryid will be -1 incase there is no cateogry id in intent
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
@@ -322,13 +356,6 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
-        if (PRODUCT_ID != null) {
-            singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
-        }
-
-        if (CATEGORY_ID == null) {
-            CATEGORY_ID = "1";
-        }
 
         singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
 
@@ -398,8 +425,11 @@ public class SingleProductActivity extends AppCompatActivity {
 
         EditText editText = dialog.findViewById(R.id.pinCodeEditText);
         Button button = dialog.findViewById(R.id.changePinCodeButton);
-        button.setOnClickListener(v1 -> {
-            Toast.makeText(SingleProductActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+        button.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                Toast.makeText(SingleProductActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         changePinCode.setOnClickListener(debouncedOnClickListener);
@@ -413,6 +443,25 @@ public class SingleProductActivity extends AppCompatActivity {
         });
 
         checkNetworkConnectivity();
+
+        TextView textViewVS = inflated.findViewById(R.id.tvSwipeToRefresh);
+        textViewVS.setText("Click to Refresh");
+        ConstraintLayout constraintLayout = inflated.findViewById(R.id.constraintLayout);
+        constraintLayout.setOnClickListener(new DebouncedOnClickListener(150) {
+            @Override
+            public void onDebouncedClick(View v) {
+                checkNetworkConnectivity();
+            }
+        });
+
+        for(String s: wishList){
+            if(s.equals(String.valueOf(PRODUCT_ID))){
+                System.out.println("Visible");
+                wishListButton.setVisibility(View.GONE);
+                selectedWishListButton.setVisibility(View.VISIBLE);
+                break;
+            }
+        }
 
     }
 
@@ -498,25 +547,23 @@ public class SingleProductActivity extends AppCompatActivity {
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
             } else if (v.getId() == R.id.changePinCode) {
-
                 dialog.show();
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
+                });
             } else if (v.getId() == R.id.selectWishListButton) {
                 wishListButton.setVisibility(View.VISIBLE);
                 selectedWishListButton.setVisibility(View.GONE);
-            } else if (v.getId() == R.id.vsEmptyScreen) {
-                checkNetworkConnectivity();
+                EcommerceDatabase.databaseWriteExecutor.execute(() -> { EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);});
             }
         }
     };
 
-
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
-            viewStub.setOnClickListener(debouncedOnClickListener);
             relativeLayout.setVisibility(View.GONE);
             favLinearLayout.setVisibility(View.GONE);
         } else {
@@ -574,10 +621,86 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+       getMenuInflater().inflate(R.menu.menu_single_product, menu);
+       return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.share){
+            share();
+        }
+
+            return super.onOptionsItemSelected(item);
+
+    }
+    Bitmap bitmap1;
+
+    public void share() {
+        try {
+            ImageView imageView = (ImageView)viewPager.findViewWithTag(viewPager.getCurrentItem());
+            bitmap1 = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } catch (Exception e) {
+            Toast.makeText(this, "No image available", Toast.LENGTH_SHORT).show();
+        }
+        try {
+            File file = new File(this.getExternalCacheDir(), File.separator + "image.jpg");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+
+            file.setReadable(true, false);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(SingleProductActivity.this,
+                    BuildConfig.APPLICATION_ID + ".fileprovider", file));
+            intent.putExtra(Intent.EXTRA_TEXT, singleProductDataResponse.getProduct_name());
+            intent.setType("image/*");
+            startActivity(Intent.createChooser(intent, "Share Image via.."));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "No image available2", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    /*
+    *   This method is use to identify if the Product is already added into the
+    *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
+    *   call this method after inflating the UI and update the
+    *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
+    * */
+    private void checkIfExist(String parentID, String childID) {
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().checkIfExist(parentID, childID);
+            itemAlreadyAddedToCart(cartItems != null && !cartItems.isEmpty());
+        });
+    }
+
+    private void itemAlreadyAddedToCart(boolean alreadyAdded) {
+        //TODO: handle the UI accordingly
+        if(alreadyAdded) {
+            Log.d(TAG, "itemAlreadyAddedToCart: ADDED");
+        } else {
+            //Show add to cart button
+            Log.d(TAG, "itemAlreadyAddedToCart: NOT ADDED");
+        }
+    }
+
+    /*
+     *   You can check if the item is already present with this overloaded function
+     * */
+    private void checkIfExist(CartItem cartItem) {
+        checkIfExist(cartItem.getParentId(), cartItem.getChildId());
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        //swipeRefreshLayout.setVisibility(View.VISIBLE);
         hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         collapsingToolbarLayout.setVisibility(View.VISIBLE);

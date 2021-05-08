@@ -48,7 +48,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
         SearchProduct currentItem = list.get(position);
-        holder.textView.setText(currentItem.getPrice());
+        holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
         CommonUtils.loadImageWithGlide(
                 context,

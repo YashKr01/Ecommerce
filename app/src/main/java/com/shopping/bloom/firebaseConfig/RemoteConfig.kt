@@ -13,6 +13,7 @@ import com.shopping.bloom.model.MainScreenConfig
 import com.shopping.bloom.model.faq.ColorPalletConfig
 import com.shopping.bloom.model.faq.FaqConfig
 import com.shopping.bloom.model.newfragment.NewFragmentConfig
+import com.shopping.bloom.model.search.SearchActivityConfig
 import com.shopping.bloom.utils.CommonUtils
 
 open class RemoteConfig {
@@ -85,6 +86,15 @@ open class RemoteConfig {
                 json = RemoteConfigDefaults.COLOR_PALLET_CONFIG.value().toString()
             }
             return Gson().fromJson(json, ColorPalletConfig::class.java)
+        }
+
+        @JvmStatic
+        fun getTopSearchConfig(context: Context): SearchActivityConfig {
+            var json = getInstance(context).getString(RemoteConfigDefaults.TOP_SEARCHES_CONFIG.key())
+            if (CommonUtils.isNull(json)) {
+                json = RemoteConfigDefaults.TOP_SEARCHES_CONFIG.value().toString()
+            }
+            return Gson().fromJson(json, SearchActivityConfig::class.java)
         }
 
         /*  @JvmStatic

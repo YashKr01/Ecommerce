@@ -23,16 +23,14 @@ public class ShoppingBagViewModel extends AndroidViewModel {
         this.repository = new ShoppingBagRepository();
     }
 
-    /*public LiveData<List<ProductEntity>> getShoppingBagItems() {
-        return repository.getShoppingBagItems();
-    }
-
-    public void deleteFromShoppingBag(ProductEntity productEntity) {
-        repository.deleteFromShoppingBag(productEntity);
-    }*/
-
     public LiveData<List<CartItem>> getAllCartItem() {
         return  EcommerceDatabase.getInstance().cartItemDao().getAllCartItem();
+    }
+
+    public void removeItemFromCart(CartItem cartItem) {
+        EcommerceDatabase.databaseWriteExecutor.execute(()-> {
+            EcommerceDatabase.getInstance().cartItemDao().removeItem(cartItem);
+        });
     }
 
 }

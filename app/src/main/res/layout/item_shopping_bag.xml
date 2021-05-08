@@ -6,7 +6,6 @@
     android:layout_marginHorizontal="@dimen/sb_size_8"
     android:layout_height="wrap_content">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cvImage"
         android:layout_width="wrap_content"
@@ -81,5 +80,18 @@
         android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="@id/tv_color_size"
         app:layout_constraintTop_toBottomOf="@+id/tv_color_size" />
+
+    <TextView
+        android:id="@+id/tvRemoveCartItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/sb_size_12"
+        android:text="@string/remove"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/sb_text_size_13"
+        android:gravity="start|bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/cvImage"
+        app:layout_constraintStart_toEndOf="@+id/cvImage"
+        app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_quantity" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

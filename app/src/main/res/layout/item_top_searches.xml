@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/txt_top_search"
+    style="@style/MediumText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/top_searches_background"
+    android:layout_margin="@dimen/sb_size_8"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="@dimen/sb_size_8"
+    tools:text="SHIRT" />

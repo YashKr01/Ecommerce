@@ -23,11 +23,11 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
 
     private Context context;
     private List<CartItem> cartItemList;
-    private ShoppingBagItemListener listener;
+    private ShoppingBagItemListener mListener;
 
     public ShoppingBagAdapter(Context context, ShoppingBagItemListener listener) {
         this.context = context;
-        this.listener = listener;
+        this.mListener = listener;
         this.cartItemList = new ArrayList<>();
     }
 
@@ -45,11 +45,14 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         CartItem cartItem = cartItemList.get(position);
         holder.setUpData(cartItem, context);
+
+        holder.tvRemove.setOnClickListener((view -> mListener.removeCartItem(cartItem)));
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProductImage;
         TextView tvName, tvPrice, tvColorSize, txtQuantity;
+        TextView tvRemove;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,6 +61,7 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
             tvPrice = itemView.findViewById(R.id.txt_shopping_bag_price);
             tvColorSize = itemView.findViewById(R.id.tv_color_size);
             txtQuantity = itemView.findViewById(R.id.txt_shopping_bag_quantity);
+            tvRemove = itemView.findViewById(R.id.tvRemoveCartItem);
         }
 
         public void setUpData(CartItem item, Context context) {
@@ -84,6 +88,11 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
             cartItemList.clear();
             cartItemList.addAll(cartItems);
         }
+        notifyDataSetChanged();
+    }
+
+    public void clearAll() {
+        cartItemList.clear();
         notifyDataSetChanged();
     }
 

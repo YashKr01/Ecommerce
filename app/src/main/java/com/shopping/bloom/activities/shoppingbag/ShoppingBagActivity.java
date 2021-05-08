@@ -55,38 +55,40 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
     private void subscribeToUI(LiveData<List<CartItem>> cartItems) {
         cartItems.observe(this, cartItems1 -> {
             cartItemList = cartItems1;
-            if (cartItemList != null && !cartItemList.isEmpty()) {
+            if (cartItemList != null) {
                 Log.d(TAG, "subscribeToUI: " + cartItemList.toString());
                 adapter.updateList(cartItemList);
-                binding.progressBar5.setVisibility(View.INVISIBLE);
             } else {
-                binding.progressBar5.setVisibility(View.INVISIBLE);
+                adapter.clearAll();
             }
+            binding.progressBar5.setVisibility(View.INVISIBLE);
         });
-    }
-
-    @Override
-    public void btnRemoveClickListener(CartItem cartItem) {
-
-        builder = new AlertDialog.Builder(this);
-        builder.setMessage("Do you want to remove this item ?");
-        builder.setCancelable(false);
-        builder.setNegativeButton("NO", (dialog, which) -> {
-            dialog.cancel();
-        });
-
-        builder.setPositiveButton("YES", (dialog, which) -> {
-            //viewModel.deleteFromShoppingBag(productEntity);
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.shopping_bag_menu, menu);
         return true;
+    }
+
+    @Override
+    public void removeCartItem(CartItem cartItem) {
+        if (cartItem.getQuantity() == 1) {
+            //ToDo: remove this item
+        } else {
+            //ToDo: show popup with how many item to delete
+        }
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to remove " + cartItem.getName() + " ?");
+        builder.setCancelable(false);
+        builder.setNegativeButton("NO", (dialog, which) -> {
+            dialog.cancel();
+        });
+        builder.setPositiveButton("Remove", (dialog, which) -> {
+            viewModel.removeItemFromCart(cartItem);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

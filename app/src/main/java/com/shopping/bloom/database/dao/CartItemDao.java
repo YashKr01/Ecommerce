@@ -23,11 +23,14 @@ public interface CartItemDao {
     @Update
     void update(CartItem cartItem);
 
-    @Query("UPDATE cart_item SET quantity = :quantity WHERE id = :itemId")
-    void updateQuantity(int itemId, int quantity);
-
     @Delete
     void removeItem(CartItem cartItem);
+
+    @Query("SELECT * FROM cart_item WHERE parentId = :parentId AND childId = :childId")
+    List<CartItem> checkIfExist(String parentId, String childId);
+
+    @Query("UPDATE cart_item SET quantity = quantity + 1 WHERE parentId = :parentId AND childId = :childId")
+    void incrementQuantity(String parentId, String childId);
 
     @Query("SELECT * FROM cart_item ORDER BY id DESC")
     LiveData<List<CartItem>> getAllCartItem();
