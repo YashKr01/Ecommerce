@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductVariableResponse {
 
+    @SerializedName("id")
+    String parentId;
+
+    @SerializedName("product_id")
+    String childId;
+
     @SerializedName("primary_image")
     @Expose
     String primary_image;
@@ -20,6 +26,22 @@ public class ProductVariableResponse {
     @SerializedName("price")
     @Expose
     String price;
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getChildId() {
+        return childId;
+    }
+
+    public void setChildId(String childId) {
+        this.childId = childId;
+    }
 
     public String getPrice() {
         return price;
@@ -51,5 +73,17 @@ public class ProductVariableResponse {
 
     public void setPrimary_image(String primary_image) {
         this.primary_image = primary_image;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductVariableResponse{" +
+                "parentId='" + parentId + '\'' +
+                ", childId='" + childId + '\'' +
+                ", primary_image='" + primary_image + '\'' +
+                ", color='" + color + '\'' +
+                ", size='" + size + '\'' +
+                ", price='" + price + '\'' +
+                '}';
     }
 }

@@ -6,13 +6,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.App;
-import com.shopping.bloom.R;
 import com.shopping.bloom.database.EcommerceDatabase;
+import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.RandomImageDataResponse;
-import com.shopping.bloom.model.shoppingbag.ProductEntity;
+import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
-import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.SingleProductResponse;
@@ -142,12 +141,17 @@ public class SingleProductViewModel extends ViewModel {
         });
     }
 
-    public void addToShoppingBag(ProductEntity productEntity) {
-
-        EcommerceDatabase.databaseWriteExecutor.execute(() ->
-                EcommerceDatabase.getInstance().wishListProductDao().addToShoppingBag(productEntity)
-        );
-
+    public void addToShoppingBag(CartItem cartItem) {
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                    List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao()
+                            .checkIfExist(cartItem.getParentId(), cartItem.getChildId());
+                    if(cartItems == null || cartItems.isEmpty()) {
+                        EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem);
+                    } else {
+                        EcommerceDatabase.getInstance().cartItemDao()
+                                .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
+                    }
+                });
     }
 
 }
