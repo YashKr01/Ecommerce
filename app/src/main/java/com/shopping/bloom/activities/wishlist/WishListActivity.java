@@ -5,15 +5,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
@@ -102,7 +99,6 @@ public class WishListActivity extends AppCompatActivity implements WishListProdu
                         // increasing page number
                         RECOMMENDATION_PAGE = String.valueOf(Integer.parseInt(RECOMMENDATION_PAGE) + 1);
                         getRecommendedList();
-                        Log.d("CALLED", "onScrollStateChanged: ");
                     }
                 }
             }
