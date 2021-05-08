@@ -288,8 +288,8 @@
 
                         <ImageView
                             android:id="@+id/imgSortIcon"
-                            android:layout_width="@dimen/sb_size_24"
-                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_width="@dimen/sb_size_28"
+                            android:layout_height="@dimen/sb_size_28"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_sort" />
 
@@ -339,8 +339,8 @@
 
                         <ImageView
                             android:id="@+id/imgFilterIcon"
-                            android:layout_width="@dimen/sb_size_24"
-                            android:layout_height="@dimen/sb_size_24"
+                            android:layout_width="@dimen/sb_size_32"
+                            android:layout_height="@dimen/sb_size_32"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_filter" />
 

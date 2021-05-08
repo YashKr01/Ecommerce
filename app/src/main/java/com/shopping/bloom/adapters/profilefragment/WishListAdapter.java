@@ -46,7 +46,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.MyView
         holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
 
         CommonUtils.loadImageWithGlide(context, Const.GET_CATEGORY_DATA + currentItem.getImage(),
-                holder.imageView, false);
+                holder.imageView, true);
 
         holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override

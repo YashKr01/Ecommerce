@@ -179,7 +179,9 @@
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/colorRecyclerView"
                                 android:layout_width="match_parent"
+                                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                                 android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
                                 android:layout_below="@+id/color"
                                 android:layout_marginHorizontal="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_10" />
@@ -200,6 +202,8 @@
                                 android:id="@+id/sizeRecyclerView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                                 android:layout_below="@+id/sizeTextView"
                                 android:layout_marginHorizontal="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_10"

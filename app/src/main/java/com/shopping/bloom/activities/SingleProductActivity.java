@@ -129,8 +129,7 @@ public class SingleProductActivity extends AppCompatActivity {
     String selectedColor, selectedSize, token;
     WishListItem wishListItem;
 
-    //todo collapsing issue with toolbar when scrolling
-    // done add price in recommended section
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +140,7 @@ public class SingleProductActivity extends AppCompatActivity {
             PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
             CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
         }
-        Log.d("SEND", "onCreate: " + PRODUCT_ID);
+        Log.d("SEND", "onCreate: " + PRODUCT_ID );
         Log.d("SEND", "onCreate: " + CATEGORY_ID);
 
         wishList = new ArrayList<>();
@@ -256,7 +255,7 @@ public class SingleProductActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
-        double heightInDp = height * 0.5;
+        double heightInDp = height * 0.55;
 
         int h = (int) Math.round(heightInDp);
 
@@ -363,6 +362,7 @@ public class SingleProductActivity extends AppCompatActivity {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
 
+        //todo categoryid will be -1 incase there is no cateogry id in intent
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
