@@ -6,23 +6,22 @@
 
     android:layout_height="wrap_content">
 
-    <CheckBox
+    <Button
         android:id="@+id/colorButton"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/rect_back_button"
-        android:button="@null"
+
         android:text="Red"
-        android:textSize="10sp"
-        android:gravity="center"
+        android:textSize="8sp"
         android:clickable="true"
         android:focusable="true"
         android:layout_marginEnd="@dimen/sb_size_10"
         android:textStyle="bold"
         android:fontFamily="@font/gothamblack"
         android:textColor="@color/black"
-        android:padding="@dimen/sb_size_5"
+        android:padding="@dimen/sb_size_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

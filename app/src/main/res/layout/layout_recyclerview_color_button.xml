@@ -25,17 +25,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/colorButton"
             app:cardCornerRadius="300dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <CheckBox
-            android:id="@+id/colorButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:button="@null"
-            android:background="@color/black"/>
-        </androidx.cardview.widget.CardView>
+            android:layout_height="match_parent"/>
 
     </androidx.cardview.widget.CardView>
 

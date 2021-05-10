@@ -27,18 +27,6 @@ public class SingleProductDataResponse {
     @Expose
     String avg_rating;
 
-    @SerializedName("is_on_sale")
-    @Expose
-    String is_on_sale;
-
-    @SerializedName("sale_price")
-    @Expose
-    String sale_price;
-
-    @SerializedName("sale_percentage")
-    @Expose
-    String sale_percentage;
-
     @SerializedName("price")
     @Expose
     String price;
@@ -55,49 +43,9 @@ public class SingleProductDataResponse {
     @Expose
     List<SingleProductDescResponse> singleProductDescResponseList;
 
-    @SerializedName("product_images")
-    @Expose
-    List<SingleProductImageResponse> singleProductImageResponses;
-
-    public List<SingleProductImageResponse> getSingleProductImageResponses() {
-        return singleProductImageResponses;
-    }
-
-    public void setSingleProductImageResponses(List<SingleProductImageResponse> singleProductImageResponses) {
-        this.singleProductImageResponses = singleProductImageResponses;
-    }
-
     @SerializedName("id")
     @Expose
     Integer id;
-
-    public String getIs_on_sale() {
-        return is_on_sale;
-    }
-
-    public void setIs_on_sale(String is_on_sale) {
-        this.is_on_sale = is_on_sale;
-    }
-
-    public String getSale_price() {
-        return sale_price;
-    }
-
-    public void setSale_price(String sale_price) {
-        this.sale_price = sale_price;
-    }
-
-    public String getSale_percentage() {
-        return sale_percentage;
-    }
-
-    public void setSale_percentage(String sale_percentage) {
-        this.sale_percentage = sale_percentage;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Integer getId() {
         return id;

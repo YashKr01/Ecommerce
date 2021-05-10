@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -45,36 +44,19 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull SizeAdapter.ViewHolder holder, int position) {
         holder.button.setText(sizeList.get(position));
         if (clickable) {
-//            holder.button.setOnClickListener(v -> {
-//                pos = position;
-//                notifyDataSetChanged();
-//                if (context instanceof SingleProductActivity) {
-//                    ((SingleProductActivity) context).setSizeCurrentItem(position);
-//                }
-//            });
-
             holder.button.setOnClickListener(v -> {
-                if(holder.button.isChecked()){
-                    if (context instanceof SingleProductActivity) {
-                        ((SingleProductActivity) context).setSizeCurrentItem(position);
-                    }
-                    pos = position;
-                }else{
-                    if (context instanceof SingleProductActivity) {
-                        ((SingleProductActivity) context).setSizeCurrentItem(-1);
-                    }
-                    pos = -1;
-                }
+                pos = position;
                 notifyDataSetChanged();
+                if (context instanceof SingleProductActivity) {
+                    ((SingleProductActivity) context).setSizeCurrentItem(position);
+                }
             });
 
-        }
-        if (pos == position) {
-            holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
-            holder.button.setChecked(true);
-        } else {
-            holder.button.setBackgroundResource(R.drawable.rect_back_button);
-            holder.button.setChecked(false);
+            if (pos == position) {
+                holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
+            } else {
+                holder.button.setBackgroundResource(R.drawable.rect_back_button);
+            }
         }
     }
 
@@ -87,7 +69,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        CheckBox button;
+        Button button;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
