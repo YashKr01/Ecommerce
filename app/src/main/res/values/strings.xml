@@ -105,6 +105,8 @@
     <string name="select_size">Select a size</string>
     <string name="search_product">search product</string>
     <string name="remove">Remove</string>
+    <string name="click_to_refresh">Click To Refresh</string>
+    <string name="hot_search">Hot Search</string>
 
 
 </resources>

@@ -14,11 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.activities.recentlyviewed.RecentlyViewedActivity;
 import com.shopping.bloom.adapters.profilefragment.RecentlyViewedAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListProductListener;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.recentlyviewed.RecentlyViewedViewModel;
@@ -49,7 +51,7 @@ public class RecentlyViewedFragment extends Fragment implements WishListProductL
         super.onViewCreated(view, savedInstanceState);
 
         list = new ArrayList<>();
-        adapter = new RecentlyViewedAdapter(list, getContext(),this);
+        adapter = new RecentlyViewedAdapter(list, getContext(), this);
         binding.recentlyViewedRecyclerView.setNestedScrollingEnabled(false);
         binding.recentlyViewedRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.recentlyViewedRecyclerView.setAdapter(adapter);
@@ -60,6 +62,13 @@ public class RecentlyViewedFragment extends Fragment implements WishListProductL
             binding.viewMore.setVisibility(View.INVISIBLE);
             binding.txtEmpty.setVisibility(View.VISIBLE);
         }
+
+        binding.viewMore.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getContext(), RecentlyViewedActivity.class));
+            }
+        });
 
     }
 
@@ -74,8 +83,11 @@ public class RecentlyViewedFragment extends Fragment implements WishListProductL
                     list.clear();
                     list.addAll(recentlyViewedItems);
                     adapter.notifyDataSetChanged();
+                    binding.viewMore.setVisibility(View.VISIBLE);
+                    binding.txtEmpty.setVisibility(View.INVISIBLE);
                 } else {
                     binding.txtEmpty.setVisibility(View.VISIBLE);
+                    binding.viewMore.setVisibility(View.INVISIBLE);
                 }
             });
         } else {
