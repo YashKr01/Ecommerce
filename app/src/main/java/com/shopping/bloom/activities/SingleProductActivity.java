@@ -3,6 +3,7 @@ package com.shopping.bloom.activities;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -111,7 +112,7 @@ public class SingleProductActivity extends AppCompatActivity {
     String SELECTED_SIZE = "";
     View inflated;
     List<String> wishList;
-    String selectedColor, selectedSize, token;
+    String token;
     WishListItem wishListItem;
 
 
@@ -127,15 +128,20 @@ public class SingleProductActivity extends AppCompatActivity {
         Log.d("SEND", "onCreate: " + PRODUCT_ID);
         Log.d("SEND", "onCreate: " + CATEGORY_ID);
 
+        initViews();
+
+        checkNetworkConnectivity();
+
+
         wishList = new ArrayList<>();
 
+        //not required with new json response
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             wishList = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
             System.out.println(wishList);
         });
 
         LoginManager loginManager = new LoginManager(SingleProductActivity.this);
-
         if (!loginManager.isLoggedIn()) {
             token = loginManager.gettoken();
         } else {
@@ -144,73 +150,9 @@ public class SingleProductActivity extends AppCompatActivity {
 
         wishListItem = new WishListItem(String.valueOf(PRODUCT_ID), token);
 
-        productName = findViewById(R.id.product_name);
-        scrollView = findViewById(R.id.scrollView);
-        price = findViewById(R.id.price);
-        colorTextView = findViewById(R.id.color);
-        ratingBar = findViewById(R.id.ratingBar4);
-        viewReview = findViewById(R.id.viewAllReviewTextView);
-        linearLayout = findViewById(R.id.linearLayout);
-        favLinearLayout = findViewById(R.id.fav_layout);
-        linearLayoutDesc = findViewById(R.id.linearLayoutDescription);
-        relativeLayout = findViewById(R.id.relative);
-        viewPager = findViewById(R.id.viewpager);
-        viewStub = findViewById(R.id.vsEmptyScreen);
-        toolbar = findViewById(R.id.toolbar);
-        desc = findViewById(R.id.textViewDesc);
-        reviewToolbar = findViewById(R.id.reviewToolbar);
-        slideTextView = findViewById(R.id.slideTextView);
-        changePinCode = findViewById(R.id.changePinCode);
-        wishListButton = findViewById(R.id.wishListButton);
-        selectedWishListButton = findViewById(R.id.selectWishListButton);
-        randomRecyclerView = findViewById(R.id.randomRecyclerView);
-        progressBar = findViewById(R.id.progressBar);
-        hideRelativeLayout = findViewById(R.id.hideRelative);
-
-        inflated = viewStub.inflate();
-        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
-        frameLayout = findViewById(R.id.fragment);
-        collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
-
-        hideRelativeLayout.setVisibility(View.VISIBLE);
-        frameLayout.setVisibility(View.GONE);
-        btnAddToBag = findViewById(R.id.btn_add_to_bag);
-
-        toolbar.setNavigationIcon(R.drawable.ic_back_background);
-        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
-
-        toolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
-
-        reviewToolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
-
-        //swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Getting Data");
-        progressDialog.setCancelable(true);
-        progressDialog.show();
-
-        colorRecyclerView = findViewById(R.id.colorRecyclerView);
-        sizeRecyclerView = findViewById(R.id.sizeRecyclerView);
         singleProductDataResponse = new SingleProductDataResponse();
 
-        //color
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        colorList = new ArrayList<>();
-        colorRecyclerView.setLayoutManager(linearLayoutManager);
-        colorAdapter = new ColorAdapter(this, colorList);
-        colorRecyclerView.setAdapter(colorAdapter);
 
-        //size
-        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        sizeList = new ArrayList<>();
-        sizeRecyclerView.setLayoutManager(linearLayoutManager2);
-        sizeAdapter = new SizeAdapter(this, sizeList);
-        sizeRecyclerView.setAdapter(sizeAdapter);
 
         //view pager
         productVariableResponseList = new ArrayList<>();
@@ -218,14 +160,8 @@ public class SingleProductActivity extends AppCompatActivity {
         viewPagerImageAdapter = new ViewPagerImageAdapter(imageList, this);
         viewPager.setAdapter(viewPagerImageAdapter);
 
-        //random Product
-        LinearLayoutManager randomLinearLayoutManager = new GridLayoutManager(this, 3);
-        randomImageList = new ArrayList<>();
-        randomRecyclerView.setLayoutManager(randomLinearLayoutManager);
-        randomImageAdapter = new RandomImageAdapter(this, randomImageList);
-        randomRecyclerView.setAdapter(randomImageAdapter);
 
-        TextView textView = findViewById(R.id.description);
+
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewDescription);
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -235,16 +171,10 @@ public class SingleProductActivity extends AppCompatActivity {
         ProductDescAdapter productDescAdapter = new ProductDescAdapter(this, list);
         recyclerView.setAdapter(productDescAdapter);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
 
-        double heightInDp = height * 0.55;
-
-        int h = (int) Math.round(heightInDp);
 
         AppBarLayout.LayoutParams layoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
-        layoutParams.height = h;
+        layoutParams.height = getRequiredHeight();
         collapsingToolbarLayout.setLayoutParams(layoutParams);
 
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
@@ -265,6 +195,8 @@ public class SingleProductActivity extends AppCompatActivity {
                     colorList.add(productVariableResponse.getColor());
                     sizeList.add(productVariableResponse.getSize());
                 }
+
+
 
                 slideTextView.setText(1 + "/" + imageList.size());
 
@@ -293,7 +225,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 } else {
                     sizeClickable = true;
                 }
-
+                TextView textView = findViewById(R.id.description);
                 textView.setText(this.singleProductDataResponse.getDescription());
                 list = this.singleProductDataResponse.getSingleProductDescResponseList();
                 productDescAdapter.setSingleProductDescResponseList(list);
@@ -332,108 +264,18 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
-        singleProductViewModel.getRandomImageDataResponseMutableLiveData().observe(this, randomImageDataResponses -> {
-            if (randomImageDataResponses == null) {
-                System.out.println("Empty");
-            } else {
-                randomImageList.addAll(randomImageDataResponses);
-                randomImageAdapter.setImageList(randomImageList);
-                randomImageAdapter.notifyDataSetChanged();
-            }
-        });
 
         if (PRODUCT_ID != null) {
             singleProductViewModel.makeApiCall(PRODUCT_ID, getApplication());
         }
-
         if (CATEGORY_ID == null) {
             CATEGORY_ID = "-1";
         }
 
-        //todo categoryid will be -1 incase there is no cateogry id in intent
-        singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
 
-        singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
-            if (loginResponseModel != null) {
-                ShowToast.showToast(this, loginResponseModel.getMessage());
-            }
-        });
-
-
-        singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
-
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                View view = scrollView.getChildAt(scrollView.getChildCount() - 1);
-
-                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView
-                        .getScrollY()));
-
-                if (diff == 0) {
-                    pageNo++;
-                    System.out.println(pageNo);
-                    singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
-                }
-            }
-        });
 
         viewReview.setOnClickListener(debouncedOnClickListener);
 
-        AppBarLayout appBarLayout = findViewById(R.id.appbarLayout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = true;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbarLayout.setTitle(singleProductDataResponse.getProduct_name());
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbarLayout.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                slideTextView.setText((position + 1) + "/" + imageList.size());
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.layout_change_pincode);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        dialog.setCancelable(true);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-
-        EditText editText = dialog.findViewById(R.id.pinCodeEditText);
-        Button button = dialog.findViewById(R.id.changePinCodeButton);
-        button.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                Toast.makeText(SingleProductActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         changePinCode.setOnClickListener(debouncedOnClickListener);
         wishListButton.setOnClickListener(debouncedOnClickListener);
@@ -445,8 +287,8 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
-        checkNetworkConnectivity();
 
+        //setting up no internet check
         TextView textViewVS = inflated.findViewById(R.id.tvSwipeToRefresh);
         textViewVS.setText("Click to Refresh");
         ConstraintLayout constraintLayout = inflated.findViewById(R.id.constraintLayout);
@@ -457,6 +299,8 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         });
 
+
+        //not needed will be removed as new json response is there
         for (String s : wishList) {
             if (s.equals(String.valueOf(PRODUCT_ID))) {
                 System.out.println("Visible");
@@ -466,21 +310,21 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
 
+
+
+
+        SetupColorAndSizeList();
+        GetRecommendProductList();
+        CreateUserLogs();
+
+
     }
 
     private void addToShoppingBag() {
         if (isColorSizeSelected()) {
             Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
-            ProductVariableResponse product = new ProductVariableResponse();
-            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                Log.d(TAG, "addToShoppingBag: #!: " + product.toString());
-                if (productVariableResponse.getSize().equals(SELECTED_SIZE) &&
-                        productVariableResponse.getColor().equals(SELECTED_COLOR)) {
-                    Log.d(TAG, "addToShoppingBag: MATCHED");
-                    product = productVariableResponse;
-                    break;
-                }
-            }
+            ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR , SELECTED_SIZE);
+
             if (product != null) {
                 Log.d(TAG, "addToShoppingBag: product: " + product.toString());
                 Log.d(TAG, "addToShoppingBag: FOUND");
@@ -510,6 +354,69 @@ public class SingleProductActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.select_color), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+
+    /*
+       All ui about color and size will be handled here in adapters
+     */
+    private void SetupColorAndSizeList(){
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        colorList = new ArrayList<>();
+        colorRecyclerView.setLayoutManager(linearLayoutManager);
+        colorAdapter = new ColorAdapter(this, colorList);
+        colorRecyclerView.setAdapter(colorAdapter);
+
+        //size
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        sizeList = new ArrayList<>();
+        sizeRecyclerView.setLayoutManager(linearLayoutManager2);
+        sizeAdapter = new SizeAdapter(this, sizeList);
+        sizeRecyclerView.setAdapter(sizeAdapter);
+
+    }
+
+    /*
+       Recommended products api call and list handling
+     */
+    private void GetRecommendProductList(){
+        LinearLayoutManager randomLinearLayoutManager = new GridLayoutManager(this, 3);
+        randomImageList = new ArrayList<>();
+        randomRecyclerView.setLayoutManager(randomLinearLayoutManager);
+        randomImageAdapter = new RandomImageAdapter(this, randomImageList);
+        randomRecyclerView.setAdapter(randomImageAdapter);
+
+
+        singleProductViewModel.getRandomImageDataResponseMutableLiveData().observe(this, randomImageDataResponses -> {
+            if (randomImageDataResponses == null) {
+                System.out.println("Empty");
+            } else {
+                randomImageList.addAll(randomImageDataResponses);
+                randomImageAdapter.setImageList(randomImageList);
+                randomImageAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = scrollView.getChildAt(scrollView.getChildCount() - 1);
+
+                int diff = (view.getBottom() - (scrollView.getHeight() + scrollView
+                        .getScrollY()));
+
+                if (diff == 0) {
+                    pageNo++;
+                    System.out.println(pageNo);
+                    singleProductViewModel.makeApiCallRandomImage(limit, pageNo, getApplication());
+                }
+            }
+        });
+
     }
 
     /*
@@ -550,7 +457,7 @@ public class SingleProductActivity extends AppCompatActivity {
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
             } else if (v.getId() == R.id.changePinCode) {
-                dialog.show();
+                ShowPincodeDailog();
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
@@ -566,6 +473,32 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    /*
+        Dilaog for pincode
+     */
+    private void ShowPincodeDailog(){
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.layout_change_pincode);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+        dialog.show();
+        EditText editText = dialog.findViewById(R.id.pinCodeEditText);
+        Button button = dialog.findViewById(R.id.changePinCodeButton);
+        button.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                Toast.makeText(SingleProductActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
@@ -643,8 +576,8 @@ public class SingleProductActivity extends AppCompatActivity {
 
     }
 
-    Bitmap bitmap1;
 
+    private Bitmap bitmap1;
     public void share() {
         try {
             ImageView imageView = (ImageView) viewPager.findViewWithTag(viewPager.getCurrentItem());
@@ -704,6 +637,37 @@ public class SingleProductActivity extends AppCompatActivity {
         checkIfExist(cartItem.getParentId(), cartItem.getChildId());
     }
 
+
+    // Return productvairalable object of particular item which user select
+    // need to check if mcolor and msize should not be empty or null when calling this method
+    private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize){
+        if(mcolor.isEmpty() || msize.isEmpty())
+            return null;
+
+        ProductVariableResponse mobj = null;
+        for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+            if(productVariableResponse.getColor().equalsIgnoreCase(mcolor) &&
+                    productVariableResponse.getSize().equalsIgnoreCase(msize)){
+                mobj = productVariableResponse;
+            }
+        }
+        return mobj;
+    }
+
+
+    private void CreateUserLogs(){
+        singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
+        singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
+            if (loginResponseModel != null) {
+                ShowToast.showToast(this, loginResponseModel.getMessage());
+            }
+        });
+
+
+    }
+
+
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -713,5 +677,122 @@ public class SingleProductActivity extends AppCompatActivity {
         collapsingToolbarLayout.setVisibility(View.VISIBLE);
         favLinearLayout.setVisibility(View.VISIBLE);
     }
+
+
+
+    /*
+     Return dynamic height for viewpager
+     just change value in heightinDP according to screen % height of imageview
+     */
+
+    private int getRequiredHeight(){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+
+        double heightInDp = height * 0.55;
+
+        return  (int) Math.round(heightInDp);
+    }
+
+
+
+    private void initViews(){
+
+        productName = findViewById(R.id.product_name);
+        scrollView = findViewById(R.id.scrollView);
+        price = findViewById(R.id.price);
+        colorTextView = findViewById(R.id.color);
+        ratingBar = findViewById(R.id.ratingBar4);
+        viewReview = findViewById(R.id.viewAllReviewTextView);
+        linearLayout = findViewById(R.id.linearLayout);
+        favLinearLayout = findViewById(R.id.fav_layout);
+        linearLayoutDesc = findViewById(R.id.linearLayoutDescription);
+        relativeLayout = findViewById(R.id.relative);
+        viewPager = findViewById(R.id.viewpager);
+        viewStub = findViewById(R.id.vsEmptyScreen);
+        toolbar = findViewById(R.id.toolbar);
+        desc = findViewById(R.id.textViewDesc);
+        reviewToolbar = findViewById(R.id.reviewToolbar);
+        slideTextView = findViewById(R.id.slideTextView);
+        changePinCode = findViewById(R.id.changePinCode);
+        wishListButton = findViewById(R.id.wishListButton);
+        selectedWishListButton = findViewById(R.id.selectWishListButton);
+        randomRecyclerView = findViewById(R.id.randomRecyclerView);
+        progressBar = findViewById(R.id.progressBar);
+        hideRelativeLayout = findViewById(R.id.hideRelative);
+
+        inflated = viewStub.inflate();
+        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        frameLayout = findViewById(R.id.fragment);
+        collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
+
+        hideRelativeLayout.setVisibility(View.VISIBLE);
+        frameLayout.setVisibility(View.GONE);
+        btnAddToBag = findViewById(R.id.btn_add_to_bag);
+
+
+        colorRecyclerView = findViewById(R.id.colorRecyclerView);
+        sizeRecyclerView = findViewById(R.id.sizeRecyclerView);
+
+
+        toolbar.setNavigationIcon(R.drawable.ic_back_background);
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
+
+        toolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
+
+        reviewToolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
+        });
+
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Getting Data");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+
+        AppBarLayout appBarLayout = findViewById(R.id.appbarLayout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    collapsingToolbarLayout.setTitle(singleProductDataResponse.getProduct_name());
+                    isShow = true;
+                } else if (isShow) {
+                    collapsingToolbarLayout.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                slideTextView.setText((position + 1) + "/" + imageList.size());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+    }
+
+
 
 }
