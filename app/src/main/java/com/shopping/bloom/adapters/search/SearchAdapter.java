@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.search.SearchProduct;
+import com.shopping.bloom.restService.callback.SearchProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
@@ -22,10 +24,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
 
     private Context context;
     private List<SearchProduct> list;
+    private SearchProductClickListener listener;
 
-    public SearchAdapter(Context context, List<SearchProduct> list) {
+    public SearchAdapter(Context context, List<SearchProduct> list, SearchProductClickListener listener) {
         this.context = context;
         this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -56,6 +60,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
                 holder.imageView,
                 true
         );
+
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                listener.onSearchClickListener(currentItem);
+            }
+        });
 
     }
 
