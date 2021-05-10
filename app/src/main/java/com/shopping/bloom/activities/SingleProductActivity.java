@@ -3,12 +3,13 @@ package com.shopping.bloom.activities;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -60,7 +61,11 @@ import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.SingleProductImageResponse;
 import com.shopping.bloom.model.WishListItem;
+<<<<<<< HEAD
 import com.shopping.bloom.utils.CommonUtils;
+=======
+import com.shopping.bloom.restService.callback.AddToCartCallback;
+>>>>>>> 3b974c80f55166c2ade6718a42d5ec724e1a8869
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -205,6 +210,7 @@ public class SingleProductActivity extends AppCompatActivity {
                     sizeList.add(productVariableResponse.getSize());
                 }
 
+<<<<<<< HEAD
                 String isOnSale = this.singleProductDataResponse.getIs_on_sale();
                 if (isOnSale.equals("1")) {
                     double percentage = Double.parseDouble(this.singleProductDataResponse.getSale_percentage());
@@ -221,6 +227,8 @@ public class SingleProductActivity extends AppCompatActivity {
                     salePercentage.setVisibility(View.GONE);
                     price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
                 }
+=======
+>>>>>>> 3b974c80f55166c2ade6718a42d5ec724e1a8869
 
                 slideTextView.setText(1 + "/" + imageList.size());
 
@@ -337,18 +345,20 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3b974c80f55166c2ade6718a42d5ec724e1a8869
         SetupColorAndSizeList();
         GetRecommendProductList();
         CreateUserLogs();
-
-
     }
 
     private void addToShoppingBag() {
         if (isColorSizeSelected()) {
             Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
             ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR, SELECTED_SIZE);
+<<<<<<< HEAD
 
             if (product != null) {
                 Log.d(TAG, "addToShoppingBag: product: " + product.toString());
@@ -356,7 +366,20 @@ public class SingleProductActivity extends AppCompatActivity {
             } else {
                 Log.d(TAG, "addToShoppingBag: NOT FOUND");
 
+=======
+            if (product == null) {
+                Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT)
+                        .show();
+                return;
             }
+            if (product.getQuantity().equals("0")) {
+                // No product available
+                Toast.makeText(this, "Out of stock", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+>>>>>>> 3b974c80f55166c2ade6718a42d5ec724e1a8869
+            }
+
             String parentId = product.getParentId();
             String childId = product.getChildId();
             String primaryImage = product.getPrimary_image();
@@ -366,8 +389,8 @@ public class SingleProductActivity extends AppCompatActivity {
             String name = singleProductDataResponse.getProduct_name();
             Log.d(TAG, "addToShoppingBag: product: " + product.toString());
             CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price);
-            if (validateCartItem(cartItem)) {
-                singleProductViewModel.addToShoppingBag(cartItem);
+            if (validateCartItem(cartItem, product.getQuantity())) {
+                singleProductViewModel.addToShoppingBag(cartItem, product.getQuantity(), callback);
             } else {
                 Toast.makeText(this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
             }
@@ -381,6 +404,30 @@ public class SingleProductActivity extends AppCompatActivity {
         }
     }
 
+    private final AddToCartCallback callback = new AddToCartCallback() {
+        @Override
+        public void onAdded(int totalItems) {
+            String text = "";
+            if (totalItems == 1) {
+                text = totalItems + " item added to the cart";
+            } else {
+                text = totalItems + " items into the cart";
+            }
+            Log.d(TAG, "onAdded: " + text);
+            String finalText = text;
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(SingleProductActivity.this, finalText, Toast.LENGTH_SHORT)
+                    .show());
+        }
+
+        @Override
+        public void onItemLimitReached(int maxItems) {
+            final String text = "You can not add more than " + maxItems + " item.";
+            Log.d(TAG, "onItemLimitReached: " + text);
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(SingleProductActivity.this, text, Toast.LENGTH_SHORT)
+                    .show());
+
+        }
+    };
 
     /*
        All ui about color and size will be handled here in adapters
@@ -450,7 +497,7 @@ public class SingleProductActivity extends AppCompatActivity {
         return (SELECTED_COLOR.length() > 0 && SELECTED_SIZE.length() > 0);
     }
 
-    private boolean validateCartItem(CartItem cartItem) {
+    private boolean validateCartItem(CartItem cartItem, String quantity) {
         if (cartItem.getParentId().isEmpty() || cartItem.getChildId().isEmpty() ||
                 cartItem.getName().isEmpty() || cartItem.getPrimaryImage().isEmpty() ||
                 cartItem.getProductPrice().isEmpty()) {
@@ -699,7 +746,7 @@ public class SingleProductActivity extends AppCompatActivity {
      * */
     private void checkIfExist(String parentID, String childID) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().checkIfExist(parentID, childID);
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().getAllProductWith(parentID, childID);
             itemAlreadyAddedToCart(cartItems != null && !cartItems.isEmpty());
         });
     }

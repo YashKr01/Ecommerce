@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,11 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.search.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.search.SearchActivityConfig;
 import com.shopping.bloom.model.search.SearchProduct;
+import com.shopping.bloom.restService.callback.SearchProductClickListener;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.search.SearchViewModel;
@@ -31,7 +35,7 @@ import com.shopping.bloom.viewModels.search.SearchViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements SearchProductClickListener {
 
     private ActivitySearchBinding binding;
     private SearchViewModel viewModel;
@@ -75,7 +79,7 @@ public class SearchActivity extends AppCompatActivity {
 
         // initialise list, adapter and recyclerview
         list = new ArrayList<>();
-        adapter = new SearchAdapter(this, list);
+        adapter = new SearchAdapter(this, list, this);
         layoutManager = new GridLayoutManager(this, 2);
         binding.searchRecyclerView.setHasFixedSize(true);
         binding.searchRecyclerView.setLayoutManager(layoutManager);
@@ -247,4 +251,10 @@ public class SearchActivity extends AppCompatActivity {
         } else binding.newFragmentNoConnectionLayout.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onSearchClickListener(SearchProduct searchProduct) {
+        Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.putExtra("PRODUCT_ID", searchProduct.getId());
+        startActivity(intent);
+    }
 }
