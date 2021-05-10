@@ -147,6 +147,33 @@
                                 android:textSize="@dimen/sb_text_size_17"
                                 android:textStyle="bold" />
 
+                            <TextView
+                                android:id="@+id/salePrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/product_name"
+                                android:layout_toEndOf="@id/price"
+                                android:layout_marginStart="@dimen/sb_size_20"
+                                android:layout_marginTop="@dimen/sb_size_13"
+                                android:fontFamily="@font/gothambold"
+                                android:textColor="@color/black"
+                                android:visibility="gone"
+                                android:textSize="@dimen/sb_text_size_17"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/salePercentage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"
+                                android:layout_below="@id/product_name"
+                                android:layout_toEndOf="@id/salePrice"
+                                android:layout_marginStart="@dimen/sb_size_15"
+                                android:layout_marginTop="@dimen/sb_size_13"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16"
+                                />
+
                             <RatingBar
                                 android:id="@+id/ratingBar4"
                                 style="@style/Widget.AppCompat.RatingBar.Small"
@@ -166,7 +193,7 @@
                                 android:id="@+id/color"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/price"
+                                android:layout_below="@+id/salePrice"
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:fontFamily="@font/gothambold"
@@ -197,6 +224,7 @@
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_15"
                                 android:textStyle="bold" />
+
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/sizeRecyclerView"
