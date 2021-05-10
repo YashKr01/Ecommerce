@@ -5,9 +5,13 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -16,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import org.w3c.dom.Text;
 
@@ -26,11 +31,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
 
-    Context context;
-    List<String> colorList;
-    int pos = -1;
-    boolean clickable;
-    HashMap<String, String> colorMap;
+    private Context context;
+    private List<String> colorList;
+    private int pos = -1;
+    private int check = 1;
+    private boolean clickable;
+    private HashMap<String, String> colorMap;
 
     public ColorAdapter(Context context, List<String> colorList) {
         this.context = context;
@@ -69,26 +75,40 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         if (color == null) {
             System.out.println("Empty color");
         } else {
-            holder.button.setCardBackgroundColor(Color.parseColor(color));
+            holder.button.setBackgroundColor(Color.parseColor(color));
         }
 
         if (clickable) {
-
-            holder.cardView.setOnClickListener(v -> {
-                pos = position;
-                notifyDataSetChanged();
-                if (context instanceof SingleProductActivity) {
-                    ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+            holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
+                @Override
+                public void onDebouncedClick(View v) {
+                    if (holder.button.isChecked()) {
+                        holder.cardView.setContentPadding(10, 10, 10, 10);
+                        if (context instanceof SingleProductActivity) {
+                            ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+                        }
+                        pos = position;
+                    } else {
+                        holder.cardView.setContentPadding(0, 0, 0, 0);
+                        if (context instanceof SingleProductActivity) {
+                            ((SingleProductActivity) context).setViewPagerCurrentItem(-1);
+                        }
+                        pos = -1;
+                    }
+                    notifyDataSetChanged();
                 }
             });
 
-            if (pos == position) {
-                holder.cardView.setContentPadding(10,10,10,10);
-            } else {
-                holder.cardView.setContentPadding(0,0,0,0);
-            }
+        }
+        if (pos == position) {
+            holder.cardView.setContentPadding(10, 10, 10, 10);
+            holder.button.setChecked(true);
+        } else {
+            holder.cardView.setContentPadding(0, 0, 0, 0);
+            holder.button.setChecked(false);
 
         }
+
     }
 
     @Override
@@ -99,14 +119,15 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        CardView button;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        CheckBox button;
         CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.colorButton);
             cardView = itemView.findViewById(R.id.cardView);
+
         }
 
     }

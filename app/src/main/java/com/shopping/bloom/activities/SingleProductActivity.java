@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -57,7 +58,9 @@ import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.model.SingleProductImageResponse;
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -85,8 +88,11 @@ public class SingleProductActivity extends AppCompatActivity {
     SingleProductDataResponse singleProductDataResponse;
     List<String> colorList, sizeList, imageList;
     List<RandomImageDataResponse> randomImageList;
+    List<String> selectedSizeList, selectedColorList;
+    int pos;
     LinearLayout linearLayout;
-    TextView productName, price, viewReview, colorTextView, slideTextView, desc;
+    TextView productName, price, viewReview, colorTextView,
+            slideTextView, desc, salePrice, salePercentage;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
     ProgressBar progressBar;
@@ -153,14 +159,11 @@ public class SingleProductActivity extends AppCompatActivity {
         singleProductDataResponse = new SingleProductDataResponse();
 
 
-
         //view pager
         productVariableResponseList = new ArrayList<>();
         imageList = new ArrayList<>();
         viewPagerImageAdapter = new ViewPagerImageAdapter(imageList, this);
         viewPager.setAdapter(viewPagerImageAdapter);
-
-
 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewDescription);
@@ -172,11 +175,12 @@ public class SingleProductActivity extends AppCompatActivity {
         recyclerView.setAdapter(productDescAdapter);
 
 
-
         AppBarLayout.LayoutParams layoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
         layoutParams.height = getRequiredHeight();
         collapsingToolbarLayout.setLayoutParams(layoutParams);
 
+        selectedSizeList = new ArrayList<>();
+        selectedColorList = new ArrayList<>();
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
 
         singleProductViewModel.getMutableLiveData().observe(this, singleProductDataResponse -> {
@@ -187,16 +191,36 @@ public class SingleProductActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 String primary = this.singleProductDataResponse.getPrimary_image();
+                imageList.add(primary);
+
+                for (SingleProductImageResponse imageResponse : this.singleProductDataResponse.getSingleProductImageResponses()) {
+                    imageList.add(imageResponse.getImagePath());
+                }
+
                 productVariableResponseList = this.singleProductDataResponse.getProductVariableResponses();
 
-                imageList.add(primary);
                 for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
                     imageList.add(productVariableResponse.getPrimary_image());
                     colorList.add(productVariableResponse.getColor());
                     sizeList.add(productVariableResponse.getSize());
                 }
 
-
+                String isOnSale = this.singleProductDataResponse.getIs_on_sale();
+                if (isOnSale.equals("1")) {
+                    double percentage = Double.parseDouble(this.singleProductDataResponse.getSale_percentage());
+                    int per = (int) percentage;
+                    salePrice.setVisibility(View.VISIBLE);
+                    salePercentage.setVisibility(View.VISIBLE);
+                    price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                    price.setPaintFlags(price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    salePrice.setText(CommonUtils.getSignedAmount(this.singleProductDataResponse.getSale_price()));
+                    salePercentage.setText(String.valueOf(per).concat(" %"));
+                } else {
+                    price.setVisibility(View.VISIBLE);
+                    salePrice.setVisibility(View.GONE);
+                    salePercentage.setVisibility(View.GONE);
+                    price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                }
 
                 slideTextView.setText(1 + "/" + imageList.size());
 
@@ -204,11 +228,14 @@ public class SingleProductActivity extends AppCompatActivity {
                 colorList.clear();
                 colorList.addAll(colorSet);
 
+                selectedColorList.addAll(colorSet);
+
                 if (colorList.size() == 0) {
                     colorClickable = false;
                     String colors = this.singleProductDataResponse.getAvailable_colors();
                     String[] colorArray = colors.split(",");
                     colorList.addAll(Arrays.asList(colorArray));
+
                 } else {
                     colorClickable = true;
                 }
@@ -216,6 +243,8 @@ public class SingleProductActivity extends AppCompatActivity {
                 HashSet<String> sizeSet = new LinkedHashSet<>(sizeList);
                 sizeList.clear();
                 sizeList.addAll(sizeSet);
+
+                selectedSizeList.addAll(sizeSet);
 
                 if (sizeList.size() == 0) {
                     sizeClickable = false;
@@ -241,7 +270,6 @@ public class SingleProductActivity extends AppCompatActivity {
                 sizeAdapter.notifyDataSetChanged();
 
                 productName.setText(this.singleProductDataResponse.getProduct_name());
-                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
 
                 ratingBar.setRating(Float.parseFloat(this.singleProductDataResponse.getAvg_rating()));
 
@@ -271,7 +299,6 @@ public class SingleProductActivity extends AppCompatActivity {
         if (CATEGORY_ID == null) {
             CATEGORY_ID = "-1";
         }
-
 
 
         viewReview.setOnClickListener(debouncedOnClickListener);
@@ -311,8 +338,6 @@ public class SingleProductActivity extends AppCompatActivity {
         }
 
 
-
-
         SetupColorAndSizeList();
         GetRecommendProductList();
         CreateUserLogs();
@@ -323,7 +348,7 @@ public class SingleProductActivity extends AppCompatActivity {
     private void addToShoppingBag() {
         if (isColorSizeSelected()) {
             Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
-            ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR , SELECTED_SIZE);
+            ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR, SELECTED_SIZE);
 
             if (product != null) {
                 Log.d(TAG, "addToShoppingBag: product: " + product.toString());
@@ -357,11 +382,10 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
 
-
     /*
        All ui about color and size will be handled here in adapters
      */
-    private void SetupColorAndSizeList(){
+    private void SetupColorAndSizeList() {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         colorList = new ArrayList<>();
@@ -381,7 +405,7 @@ public class SingleProductActivity extends AppCompatActivity {
     /*
        Recommended products api call and list handling
      */
-    private void GetRecommendProductList(){
+    private void GetRecommendProductList() {
         LinearLayoutManager randomLinearLayoutManager = new GridLayoutManager(this, 3);
         randomImageList = new ArrayList<>();
         randomRecyclerView.setLayoutManager(randomLinearLayoutManager);
@@ -478,7 +502,7 @@ public class SingleProductActivity extends AppCompatActivity {
     /*
         Dilaog for pincode
      */
-    private void ShowPincodeDailog(){
+    private void ShowPincodeDailog() {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.layout_change_pincode);
         dialog.setCanceledOnTouchOutside(true);
@@ -512,52 +536,111 @@ public class SingleProductActivity extends AppCompatActivity {
         }
     }
 
-    public void setViewPagerCurrentItem(int pos) {
-        SELECTED_COLOR = colorList.get(pos).trim();
-        if (!SELECTED_COLOR.isEmpty()) {
-            colorTextView.setVisibility(View.VISIBLE);
-            colorTextView.setText("Color: ".concat(SELECTED_COLOR));
+    public void setViewPagerCurrentItem(Integer pos) {
+        try {
+            System.out.println("color pos = " + pos);
+            System.out.println("color size = " + selectedColorList.size());
+            System.out.println("color size2 = " + colorList.size());
+            if (pos != -1) {
+                SELECTED_COLOR = colorList.get(pos).trim();
+                System.out.println("color = " + SELECTED_COLOR);
+                if (!SELECTED_COLOR.isEmpty()) {
+                    colorTextView.setVisibility(View.VISIBLE);
+                    colorTextView.setText("Color: ".concat(SELECTED_COLOR));
 
-            for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
-                if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
-                    viewPager.setCurrentItem(i + 1, true);
-                    //viewPagerImageAdapter.notifyDataSetChanged();
-                    price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
-                    break;
+                    for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
+                        if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                            viewPager.setCurrentItem(i + 2, true);
+                            String isOnSale = this.singleProductDataResponse.getProductVariableResponses().get(i).getIs_on_sale();
+                            if (isOnSale.equals("1")) {
+                                double percentage = Double.parseDouble(this.singleProductDataResponse.getProductVariableResponses().get(i).getSale_percentage());
+                                int per = (int) percentage;
+                                salePrice.setVisibility(View.VISIBLE);
+                                salePercentage.setVisibility(View.VISIBLE);
+                                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
+                                price.setPaintFlags(price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                salePrice.setText(CommonUtils.getSignedAmount(this.singleProductDataResponse.getProductVariableResponses().get(i).getSale_price()));
+                                salePercentage.setText(String.valueOf(per).concat(" %"));
+                            } else {
+                                price.setVisibility(View.VISIBLE);
+                                salePrice.setVisibility(View.GONE);
+                                salePercentage.setVisibility(View.GONE);
+                                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
+                            }
+                            break;
+                        }
+                    }
+
+                    sizeList.clear();
+                    for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                        if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
+
+                            sizeList.add(productVariableResponse.getSize());
+                        }
+                    }
+                    System.out.println("size = " + selectedSizeList.size());
+                    HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
+                    sizeList.clear();
+                    sizeList.addAll(hashSet);
+                    sizeAdapter.setSizeList(sizeList, sizeClickable);
+                    sizeAdapter.notifyDataSetChanged();
                 }
-            }
-            sizeList.clear();
-            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
-                    System.out.println(productVariableResponse.getSize());
+            } else {
+                viewPager.setCurrentItem(0, true);
+                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                colorTextView.setVisibility(View.GONE);
+                sizeList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
                     sizeList.add(productVariableResponse.getSize());
                 }
+                HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
+                sizeList.clear();
+                sizeList.addAll(hashSet);
+                sizeAdapter.setSizeList(sizeList, sizeClickable);
+                sizeAdapter.notifyDataSetChanged();
             }
-            HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
-            sizeList.clear();
-            sizeList.addAll(hashSet);
-            sizeAdapter.setSizeList(sizeList, sizeClickable);
-            sizeAdapter.notifyDataSetChanged();
+        } catch (Exception ignored) {
         }
     }
 
-    public void setSizeCurrentItem(int position) {
-        SELECTED_SIZE = sizeList.get(position);
-        if (!SELECTED_SIZE.isEmpty()) {
-            colorList.clear();
-            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
-                    System.out.println(productVariableResponse.getColor());
-                    colorList.add(productVariableResponse.getColor());
+    public void setSizeCurrentItem(Integer position) {
+        try {
+            System.out.println("size pos = " + position);
+            System.out.println("size size = " + selectedColorList.size());
+            System.out.println("size size2 = " + colorList.size());
+            pos = position;
+            if (position != -1) {
+                SELECTED_SIZE = sizeList.get(position);
+
+                colorList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                    if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
+                        colorList.add(productVariableResponse.getColor());
+                    }
                 }
+                HashSet<String> hashSet = new LinkedHashSet<>(colorList);
+                colorList.clear();
+                colorList.addAll(hashSet);
+
+            } else {
+                System.out.println("sadbasd" + colorRecyclerView.getChildAt(position));
+                colorTextView.setVisibility(View.GONE);
+                colorList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                    colorList.add(productVariableResponse.getColor());
+                    System.out.println(productVariableResponse.getColor());
+                }
+                HashSet<String> hashSet = new LinkedHashSet<>(colorList);
+                colorList.clear();
+                colorList.addAll(hashSet);
+
             }
-            HashSet<String> hashSet = new LinkedHashSet<>(colorList);
-            colorList.clear();
-            colorList.addAll(hashSet);
             colorAdapter.setColorList(colorList, colorClickable);
             colorAdapter.notifyDataSetChanged();
+        } catch (Exception ignored) {
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -578,6 +661,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
     private Bitmap bitmap1;
+
     public void share() {
         try {
             ImageView imageView = (ImageView) viewPager.findViewWithTag(viewPager.getCurrentItem());
@@ -608,11 +692,11 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     /*
-    *   This method is use to identify if the Product is already added into the
-    *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
-    *   call this method after inflating the UI and update the
-    *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
-    * */
+     *   This method is use to identify if the Product is already added into the
+     *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
+     *   call this method after inflating the UI and update the
+     *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
+     * */
     private void checkIfExist(String parentID, String childID) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().checkIfExist(parentID, childID);
@@ -622,7 +706,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private void itemAlreadyAddedToCart(boolean alreadyAdded) {
         //TODO: handle the UI accordingly
-        if(alreadyAdded) {
+        if (alreadyAdded) {
             Log.d(TAG, "itemAlreadyAddedToCart: ADDED");
         } else {
             //Show add to cart button
@@ -640,14 +724,14 @@ public class SingleProductActivity extends AppCompatActivity {
 
     // Return productvairalable object of particular item which user select
     // need to check if mcolor and msize should not be empty or null when calling this method
-    private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize){
-        if(mcolor.isEmpty() || msize.isEmpty())
+    private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize) {
+        if (mcolor.isEmpty() || msize.isEmpty())
             return null;
 
         ProductVariableResponse mobj = null;
         for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-            if(productVariableResponse.getColor().equalsIgnoreCase(mcolor) &&
-                    productVariableResponse.getSize().equalsIgnoreCase(msize)){
+            if (productVariableResponse.getColor().equalsIgnoreCase(mcolor) &&
+                    productVariableResponse.getSize().equalsIgnoreCase(msize)) {
                 mobj = productVariableResponse;
             }
         }
@@ -655,7 +739,7 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
 
-    private void CreateUserLogs(){
+    private void CreateUserLogs() {
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
             if (loginResponseModel != null) {
@@ -665,7 +749,6 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
     }
-
 
 
     @Override
@@ -685,19 +768,18 @@ public class SingleProductActivity extends AppCompatActivity {
      just change value in heightinDP according to screen % height of imageview
      */
 
-    private int getRequiredHeight(){
+    private int getRequiredHeight() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
         double heightInDp = height * 0.55;
 
-        return  (int) Math.round(heightInDp);
+        return (int) Math.round(heightInDp);
     }
 
 
-
-    private void initViews(){
+    private void initViews() {
 
         productName = findViewById(R.id.product_name);
         scrollView = findViewById(R.id.scrollView);
@@ -721,9 +803,11 @@ public class SingleProductActivity extends AppCompatActivity {
         randomRecyclerView = findViewById(R.id.randomRecyclerView);
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
+        salePrice = findViewById(R.id.salePrice);
+        salePercentage = findViewById(R.id.salePercentage);
 
         inflated = viewStub.inflate();
-        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
         frameLayout = findViewById(R.id.fragment);
         collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
 
@@ -792,7 +876,6 @@ public class SingleProductActivity extends AppCompatActivity {
         });
 
     }
-
 
 
 }
