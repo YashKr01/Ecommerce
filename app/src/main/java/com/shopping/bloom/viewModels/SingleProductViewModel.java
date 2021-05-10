@@ -12,6 +12,7 @@ import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.restService.callback.AddToCartCallback;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.SingleProductResponse;
@@ -131,7 +132,6 @@ public class SingleProductViewModel extends ViewModel {
                 } else {
                     randomImageDataResponseMutableLiveData.postValue(response.body().getImageDataResponseList());
                 }
-
             }
 
             @Override
@@ -141,15 +141,21 @@ public class SingleProductViewModel extends ViewModel {
         });
     }
 
-    public void addToShoppingBag(CartItem cartItem) {
+    public void addToShoppingBag(CartItem cartItem, String quantity, AddToCartCallback cartCallback) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
                     List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao()
-                            .checkIfExist(cartItem.getParentId(), cartItem.getChildId());
+                            .getAllProductWith(cartItem.getParentId(), cartItem.getChildId());
                     if(cartItems == null || cartItems.isEmpty()) {
                         EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem);
+                        cartCallback.onAdded(1);
                     } else {
-                        EcommerceDatabase.getInstance().cartItemDao()
-                                .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
+                        if (cartItems.get(0).getQuantity() < Integer.parseInt(quantity)) {
+                            EcommerceDatabase.getInstance().cartItemDao()
+                                    .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
+                            cartCallback.onAdded(cartItems.get(0).getQuantity() + 1);
+                        } else {
+                            cartCallback.onItemLimitReached(cartItems.get(0).getQuantity());
+                        }
                     }
                 });
     }

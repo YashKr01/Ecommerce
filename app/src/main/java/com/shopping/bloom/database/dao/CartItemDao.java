@@ -27,7 +27,7 @@ public interface CartItemDao {
     void removeItem(CartItem cartItem);
 
     @Query("SELECT * FROM cart_item WHERE parentId = :parentId AND childId = :childId")
-    List<CartItem> checkIfExist(String parentId, String childId);
+    List<CartItem> getAllProductWith(String parentId, String childId);
 
     @Query("UPDATE cart_item SET quantity = quantity + 1 WHERE parentId = :parentId AND childId = :childId")
     void incrementQuantity(String parentId, String childId);

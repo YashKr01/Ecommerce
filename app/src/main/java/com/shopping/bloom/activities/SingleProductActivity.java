@@ -3,11 +3,12 @@ package com.shopping.bloom.activities;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -58,6 +59,7 @@ import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.WishListItem;
+import com.shopping.bloom.restService.callback.AddToCartCallback;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -153,14 +155,11 @@ public class SingleProductActivity extends AppCompatActivity {
         singleProductDataResponse = new SingleProductDataResponse();
 
 
-
         //view pager
         productVariableResponseList = new ArrayList<>();
         imageList = new ArrayList<>();
         viewPagerImageAdapter = new ViewPagerImageAdapter(imageList, this);
         viewPager.setAdapter(viewPagerImageAdapter);
-
-
 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewDescription);
@@ -170,7 +169,6 @@ public class SingleProductActivity extends AppCompatActivity {
         list = new ArrayList<>();
         ProductDescAdapter productDescAdapter = new ProductDescAdapter(this, list);
         recyclerView.setAdapter(productDescAdapter);
-
 
 
         AppBarLayout.LayoutParams layoutParams = (AppBarLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
@@ -195,7 +193,6 @@ public class SingleProductActivity extends AppCompatActivity {
                     colorList.add(productVariableResponse.getColor());
                     sizeList.add(productVariableResponse.getSize());
                 }
-
 
 
                 slideTextView.setText(1 + "/" + imageList.size());
@@ -273,7 +270,6 @@ public class SingleProductActivity extends AppCompatActivity {
         }
 
 
-
         viewReview.setOnClickListener(debouncedOnClickListener);
 
 
@@ -310,28 +306,27 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
 
-
-
-
         SetupColorAndSizeList();
         GetRecommendProductList();
         CreateUserLogs();
-
-
     }
 
     private void addToShoppingBag() {
         if (isColorSizeSelected()) {
             Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
-            ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR , SELECTED_SIZE);
-
-            if (product != null) {
-                Log.d(TAG, "addToShoppingBag: product: " + product.toString());
-                Log.d(TAG, "addToShoppingBag: FOUND");
-            } else {
-                Log.d(TAG, "addToShoppingBag: NOT FOUND");
-
+            ProductVariableResponse product = getSelectedChildSKUObj(SELECTED_COLOR, SELECTED_SIZE);
+            if (product == null) {
+                Toast.makeText(this, R.string.something_went_wrong, Toast.LENGTH_SHORT)
+                        .show();
+                return;
             }
+            if (product.getQuantity().equals("0")) {
+                // No product available
+                Toast.makeText(this, "Out of stock", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+
             String parentId = product.getParentId();
             String childId = product.getChildId();
             String primaryImage = product.getPrimary_image();
@@ -341,8 +336,8 @@ public class SingleProductActivity extends AppCompatActivity {
             String name = singleProductDataResponse.getProduct_name();
             Log.d(TAG, "addToShoppingBag: product: " + product.toString());
             CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price);
-            if (validateCartItem(cartItem)) {
-                singleProductViewModel.addToShoppingBag(cartItem);
+            if (validateCartItem(cartItem, product.getQuantity())) {
+                singleProductViewModel.addToShoppingBag(cartItem, product.getQuantity(), callback);
             } else {
                 Toast.makeText(this, getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
             }
@@ -356,12 +351,36 @@ public class SingleProductActivity extends AppCompatActivity {
         }
     }
 
+    private final AddToCartCallback callback = new AddToCartCallback() {
+        @Override
+        public void onAdded(int totalItems) {
+            String text = "";
+            if (totalItems == 1) {
+                text = totalItems + " item added to the cart";
+            } else {
+                text = totalItems + " items into the cart";
+            }
+            Log.d(TAG, "onAdded: " + text);
+            String finalText = text;
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(SingleProductActivity.this, finalText, Toast.LENGTH_SHORT)
+                    .show());
+        }
+
+        @Override
+        public void onItemLimitReached(int maxItems) {
+            final String text = "You can not add more than " + maxItems + " item.";
+            Log.d(TAG, "onItemLimitReached: " + text);
+            new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(SingleProductActivity.this, text, Toast.LENGTH_SHORT)
+                    .show());
+
+        }
+    };
 
 
     /*
        All ui about color and size will be handled here in adapters
      */
-    private void SetupColorAndSizeList(){
+    private void SetupColorAndSizeList() {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         colorList = new ArrayList<>();
@@ -381,7 +400,7 @@ public class SingleProductActivity extends AppCompatActivity {
     /*
        Recommended products api call and list handling
      */
-    private void GetRecommendProductList(){
+    private void GetRecommendProductList() {
         LinearLayoutManager randomLinearLayoutManager = new GridLayoutManager(this, 3);
         randomImageList = new ArrayList<>();
         randomRecyclerView.setLayoutManager(randomLinearLayoutManager);
@@ -426,7 +445,7 @@ public class SingleProductActivity extends AppCompatActivity {
         return (SELECTED_COLOR.length() > 0 && SELECTED_SIZE.length() > 0);
     }
 
-    private boolean validateCartItem(CartItem cartItem) {
+    private boolean validateCartItem(CartItem cartItem, String quantity) {
         if (cartItem.getParentId().isEmpty() || cartItem.getChildId().isEmpty() ||
                 cartItem.getName().isEmpty() || cartItem.getPrimaryImage().isEmpty() ||
                 cartItem.getProductPrice().isEmpty()) {
@@ -478,7 +497,7 @@ public class SingleProductActivity extends AppCompatActivity {
     /*
         Dilaog for pincode
      */
-    private void ShowPincodeDailog(){
+    private void ShowPincodeDailog() {
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.layout_change_pincode);
         dialog.setCanceledOnTouchOutside(true);
@@ -578,6 +597,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
     private Bitmap bitmap1;
+
     public void share() {
         try {
             ImageView imageView = (ImageView) viewPager.findViewWithTag(viewPager.getCurrentItem());
@@ -608,21 +628,21 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
     /*
-    *   This method is use to identify if the Product is already added into the
-    *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
-    *   call this method after inflating the UI and update the
-    *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
-    * */
+     *   This method is use to identify if the Product is already added into the
+     *       Cart or Not. Just call once and update the UI from callBack method @itemAlreadyAddedToCart
+     *   call this method after inflating the UI and update the
+     *       add to shopping bag button in itemAlreadyAddedToCart CallBack function
+     * */
     private void checkIfExist(String parentID, String childID) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().checkIfExist(parentID, childID);
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao().getAllProductWith(parentID, childID);
             itemAlreadyAddedToCart(cartItems != null && !cartItems.isEmpty());
         });
     }
 
     private void itemAlreadyAddedToCart(boolean alreadyAdded) {
         //TODO: handle the UI accordingly
-        if(alreadyAdded) {
+        if (alreadyAdded) {
             Log.d(TAG, "itemAlreadyAddedToCart: ADDED");
         } else {
             //Show add to cart button
@@ -640,14 +660,14 @@ public class SingleProductActivity extends AppCompatActivity {
 
     // Return productvairalable object of particular item which user select
     // need to check if mcolor and msize should not be empty or null when calling this method
-    private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize){
-        if(mcolor.isEmpty() || msize.isEmpty())
+    private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize) {
+        if (mcolor.isEmpty() || msize.isEmpty())
             return null;
 
         ProductVariableResponse mobj = null;
         for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-            if(productVariableResponse.getColor().equalsIgnoreCase(mcolor) &&
-                    productVariableResponse.getSize().equalsIgnoreCase(msize)){
+            if (productVariableResponse.getColor().equalsIgnoreCase(mcolor) &&
+                    productVariableResponse.getSize().equalsIgnoreCase(msize)) {
                 mobj = productVariableResponse;
             }
         }
@@ -655,7 +675,7 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
 
-    private void CreateUserLogs(){
+    private void CreateUserLogs() {
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), CATEGORY_ID, getApplication());
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
             if (loginResponseModel != null) {
@@ -665,7 +685,6 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
     }
-
 
 
     @Override
@@ -685,19 +704,18 @@ public class SingleProductActivity extends AppCompatActivity {
      just change value in heightinDP according to screen % height of imageview
      */
 
-    private int getRequiredHeight(){
+    private int getRequiredHeight() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
 
         double heightInDp = height * 0.55;
 
-        return  (int) Math.round(heightInDp);
+        return (int) Math.round(heightInDp);
     }
 
 
-
-    private void initViews(){
+    private void initViews() {
 
         productName = findViewById(R.id.product_name);
         scrollView = findViewById(R.id.scrollView);
@@ -792,7 +810,6 @@ public class SingleProductActivity extends AppCompatActivity {
         });
 
     }
-
 
 
 }

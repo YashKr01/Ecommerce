@@ -17,12 +17,14 @@ import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
+import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
+import com.shopping.bloom.restService.response.PostProductList;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.RefreshTokenResponse;
@@ -232,4 +234,11 @@ public interface ApiInterface {
             @Query("limit") int limit,
             @Query("pageNo") int pageNo,
             @Header("Authorization") String bearer);
+
+    @POST("order/cart")
+    @Headers("Accept-type: application/json")
+    Call<GetCartValueResponse> getCartValue(
+            @Header("Authorization") String bearer,
+            @Body PostProductList productList
+    );
 }

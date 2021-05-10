@@ -27,6 +27,9 @@ public class ProductVariableResponse {
     @Expose
     String price;
 
+    @SerializedName("quantity")
+    String quantity;
+
     public String getParentId() {
         return parentId;
     }
@@ -75,6 +78,14 @@ public class ProductVariableResponse {
         this.primary_image = primary_image;
     }
 
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "ProductVariableResponse{" +
@@ -84,6 +95,7 @@ public class ProductVariableResponse {
                 ", color='" + color + '\'' +
                 ", size='" + size + '\'' +
                 ", price='" + price + '\'' +
+                ", quantity='" + quantity + '\'' +
                 '}';
     }
 }
