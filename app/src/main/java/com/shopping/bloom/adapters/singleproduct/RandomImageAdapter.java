@@ -16,10 +16,11 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
 
-public class RandomImageAdapter extends RecyclerView.Adapter<RandomImageAdapter.ViewHolder>{
+public class RandomImageAdapter extends RecyclerView.Adapter<RandomImageAdapter.ViewHolder> {
 
     Context context;
     List<RandomImageDataResponse> imageList;
@@ -47,10 +48,14 @@ public class RandomImageAdapter extends RecyclerView.Adapter<RandomImageAdapter.
         Glide.with(context).load("http://www.bloomapp.in" + imageList.get(position).getPrimary_image())
                 .placeholder(R.drawable.ic_placeholder_product).into(holder.imageView);
 
-        holder.imageView.setOnClickListener(v ->{
-            Intent intent = new Intent(context, SingleProductActivity.class);
-            intent.putExtra("PRODUCT_ID", imageList.get(position).getId());
-            context.startActivity(intent);
+        holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                Intent intent = new Intent(context, SingleProductActivity.class);
+                intent.putExtra("PRODUCT_ID", imageList.get(position).getId());
+                System.out.println("PRODUCT_ID = " + imageList.get(position).getId());
+                context.startActivity(intent);
+            }
         });
         holder.textView.setText(CommonUtils.getSignedAmount(imageList.get(position).getPrice()));
     }
@@ -66,6 +71,7 @@ public class RandomImageAdapter extends RecyclerView.Adapter<RandomImageAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);

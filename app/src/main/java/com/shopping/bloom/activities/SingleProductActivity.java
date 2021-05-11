@@ -5,12 +5,17 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -92,10 +97,10 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> colorList, sizeList, imageList;
     List<RandomImageDataResponse> randomImageList;
     List<String> selectedSizeList, selectedColorList;
-    int pos;
+    int pos, check = 1;
     LinearLayout linearLayout;
     TextView productName, price, viewReview, colorTextView,
-            slideTextView, desc, salePrice, salePercentage;
+            slideTextView, desc, salePrice, salePercentage, deliverStatusTv;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
     ProgressBar progressBar;
@@ -105,7 +110,7 @@ public class SingleProductActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     ViewStub viewStub;
     LinearLayout favLinearLayout, linearLayoutDesc;
-    RelativeLayout relativeLayout, hideRelativeLayout;
+    RelativeLayout relativeLayout, hideRelativeLayout, changePinRelative;
     Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
@@ -387,6 +392,7 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
     }
+
     private final AddToCartCallback callback = new AddToCartCallback() {
         @Override
         public void onAdded(int totalItems) {
@@ -512,7 +518,14 @@ public class SingleProductActivity extends AppCompatActivity {
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
             } else if (v.getId() == R.id.changePinCode) {
-                ShowPincodeDailog();
+                //ShowPincodeDailog();
+                if (check == 1) {
+                    changePinRelative.setVisibility(View.VISIBLE);
+                    check = 0;
+                } else {
+                    changePinRelative.setVisibility(View.GONE);
+                    check = 1;
+                }
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
@@ -834,8 +847,10 @@ public class SingleProductActivity extends AppCompatActivity {
         randomRecyclerView = findViewById(R.id.randomRecyclerView);
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
+        changePinRelative = findViewById(R.id.changePinRelative);
         salePrice = findViewById(R.id.salePrice);
         salePercentage = findViewById(R.id.salePercentage);
+        deliverStatusTv = findViewById(R.id.deliverStatusTv);
 
         inflated = viewStub.inflate();
 
@@ -862,6 +877,8 @@ public class SingleProductActivity extends AppCompatActivity {
             onBackPressed();
         });
 
+        String styledText = "Usually Delivery in <b> 5 days </b>";
+        deliverStatusTv.setText(Html.fromHtml(styledText), TextView.BufferType.SPANNABLE);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
