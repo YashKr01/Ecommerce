@@ -73,13 +73,14 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
                 updateUI(null);
                 adapter.clearAll();
             }
-            binding.progressBar5.setVisibility(View.INVISIBLE);
         });
     }
 
     private void getCartValue(List<CartItem> cartItems) {
+        showProgressBar(true);
         if(!NetworkCheck.isConnect(this)) {
-            showOrHideNoInternetView(true);
+            binding.tvDummyText.setText("No internet!!");
+            showProgressBar(false);
             return;
         }
         List<PostCartProduct> postCartProducts = new ArrayList<>();
@@ -93,14 +94,16 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
     private final CartValueCallback responseListener = new CartValueCallback() {
         @Override
         public void onSuccess(GetCartValueResponse response) {
-            showOrHideNoInternetView(false);
+            showProgressBar(false);
             Log.d(TAG, "onSuccess: response" + response.toString());
             updateUI(response.getData());
+            showProgressBar(false);
         }
 
         @Override
         public void onFailed(int errorCode, String message) {
-            binding.tvCartPrice.setText("Something went wrong!!");
+            binding.tvDummyText.setText("Something went wrong!!");
+            showProgressBar(false);
             Log.d(TAG, "onFailed: ");
         }
     };
@@ -108,6 +111,7 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
     //Update the price
     private void updateUI(ResponseCartData data) {
         if(data == null) {
+            showProgressBar(false);
             binding.tvCartPrice.setVisibility(View.INVISIBLE);
             return;
         }
@@ -123,11 +127,22 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
 
     @Override
     public void removeCartItem(CartItem cartItem) {
-        if (cartItem.getQuantity() == 1) {
-            //ToDo: remove this item
-        } else {
-            //ToDo: show popup with how many item to remove
-        }
+        showDeleteConfirmation(cartItem);
+    }
+
+    @Override
+    public void updateCartItem(CartItem cartItem) {
+        //getCartValue(cartItemList);
+        viewModel.updateCartItem(cartItem);
+    }
+
+    @Override
+    public void maxItemAdded() {
+        Toast.makeText(this, "Can not add more item", Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    void showDeleteConfirmation(CartItem cartItem) {
         builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you want to remove " + cartItem.getName() + " ?");
         builder.setCancelable(false);
@@ -142,13 +157,11 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         dialog.show();
     }
 
-    private void showOrHideNoInternetView(boolean show) {
+    private void showProgressBar(boolean show) {
         if(show) {
-            //TODO handle no internet
-            Toast.makeText(this, R.string.no_internet_connected, Toast.LENGTH_SHORT)
-                    .show();
+            binding.rlProgressBar.setVisibility(View.VISIBLE);
         } else {
-
+            binding.rlProgressBar.setVisibility(View.GONE);
         }
     }
 

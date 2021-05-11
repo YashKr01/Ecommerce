@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -30,12 +32,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,6 +52,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.shopping.bloom.BuildConfig;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
 import com.shopping.bloom.adapters.singleproduct.RandomImageAdapter;
@@ -65,6 +72,8 @@ import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -134,7 +143,6 @@ public class SingleProductActivity extends AppCompatActivity {
 
         checkNetworkConnectivity();
 
-
         wishList = new ArrayList<>();
 
         //not required with new json response
@@ -176,6 +184,7 @@ public class SingleProductActivity extends AppCompatActivity {
         collapsingToolbarLayout.setLayoutParams(layoutParams);
 
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
+        changeCartIcon(singleProductViewModel.getCartSize());
 
         singleProductViewModel.getMutableLiveData().observe(this, singleProductDataResponse -> {
 
@@ -311,6 +320,30 @@ public class SingleProductActivity extends AppCompatActivity {
         CreateUserLogs();
     }
 
+    private void changeCartIcon(LiveData<Integer> cartSize) {
+        cartSize.observe(this, integer -> {
+            int  size = 0;
+            try {
+                size = integer;
+            } catch ( NullPointerException e) {
+                size = 0;
+                Log.d(TAG, "onChanged: ");
+            }
+            Log.d(TAG, "changeCartIcon: ");
+            MenuItem cartIcon = toolbar.getMenu().findItem(R.id.shoppingCart);
+            if(cartIcon != null)  {
+                if(size == 0) {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
+                } else {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
+                }
+            } else {
+                Log.d(TAG, "changeCartIcon: NULL CART ICON please check the cartIcon ID for this screen");
+            }
+
+        });
+    }
+
     private void addToShoppingBag() {
         if (isColorSizeSelected()) {
             Log.d(TAG, "addToShoppingBag: SELECTED size and color" + SELECTED_SIZE + ", " + SELECTED_COLOR);
@@ -335,7 +368,7 @@ public class SingleProductActivity extends AppCompatActivity {
             String price = product.getPrice();
             String name = singleProductDataResponse.getProduct_name();
             Log.d(TAG, "addToShoppingBag: product: " + product.toString());
-            CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price);
+            CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price, Integer.parseInt(product.getQuantity()));
             if (validateCartItem(cartItem, product.getQuantity())) {
                 singleProductViewModel.addToShoppingBag(cartItem, product.getQuantity(), callback);
             } else {
@@ -590,9 +623,18 @@ public class SingleProductActivity extends AppCompatActivity {
         if (id == R.id.share) {
             share();
         }
+        if(id == R.id.shoppingCart) {
+            openShoppingBag();
+        }
 
         return super.onOptionsItemSelected(item);
 
+    }
+
+    private void openShoppingBag() {
+        Intent intent = new Intent(this, ShoppingBagActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
 

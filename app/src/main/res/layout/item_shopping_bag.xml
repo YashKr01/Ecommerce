@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginHorizontal="@dimen/sb_size_8"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/sb_size_8">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/sb_size_2"
-        app:cardElevation="@dimen/sb_size_0"
         android:layout_marginVertical="@dimen/sb_size_8"
         android:layout_marginStart="@dimen/sb_size_12"
+        app:cardCornerRadius="@dimen/sb_size_2"
+        app:cardElevation="@dimen/sb_size_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -35,12 +35,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:layout_marginEnd="@dimen/sb_size_12"
         android:layout_marginTop="@dimen/sb_size_2"
+        android:layout_marginEnd="@dimen/sb_size_12"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/blue_grey_900"
+        android:textColor="@color/blue_grey_800"
         android:textSize="@dimen/sb_text_size_15"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/txt_shopping_bag_price"
         app:layout_constraintStart_toEndOf="@+id/cvImage"
         app:layout_constraintTop_toTopOf="@+id/cvImage"
@@ -50,10 +51,10 @@
         android:id="@+id/txt_shopping_bag_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/sb_text_size_14"
         android:layout_marginEnd="@dimen/sb_size_12"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sb_text_size_14"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/txt_shopping_bag_product_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txt_shopping_bag_product_name"
@@ -61,37 +62,56 @@
 
     <TextView
         android:id="@+id/tv_color_size"
-        android:layout_marginTop="@dimen/sb_size_8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_8"
         android:textColor="@color/grey_700"
         android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintStart_toStartOf="@+id/txt_shopping_bag_product_name"
         app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_product_name"
         tools:text="S(B)/" />
 
-    <TextView
-        android:id="@+id/txt_shopping_bag_quantity"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="1"
-        android:textColor="@color/grey_700"
-        android:textSize="@dimen/sb_text_size_12"
-        app:layout_constraintStart_toStartOf="@id/tv_color_size"
-        app:layout_constraintTop_toBottomOf="@+id/tv_color_size" />
-
-    <TextView
-        android:id="@+id/tvRemoveCartItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/sb_size_28"
         android:layout_marginStart="@dimen/sb_size_12"
-        android:text="@string/remove"
-        android:textColor="@color/grey_500"
-        android:textSize="@dimen/sb_text_size_13"
-        android:gravity="start|bottom"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="@drawable/bg_cart_quantity"
+        android:paddingVertical="@dimen/sb_size_2"
         app:layout_constraintBottom_toBottomOf="@+id/cvImage"
         app:layout_constraintStart_toEndOf="@+id/cvImage"
-        app:layout_constraintTop_toBottomOf="@+id/txt_shopping_bag_quantity" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_color_size">
+
+        <TextView
+            android:id="@+id/tvRemoveItem"
+            android:layout_width="@dimen/sb_size_25"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_gravity="center"
+            android:text="-"
+            android:textColor="@color/blue_grey_900"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvProductQuantity"
+            android:layout_width="@dimen/sb_size_25"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="2"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tvAddItem"
+            android:layout_width="@dimen/sb_size_25"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="+"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:textColor="@color/blue_grey_900"
+            android:textStyle="normal" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

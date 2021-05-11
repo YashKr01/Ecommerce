@@ -2,6 +2,7 @@ package com.shopping.bloom.viewModels;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -160,4 +161,7 @@ public class SingleProductViewModel extends ViewModel {
                 });
     }
 
+    public LiveData<Integer> getCartSize() {
+        return EcommerceDatabase.getInstance().cartItemDao().changeCartIcon();
+    }
 }

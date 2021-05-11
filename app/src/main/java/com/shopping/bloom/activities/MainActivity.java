@@ -15,6 +15,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,6 +27,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.search.SearchActivity;
 import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
 import com.shopping.bloom.activities.wishlist.WishListActivity;
+import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.databinding.ActivityMainBinding;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getName();
 
     private ActivityMainBinding mainView;
+    Toolbar toolbar;
     private int bottomsheet_int;
 
     @Override
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mainView = ActivityMainBinding.inflate(getLayoutInflater());
         View view = mainView.getRoot();
         setContentView(view);
-        Toolbar toolbar = (mainView.layoutToolbar.maintoolbar);
+        toolbar = (mainView.layoutToolbar.maintoolbar);
         setSupportActionBar(toolbar);
 
         AppBarConfiguration appBarConfiguration =
@@ -198,7 +202,32 @@ public class MainActivity extends AppCompatActivity {
             mainView.layoutToolbar.imgFavourites.setVisibility(View.GONE);
             mainView.layoutToolbar.imgMail.setVisibility(View.GONE);
         }
+        changeCartIcon(EcommerceDatabase.getInstance().cartItemDao().changeCartIcon());
         return true;
+    }
+
+    private void changeCartIcon(LiveData<Integer> cartSize) {
+        cartSize.observe(this, integer -> {
+            int  size = 0;
+            try {
+                size = integer;
+            } catch ( NullPointerException e) {
+                size = 0;
+                Log.d(TAG, "onChanged: ");
+            }
+            Log.d(TAG, "changeCartIcon: menu size " + toolbar.getMenu().size());
+            MenuItem cartIcon = toolbar.getMenu().findItem(R.id.action_cart);
+            if(cartIcon != null)  {
+                if(size == 0) {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
+                } else {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
+                }
+            } else {
+                Log.d(TAG, "changeCartIcon: NULL CART ICON please check the cartIcon ID for this screen");
+            }
+
+        });
     }
 
     // @param imageTo pass 1 for default image

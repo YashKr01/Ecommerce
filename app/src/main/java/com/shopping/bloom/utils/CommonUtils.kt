@@ -1,10 +1,13 @@
 package com.shopping.bloom.utils
 
+import android.app.Application
 import android.content.Context
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.shopping.bloom.App
 import com.shopping.bloom.R
+import com.shopping.bloom.database.EcommerceDatabase
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat

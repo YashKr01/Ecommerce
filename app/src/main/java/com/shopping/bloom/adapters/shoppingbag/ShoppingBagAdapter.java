@@ -46,13 +46,36 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
         CartItem cartItem = cartItemList.get(position);
         holder.setUpData(cartItem, context);
 
-        holder.tvRemove.setOnClickListener((view -> mListener.removeCartItem(cartItem)));
+        holder.tvAddItem.setOnClickListener((v)->{
+            changeQuantity(position, cartItem, true);
+        });
+        holder.tvRemoveItem.setOnClickListener((v)->{
+            changeQuantity(position, cartItem, false);
+        });
+    }
+
+    private void changeQuantity(int position, CartItem cartItem, boolean increase) {
+        if(increase) {
+            if(cartItem.getQuantity() < cartItem.getMaxQuantity()) {
+                cartItem.setQuantity(cartItem.getQuantity()+1);
+                mListener.updateCartItem(cartItem);
+            } else {
+                mListener.maxItemAdded();
+            }
+        } else {
+            if(cartItem.getQuantity() == 1) {
+                mListener.removeCartItem(cartItem);
+            } else {
+                cartItem.setQuantity(cartItem.getQuantity()-1);
+                mListener.updateCartItem(cartItem);
+            }
+        }
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imgProductImage;
         TextView tvName, tvPrice, tvColorSize, txtQuantity;
-        TextView tvRemove;
+        TextView tvAddItem, tvRemoveItem;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -60,8 +83,9 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
             tvName = itemView.findViewById(R.id.txt_shopping_bag_product_name);
             tvPrice = itemView.findViewById(R.id.txt_shopping_bag_price);
             tvColorSize = itemView.findViewById(R.id.tv_color_size);
-            txtQuantity = itemView.findViewById(R.id.txt_shopping_bag_quantity);
-            tvRemove = itemView.findViewById(R.id.tvRemoveCartItem);
+            txtQuantity = itemView.findViewById(R.id.tvProductQuantity);
+            tvAddItem = itemView.findViewById(R.id.tvAddItem);
+            tvRemoveItem = itemView.findViewById(R.id.tvRemoveItem);
         }
 
         public void setUpData(CartItem item, Context context) {
@@ -73,7 +97,7 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
             );
 
             String colorSize = item.getColor() + ",  " + item.getSize();
-            String qty = "Qty: " + item.getQuantity();
+            String qty = String.valueOf(item.getQuantity());
             tvColorSize.setText(colorSize);
             tvPrice.setText(CommonUtils.getSignedAmount(item.getProductPrice()));
             tvName.setText(item.getName());
