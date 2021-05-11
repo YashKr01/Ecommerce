@@ -15,9 +15,10 @@ public class CartItem {
     private String color;
     private String size;
     private String productPrice;
+    private int maxQuantity;
     private int quantity;
 
-    public CartItem(String parentId, String childId, String name, String primaryImage, String color, String size, String productPrice) {
+    public CartItem(String parentId, String childId, String name, String primaryImage, String color, String size, String productPrice, int maxQuantity) {
         this.id = 0;
         this.parentId = parentId;
         this.childId = childId;
@@ -27,6 +28,7 @@ public class CartItem {
         this.size = size;
         this.productPrice = productPrice;
         this.quantity = 1;
+        this.maxQuantity = maxQuantity;
     }
 
     public long getId() {
@@ -99,5 +101,13 @@ public class CartItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getMaxQuantity() {
+        return maxQuantity;
+    }
+
+    public void setMaxQuantity(int maxQuantity) {
+        this.maxQuantity = maxQuantity;
     }
 }

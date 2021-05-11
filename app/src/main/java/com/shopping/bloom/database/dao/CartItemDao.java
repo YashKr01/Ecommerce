@@ -26,6 +26,13 @@ public interface CartItemDao {
     @Delete
     void removeItem(CartItem cartItem);
 
+    /* Return the total number of items quantity in the cart*/
+    @Query("SELECT SUM(quantity) FROM cart_item")
+    int getCartSize();
+
+    @Query("SELECT SUM(quantity) FROM cart_item")
+    LiveData<Integer> changeCartIcon();
+
     @Query("SELECT * FROM cart_item WHERE parentId = :parentId AND childId = :childId")
     List<CartItem> getAllProductWith(String parentId, String childId);
 

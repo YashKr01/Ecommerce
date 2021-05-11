@@ -41,4 +41,10 @@ public class ShoppingBagViewModel extends AndroidViewModel {
     public void getCartValue(List<PostCartProduct> postCartProducts, CartValueCallback mListener) {
         repository.getCartValue(context, postCartProducts, mListener);
     }
+
+    public void updateCartItem(CartItem cartItem) {
+        EcommerceDatabase.databaseWriteExecutor.execute(()->{
+            EcommerceDatabase.getInstance().cartItemDao().update(cartItem);
+        });
+    }
 }
