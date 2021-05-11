@@ -78,7 +78,7 @@ public class SingleProductViewModel extends ViewModel {
         });
     }
 
-    public void makeApiCallCreateUserActivity(String product_id, String category_id, Application application) {
+    public void makeApiCallCreateUserActivity(String product_id, int category_id, Application application) {
 
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;

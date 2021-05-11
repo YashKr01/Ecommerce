@@ -44,21 +44,15 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull SizeAdapter.ViewHolder holder, int position) {
         holder.button.setText(sizeList.get(position));
+
         if (clickable) {
-//            holder.button.setOnClickListener(v -> {
-//                pos = position;
-//                notifyDataSetChanged();
-//                if (context instanceof SingleProductActivity) {
-//                    ((SingleProductActivity) context).setSizeCurrentItem(position);
-//                }
-//            });
             holder.button.setOnClickListener(v -> {
-                if(holder.button.isChecked()){
+                if (holder.button.isChecked()) {
                     if (context instanceof SingleProductActivity) {
                         ((SingleProductActivity) context).setSizeCurrentItem(position);
                     }
                     pos = position;
-                }else{
+                } else {
                     if (context instanceof SingleProductActivity) {
                         ((SingleProductActivity) context).setSizeCurrentItem(-1);
                     }
@@ -67,6 +61,13 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
                 notifyDataSetChanged();
             });
 
+        } else {
+            if (sizeList.size() == 1) {
+                pos = 0;
+                if (context instanceof SingleProductActivity) {
+                    ((SingleProductActivity) context).setSizeCurrentItem(0);
+                }
+            }
         }
         if (pos == position) {
             holder.button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
@@ -75,6 +76,7 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
             holder.button.setBackgroundResource(R.drawable.rect_back_button);
             holder.button.setChecked(false);
         }
+
     }
 
     @Override
@@ -85,12 +87,21 @@ public class SizeAdapter extends RecyclerView.Adapter<SizeAdapter.ViewHolder> {
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox button;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.colorButton);
+//            if (!clickable) {
+//                if (sizeList.size() == 1) {
+//                    button.setChecked(true);
+//                    button.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300));
+//                    if (context instanceof SingleProductActivity) {
+//                        ((SingleProductActivity) context).setViewPagerCurrentItem(0);
+//                    }
+//                }
+//            }
         }
     }
 }
