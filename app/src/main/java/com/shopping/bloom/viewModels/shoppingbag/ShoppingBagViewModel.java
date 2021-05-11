@@ -47,4 +47,8 @@ public class ShoppingBagViewModel extends AndroidViewModel {
             EcommerceDatabase.getInstance().cartItemDao().update(cartItem);
         });
     }
+
+    public LiveData<Integer> getTotalCartItems() {
+        return EcommerceDatabase.getInstance().cartItemDao().changeCartIcon();
+    }
 }

@@ -10,6 +10,7 @@ import com.google.gson.Gson
 
 import com.shopping.bloom.BuildConfig
 import com.shopping.bloom.model.MainScreenConfig
+import com.shopping.bloom.model.PromoConfig
 import com.shopping.bloom.model.faq.ColorPalletConfig
 import com.shopping.bloom.model.faq.FaqConfig
 import com.shopping.bloom.model.newfragment.NewFragmentConfig
@@ -95,6 +96,15 @@ open class RemoteConfig {
                 json = RemoteConfigDefaults.TOP_SEARCHES_CONFIG.value().toString()
             }
             return Gson().fromJson(json, SearchActivityConfig::class.java)
+        }
+
+        @JvmStatic
+        fun getPromoConfig(context: Context): PromoConfig {
+            var json =  getInstance(context).getString(RemoteConfigDefaults.PROMO_CONFIG.key())
+            if(CommonUtils.isNotNull(json)) {
+                json = RemoteConfigDefaults.PROMO_CONFIG.value().toString()
+            }
+            return Gson().fromJson(json, PromoConfig::class.java)
         }
 
         /*  @JvmStatic

@@ -41,7 +41,6 @@
         android:maxLines="1"
         android:textColor="@color/blue_grey_800"
         android:textSize="@dimen/sb_text_size_15"
-        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/txt_shopping_bag_price"
         app:layout_constraintStart_toEndOf="@+id/cvImage"
         app:layout_constraintTop_toTopOf="@+id/cvImage"
