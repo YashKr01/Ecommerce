@@ -23,12 +23,48 @@ public class ProductVariableResponse {
     @Expose
     String size;
 
+    @SerializedName("is_on_sale")
+    @Expose
+    String is_on_sale;
+
+    @SerializedName("sale_price")
+    @Expose
+    String sale_price;
+
+    @SerializedName("sale_percentage")
+    @Expose
+    String sale_percentage;
+
     @SerializedName("price")
     @Expose
     String price;
 
     @SerializedName("quantity")
     String quantity;
+
+    public String getIs_on_sale() {
+        return is_on_sale;
+    }
+
+    public void setIs_on_sale(String is_on_sale) {
+        this.is_on_sale = is_on_sale;
+    }
+
+    public String getSale_price() {
+        return sale_price;
+    }
+
+    public void setSale_price(String sale_price) {
+        this.sale_price = sale_price;
+    }
+
+    public String getSale_percentage() {
+        return sale_percentage;
+    }
+
+    public void setSale_percentage(String sale_percentage) {
+        this.sale_percentage = sale_percentage;
+    }
 
     public String getParentId() {
         return parentId;

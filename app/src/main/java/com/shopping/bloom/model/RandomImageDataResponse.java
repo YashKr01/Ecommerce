@@ -7,7 +7,7 @@ public class RandomImageDataResponse {
 
     @SerializedName("id")
     @Expose
-    String id;
+    int id;
 
     @SerializedName("primary_image")
     @Expose
@@ -21,11 +21,11 @@ public class RandomImageDataResponse {
     @Expose
     String price;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

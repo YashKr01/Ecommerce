@@ -2,15 +2,15 @@ package com.shopping.bloom.activities;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.AttributeSet;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -41,7 +40,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,15 +63,15 @@ import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
+import com.shopping.bloom.model.SingleProductImageResponse;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.AddToCartCallback;
+import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.SingleProductViewModel;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -96,8 +94,11 @@ public class SingleProductActivity extends AppCompatActivity {
     SingleProductDataResponse singleProductDataResponse;
     List<String> colorList, sizeList, imageList;
     List<RandomImageDataResponse> randomImageList;
+    List<String> selectedSizeList, selectedColorList;
+    int pos, check = 1;
     LinearLayout linearLayout;
-    TextView productName, price, viewReview, colorTextView, slideTextView, desc;
+    TextView productName, price, viewReview, colorTextView,
+            slideTextView, desc, salePrice, salePercentage, deliverStatusTv;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
     ProgressBar progressBar;
@@ -107,7 +108,7 @@ public class SingleProductActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     ViewStub viewStub;
     LinearLayout favLinearLayout, linearLayoutDesc;
-    RelativeLayout relativeLayout, hideRelativeLayout;
+    RelativeLayout relativeLayout, hideRelativeLayout, changePinRelative;
     Toolbar toolbar, reviewToolbar;
     FrameLayout frameLayout;
     private Integer PRODUCT_ID;
@@ -183,6 +184,8 @@ public class SingleProductActivity extends AppCompatActivity {
         layoutParams.height = getRequiredHeight();
         collapsingToolbarLayout.setLayoutParams(layoutParams);
 
+        selectedSizeList = new ArrayList<>();
+        selectedColorList = new ArrayList<>();
         singleProductViewModel = ViewModelProviders.of(this).get(SingleProductViewModel.class);
         changeCartIcon(singleProductViewModel.getCartSize());
 
@@ -194,15 +197,36 @@ public class SingleProductActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 String primary = this.singleProductDataResponse.getPrimary_image();
+                imageList.add(primary);
+
+                for (SingleProductImageResponse imageResponse : this.singleProductDataResponse.getSingleProductImageResponses()) {
+                    imageList.add(imageResponse.getImagePath());
+                }
+
                 productVariableResponseList = this.singleProductDataResponse.getProductVariableResponses();
 
-                imageList.add(primary);
                 for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
                     imageList.add(productVariableResponse.getPrimary_image());
                     colorList.add(productVariableResponse.getColor());
                     sizeList.add(productVariableResponse.getSize());
                 }
 
+                String isOnSale = this.singleProductDataResponse.getIs_on_sale();
+                if (isOnSale.equals("1")) {
+                    double percentage = Double.parseDouble(this.singleProductDataResponse.getSale_percentage());
+                    int per = (int) percentage;
+                    salePrice.setVisibility(View.VISIBLE);
+                    salePercentage.setVisibility(View.VISIBLE);
+                    price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                    price.setPaintFlags(price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    salePrice.setText(CommonUtils.getSignedAmount(this.singleProductDataResponse.getSale_price()));
+                    salePercentage.setText(String.valueOf(per).concat(" %"));
+                } else {
+                    price.setVisibility(View.VISIBLE);
+                    salePrice.setVisibility(View.GONE);
+                    salePercentage.setVisibility(View.GONE);
+                    price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                }
 
                 slideTextView.setText(1 + "/" + imageList.size());
 
@@ -210,11 +234,14 @@ public class SingleProductActivity extends AppCompatActivity {
                 colorList.clear();
                 colorList.addAll(colorSet);
 
+                selectedColorList.addAll(colorSet);
+
                 if (colorList.size() == 0) {
                     colorClickable = false;
                     String colors = this.singleProductDataResponse.getAvailable_colors();
                     String[] colorArray = colors.split(",");
                     colorList.addAll(Arrays.asList(colorArray));
+
                 } else {
                     colorClickable = true;
                 }
@@ -222,6 +249,8 @@ public class SingleProductActivity extends AppCompatActivity {
                 HashSet<String> sizeSet = new LinkedHashSet<>(sizeList);
                 sizeList.clear();
                 sizeList.addAll(sizeSet);
+
+                selectedSizeList.addAll(sizeSet);
 
                 if (sizeList.size() == 0) {
                     sizeClickable = false;
@@ -247,7 +276,6 @@ public class SingleProductActivity extends AppCompatActivity {
                 sizeAdapter.notifyDataSetChanged();
 
                 productName.setText(this.singleProductDataResponse.getProduct_name());
-                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
 
                 ratingBar.setRating(Float.parseFloat(this.singleProductDataResponse.getAvg_rating()));
 
@@ -315,9 +343,12 @@ public class SingleProductActivity extends AppCompatActivity {
             }
         }
 
+
         SetupColorAndSizeList();
         GetRecommendProductList();
         CreateUserLogs();
+
+
     }
 
     private void changeCartIcon(LiveData<Integer> cartSize) {
@@ -509,7 +540,14 @@ public class SingleProductActivity extends AppCompatActivity {
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
             } else if (v.getId() == R.id.changePinCode) {
-                ShowPincodeDailog();
+                //ShowPincodeDailog();
+                if (check == 1) {
+                    changePinRelative.setVisibility(View.VISIBLE);
+                    check = 0;
+                } else {
+                    changePinRelative.setVisibility(View.GONE);
+                    check = 1;
+                }
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
@@ -564,52 +602,111 @@ public class SingleProductActivity extends AppCompatActivity {
         }
     }
 
-    public void setViewPagerCurrentItem(int pos) {
-        SELECTED_COLOR = colorList.get(pos).trim();
-        if (!SELECTED_COLOR.isEmpty()) {
-            colorTextView.setVisibility(View.VISIBLE);
-            colorTextView.setText("Color: ".concat(SELECTED_COLOR));
+    public void setViewPagerCurrentItem(Integer pos) {
+        try {
+            System.out.println("color pos = " + pos);
+            System.out.println("color size = " + selectedColorList.size());
+            System.out.println("color size2 = " + colorList.size());
+            if (pos != -1) {
+                SELECTED_COLOR = colorList.get(pos).trim();
+                System.out.println("color = " + SELECTED_COLOR);
+                if (!SELECTED_COLOR.isEmpty()) {
+                    colorTextView.setVisibility(View.VISIBLE);
+                    colorTextView.setText("Color: ".concat(SELECTED_COLOR));
 
-            for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
-                if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
-                    viewPager.setCurrentItem(i + 1, true);
-                    //viewPagerImageAdapter.notifyDataSetChanged();
-                    price.setText(getString(R.string.rupee).concat(" ").concat(singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
-                    break;
+                    for (int i = 0; i < singleProductDataResponse.getProductVariableResponses().size(); i++) {
+                        if (SELECTED_COLOR.equals(singleProductDataResponse.getProductVariableResponses().get(i).getColor())) {
+                            viewPager.setCurrentItem(i + 2, true);
+                            String isOnSale = this.singleProductDataResponse.getProductVariableResponses().get(i).getIs_on_sale();
+                            if (isOnSale.equals("1")) {
+                                double percentage = Double.parseDouble(this.singleProductDataResponse.getProductVariableResponses().get(i).getSale_percentage());
+                                int per = (int) percentage;
+                                salePrice.setVisibility(View.VISIBLE);
+                                salePercentage.setVisibility(View.VISIBLE);
+                                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
+                                price.setPaintFlags(price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                salePrice.setText(CommonUtils.getSignedAmount(this.singleProductDataResponse.getProductVariableResponses().get(i).getSale_price()));
+                                salePercentage.setText(String.valueOf(per).concat(" %"));
+                            } else {
+                                price.setVisibility(View.VISIBLE);
+                                salePrice.setVisibility(View.GONE);
+                                salePercentage.setVisibility(View.GONE);
+                                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getProductVariableResponses().get(i).getPrice()));
+                            }
+                            break;
+                        }
+                    }
+
+                    sizeList.clear();
+                    for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                        if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
+
+                            sizeList.add(productVariableResponse.getSize());
+                        }
+                    }
+                    System.out.println("size = " + selectedSizeList.size());
+                    HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
+                    sizeList.clear();
+                    sizeList.addAll(hashSet);
+                    sizeAdapter.setSizeList(sizeList, sizeClickable);
+                    sizeAdapter.notifyDataSetChanged();
                 }
-            }
-            sizeList.clear();
-            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getColor().equals(SELECTED_COLOR)) {
-                    System.out.println(productVariableResponse.getSize());
+            } else {
+                viewPager.setCurrentItem(0, true);
+                price.setText(getString(R.string.rupee).concat(" ").concat(this.singleProductDataResponse.getPrice()));
+                colorTextView.setVisibility(View.GONE);
+                sizeList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
                     sizeList.add(productVariableResponse.getSize());
                 }
+                HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
+                sizeList.clear();
+                sizeList.addAll(hashSet);
+                sizeAdapter.setSizeList(sizeList, sizeClickable);
+                sizeAdapter.notifyDataSetChanged();
             }
-            HashSet<String> hashSet = new LinkedHashSet<>(sizeList);
-            sizeList.clear();
-            sizeList.addAll(hashSet);
-            sizeAdapter.setSizeList(sizeList, sizeClickable);
-            sizeAdapter.notifyDataSetChanged();
+        } catch (Exception ignored) {
         }
     }
 
-    public void setSizeCurrentItem(int position) {
-        SELECTED_SIZE = sizeList.get(position);
-        if (!SELECTED_SIZE.isEmpty()) {
-            colorList.clear();
-            for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
-                if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
-                    System.out.println(productVariableResponse.getColor());
-                    colorList.add(productVariableResponse.getColor());
+    public void setSizeCurrentItem(Integer position) {
+        try {
+            System.out.println("size pos = " + position);
+            System.out.println("size size = " + selectedColorList.size());
+            System.out.println("size size2 = " + colorList.size());
+            pos = position;
+            if (position != -1) {
+                SELECTED_SIZE = sizeList.get(position);
+
+                colorList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                    if (productVariableResponse.getSize().equals(SELECTED_SIZE)) {
+                        colorList.add(productVariableResponse.getColor());
+                    }
                 }
+                HashSet<String> hashSet = new LinkedHashSet<>(colorList);
+                colorList.clear();
+                colorList.addAll(hashSet);
+
+            } else {
+                System.out.println("sadbasd" + colorRecyclerView.getChildAt(position));
+                colorTextView.setVisibility(View.GONE);
+                colorList.clear();
+                for (ProductVariableResponse productVariableResponse : singleProductDataResponse.getProductVariableResponses()) {
+                    colorList.add(productVariableResponse.getColor());
+                    System.out.println(productVariableResponse.getColor());
+                }
+                HashSet<String> hashSet = new LinkedHashSet<>(colorList);
+                colorList.clear();
+                colorList.addAll(hashSet);
+
             }
-            HashSet<String> hashSet = new LinkedHashSet<>(colorList);
-            colorList.clear();
-            colorList.addAll(hashSet);
             colorAdapter.setColorList(colorList, colorClickable);
             colorAdapter.notifyDataSetChanged();
+        } catch (Exception ignored) {
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -781,9 +878,13 @@ public class SingleProductActivity extends AppCompatActivity {
         randomRecyclerView = findViewById(R.id.randomRecyclerView);
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
+        changePinRelative = findViewById(R.id.changePinRelative);
+        salePrice = findViewById(R.id.salePrice);
+        salePercentage = findViewById(R.id.salePercentage);
+        deliverStatusTv = findViewById(R.id.deliverStatusTv);
 
         inflated = viewStub.inflate();
-        //swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+
         frameLayout = findViewById(R.id.fragment);
         collapsingToolbarLayout = findViewById(R.id.collapseToolbar);
 
@@ -807,6 +908,8 @@ public class SingleProductActivity extends AppCompatActivity {
             onBackPressed();
         });
 
+        String styledText = "Usually Delivery in <b> 5 days </b>";
+        deliverStatusTv.setText(Html.fromHtml(styledText), TextView.BufferType.SPANNABLE);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Getting Data");
