@@ -135,43 +135,49 @@
                                 android:textSize="@dimen/sb_text_size_16"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/price"
+                            <LinearLayout
+                                android:id="@+id/textViewLinearLayout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/product_name"
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_13"
-                                android:fontFamily="@font/gothambold"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/sb_text_size_17"
-                                android:textStyle="bold" />
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/salePrice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:fontFamily="@font/gothambold"
+                                    android:textColor="@color/black"
+                                    android:layout_marginEnd="@dimen/sb_size_20"
+                                    android:textSize="@dimen/sb_text_size_17"
+                                    android:textStyle="bold"
+                                    android:text="sdsdsdsd"
+                                    android:visibility="gone" />
 
-                            <TextView
-                                android:id="@+id/salePrice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/product_name"
-                                android:layout_marginStart="@dimen/sb_size_20"
-                                android:layout_marginTop="@dimen/sb_size_13"
-                                android:layout_toEndOf="@id/price"
-                                android:fontFamily="@font/gothambold"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/sb_text_size_17"
-                                android:textStyle="bold"
-                                android:visibility="gone" />
+                                <TextView
+                                    android:id="@+id/price"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:fontFamily="@font/gothambold"
+                                    android:text="sdsdsd"
+                                    android:gravity="center|start"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/sb_text_size_14"
+                                    android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/salePercentage"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/product_name"
-                                android:layout_marginStart="@dimen/sb_size_15"
-                                android:layout_marginTop="@dimen/sb_size_13"
-                                android:layout_toEndOf="@id/salePrice"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/sb_text_size_16"
-                                android:visibility="gone" />
+                                <TextView
+                                    android:id="@+id/salePercentage"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginStart="@dimen/sb_size_15"
+                                    android:text="sdss"
+                                    android:textColor="@color/red_600"
+                                    android:textSize="@dimen/sb_text_size_15"
+                                    android:visibility="gone" />
+                            </LinearLayout>
+
+
 
                             <RatingBar
                                 android:id="@+id/ratingBar4"
@@ -192,7 +198,7 @@
                                 android:id="@+id/color"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/salePrice"
+                                android:layout_below="@+id/textViewLinearLayout"
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:fontFamily="@font/gothambold"
@@ -231,7 +237,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/sizeTextView"
                                 android:layout_marginHorizontal="@dimen/sb_size_20"
-                                android:layout_marginTop="@dimen/sb_size_10"
+                                android:layout_marginTop="11dp"
                                 android:layout_marginBottom="@dimen/sb_size_15"
                                 android:nestedScrollingEnabled="false"
                                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
@@ -250,7 +256,7 @@
                                 android:id="@+id/shippingToTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/sb_size_20"
+                                android:layout_marginStart="@dimen/sb_size_10"
                                 android:layout_marginTop="@dimen/sb_size_15"
                                 android:fontFamily="@font/gothamblack"
                                 android:text="Shipping to"
@@ -258,134 +264,158 @@
                                 android:textSize="@dimen/sb_text_size_16"
                                 android:textStyle="bold" />
 
+
+                            <EditText
+                                android:id="@+id/pincodeEditText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginHorizontal="@dimen/sb_size_10"
+                                android:layout_marginTop="@dimen/sb_size_5"
+                                android:layout_toStartOf="@+id/changePinCode"
+                                android:layout_toEndOf="@+id/shippingToTextView"
+                                android:gravity="start"
+                                android:hint="PINCODE"
+                                android:inputType="phone"
+                                android:maxLength="10"
+                                android:maxLines="1"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="@dimen/sb_text_size_17"
+                                android:theme="@style/MyEditTextTheme" />
+
+
                             <Button
                                 android:id="@+id/changePinCode"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/sb_size_30"
                                 android:layout_alignParentEnd="true"
                                 android:layout_marginTop="@dimen/sb_size_10"
-                                android:layout_marginEnd="@dimen/sb_size_20"
-                                android:background="@drawable/rect_back_button"
+                                android:layout_marginEnd="@dimen/sb_size_10"
                                 android:paddingHorizontal="@dimen/sb_size_10"
-                                android:text="Change pincode"
+                                android:text="Check"
                                 android:textAllCaps="false"
+                                android:textStyle="bold"
+                                android:background="@color/black"
+                                android:textColor="@color/white"
                                 android:textSize="12sp" />
 
-                            <RelativeLayout
-                                android:id="@+id/changePinRelative"
-                                android:visibility="gone"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/shippingToTextView"
-                                android:layout_marginTop="@dimen/sb_size_10"
-                                android:background="@color/white">
+                            <!--                            <RelativeLayout-->
+                            <!--                                android:id="@+id/changePinRelative"-->
+                            <!--                                android:visibility="gone"-->
+                            <!--                                android:layout_width="match_parent"-->
+                            <!--                                android:layout_height="wrap_content"-->
+                            <!--                                android:layout_below="@+id/shippingToTextView"-->
+                            <!--                                android:layout_marginTop="@dimen/sb_size_10"-->
+                            <!--                                android:background="@color/white">-->
 
-<!--                                <TextView-->
-<!--                                    android:id="@+id/deliveryDetailTv"-->
-<!--                                    android:layout_width="wrap_content"-->
-<!--                                    android:layout_height="wrap_content"-->
-<!--                                    android:layout_marginStart="@dimen/sb_size_20"-->
-<!--                                    android:layout_marginTop="@dimen/sb_size_15"-->
-<!--                                    android:fontFamily="@font/gothamblack"-->
-<!--                                    android:text="Delivery Details"-->
-<!--                                    android:textColor="@color/black"-->
-<!--                                    android:textSize="@dimen/sb_text_size_16"-->
-<!--                                    android:textStyle="bold" />-->
+                            <!--&lt;!&ndash;                                <TextView&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:id="@+id/deliveryDetailTv"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:layout_width="wrap_content"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:layout_height="wrap_content"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:layout_marginStart="@dimen/sb_size_20"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:layout_marginTop="@dimen/sb_size_15"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:fontFamily="@font/gothamblack"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:text="Delivery Details"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:textColor="@color/black"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:textSize="@dimen/sb_text_size_16"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    android:textStyle="bold" />&ndash;&gt;-->
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/sb_size_20"
-                                    android:layout_marginTop="@dimen/sb_text_size_8"
-                                    android:orientation="vertical">
-
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal">
-
-                                        <com.google.android.material.textfield.TextInputLayout
-                                            android:id="@+id/textInputLayout"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="1"
-                                            android:layout_marginEnd="@dimen/sb_size_20"
-                                            app:hintTextColor="@color/black"
-                                            app:layout_constraintTop_toBottomOf="@+id/cardView">
-
-                                            <com.google.android.material.textfield.TextInputEditText
-                                                android:id="@+id/pincodeEditText"
-                                                android:layout_width="match_parent"
-                                                android:layout_height="wrap_content"
-                                                android:gravity="start"
-                                                android:hint="Enter PINCODE"
-                                                android:inputType="phone"
-                                                android:maxLength="10"
-                                                android:maxLines="1"
-                                                android:textColor="@color/colorPrimaryDark"
-                                                android:textColorHint="@color/colorPrimaryDark"
-                                                android:textSize="@dimen/sb_text_size_17"
-                                                android:theme="@style/MyEditTextTheme" />
-                                        </com.google.android.material.textfield.TextInputLayout>
-
-                                        <Button
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_weight="0"
-                                            android:background="@color/black"
-                                            android:textColor="@color/white"
-                                            android:layout_marginEnd="@dimen/sb_size_20"
-                                            android:text="check"/>
-
-                                    </LinearLayout>
+                            <!--                                <LinearLayout-->
+                            <!--                                    android:layout_width="match_parent"-->
+                            <!--                                    android:layout_height="wrap_content"-->
+                            <!--                                    android:layout_marginStart="@dimen/sb_size_20"-->
+                            <!--                                    android:layout_marginTop="@dimen/sb_text_size_8"-->
+                            <!--                                    android:orientation="vertical">-->
 
 
-                                    <View
-                                        android:layout_marginTop="@dimen/sb_size_5"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="1dp"
-                                        android:background="#EEEEEE" />
+                            <!--                                    <LinearLayout-->
+                            <!--                                        android:layout_width="match_parent"-->
+                            <!--                                        android:layout_height="wrap_content"-->
+                            <!--                                        android:orientation="horizontal">-->
 
-                                    <TextView
-                                        android:id="@+id/deliverStatusTv"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="@dimen/sb_size_4"
-                                        android:drawablePadding="@dimen/sb_size_10"
-                                        android:gravity="start|center"
-                                        android:layout_marginTop="@dimen/sb_size_2"
-                                        android:padding="@dimen/sb_size_10"
-                                        android:text="Usually Delivered in 5 days"
-                                        android:textColor="@color/black"
-                                        app:drawableStartCompat="@drawable/ic_shipping_size" />
+                            <!--                                        <com.google.android.material.textfield.TextInputLayout-->
+                            <!--                                            android:id="@+id/textInputLayout"-->
+                            <!--                                            android:layout_width="match_parent"-->
+                            <!--                                            android:layout_height="wrap_content"-->
+                            <!--                                            android:layout_weight="1"-->
+                            <!--                                            android:layout_marginEnd="@dimen/sb_size_20"-->
+                            <!--                                            app:hintTextColor="@color/black"-->
+                            <!--                                            app:layout_constraintTop_toBottomOf="@+id/cardView">-->
 
-                                    <View
-                                        android:layout_marginTop="@dimen/sb_size_5"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="1dp"
-                                        android:layout_marginEnd="@dimen/sb_size_20"
-                                        android:background="@color/black" />
-                                </LinearLayout>
+                            <!--                                            <com.google.android.material.textfield.TextInputEditText-->
+                            <!--                                                android:id="@+id/pincodeEditText"-->
+                            <!--                                                android:layout_width="match_parent"-->
+                            <!--                                                android:layout_height="wrap_content"-->
+                            <!--                                                android:gravity="start"-->
+                            <!--                                                android:hint="Enter PINCODE"-->
+                            <!--                                                android:inputType="phone"-->
+                            <!--                                                android:maxLength="10"-->
+                            <!--                                                android:maxLines="1"-->
+                            <!--                                                android:textColor="@color/colorPrimaryDark"-->
+                            <!--                                                android:textColorHint="@color/colorPrimaryDark"-->
+                            <!--                                                android:textSize="@dimen/sb_text_size_17"-->
+                            <!--                                                android:theme="@style/MyEditTextTheme" />-->
+                            <!--                                        </com.google.android.material.textfield.TextInputLayout>-->
 
-                            </RelativeLayout>
+                            <!--                                        <Button-->
+                            <!--                                            android:layout_width="wrap_content"-->
+                            <!--                                            android:layout_height="wrap_content"-->
+                            <!--                                            android:layout_weight="0"-->
+                            <!--                                            android:background="@color/black"-->
+                            <!--                                            android:textColor="@color/white"-->
+                            <!--                                            android:layout_marginEnd="@dimen/sb_size_20"-->
+                            <!--                                            android:text="check"/>-->
+
+                            <!--                                    </LinearLayout>-->
+
+
+                            <!--                                    <View-->
+                            <!--                                        android:layout_marginTop="@dimen/sb_size_5"-->
+                            <!--                                        android:layout_width="match_parent"-->
+                            <!--                                        android:layout_height="1dp"-->
+                            <!--                                        android:background="#EEEEEE" />-->
+
+                            <!--                                    <TextView-->
+                            <!--                                        android:id="@+id/deliverStatusTv"-->
+                            <!--                                        android:layout_width="wrap_content"-->
+                            <!--                                        android:layout_height="wrap_content"-->
+                            <!--                                        android:layout_marginBottom="@dimen/sb_size_4"-->
+                            <!--                                        android:drawablePadding="@dimen/sb_size_10"-->
+                            <!--                                        android:gravity="start|center"-->
+                            <!--                                        android:layout_marginTop="@dimen/sb_size_2"-->
+                            <!--                                        android:padding="@dimen/sb_size_10"-->
+                            <!--                                        android:text="Usually Delivered in 5 days"-->
+                            <!--                                        android:textColor="@color/black"-->
+                            <!--                                        app:drawableStartCompat="@drawable/ic_shipping_size" />-->
+
+                            <!--                                    <View-->
+                            <!--                                        android:layout_marginTop="@dimen/sb_size_5"-->
+                            <!--                                        android:layout_width="match_parent"-->
+                            <!--                                        android:layout_height="1dp"-->
+                            <!--                                        android:layout_marginEnd="@dimen/sb_size_20"-->
+                            <!--                                        android:background="@color/black" />-->
+                            <!--                                </LinearLayout>-->
+
+                            <!--                            </RelativeLayout>-->
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@id/changePinRelative"
+                                android:layout_below="@id/pincodeEditText"
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_text_size_8"
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/deliverStatusTv"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-
+                                    android:layout_marginTop="@dimen/sb_size_2"
+                                    android:layout_marginBottom="@dimen/sb_size_4"
                                     android:drawablePadding="@dimen/sb_size_10"
                                     android:gravity="start|center"
                                     android:padding="@dimen/sb_size_10"
-                                    android:text="Free standard shipping"
+                                    android:text="Usually Delivered in 5 days"
                                     android:textColor="@color/black"
                                     app:drawableStartCompat="@drawable/ic_group_629" />
 

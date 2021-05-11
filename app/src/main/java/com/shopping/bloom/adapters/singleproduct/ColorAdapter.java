@@ -2,6 +2,7 @@ package com.shopping.bloom.adapters.singleproduct;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,22 +72,20 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ColorAdapter.ViewHolder holder, int position) {
         String color = colorMap.get(colorList.get(position));
-        System.out.println(color);
+        Log.d("colorsize", "adapter colorsize = " + colorList.size());
+
         if (color == null) {
             System.out.println("Empty color");
         } else {
             holder.button.setBackgroundColor(Color.parseColor(color));
         }
 
-
-
-
-
         if (clickable) {
             holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
                 @Override
                 public void onDebouncedClick(View v) {
                     if (holder.button.isChecked()) {
+
                         holder.cardView.setContentPadding(10, 10, 10, 10);
                         if (context instanceof SingleProductActivity) {
                             ((SingleProductActivity) context).setViewPagerCurrentItem(position);
@@ -103,7 +102,15 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
                 }
             });
 
+        } else {
+            if (colorList.size() == 1) {
+                if (context instanceof SingleProductActivity) {
+                    ((SingleProductActivity) context).setViewPagerCurrentItem(0);
+                }
+                pos = 0;
+            }
         }
+
         if (pos == position) {
             holder.cardView.setContentPadding(10, 10, 10, 10);
             holder.button.setChecked(true);
@@ -131,6 +138,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             super(itemView);
             button = itemView.findViewById(R.id.colorButton);
             cardView = itemView.findViewById(R.id.cardView);
+
 
         }
 

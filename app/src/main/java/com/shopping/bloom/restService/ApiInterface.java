@@ -226,7 +226,7 @@ public interface ApiInterface {
     @POST("metadata/createUserActivity")
     Call<LoginResponseModel> createUserActivity(
             @Field("product_id") String product_id,
-            @Field("category_id") String category_id,
+            @Field("category_id") int category_id,
             @Header("Authorization") String bearer);
 
     @GET("frontend/getRandomProducts")

@@ -33,8 +33,7 @@
             android:id="@+id/colorButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:button="@null"
-            android:background="@color/black"/>
+            android:button="@null"/>
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
