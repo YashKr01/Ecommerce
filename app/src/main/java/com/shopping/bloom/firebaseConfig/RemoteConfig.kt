@@ -101,7 +101,7 @@ open class RemoteConfig {
         @JvmStatic
         fun getPromoConfig(context: Context): PromoConfig {
             var json =  getInstance(context).getString(RemoteConfigDefaults.PROMO_CONFIG.key())
-            if(CommonUtils.isNotNull(json)) {
+            if(CommonUtils.isNull(json)) {
                 json = RemoteConfigDefaults.PROMO_CONFIG.value().toString()
             }
             return Gson().fromJson(json, PromoConfig::class.java)
