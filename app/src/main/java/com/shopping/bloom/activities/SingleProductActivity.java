@@ -397,6 +397,9 @@ public class SingleProductActivity extends AppCompatActivity {
             String color = product.getColor();
             String size = product.getSize();
             String price = product.getPrice();
+            if(product.getIs_on_sale().equals("1")){
+                price = product.getSale_price();
+            }
             String name = singleProductDataResponse.getProduct_name();
             Log.d(TAG, "addToShoppingBag: product: " + product.toString());
             CartItem cartItem = new CartItem(parentId, childId, name, primaryImage, color, size, price, Integer.parseInt(product.getQuantity()));
