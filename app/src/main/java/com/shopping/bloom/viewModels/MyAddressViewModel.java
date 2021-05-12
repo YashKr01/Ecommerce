@@ -53,7 +53,10 @@ public class MyAddressViewModel extends ViewModel {
         call.enqueue(new Callback<AddressResponse>() {
             @Override
             public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                mutableLiveData.postValue(response.body().getAddressResponseList());
+                if(response.isSuccessful())
+                    mutableLiveData.postValue(response.body().getAddressResponseList());
+                else
+                    mutableLiveData.postValue(null);
             }
 
             @Override
