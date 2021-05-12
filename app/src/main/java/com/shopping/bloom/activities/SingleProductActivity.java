@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -59,6 +60,7 @@ import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.CartItem;
+import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
@@ -97,8 +99,8 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> selectedSizeList, selectedColorList;
     int pos, check = 1, categoryId;
     LinearLayout linearLayout;
-    TextView productName, price, viewReview, colorTextView,
-            slideTextView, desc, salePrice, salePercentage, deliverStatusTv;
+    TextView productName, price, viewReview, colorTextView, slideTextView,
+            desc, salePrice, salePercentage, deliverStatusTv;
     EditText pincodeEditText;
     RatingBar ratingBar;
     ProgressDialog progressDialog;
@@ -117,6 +119,7 @@ public class SingleProductActivity extends AppCompatActivity {
     Button changePinCode;
     Dialog dialog;
     ImageButton wishListButton, selectedWishListButton;
+    ImageView deliveryStatusIv;
     Button btnAddToBag;
     RandomImageAdapter randomImageAdapter;
     List<SingleProductDescResponse> list;
@@ -310,6 +313,7 @@ public class SingleProductActivity extends AppCompatActivity {
             categoryId = Integer.parseInt(CATEGORY_ID);
         }
 
+        checkPinCode();
 
         viewReview.setOnClickListener(debouncedOnClickListener);
 
@@ -323,8 +327,8 @@ public class SingleProductActivity extends AppCompatActivity {
                 //Check if user is logged in or not
 
                 /*
-                *   below method returns false if User is logged in :/
-                * */
+                 *   below method returns false if User is logged in :/
+                 * */
                 if (!LoginManager.getInstance().isLoggedIn()) {
                     addToShoppingBag();
                 } else {
@@ -485,6 +489,26 @@ public class SingleProductActivity extends AppCompatActivity {
 
     }
 
+    private void checkPinCode() {
+        singleProductViewModel.getPinCodeResponseMutableLiveData().observe(this, pinCodeResponse -> {
+            if (pinCodeResponse != null) {
+                if(pinCodeResponse.getSuccess().equals("false")){
+                    deliverStatusTv.setText(pinCodeResponse.getMessage());
+                    deliverStatusTv.setTextColor(Color.RED);
+                    deliveryStatusIv.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_alert));
+                }else{
+                    deliverStatusTv.setText(pinCodeResponse.getMessage());
+                    deliverStatusTv.setTextColor(Color.BLACK);
+                    deliveryStatusIv.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_group_629));
+                }
+
+            }else{
+                pincodeEditText.setError("Pincode Empty");
+                pincodeEditText.requestFocus();
+            }
+        });
+    }
+
     /*
        Recommended products api call and list handling
      */
@@ -564,20 +588,10 @@ public class SingleProductActivity extends AppCompatActivity {
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
             } else if (v.getId() == R.id.changePinCode) {
-                //ShowPincodeDailog();
-//                if (check == 1) {
-//                    pincodeEditText.setVisibility(View.VISIBLE);
-//                    changePinCode.setText("Check");
-//                    changePinCode.setBackgroundColor(Color.BLACK);
-//                    changePinCode.setBackground(null);
-//                    check = 0;
-//                } else {
-//                    pincodeEditText.setVisibility(View.GONE);
-//                    changePinCode.setText("Change Password");
-//                    check = 1;
-//                }
                 String pinCode = pincodeEditText.getText().toString().trim();
-                Toast.makeText(SingleProductActivity.this, pinCode, Toast.LENGTH_SHORT).show();
+                if (!pinCode.isEmpty()) {
+                    singleProductViewModel.checkPinCode(pinCode, getApplication());
+                }
             } else if (v.getId() == R.id.wishListButton) {
                 selectedWishListButton.setVisibility(View.VISIBLE);
                 wishListButton.setVisibility(View.GONE);
@@ -947,6 +961,7 @@ public class SingleProductActivity extends AppCompatActivity {
         salePrice = findViewById(R.id.salePrice);
         salePercentage = findViewById(R.id.salePercentage);
         deliverStatusTv = findViewById(R.id.deliverStatusTv);
+        deliveryStatusIv = findViewById(R.id.deliverStatusIv);
 
         inflated = viewStub.inflate();
 

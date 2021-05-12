@@ -6,6 +6,7 @@ import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.model.LoginWithEmailPassModel;
 import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.model.OtpModel;
+import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.model.RegistrationModel;
@@ -240,5 +241,11 @@ public interface ApiInterface {
     Call<GetCartValueResponse> getCartValue(
             @Header("Authorization") String bearer,
             @Body PostProductList productList
+    );
+
+    @GET("metadata/checkDeliveryAvailable")
+    Call<PinCodeResponse> checkPinCode(
+            @Header("Authorization") String bearer,
+            @Query("pincode") String pincode
     );
 }
