@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,10 +18,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.LoginModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
-import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
-import com.shopping.bloom.utils.Tools;
 import com.shopping.bloom.viewModels.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
@@ -33,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     ViewStub viewStub;
     SwipeRefreshLayout swipeRefreshLayout;
     private View parent_view;
-
+    String mobile_no;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +50,23 @@ public class LoginActivity extends AppCompatActivity {
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
 
+        loginViewModel.getMutableLiveData().observe(this, loginResponseModel -> {
+            if(loginResponseModel != null){
+                String success = loginResponseModel.getSuccess();
+                String message = loginResponseModel.getMessage();
+
+                if (success.equals("true")) {
+                    ShowToast.showToast(this, message);
+                    Intent intent = new Intent(this, OtpActivity.class);
+                    intent.putExtra("mobile_no", mobile_no);
+                    intent.putExtra("activityName", "LoginActivity");
+                    startActivity(intent);
+                } else {
+                    ShowToast.showToast(this, message);
+                }
+            }
+        });
+
         button.setOnClickListener(debouncedOnClickListener);
         textView.setOnClickListener(debouncedOnClickListener);
         textView2.setOnClickListener(debouncedOnClickListener);
@@ -58,13 +74,14 @@ public class LoginActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
         checkNetworkConnectivity();
 
+
     }
 
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
             if(v.getId() == R.id.signInButton){
-                String mobile_no = mobileNoEditText.getText().toString().trim();
+                mobile_no = mobileNoEditText.getText().toString().trim();
                 signIn(mobile_no);
             }else if(v.getId() == R.id.loginWithPassTextView){
                 loginWithPassActivity();
@@ -101,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             if (NetworkCheck.isConnect(this)) {
                 LoginModel loginModel = new LoginModel(mobile_no);
-                loginViewModel.makeApiCall(loginModel, getApplication(), this);
+                loginViewModel.makeApiCall(loginModel, getApplication());
             } else {
                 viewStub.setVisibility(View.VISIBLE);
                 constraintLayout.setVisibility(View.GONE);

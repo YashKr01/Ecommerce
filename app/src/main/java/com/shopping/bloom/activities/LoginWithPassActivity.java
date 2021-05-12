@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -24,6 +25,7 @@ import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.LoginWithPassViewModel;
 
 public class LoginWithPassActivity extends AppCompatActivity {
@@ -74,6 +76,64 @@ public class LoginWithPassActivity extends AppCompatActivity {
         checkNetworkConnectivity();
 
         loginWithPassViewModel = ViewModelProviders.of(this).get(LoginWithPassViewModel.class);
+
+        loginWithPassViewModel.getMobileMutableLiveData().observe(this, loginWithPassResponseModel -> {
+            if(loginWithPassResponseModel != null){
+                String success = loginWithPassResponseModel.getSuccess();
+                String message = loginWithPassResponseModel.getMessage();
+
+                if (success.equals("true")) {
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+                    loginManager.setEmailid(loginWithPassResponseModel.getData().getUserInfo().getEmail());
+                    loginManager.setname(loginWithPassResponseModel.getData().getUserInfo().getName());
+                    loginManager.setNumber(loginWithPassResponseModel.getData().getUserInfo().getMobile_no());
+                    loginManager.setFirebase_token(loginWithPassResponseModel.getData().getUserInfo().getFirebase_token());
+                    loginManager.settoken(loginWithPassResponseModel.getData().getToken());
+                    loginManager.SetLoginStatus(false);
+                    String email_verified_at = loginWithPassResponseModel.getData().getUserInfo().getEmail_verified_at();
+                    if(email_verified_at == null || email_verified_at.isEmpty()|| email_verified_at.equals("")){
+                        System.out.println("EmailVerified Empty");
+                    }else{
+                        loginManager.setEmail_verified_at(true);
+                    }
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    ShowToast.showToast(this, message);
+                }
+            }else{
+                ShowToast.showToast(this, "Failed");
+            }
+        });
+        
+        loginWithPassViewModel.getEmailModelMutableLiveData().observe(this, loginWithPassResponseModel -> {
+            if(loginWithPassResponseModel != null){
+                String success = loginWithPassResponseModel.getSuccess();
+                String message = loginWithPassResponseModel.getMessage();
+
+                if (success.equals("true")) {
+                    ShowToast.showToast(this, message);
+
+                    loginManager.setEmailid(loginWithPassResponseModel.getData().getUserInfo().getEmail());
+                    loginManager.setname(loginWithPassResponseModel.getData().getUserInfo().getName());
+                    loginManager.setNumber(loginWithPassResponseModel.getData().getUserInfo().getMobile_no());
+                    loginManager.setFirebase_token(loginWithPassResponseModel.getData().getUserInfo().getFirebase_token());
+                    loginManager.settoken(loginWithPassResponseModel.getData().getToken());
+                    loginManager.SetLoginStatus(false);
+                    String email_verified_at = loginWithPassResponseModel.getData().getUserInfo().getEmail_verified_at();
+                    if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                        loginManager.setEmail_verified_at(true);
+                    }
+
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    ShowToast.showToast(this, message);
+                }
+            }
+        });
 
         signInButton.setOnClickListener(debouncedOnClickListener);
         textView.setOnClickListener(debouncedOnClickListener);

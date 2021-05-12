@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.widget.Toast;
 
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.shopping.bloom.activities.LoginWithPassActivity;
@@ -28,8 +29,19 @@ public class LoginWithPassViewModel extends ViewModel {
 
     LoginManager loginManager;
 
-    public LoginWithPassViewModel() {
+    private final MutableLiveData<LoginWithPassResponseModel> mobileMutableData, emailMutableData;
 
+    public LoginWithPassViewModel() {
+        mobileMutableData = new MutableLiveData<>();
+        emailMutableData = new MutableLiveData<>();
+    }
+
+    public MutableLiveData<LoginWithPassResponseModel> getMobileMutableLiveData() {
+        return mobileMutableData;
+    }
+
+    public MutableLiveData<LoginWithPassResponseModel> getEmailModelMutableLiveData(){
+        return emailMutableData;
     }
 
     public void makeApiCallWithNumber(LoginWithNumberPassModel loginModel, Application application, Activity context) {
@@ -41,35 +53,13 @@ public class LoginWithPassViewModel extends ViewModel {
             public void onResponse(Call<LoginWithPassResponseModel> call, Response<LoginWithPassResponseModel> response) {
 //                System.out.println(response.body().getData().getUserInfo().getEmail());
                 if (response.isSuccessful()) {
-                    String success = response.body().getSuccess();
-                    String message = response.body().getMessage();
-
-                    if (success.equals("true")) {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-
-                        loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
-                        loginManager.setname(response.body().getData().getUserInfo().getName());
-                        loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
-                        loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
-                        loginManager.settoken(response.body().getData().getToken());
-                        loginManager.SetLoginStatus(false);
-                        String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
-                        if(email_verified_at == null || email_verified_at.isEmpty()|| email_verified_at.equals("")){
-                            System.out.println("EmailVerified Empty");
-                        }else{
-                            loginManager.setEmail_verified_at(true);
-                        }
-
-                        Intent intent = new Intent(context, MainActivity.class);
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                    }
+                    mobileMutableData.postValue(response.body());
                 }
             }
 
             @Override
             public void onFailure(Call<LoginWithPassResponseModel> call, Throwable t) {
+                mobileMutableData.postValue(null);
                 System.out.println(call.request());
                 System.out.println(t.toString());
             }
@@ -86,28 +76,7 @@ public class LoginWithPassViewModel extends ViewModel {
             public void onResponse(Call<LoginWithPassResponseModel> call, Response<LoginWithPassResponseModel> response) {
                 System.out.println(response);
                 if (response.isSuccessful()) {
-                    String success = response.body().getSuccess();
-                    String message = response.body().getMessage();
-
-                    if (success.equals("true")) {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-
-                        loginManager.setEmailid(response.body().getData().getUserInfo().getEmail());
-                        loginManager.setname(response.body().getData().getUserInfo().getName());
-                        loginManager.setNumber(response.body().getData().getUserInfo().getMobile_no());
-                        loginManager.setFirebase_token(response.body().getData().getUserInfo().getFirebase_token());
-                        loginManager.settoken(response.body().getData().getToken());
-                        loginManager.SetLoginStatus(false);
-                        String email_verified_at = response.body().getData().getUserInfo().getEmail_verified_at();
-                        if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
-                            loginManager.setEmail_verified_at(true);
-                        }
-
-                        Intent intent = new Intent(context, MainActivity.class);
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                    }
+                    emailMutableData.postValue(response.body());
                 }
             }
 

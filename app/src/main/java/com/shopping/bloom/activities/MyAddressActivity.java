@@ -49,9 +49,14 @@ public class MyAddressActivity extends AppCompatActivity {
         myAddressViewModel.getMutableLiveData().observe(this, new Observer<List<AddressDataResponse>>() {
             @Override
             public void onChanged(List<AddressDataResponse> addressDataResponse) {
-                addressList = addressDataResponse;
-                addressAdapter.setAddressList(addressList);
-                addressAdapter.notifyDataSetChanged();
+                if(addressDataResponse != null){
+                    addressList = addressDataResponse;
+                    addressAdapter.setAddressList(addressList);
+                    addressAdapter.notifyDataSetChanged();
+                }else{
+                    Toast.makeText(MyAddressActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+                
             }
         });
         myAddressViewModel.makeApiCall(0, 10, getApplication());
