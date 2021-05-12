@@ -1,5 +1,6 @@
 package com.shopping.bloom.activities.shoppingbag;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.CheckoutActivity;
 import com.shopping.bloom.adapters.shoppingbag.ShoppingBagAdapter;
 import com.shopping.bloom.adapters.shoppingbag.SuggestCartItemAdapter;
 import com.shopping.bloom.databinding.ActivityShoppingBagBinding;
@@ -65,6 +67,13 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         getTotalCartItem(viewModel.getTotalCartItems());
         getPromoOffer();
 
+        binding.btCheckOut.setOnClickListener(view -> gotoCheckOutScreen());
+    }
+
+    private void gotoCheckOutScreen() {
+        Intent intent = new Intent(this, CheckoutActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
     private void getPromoOffer() {
