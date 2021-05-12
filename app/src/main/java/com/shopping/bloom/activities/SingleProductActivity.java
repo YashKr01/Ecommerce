@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -69,6 +70,7 @@ import com.shopping.bloom.model.SingleProductImageResponse;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.AddToCartCallback;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -82,6 +84,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class SingleProductActivity extends AppCompatActivity {
 
@@ -370,10 +374,20 @@ public class SingleProductActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOGIN_ACTIVITY && resultCode == RESULT_OK ){
+    //Todo Do something when user returns from the login Activity
+
+//            Toast.makeText(this, "Check", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void gotoLoginActivity() {
         Intent intent = new Intent(SingleProductActivity.this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        startActivityForResult(intent, LOGIN_ACTIVITY);
     }
 
     private void changeCartIcon(LiveData<Integer> cartSize) {

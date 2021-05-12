@@ -1,5 +1,6 @@
 package com.shopping.bloom.activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -8,6 +9,7 @@ import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
     RegisterViewModel registerViewModel;
     SwipeRefreshLayout swipeRefreshLayout;
     Toolbar toolbar;
+    String number;
     private View parent_view;
 
     @Override
@@ -53,11 +56,34 @@ public class RegisterActivity extends AppCompatActivity {
         textView = findViewById(R.id.termsTextView);
         parent_view = findViewById(android.R.id.content);
 
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(intent);
+        });
 
         button = findViewById(R.id.signInButton);
 
         registerViewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
+
+        registerViewModel.getMutableLiveData().observe(this, registerResponseModel -> {
+            if (registerResponseModel != null) {
+                String success = registerResponseModel.getSuccess();
+                String message = registerResponseModel.getMessage();
+                if (success.equals("true")) {
+                    ShowToast.showToast(this, message);
+                    Intent intent = new Intent(this, OtpActivity.class);
+                    intent.putExtra("mobile_no", number);
+                    intent.putExtra("activityName", "RegisterActivity");
+                    intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    ShowToast.showToast(this, message);
+                }
+            }
+        });
+
         button.setOnClickListener(debouncedOnClickListener);
 
         textView.setOnClickListener(debouncedOnClickListener);
@@ -76,14 +102,14 @@ public class RegisterActivity extends AppCompatActivity {
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
-            if(v.getId() == R.id.signInButton){
+            if (v.getId() == R.id.signInButton) {
                 String imeiNumber = Tools.getDeviceID(getApplicationContext());
                 String name = nameEditText.getText().toString().trim();
                 String email = emailEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
-                String number = numberEditText.getText().toString().trim();
+                number = numberEditText.getText().toString().trim();
                 signIn(name, email, number, password, imeiNumber);
-            }else if(v.getId() == R.id.termsTextView){
+            } else if (v.getId() == R.id.termsTextView) {
                 customTabs();
             }
         }

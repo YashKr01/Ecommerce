@@ -9,6 +9,8 @@ public class Const {
     public static final int READ_TIMEOUT = 20;
     public static final int WRITE_TIMEOUT = 20;
 
+    public static final int LOGIN_ACTIVITY = 100;
+
     public enum SORT_BY {
         NEW_ARRIVAL,
         MOST_POPULAR,
