@@ -80,7 +80,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class SingleProductActivity extends AppCompatActivity {
 
@@ -321,7 +320,14 @@ public class SingleProductActivity extends AppCompatActivity {
         btnAddToBag.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                addToShoppingBag();
+                //Check if user is logged in or not
+                if (LoginManager.getInstance().isLoggedIn()) {
+                    addToShoppingBag();
+                } else {
+                    Toast.makeText(SingleProductActivity.this, "Login to add the Item to the cart", Toast.LENGTH_SHORT)
+                            .show();
+                    //gotoLoginActivity();
+                }
             }
         });
 
@@ -356,19 +362,25 @@ public class SingleProductActivity extends AppCompatActivity {
 
     }
 
+    private void gotoLoginActivity() {
+        Intent intent = new Intent(SingleProductActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
+
     private void changeCartIcon(LiveData<Integer> cartSize) {
         cartSize.observe(this, integer -> {
-            int  size = 0;
+            int size = 0;
             try {
                 size = integer;
-            } catch ( NullPointerException e) {
+            } catch (NullPointerException e) {
                 size = 0;
                 Log.d(TAG, "onChanged: ");
             }
             Log.d(TAG, "changeCartIcon: ");
             MenuItem cartIcon = toolbar.getMenu().findItem(R.id.shoppingCart);
-            if(cartIcon != null)  {
-                if(size == 0) {
+            if (cartIcon != null) {
+                if (size == 0) {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
                 } else {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
@@ -402,7 +414,7 @@ public class SingleProductActivity extends AppCompatActivity {
             String color = product.getColor();
             String size = product.getSize();
             String price = product.getPrice();
-            if(product.getIs_on_sale().equals("1")){
+            if (product.getIs_on_sale().equals("1")) {
                 price = product.getSale_price();
             }
             String name = singleProductDataResponse.getProduct_name();
@@ -775,7 +787,7 @@ public class SingleProductActivity extends AppCompatActivity {
         if (id == R.id.share) {
             share();
         }
-        if(id == R.id.shoppingCart) {
+        if (id == R.id.shoppingCart) {
             openShoppingBag();
         }
 

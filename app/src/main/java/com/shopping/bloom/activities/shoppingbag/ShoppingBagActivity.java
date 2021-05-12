@@ -55,6 +55,7 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
+        binding.toolbar.setNavigationOnClickListener((v)-> onBackPressed());
 
         // initialise view model
         viewModel = new ViewModelProvider(this).get(ShoppingBagViewModel.class);
@@ -84,15 +85,6 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         binding.rvSuggestionProduct.setLayoutManager(layoutManager);
         binding.rvSuggestionProduct.setAdapter(suggestCartItemAdapter);
         suggestCartItemAdapter.updateList(getDummyData());
-    }
-
-    private List<SuggestedCartProduct> getDummyData() {
-        List<SuggestedCartProduct> list = new ArrayList<>();
-        for(int i = 0; i < 28; i++) {
-            SuggestedCartProduct p1 = new SuggestedCartProduct("", "Dummy Data");
-            list.add(p1);
-        }
-        return list;
     }
 
     private void subscribeToUI(LiveData<List<CartItem>> liveCartItems) {
@@ -165,9 +157,11 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
     private void updateUI(ResponseCartData data) {
         if(data == null) {
             showProgressBar(false);
+            showEmptyCart(true);
             binding.tvCartPrice.setVisibility(View.INVISIBLE);
             return;
         }
+        showEmptyCart(false);
         String totalCartValue = CommonUtils.getSignedAmount(String.valueOf(data.getSubTotal()));
         binding.tvCartPrice.setText(totalCartValue);
     }
@@ -216,6 +210,23 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         } else {
             binding.rlProgressBar.setVisibility(View.GONE);
         }
+    }
+
+    private void showEmptyCart(boolean show) {
+        if(show) {
+            binding.rlEmptyCart.setVisibility(View.VISIBLE);
+        } else {
+            binding.rlEmptyCart.setVisibility(View.GONE);
+        }
+    }
+
+    private List<SuggestedCartProduct> getDummyData() {
+        List<SuggestedCartProduct> list = new ArrayList<>();
+        for(int i = 0; i < 28; i++) {
+            SuggestedCartProduct p1 = new SuggestedCartProduct("", "Dummy Data");
+            list.add(p1);
+        }
+        return list;
     }
 
 }

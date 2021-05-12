@@ -10,11 +10,43 @@
         android:id="@+id/toolbar"
         style="@style/ToolbarStyle"
         android:layout_width="@dimen/sb_size_0"
+        android:background="@color/white"
+        android:elevation="@dimen/sb_size_6"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:title="Shopping Bag" />
+
+    <RelativeLayout
+        android:id="@+id/rlEmptyCart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="@dimen/sb_size_4"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/imgEmptyCart"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_empty_cart" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgEmptyCart"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/sb_size_22"
+            android:text="Empty Cart 😮"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sb_text_size_22" />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rlProgressBar"
@@ -123,7 +155,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:elevation="@dimen/sb_size_4"
+        android:elevation="@dimen/sb_size_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
