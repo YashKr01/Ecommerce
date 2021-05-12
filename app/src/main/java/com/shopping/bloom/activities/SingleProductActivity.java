@@ -321,12 +321,16 @@ public class SingleProductActivity extends AppCompatActivity {
             @Override
             public void onDebouncedClick(View v) {
                 //Check if user is logged in or not
-                if (LoginManager.getInstance().isLoggedIn()) {
+
+                /*
+                *   below method returns false if User is logged in :/
+                * */
+                if (!LoginManager.getInstance().isLoggedIn()) {
                     addToShoppingBag();
                 } else {
-                    Toast.makeText(SingleProductActivity.this, "Login to add the Item to the cart", Toast.LENGTH_SHORT)
+                    Toast.makeText(SingleProductActivity.this, "Login and continue shopping", Toast.LENGTH_SHORT)
                             .show();
-                    //gotoLoginActivity();
+                    gotoLoginActivity();
                 }
             }
         });
@@ -378,7 +382,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 Log.d(TAG, "onChanged: ");
             }
             Log.d(TAG, "changeCartIcon: ");
-            MenuItem cartIcon = toolbar.getMenu().findItem(R.id.shoppingCart);
+            MenuItem cartIcon = toolbar.getMenu().findItem(R.id.action_cart);
             if (cartIcon != null) {
                 if (size == 0) {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
@@ -774,7 +778,6 @@ public class SingleProductActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_single_product, menu);
@@ -787,7 +790,7 @@ public class SingleProductActivity extends AppCompatActivity {
         if (id == R.id.share) {
             share();
         }
-        if (id == R.id.shoppingCart) {
+        if (id == R.id.action_cart) {
             openShoppingBag();
         }
 
@@ -863,7 +866,6 @@ public class SingleProductActivity extends AppCompatActivity {
         checkIfExist(cartItem.getParentId(), cartItem.getChildId());
     }
 
-
     // Return productvairalable object of particular item which user select
     // need to check if mcolor and msize should not be empty or null when calling this method
     private ProductVariableResponse getSelectedChildSKUObj(String mcolor, String msize) {
@@ -880,7 +882,6 @@ public class SingleProductActivity extends AppCompatActivity {
         return mobj;
     }
 
-
     private void CreateUserLogs() {
         singleProductViewModel.makeApiCallCreateUserActivity(String.valueOf(PRODUCT_ID), categoryId, getApplication());
         singleProductViewModel.getLoginResponseModelMutableLiveData().observe(this, loginResponseModel -> {
@@ -892,7 +893,6 @@ public class SingleProductActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -902,8 +902,6 @@ public class SingleProductActivity extends AppCompatActivity {
         collapsingToolbarLayout.setVisibility(View.VISIBLE);
         favLinearLayout.setVisibility(View.VISIBLE);
     }
-
-
 
     /*
      Return dynamic height for viewpager

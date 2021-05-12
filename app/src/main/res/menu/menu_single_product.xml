@@ -5,11 +5,11 @@
     <item android:id="@+id/share"
         android:icon="@drawable/ic_group_627"
         app:showAsAction="always"
-        android:title="Share" />
+        android:title="@string/share" />
 
-    <item android:id="@+id/shoppingCart"
+    <item android:id="@+id/action_cart"
         android:icon="@drawable/ic_group_721"
-        app:showAsAction="always"
-        android:title="Shopping cart"/>
+        app:showAsAction="ifRoom"
+        android:title="@string/shopping_cart"/>
 
 </menu>

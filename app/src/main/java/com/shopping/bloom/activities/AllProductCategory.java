@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,10 +27,12 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
 import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
 import com.shopping.bloom.bottomSheet.SortBottomSheet;
+import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.database.repository.ProductRepository;
 import com.shopping.bloom.model.FilterArrayValues;
 import com.shopping.bloom.model.FilterItem;
@@ -279,6 +283,31 @@ public class AllProductCategory extends AppCompatActivity {
         filterItemAdapter.clearAllSelection(flType);
         filterItemAdapter.clearAllSelection(flColor);
         saveSelectionData();
+    }
+
+    private void changeCartIcon(LiveData<Integer> cartSize) {
+        cartSize.observe(this, integer -> {
+            Log.d(TAG, "changeCartIcon: ");
+            int  size = 0;
+            try {
+                size = integer;
+            } catch ( NullPointerException e) {
+                size = 0;
+                Log.d(TAG, "onChanged: ");
+            }
+            Log.d(TAG, "changeCartIcon: menu size " + toolbar.getMenu().size());
+            MenuItem cartIcon = toolbar.getMenu().findItem(R.id.action_cart);
+            if(cartIcon != null)  {
+                if(size == 0) {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
+                } else {
+                    cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
+                }
+            } else {
+                Log.d(TAG, "changeCartIcon: NULL CART ICON please check the cartIcon ID for this screen");
+            }
+
+        });
     }
 
     private void updateSelection() {
@@ -685,18 +714,29 @@ public class AllProductCategory extends AppCompatActivity {
         }
     };
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.clear();
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_single_product, menu);
+        changeCartIcon(EcommerceDatabase.getInstance().cartItemDao().changeCartIcon());
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; go home
-                Log.d(TAG, "onBackPressed: uploading...");
-                ProductRepository.getInstance().uploadWishListOnServer(this.getApplication(), null);
-                super.onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int ID = item.getItemId();
+        if(ID == android.R.id.home) {
+            // app icon in action bar clicked; go home
+            Log.d(TAG, "onBackPressed: uploading...");
+            ProductRepository.getInstance().uploadWishListOnServer(this.getApplication(), null);
+            super.onBackPressed();
+            return true;
+        } else if (ID == R.id.action_cart) {
+            startActivity(new Intent(getApplicationContext(), ShoppingBagActivity.class));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 
