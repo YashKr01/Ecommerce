@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/imgEmptyCart"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:src="@drawable/ic_empty_cart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38" />
+
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sb_size_18"
+        android:text="No produts added to the cart"
+        android:textColor="@color/blue_grey_900"
+        android:textSize="@dimen/sb_text_size_18"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/imgEmptyCart"
+        app:layout_constraintStart_toStartOf="@+id/imgEmptyCart"
+        app:layout_constraintTop_toBottomOf="@+id/imgEmptyCart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="There are thousands of products to choose from"
+        android:textColor="@color/grey_700"
+        android:textSize="@dimen/sb_text_size_14"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="@id/imgEmptyCart"
+        app:layout_constraintEnd_toEndOf="@id/imgEmptyCart"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

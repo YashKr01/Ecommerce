@@ -9,7 +9,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_cart"
+        android:id="@+id/action_cart"
         android:icon="@drawable/ic_cart"
         android:title="Bag"
         app:showAsAction="always" />

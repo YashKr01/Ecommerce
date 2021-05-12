@@ -30,22 +30,8 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <ImageView
-            android:id="@+id/imgEmptyCart"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_empty_cart" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/imgEmptyCart"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/sb_size_22"
-            android:text="Empty Cart 😮"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sb_text_size_22" />
+        <include
+            layout="@layout/layout_empty_cart"/>
     </RelativeLayout>
 
     <RelativeLayout

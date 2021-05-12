@@ -107,6 +107,10 @@
     <string name="remove">Remove</string>
     <string name="click_to_refresh">Click To Refresh</string>
     <string name="hot_search">Hot Search</string>
+    <string name="shopping_cart">Shopping cart</string>
+    <string name="share">Share</string>
+    <string name="enter_pincode">Enter Pincode</string>
+    <string name="return_policy">Return Policy</string>
 
 
 </resources>

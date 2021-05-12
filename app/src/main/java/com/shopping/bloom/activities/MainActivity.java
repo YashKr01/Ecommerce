@@ -257,9 +257,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.menu_cart) {
-            Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show();
-            return true;
         } else if (id == R.id.action_search) {
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             return true;
