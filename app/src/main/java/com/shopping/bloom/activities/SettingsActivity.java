@@ -1,8 +1,10 @@
 package com.shopping.bloom.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 import com.shopping.bloom.R;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
+
+import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -102,8 +106,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (loginManager.isLoggedIn()) {
             Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
             new Handler().postDelayed(() -> {
-                intent(LoginActivity.class);
-                finish();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivityForResult(intent, LOGIN_ACTIVITY);
             }, 1500);
         } else {
             intent(AccountSecurityActivity.class);
@@ -129,8 +133,8 @@ public class SettingsActivity extends AppCompatActivity {
         if (loginManager.isLoggedIn()) {
             Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
             new Handler().postDelayed(() -> {
-                intent(LoginActivity.class);
-                finish();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivityForResult(intent, LOGIN_ACTIVITY);
             }, 1500);
         } else {
             intent(MyAddressActivity.class);
@@ -149,6 +153,15 @@ public class SettingsActivity extends AppCompatActivity {
         });
         builder.setNegativeButton("Cancel", null);
         builder.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOGIN_ACTIVITY && resultCode == Activity.RESULT_OK){
+            finish();
+            startActivity(getIntent());
+        }
     }
 
     // show custom dialog
