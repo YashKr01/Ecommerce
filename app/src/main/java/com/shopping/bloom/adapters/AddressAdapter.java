@@ -66,6 +66,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
         holder.cityTextView.setText(address.getCity());
         holder.numberTextView.setText(address.getContact_number());
 
+
         LoginManager loginManager = new LoginManager(App.getContext());
         String token;
 
@@ -83,6 +84,14 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
                 public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        if (address.getIs_primary().equals("1")) {
+                            loginManager.setPrimary_address_id("NA");
+                            loginManager.setPrimaryAddress("NA");
+                            lastSelectedPosition = 0;
+                            if (context instanceof MyAddressActivity) {
+                                ((MyAddressActivity) context).getData(0);
+                            }
+                        }
                         addressList.remove(position);
                         notifyDataSetChanged();
                     }
@@ -107,10 +116,19 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
         });
 
         holder.radioButton.setClickable(addressList.size() != 1);
-        if(lastSelectedPosition != -1){
+        if (lastSelectedPosition != -1) {
             holder.radioButton.setChecked(lastSelectedPosition == position);
-        }else{
-            holder.radioButton.setChecked(address.getIs_primary().equals("1"));
+        } else {
+            holder.radioButton.setChecked(address.getIs_primary().equals("1") || addressList.size() == 1);
+            if(address.getIs_primary().equals("1")){
+                loginManager.setPrimary_address_id(address.getId());
+                loginManager.setPrimaryAddress(address.getAddress_name()+","+address.getAddress_line_1()+","+address.getCity()+","+address.getPincode()+","+address.getContact_number());
+            }
+            if (addressList.size() == 1) {
+                if (context instanceof MyAddressActivity) {
+                    ((MyAddressActivity) context).getData(0);
+                }
+            }
         }
     }
 
@@ -143,8 +161,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             radioButton.setOnClickListener(v -> {
                 lastSelectedPosition = getAdapterPosition();
                 notifyDataSetChanged();
-                if(context instanceof MyAddressActivity){
-                    ((MyAddressActivity)context).getData(lastSelectedPosition);
+                if (context instanceof MyAddressActivity) {
+                    ((MyAddressActivity) context).getData(lastSelectedPosition);
                 }
             });
 

@@ -23,10 +23,19 @@ import retrofit2.Response;
 public class MyAddressViewModel extends ViewModel {
     private final MutableLiveData<List<AddressDataResponse>> mutableLiveData;
     private final MutableLiveData<LoginResponseModel> updateLiveData;
+    LoginManager loginManager;
+    String token;
 
     public MyAddressViewModel() {
         mutableLiveData = new MutableLiveData<>();
         updateLiveData = new MutableLiveData<>();
+        loginManager = new LoginManager(App.getContext());
+
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
     }
 
     public MutableLiveData<List<AddressDataResponse>> getMutableLiveData() {
@@ -38,15 +47,6 @@ public class MyAddressViewModel extends ViewModel {
     }
 
     public void makeApiCall(int pageNo, int limit, Application application) {
-
-        LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<AddressResponse> call = apiService.getAddress(pageNo, limit, "Bearer " + token);
@@ -67,14 +67,6 @@ public class MyAddressViewModel extends ViewModel {
     }
 
     public void updateAddressApiCall(String id, AddAddressModel addAddressModel, Application application) {
-        LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<LoginResponseModel> call = apiService.updateAddress(id,addAddressModel.getAddress_name(),

@@ -44,6 +44,10 @@ public class LoginManager {
 
     private static String guest_token = "guest_token";
 
+    private static String primary_address_id = "primary_address_id";
+
+    private static String primary_address = "primary_address";
+
 
     public static LoginManager getInstance() {
 
@@ -72,14 +76,16 @@ public class LoginManager {
         editor.commit();
     }
 
-
-
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(IS_LOGED_IN, true);
     }
 
     public boolean is_email_verified() {
         return sharedPreferences.getBoolean(is_email_verified, false);
+    }
+
+    public void setEmail_verified_at(boolean Is_email_verified) {
+        editor.putBoolean(is_email_verified, Is_email_verified).commit();
     }
 
     public void setFirebase_token(String fb_token){
@@ -90,9 +96,29 @@ public class LoginManager {
         return sharedPreferences.getString(firebase_token, "NA");
     }
 
-    public void setEmail_verified_at(boolean Is_email_verified) {
-        editor.putBoolean(is_email_verified, Is_email_verified).commit();
+    public void setPrimary_address_id(String id){
+        editor.putString(primary_address_id, id).commit();
     }
+
+    public String getPrimary_address_id(){
+        return sharedPreferences.getString(primary_address_id, "NA");
+    }
+
+    public void setPrimaryAddress(String address){
+        editor.putString(primary_address, address).commit();
+    }
+
+    /*
+            Stored in Format
+            AddressName,AddressLine,city,Pincode,Contact_No
+
+            eg. Home,Demo Society,Mumbai,400010,1234567890
+            all separated by ","
+     */
+    public String getPrimary_address(){
+        return sharedPreferences.getString(primary_address, "NA");
+    }
+
     public void setname(String mname) {
         editor.putString(name, mname).commit();
     }

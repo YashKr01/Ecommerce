@@ -14,11 +14,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.shopping.bloom.App;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.AddressAdapter;
 import com.shopping.bloom.model.AddAddressModel;
 import com.shopping.bloom.model.AddressDataResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
+import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.viewModels.MyAddressViewModel;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class MyAddressActivity extends AppCompatActivity {
     AddressAdapter addressAdapter;
     List<AddressDataResponse> addressList;
     MyAddressViewModel myAddressViewModel;
+    AddressDataResponse addressDataResponse;
+    int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,9 @@ public class MyAddressActivity extends AppCompatActivity {
                     System.out.println("Null response");
                 }else{
                     if(loginResponseModel.getSuccess().equals("true")){
+                        LoginManager loginManager = new LoginManager(App.getContext());
+                        loginManager.setPrimary_address_id(addressDataResponse.getId());
+                        loginManager.setPrimaryAddress(addressDataResponse.getAddress_name()+","+addressDataResponse.getAddress_line_1()+","+addressDataResponse.getCity()+","+addressDataResponse.getPincode()+","+addressDataResponse.getContact_number());
                         Toast.makeText(MyAddressActivity.this, loginResponseModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -92,7 +99,7 @@ public class MyAddressActivity extends AppCompatActivity {
     }
 
     public void getData(int pos){
-        AddressDataResponse addressDataResponse = addressList.get(pos);
+        addressDataResponse = addressList.get(pos);
         AddAddressModel addAddressModel = new AddAddressModel(addressDataResponse.getAddress_name(),1,addressDataResponse.getPincode(), addressDataResponse.getAddress_line_1(), addressDataResponse.getCity(), addressDataResponse.getContact_number());
         myAddressViewModel.updateAddressApiCall(addressDataResponse.getId(), addAddressModel, getApplication());
     }
