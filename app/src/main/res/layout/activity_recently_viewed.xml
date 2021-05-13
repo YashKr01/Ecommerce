@@ -69,7 +69,10 @@
                         android:id="@+id/recently_viewed_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false" />
+                        android:layout_marginStart="@dimen/sb_size_8"
+                        android:layout_marginEnd="@dimen/sb_size_8"
+                        android:paddingStart="@dimen/sb_size_18"
+                        android:paddingEnd="@dimen/sb_size_18" />
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -111,6 +114,8 @@
                         android:id="@+id/recommended_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/sb_size_12"
+                        android:layout_marginEnd="@dimen/sb_size_12"
                         android:clipToPadding="false" />
 
                 </LinearLayout>

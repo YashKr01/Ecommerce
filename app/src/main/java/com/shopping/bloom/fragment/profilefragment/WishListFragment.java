@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,6 @@ public class WishListFragment extends Fragment implements WishListProductListene
     private WishListAdapter adapter;
     private List<WishListData> list;
     private WishListViewModel viewModel;
-    private final String PAGE_NO = "0";
-    private final String LIMIT = "8";
     private final int RESULT_CODE = 123;
 
     public WishListFragment() {
@@ -74,25 +73,27 @@ public class WishListFragment extends Fragment implements WishListProductListene
         });
 
         // get wish list
-        getWishList(PAGE_NO, LIMIT);
+        getWishList();
 
     }
 
-    private void getWishList(String page_no, String limit) {
+    private void getWishList() {
 
         binding.progressBar4.setVisibility(View.VISIBLE);
 
         if (NetworkCheck.isConnect(getContext())) {
-            viewModel.getWishList(page_no, limit).observe(getViewLifecycleOwner(), wishListData -> {
+            viewModel.getWishList("0", "8").observe(getViewLifecycleOwner(), wishListData -> {
                 if (wishListData != null && wishListData.size() > 0) {
                     binding.txtEmpty.setVisibility(View.INVISIBLE);
                     binding.viewMore.setVisibility(View.VISIBLE);
                     list.clear();
                     list.addAll(wishListData);
                     adapter.notifyDataSetChanged();
+                    binding.wishListRecyclerView.setVisibility(View.VISIBLE);
                 } else {
                     binding.txtEmpty.setVisibility(View.VISIBLE);
                     binding.viewMore.setVisibility(View.INVISIBLE);
+                    binding.wishListRecyclerView.setVisibility(View.INVISIBLE);
                 }
                 binding.progressBar4.setVisibility(View.INVISIBLE);
             });
@@ -128,8 +129,9 @@ public class WishListFragment extends Fragment implements WishListProductListene
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_CODE){
-            getWishList(PAGE_NO, LIMIT);
+        if (requestCode == RESULT_CODE) {
+            getWishList();
+            Log.d("WISHLIST", "onActivityResult: " + requestCode);
         }
 
     }

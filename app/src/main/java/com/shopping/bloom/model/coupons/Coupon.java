@@ -1,68 +1,57 @@
 package com.shopping.bloom.model.coupons;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Coupon {
 
-    private String status;
-    private String rate;
-    private String code;
-    private String orders;
+    @Expose
+    @SerializedName("id")
+    private Integer id;
+    @Expose
+    @SerializedName("promocode")
+    private String promoCode;
+    @Expose
+    @SerializedName("type")
+    private String type;
+    @Expose
+    @SerializedName("minimal_cart_total")
+    private String minimumAmount;
+    @Expose
+    @SerializedName("start_from")
     private String date;
-    private String products;
+    @Expose
+    @SerializedName("is_active")
+    private String isActive;
+    @Expose
+    @SerializedName("max_discount")
+    private Double discount;
 
-    public Coupon(String status, String rate, String code, String orders, String date, String products) {
-        this.status = status;
-        this.rate = rate;
-        this.code = code;
-        this.orders = orders;
-        this.date = date;
-        this.products = products;
+    public Integer getId() {
+        return id;
     }
 
-    public String getStatus() {
-        return status;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getType() {
+        return type;
     }
 
-    public String getRate() {
-        return rate;
-    }
-
-    public void setRate(String rate) {
-        this.rate = rate;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getOrders() {
-        return orders;
-    }
-
-    public void setOrders(String orders) {
-        this.orders = orders;
+    public String getMinimumAmount() {
+        return minimumAmount;
     }
 
     public String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public String getIsActive() {
+        return isActive;
     }
 
-    public String getProducts() {
-        return products;
-    }
-
-    public void setProducts(String products) {
-        this.products = products;
+    public Double getDiscount() {
+        return discount;
     }
 }

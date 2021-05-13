@@ -1,5 +1,6 @@
 package com.shopping.bloom.adapters.coupons;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,15 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.coupons.Coupon;
+import com.shopping.bloom.utils.CommonUtils;
 
 import java.util.List;
 
-public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ItemViewHolder> {
+public class UnusedCouponAdapter extends RecyclerView.Adapter<UnusedCouponAdapter.ItemViewHolder> {
 
-    private List<Coupon> list;
-    private Context context;
+    private final List<Coupon> list;
+    private final Context context;
 
-    public CouponAdapter(List<Coupon> list, Context context) {
+    public UnusedCouponAdapter(List<Coupon> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -28,23 +30,34 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.ItemViewHo
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ItemViewHolder(LayoutInflater.from(context).inflate(
-                R.layout.item_coupon,
+                R.layout.item_unused_coupon,
                 parent,
                 false
         ));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
         Coupon currentItem = list.get(position);
 
-        holder.code.setText(currentItem.getCode());
-        holder.date.setText(currentItem.getDate());
-        holder.limit.setText(currentItem.getOrders());
-        holder.rate.setText(currentItem.getRate());
-        holder.status.setText(currentItem.getStatus());
-        holder.products.setText(currentItem.getProducts());
+        /*
+         * if type is percentage display "50.00% OFF"
+         * else display "FLAT 50.00 OFF"
+         */
+        if (currentItem.getType().equals("percentage")) {
+            holder.rate.setText(currentItem.getDiscount() + "% OFF");
+        } else {
+            String discountRate = CommonUtils.getSignedAmount(String.valueOf(currentItem.getDiscount()));
+            holder.rate.setText("FLAT " + discountRate + " OFF");
+        }
+
+        holder.date.setText(currentItem.getDate().substring(0, 10));
+        holder.products.setText("For All Products");
+        holder.limit.setText("For orders over " + currentItem.getMinimumAmount());
+        holder.code.setText("CODE : " + currentItem.getPromoCode());
+        holder.status.setText("Expires Soon");
 
     }
 
