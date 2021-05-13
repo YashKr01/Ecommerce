@@ -6,11 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".activities.CheckoutActivity">
 
+    <RelativeLayout
+        android:id="@+id/rlProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_shade"
+        android:elevation="@dimen/sb_size_8"
+        android:gravity="center"
+        tools:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/ProgressBarTheme" />
+    </RelativeLayout>
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/llPaymentDetails"
+        app:layout_constraintBottom_toTopOf="@id/llPlaceOrder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -18,8 +33,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/sb_size_30"
-            android:background="@color/grey_100">
+            android:background="@color/grey_100"
+            android:paddingBottom="@dimen/sb_size_30">
 
             <LinearLayout
                 android:id="@+id/llShippingMethod"
@@ -113,7 +128,8 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/sb_size_18"
                 android:paddingVertical="@dimen/sb_size_12"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHeader3"
@@ -131,8 +147,12 @@
                     android:layout_height="@dimen/sb_size_16" />
 
                 <LinearLayout
+                    android:id="@+id/llPaymentMethodCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 
@@ -158,8 +178,10 @@
                     android:background="@color/grey_100" />
 
                 <LinearLayout
+                    android:id="@+id/llPaymentMethodNetBanking"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 
@@ -185,8 +207,10 @@
                     android:background="@color/grey_100" />
 
                 <LinearLayout
+                    android:id="@+id/llPaymentMethodUPI"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 
@@ -201,7 +225,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/sb_size_8"
                         android:gravity="center_vertical|start"
-                        android:text="Wallets"
+                        android:text="UPI"
                         android:textColor="@color/blue_grey_900"
                         android:textSize="@dimen/sb_text_size_14" />
                 </LinearLayout>
@@ -219,38 +243,124 @@
                 android:paddingVertical="@dimen/sb_size_12"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llApplyCoupon"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical|start"
-                    android:paddingVertical="@dimen/sb_size_8"
-                    android:text="Apply Coupon"
-                    android:textColor="@color/blue_grey_900"
-                    android:textSize="@dimen/sb_text_size_14" />
+                    android:background="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingVertical="@dimen/sb_size_8">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:paddingVertical="@dimen/sb_size_8"
+                        android:text="Apply Coupon"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sb_size_24"
+                        android:layout_height="@dimen/sb_size_24"
+                        android:layout_gravity="center_vertical"
+                        android:rotation="90"
+                        android:src="@drawable/ic_arrow_up" />
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/grey_50" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/llWalletBalance"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical|start"
-                    android:paddingVertical="@dimen/sb_size_8"
-                    android:text="Gift Card"
-                    android:textColor="@color/blue_grey_900"
-                    android:textSize="@dimen/sb_text_size_14" />
+                    android:background="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingVertical="@dimen/sb_size_8">
+
+                    <TextView
+                        android:id="@+id/tvWalletBalance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:paddingVertical="@dimen/sb_size_8"
+                        android:text="Use Wallet"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/cbUseWallet"
+                        android:layout_width="@dimen/sb_size_32"
+                        android:layout_height="@dimen/sb_size_32"
+                        android:layout_gravity="center_vertical"
+                        android:checked="false"
+                        android:gravity="center"
+                        android:padding="@dimen/sb_size_0" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/grey_50" />
+
+                <LinearLayout
+                    android:id="@+id/llGiftCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingVertical="@dimen/sb_size_8">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:paddingVertical="@dimen/sb_size_8"
+                        android:text="Gift Card"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:layout_width="@dimen/sb_size_24"
+                        android:layout_height="@dimen/sb_size_24"
+                        android:layout_gravity="center_vertical"
+                        android:rotation="90"
+                        android:src="@drawable/ic_arrow_up" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/llProducts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_12"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:layout_marginTop="@dimen/sb_size_12"
                 android:paddingHorizontal="@dimen/sb_size_18"
                 android:paddingVertical="@dimen/sb_size_12"
                 app:layout_constraintTop_toBottomOf="@id/llCouponAndOffer">
@@ -271,153 +381,206 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/sb_size_12"
-                    android:background="@color/white" />
+                    android:background="@color/white"
+                    tools:visibility="gone" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llPaymentDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_12"
+                android:background="@color/white"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/sb_size_12"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/llProducts">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/sb_size_22"
+                    android:paddingVertical="@dimen/sb_size_8"
+                    android:text="Price Summary"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sb_text_size_18"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llSubTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/sb_text_size_22"
+                    android:paddingVertical="@dimen/sb_size_4">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:text="SubTotal"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvSubTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/sb_size_8"
+                        android:gravity="center_vertical|start"
+                        android:text="250"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/sb_text_size_22"
+                    android:paddingVertical="@dimen/sb_size_4">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:text="Discount"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvDiscount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/sb_size_8"
+                        android:gravity="center_vertical|start"
+                        android:text="250"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llShippingCharge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/sb_text_size_22"
+                    android:paddingVertical="@dimen/sb_size_4">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:text="Shipping charges"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvShippingCharge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/sb_size_8"
+                        android:gravity="center_vertical|start"
+                        android:text="50"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvDiscountSaved"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/sb_size_18"
+                android:layout_marginTop="@dimen/sb_size_12"
+                android:background="@drawable/bg_discount"
+                android:paddingHorizontal="@dimen/sb_size_22"
+                android:paddingVertical="@dimen/sb_size_8"
+                android:text="You are saving ₹ 400 on this order"
+                android:textColor="@color/green_600"
+                android:textSize="@dimen/sb_text_size_14"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/llPaymentDetails" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
-        android:id="@+id/llPaymentDetails"
+        android:id="@+id/llPlaceOrder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="bottom"
         android:background="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:elevation="@dimen/sb_size_6"
+        android:paddingTop="@dimen/sb_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingTop="@dimen/sb_size_12">
-
-        <LinearLayout
-            android:id="@+id/llRetailPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:paddingVertical="@dimen/sb_size_4"
-            android:paddingHorizontal="@dimen/sb_text_size_22">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|start"
-                android:text="Retail Price"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvRetailPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/sb_size_8"
-                android:gravity="center_vertical|start"
-                android:text="250"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llSubTotal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:paddingVertical="@dimen/sb_size_4"
-            android:paddingHorizontal="@dimen/sb_text_size_22">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|start"
-                android:text="SubTotal"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvSubTotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/sb_size_8"
-                android:gravity="center_vertical|start"
-                android:text="250"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/llShippingCharge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:paddingVertical="@dimen/sb_size_4"
-            android:paddingHorizontal="@dimen/sb_text_size_22">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|start"
-                android:text="Shipping charge"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"/>
-
-            <TextView
-                android:id="@+id/tvShippingCharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/sb_size_8"
-                android:gravity="center_vertical|start"
-                android:text="50"
-                android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
-        </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:id="@+id/llTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"
-            android:paddingVertical="@dimen/sb_size_4"
-            android:paddingHorizontal="@dimen/sb_text_size_22">
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/sb_text_size_22"
+            android:paddingVertical="@dimen/sb_size_4">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical|start"
-                android:text="Shipping charge"
+                android:text="Total"
                 android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
+                android:textSize="@dimen/sb_text_size_16"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/tvTotalCartValue"
@@ -428,19 +591,20 @@
                 android:gravity="center_vertical|start"
                 android:text="300"
                 android:textColor="@color/blue_grey_900"
-                android:textSize="@dimen/sb_text_size_14" />
+                android:textSize="@dimen/sb_text_size_16"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btPlaceOrder"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/sb_size_45"
             android:layout_marginHorizontal="@dimen/sb_text_size_22"
             android:layout_marginVertical="@dimen/sb_size_18"
-            android:layout_width="match_parent"
+            android:background="@color/blue_grey_900"
             android:text="Place Order"
-            android:layout_height="@dimen/sb_size_45"
-            android:textColor="@color/white"
-            android:background="@color/blue_grey_900"/>
+            android:textColor="@color/white" />
 
     </LinearLayout>
-    
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,9 @@ import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.PostCartProduct;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.restService.callback.CartValueCallback;
+import com.shopping.bloom.restService.callback.CheckoutResponseListener;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
+import com.shopping.bloom.restService.response.PostCheckoutData;
 
 import java.util.List;
 
@@ -28,26 +30,36 @@ public class ShoppingBagViewModel extends AndroidViewModel {
         this.repository = new ShoppingBagRepository();
     }
 
+    public void getCartValue(List<PostCartProduct> postCartProducts, CartValueCallback mListener) {
+        repository.getCartValue(context, postCartProducts, mListener);
+    }
+
+    public void getCheckoutData(PostCheckoutData checkoutData, CheckoutResponseListener listener) {
+        repository.getCheckOutResponse(context, checkoutData, listener);
+    }
+
+
+
+    /*Room database*/
     public LiveData<List<CartItem>> getAllCartItem() {
         return  EcommerceDatabase.getInstance().cartItemDao().getAllCartItem();
     }
 
+    /*Room database*/
     public void removeItemFromCart(CartItem cartItem) {
         EcommerceDatabase.databaseWriteExecutor.execute(()-> {
             EcommerceDatabase.getInstance().cartItemDao().removeItem(cartItem);
         });
     }
 
-    public void getCartValue(List<PostCartProduct> postCartProducts, CartValueCallback mListener) {
-        repository.getCartValue(context, postCartProducts, mListener);
-    }
-
+    /*Room database*/
     public void updateCartItem(CartItem cartItem) {
         EcommerceDatabase.databaseWriteExecutor.execute(()->{
             EcommerceDatabase.getInstance().cartItemDao().update(cartItem);
         });
     }
 
+    /*Room database*/
     public LiveData<Integer> getTotalCartItems() {
         return EcommerceDatabase.getInstance().cartItemDao().changeCartIcon();
     }
