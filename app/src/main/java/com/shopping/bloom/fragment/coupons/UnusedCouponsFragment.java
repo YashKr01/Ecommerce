@@ -5,16 +5,18 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.coupons.CouponAdapter;
+import com.shopping.bloom.adapters.coupons.UnusedCouponAdapter;
 import com.shopping.bloom.databinding.FragmentUnusedCouponsBinding;
 import com.shopping.bloom.model.coupons.Coupon;
+import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.viewModels.coupon.UnusedCouponsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,8 @@ public class UnusedCouponsFragment extends Fragment {
 
     private FragmentUnusedCouponsBinding binding;
     private List<Coupon> list;
-    private CouponAdapter adapter;
+    private UnusedCouponAdapter adapter;
+    private UnusedCouponsViewModel viewModel;
 
     public UnusedCouponsFragment() {
         // Required empty public constructor
@@ -34,6 +37,7 @@ public class UnusedCouponsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentUnusedCouponsBinding.inflate(inflater, container, false);
+        viewModel = new ViewModelProvider(this).get(UnusedCouponsViewModel.class);
         return binding.getRoot();
     }
 
@@ -42,24 +46,43 @@ public class UnusedCouponsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         list = new ArrayList<>();
-        adapter = new CouponAdapter(list, getContext());
+        adapter = new UnusedCouponAdapter(list, getContext());
         binding.unusedCouponsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.unusedCouponsRecyclerView.setAdapter(adapter);
 
-        list.addAll(mockList());
-        adapter.notifyDataSetChanged();
+        getCouponsList();
 
     }
 
-    private List<Coupon> mockList() {
+    /**
+     * Adding a Coupon item to the list only if it is active,
+     * rest of the coupons will be displayed in ExpiredCouponsFragment
+     */
 
-        List<Coupon> temp = new ArrayList<>();
-        temp.add(new Coupon("Expires soon", "15.00% OFF", "CODE:saleoctober"
-                , "For orders over 1500", "3/13/2021", "For all products"));
-        temp.add(new Coupon("Expires soon", "15.00% OFF", "CODE:saleoctober"
-                , "For orders over 1500", "3/13/2021", "For all products"));
+    private void getCouponsList() {
+        binding.progressBar.setVisibility(View.VISIBLE);
 
-        return temp;
+        if (NetworkCheck.isConnect(getContext())) {
+            viewModel.getCouponsList().observe(getViewLifecycleOwner(), coupons -> {
+
+                if (coupons != null && coupons.size() > 0) {
+                    for (Coupon c : coupons) {
+                        if (c.getIsActive().equals("1")) {
+                            list.add(c);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+
+                if (list.isEmpty()) binding.txtEmptyList.setVisibility(View.VISIBLE);
+                else binding.txtEmptyList.setVisibility(View.GONE);
+                binding.progressBar.setVisibility(View.GONE);
+            });
+
+        } else {
+            binding.progressBar.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

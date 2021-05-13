@@ -20,69 +20,69 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txt_coupon_status"
+        android:id="@+id/txt_expired_coupon_status"
         style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/sb_size_14"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/sb_text_size_14"
+        android:textSize="@dimen/sb_text_size_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Expires soon" />
 
     <TextView
-        android:id="@+id/txt_coupon_rate"
+        android:id="@+id/txt_expired_coupon_rate"
         style="@style/BoldText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/sb_size_18"
-        android:layout_marginTop="28dp"
-        android:textSize="@dimen/sb_text_size_24"
+        android:layout_marginStart="@dimen/sb_size_14"
+        android:layout_marginTop="@dimen/sb_size_22"
+        android:textSize="@dimen/sb_text_size_20"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="15.00% OFF" />
 
     <TextView
-        android:id="@+id/txt_coupon_limit"
-        style="@style/NormalText"
+        android:id="@+id/txt_expired_coupon_limit"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_12"
-        app:layout_constraintStart_toStartOf="@+id/txt_coupon_rate"
-        app:layout_constraintTop_toBottomOf="@+id/txt_coupon_rate"
+        app:layout_constraintStart_toStartOf="@+id/txt_expired_coupon_rate"
+        app:layout_constraintTop_toBottomOf="@+id/txt_expired_coupon_rate"
         tools:text="For orders over 1500" />
 
     <TextView
-        android:id="@+id/txt_coupon_code"
-        style="@style/NormalText"
+        android:id="@+id/txt_expired_coupon_code"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_12"
-        app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
-        app:layout_constraintTop_toBottomOf="@+id/txt_coupon_limit"
+        app:layout_constraintStart_toStartOf="@+id/txt_expired_coupon_limit"
+        app:layout_constraintTop_toBottomOf="@+id/txt_expired_coupon_limit"
         tools:text="Code:treatsaleapp" />
 
     <TextView
-        android:id="@+id/txt_coupon_date"
-        style="@style/NormalText"
+        android:id="@+id/txt_expired_coupon_date"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_12"
-        app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
-        app:layout_constraintTop_toBottomOf="@+id/txt_coupon_code"
+        app:layout_constraintStart_toStartOf="@+id/txt_expired_coupon_limit"
+        app:layout_constraintTop_toBottomOf="@+id/txt_expired_coupon_code"
         tools:text="3/16/2021" />
 
     <TextView
-        android:id="@+id/txt_coupon_products"
-        style="@style/NormalText"
+        android:id="@+id/txt_expired_coupon_products"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -90,8 +90,8 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/txt_coupon_limit"
-        app:layout_constraintTop_toBottomOf="@+id/txt_coupon_date"
+        app:layout_constraintStart_toStartOf="@+id/txt_expired_coupon_limit"
+        app:layout_constraintTop_toBottomOf="@+id/txt_expired_coupon_date"
         tools:text="For All Products" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

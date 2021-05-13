@@ -4,31 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clProductRootView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/sb_size_8">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvDummy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/sb_size_6"
-        app:cardCornerRadius="@dimen/sb_size_8"
-        app:cardElevation="@dimen/sb_size_0"
-        app:cardUseCompatPadding="true"
+    <ImageView
+        android:id="@+id/img_recently_viewed"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
+        android:layout_marginTop="@dimen/sb_size_8"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="@string/wish_list_image"
+        android:focusable="true"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:viewBindingIgnore="false">
-
-        <ImageView
-            android:id="@+id/img_recently_viewed"
-            android:layout_width="120dp"
-            android:layout_height="165dp"
-            android:contentDescription="@string/wish_list_image"
-            android:scaleType="centerCrop"
-            android:src="@color/grey_300"
-            tools:srcCompat="@tools:sample/avatars" />
-
-    </androidx.cardview.widget.CardView>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/txt_recent_name"
@@ -40,9 +32,8 @@
         android:textColor="@color/grey_900"
         android:textSize="@dimen/sb_text_size_15"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cvDummy"
-        app:layout_constraintStart_toStartOf="@id/cvDummy"
-        app:layout_constraintTop_toBottomOf="@id/cvDummy"
+        app:layout_constraintStart_toStartOf="@id/img_recently_viewed"
+        app:layout_constraintTop_toBottomOf="@id/img_recently_viewed"
         tools:text="1234 $" />
 
 

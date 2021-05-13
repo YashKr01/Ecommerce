@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/image_wish_list_product"
-        android:layout_width="110dp"
-        android:layout_height="150dp"
+        android:layout_width="130dp"
+        android:layout_height="170dp"
         android:layout_marginTop="@dimen/sb_size_8"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
@@ -22,15 +22,14 @@
 
     <TextView
         android:id="@+id/txt_wish_list_price"
-        style="@style/BoldText"
+        style="@style/MediumText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sb_size_8"
+        android:layout_marginTop="@dimen/sb_size_4"
         android:layout_marginBottom="@dimen/sb_size_8"
-        android:textSize="@dimen/sb_text_size_16"
+        android:textSize="@dimen/sb_size_14"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/image_wish_list_product"
         app:layout_constraintTop_toBottomOf="@+id/image_wish_list_product"
         tools:text="TextView" />
 

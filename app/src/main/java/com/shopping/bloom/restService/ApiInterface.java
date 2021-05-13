@@ -8,6 +8,7 @@ import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.ProductIds;
+import com.shopping.bloom.model.coupons.CouponResponse;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
@@ -263,4 +264,9 @@ public interface ApiInterface {
             @Header("Authorization") String bearer,
             @Query("pincode") String pincode
     );
+
+    @GET("/api/order/getAvailablePromocodes")
+    @Headers("Content-type: application/json")
+    Call<CouponResponse> getCouponResponse(@Header("Authorization") String authToken);
+
 }

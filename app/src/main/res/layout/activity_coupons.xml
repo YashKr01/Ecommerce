@@ -16,26 +16,54 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="My Coupons" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/coupons_tab_layout"
-        style="@style/TabLayoutText"
-        android:layout_width="@dimen/sb_size_0"
-        android:layout_height="@dimen/sb_size_30"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:tabIndicatorColor="@color/active_tab_color"
-        app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="2dp"
-        app:tabTextColor="@color/black" />
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/coupons_view_pager"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="@dimen/sb_size_0"
         android:layout_height="@dimen/sb_size_0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/coupons_tab_layout" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/coupons_tab_layout"
+                style="@style/TabLayoutText"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="@dimen/sb_size_30"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorColor="@color/active_tab_color"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorHeight="2dp"
+                app:tabTextColor="@color/black" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/coupons_view_pager"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="@dimen/sb_size_0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/coupons_tab_layout" />
+
+            <ViewStub
+                android:id="@+id/no_connection_layout"
+                android:layout_width="@dimen/sb_size_0"
+                android:layout_height="@dimen/sb_size_0"
+                android:layout="@layout/no_internet_connected"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
