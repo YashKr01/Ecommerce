@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -74,16 +75,21 @@ public class OtpActivity extends AppCompatActivity {
                         String email_verified_at = otpResponseModel.getData().getUserInfo().getEmail_verified_at();
 
                         loginManager.setEmail_verified_at(email_verified_at != null && !email_verified_at.isEmpty() && !email_verified_at.equals(""));
+
                     }
-                    Intent intent;
-                    if (activityName.equals("RegisterActivity")) {
-                        intent = new Intent(this, LoginActivity.class);
-                    } else {
-                        intent = new Intent(this, MainActivity.class);
-                        loginManager.SetLoginStatus(false);
-                    }
-                    startActivity(intent);
+                    Intent resultIntent = getIntent();
+
+                    setResult(Activity.RESULT_OK, resultIntent);
                     finish();
+//                    Intent intent;
+//                    if (activityName.equals("RegisterActivity")) {
+//                        intent = new Intent(this, LoginActivity.class);
+//                    } else {
+//                        intent = new Intent(this, MainActivity.class);
+//                        loginManager.SetLoginStatus(false);
+//                    }
+//                    startActivity(intent);
+//                    finish();
 
                 } else {
                     ShowToast.showToast(this, message);
@@ -199,11 +205,15 @@ public class OtpActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Intent intent;
         if (activityName.equals("EmailVerification")) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            finish();
+            intent = new Intent(this, SettingsActivity.class);
+        }else{
+            intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         }
+        startActivity(intent);
+        finish();
     }
 
     private void checkNetworkConnectivity() {

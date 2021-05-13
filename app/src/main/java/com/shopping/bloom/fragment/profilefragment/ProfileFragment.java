@@ -1,5 +1,6 @@
 package com.shopping.bloom.fragment.profilefragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -24,6 +25,8 @@ import com.shopping.bloom.adapters.profilefragment.ProfileViewPagerAdapter;
 import com.shopping.bloom.databinding.FragmentProfileBinding;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
+
+import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class ProfileFragment extends Fragment {
 
@@ -51,29 +54,17 @@ public class ProfileFragment extends Fragment {
         loginManager = new LoginManager(getContext());
         getActivity().invalidateOptionsMenu();
 
-        String name = loginManager.getname();
-
         //Changing textView text if user is Logged in
-        if (!loginManager.getEmailid().equals("NA")) {
-            binding.textView.setText("Hello, " + name);
-        } else { //OnClickListener on textView when user isn't logged in
-            binding.textView.setText(getString(R.string.sign_in_register));
-            binding.textView.setOnClickListener(v -> {
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                startActivity(intent);
-            });
-        }
+        setName();
+
 
         binding.nestscrollview.setNestedScrollingEnabled(true);
 
         // Setup ViewPager Adapter
-        viewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());
-        viewPagerAdapter.addFragment(new WishListFragment(), "WishList");
-        viewPagerAdapter.addFragment(new RecentlyViewedFragment(), "Recently Viewed");
+        setViewPagerAdapter();
 
         // Setting up tabLayout and viewpager
-        binding.profileTabLayout.setupWithViewPager(binding.profileViewPager);
-        binding.profileViewPager.setAdapter(viewPagerAdapter);
+        setViewPager();
 
         binding.imgCoupons.setOnClickListener(new DebouncedOnClickListener(1000) {
             @Override
@@ -127,6 +118,30 @@ public class ProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    private void setViewPager() {
+        binding.profileTabLayout.setupWithViewPager(binding.profileViewPager);
+        binding.profileViewPager.setAdapter(viewPagerAdapter);
+    }
+
+    private void setName() {
+        String name = loginManager.getname();
+        if (!loginManager.getEmailid().equals("NA")) {
+            binding.textView.setText("Hello, " + name);
+        } else { //OnClickListener on textView when user isn't logged in
+            binding.textView.setText(getString(R.string.sign_in_register));
+            binding.textView.setOnClickListener(v -> {
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivityForResult(intent, LOGIN_ACTIVITY);
+            });
+        }
+    }
+
+    private void setViewPagerAdapter(){
+        viewPagerAdapter = new ProfileViewPagerAdapter(getChildFragmentManager());
+        viewPagerAdapter.addFragment(new WishListFragment(), "WishList");
+        viewPagerAdapter.addFragment(new RecentlyViewedFragment(), "Recently Viewed");
+    }
+
     private void sendIntent(Integer integer) {
         Intent intent = new Intent(getActivity(), MyOrdersActivity.class);
         intent.putExtra("RECYCLER_VIEW_POSITION", integer);
@@ -151,4 +166,13 @@ public class ProfileFragment extends Fragment {
         binding = null;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == LOGIN_ACTIVITY && resultCode == Activity.RESULT_OK){
+            setName();
+            setViewPager();
+            setViewPagerAdapter();
+        }
+    }
 }

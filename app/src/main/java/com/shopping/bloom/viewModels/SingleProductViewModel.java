@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.model.CartItem;
+import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
@@ -30,11 +31,21 @@ public class SingleProductViewModel extends ViewModel {
     private final MutableLiveData<SingleProductDataResponse> mutableLiveData;
     private final MutableLiveData<LoginResponseModel> loginResponseModelMutableLiveData;
     private final MutableLiveData<List<RandomImageDataResponse>> randomImageDataResponseMutableLiveData;
+    private final MutableLiveData<PinCodeResponse> pinCodeResponseMutableLiveData;
+    private final String token;
 
     public SingleProductViewModel() {
+
+        LoginManager loginManager = new LoginManager(App.getContext());
+        if (!loginManager.isLoggedIn()) {
+            token = loginManager.gettoken();
+        } else {
+            token = loginManager.getGuest_token();
+        }
         mutableLiveData = new MutableLiveData<>();
         loginResponseModelMutableLiveData = new MutableLiveData<>();
         randomImageDataResponseMutableLiveData = new MutableLiveData<>();
+        pinCodeResponseMutableLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<RandomImageDataResponse>> getRandomImageDataResponseMutableLiveData() {
@@ -49,16 +60,11 @@ public class SingleProductViewModel extends ViewModel {
         return mutableLiveData;
     }
 
+    public MutableLiveData<PinCodeResponse> getPinCodeResponseMutableLiveData(){
+        return pinCodeResponseMutableLiveData;
+    }
+
     public void makeApiCall(int id, Application application) {
-
-        LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<SingleProductResponse> call = apiService.getSingleProduct("Bearer " + token, id);
@@ -80,15 +86,6 @@ public class SingleProductViewModel extends ViewModel {
     }
 
     public void makeApiCallCreateUserActivity(String product_id, int category_id, Application application) {
-
-        LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
 
         //todo here category id is optional if category id value is null then there will be no category id parameter
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
@@ -114,15 +111,6 @@ public class SingleProductViewModel extends ViewModel {
 
     public void makeApiCallRandomImage(int limit, int pageNo, Application application) {
 
-        LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
-
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<RandomImageResponse> call = apiService.getRandomImage(limit, pageNo, "Bearer " + token);
         call.enqueue(new Callback<RandomImageResponse>() {
@@ -144,24 +132,45 @@ public class SingleProductViewModel extends ViewModel {
 
     public void addToShoppingBag(CartItem cartItem, String quantity, AddToCartCallback cartCallback) {
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-                    List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao()
-                            .getAllProductWith(cartItem.getParentId(), cartItem.getChildId());
-                    if(cartItems == null || cartItems.isEmpty()) {
-                        EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem);
-                        cartCallback.onAdded(1);
-                    } else {
-                        if (cartItems.get(0).getQuantity() < Integer.parseInt(quantity)) {
-                            EcommerceDatabase.getInstance().cartItemDao()
-                                    .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
-                            cartCallback.onAdded(cartItems.get(0).getQuantity() + 1);
-                        } else {
-                            cartCallback.onItemLimitReached(cartItems.get(0).getQuantity());
-                        }
-                    }
-                });
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao()
+                    .getAllProductWith(cartItem.getParentId(), cartItem.getChildId());
+            if (cartItems == null || cartItems.isEmpty()) {
+                EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem);
+                cartCallback.onAdded(1);
+            } else {
+                if (cartItems.get(0).getQuantity() < Integer.parseInt(quantity)) {
+                    EcommerceDatabase.getInstance().cartItemDao()
+                            .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
+                    cartCallback.onAdded(cartItems.get(0).getQuantity() + 1);
+                } else {
+                    cartCallback.onItemLimitReached(cartItems.get(0).getQuantity());
+                }
+            }
+        });
     }
 
     public LiveData<Integer> getCartSize() {
         return EcommerceDatabase.getInstance().cartItemDao().changeCartIcon();
+    }
+
+    public void checkPinCode(String pinCode, Application application) {
+
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<PinCodeResponse> call = apiService.checkPinCode("Bearer " + token, pinCode);
+        call.enqueue(new Callback<PinCodeResponse>() {
+            @Override
+            public void onResponse(Call<PinCodeResponse> call, Response<PinCodeResponse> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        pinCodeResponseMutableLiveData.postValue(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PinCodeResponse> call, Throwable t) {
+                randomImageDataResponseMutableLiveData.postValue(null);
+            }
+        });
     }
 }

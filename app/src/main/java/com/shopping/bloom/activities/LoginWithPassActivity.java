@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,7 +70,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButton);
 
         toolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
+            loginWithOtpActivity();
         });
 
         swipeRefreshLayout.setOnRefreshListener(this::checkNetworkConnectivity);
@@ -98,8 +99,11 @@ public class LoginWithPassActivity extends AppCompatActivity {
                         loginManager.setEmail_verified_at(true);
                     }
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+                    Intent resultIntent = getIntent();
+
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+
                 } else {
                     ShowToast.showToast(this, message);
                 }
@@ -127,8 +131,10 @@ public class LoginWithPassActivity extends AppCompatActivity {
                         loginManager.setEmail_verified_at(true);
                     }
 
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
+                    Intent resultIntent = getIntent();
+
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
                 } else {
                     ShowToast.showToast(this, message);
                 }
@@ -206,11 +212,13 @@ public class LoginWithPassActivity extends AppCompatActivity {
 
     public void signUpActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
     }
 
     private void loginWithOtpActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         finish();
     }

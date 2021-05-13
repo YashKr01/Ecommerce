@@ -1,5 +1,6 @@
 package com.shopping.bloom.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProviders;
@@ -58,9 +60,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (success.equals("true")) {
                     ShowToast.showToast(this, message);
                     Intent intent = new Intent(this, OtpActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                     intent.putExtra("mobile_no", mobile_no);
                     intent.putExtra("activityName", "LoginActivity");
                     startActivity(intent);
+                    finish();
                 } else {
                     ShowToast.showToast(this, message);
                 }
@@ -106,7 +110,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void signUpActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        finish();
     }
 
     private void signIn(String mobile_no) {
@@ -133,6 +139,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loginWithPassActivity() {
         Intent intent = new Intent(this, LoginWithPassActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        finish();
     }
 }
