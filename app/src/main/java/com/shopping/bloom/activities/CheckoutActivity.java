@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.ShoppingProductAdapter;
+import com.shopping.bloom.bottomSheet.CheckoutProductBottomSheet;
 import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.PostCartProduct;
 import com.shopping.bloom.model.ResponseCheckoutData;
 import com.shopping.bloom.restService.callback.CheckoutResponseListener;
+import com.shopping.bloom.restService.callback.SimpleClickListener;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.utils.CommonUtils;
@@ -44,7 +46,6 @@ public class CheckoutActivity extends AppCompatActivity {
     Button btPlaceOrder;
     RelativeLayout progressBar;
     ShoppingProductAdapter adapter;
-
 
     List<CartItem> cartItemList;
     ShoppingBagViewModel viewModel;
@@ -167,11 +168,16 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerView() {
-        adapter = new ShoppingProductAdapter(this);
+        adapter = new ShoppingProductAdapter(this, ()->openBottomSheet(cartItemList));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         productsRecyclerView.setLayoutManager(layoutManager);
         productsRecyclerView.setAdapter(adapter);
 
+    }
+
+    private void openBottomSheet(List<CartItem> cartItemList) {
+        CheckoutProductBottomSheet bottomSheet = new CheckoutProductBottomSheet(this, cartItemList);
+        bottomSheet.show();
     }
 
     private final View.OnClickListener paymentMethod = view -> {
