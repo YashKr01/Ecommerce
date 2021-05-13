@@ -19,13 +19,16 @@ import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
+import com.shopping.bloom.restService.response.GetAvailablePromoResponse;
 import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
+import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
+import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.restService.response.PostProductList;
 import com.shopping.bloom.restService.response.PutWishListRequest;
 import com.shopping.bloom.restService.response.RandomImageResponse;
@@ -243,6 +246,18 @@ public interface ApiInterface {
             @Header("Authorization") String bearer,
             @Body PostProductList productList
     );
+
+    @POST("order/checkout")
+    @Headers("Accept-type: application/json")
+    Call<GetCheckoutResponse> getCheckoutResponse(
+            @Header("Authorization") String bearer,
+            @Body PostCheckoutData postCheckoutData);
+
+    @GET("order/getAvailablePromocodes")
+    @Headers("Accept-type: application/json")
+    Call<GetAvailablePromoResponse> getAvailablePromocode(
+            @Header("Authorization") String bearer);
+
 
     @GET("metadata/checkDeliveryAvailable")
     Call<PinCodeResponse> checkPinCode(

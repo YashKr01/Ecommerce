@@ -15,6 +15,7 @@
     <color name="active_tab_color">#D32F2F</color>
     <color name="inactive_tab_color">#BDBDBD</color>
 
+    <color name="progress_bar_color">#DF5050</color>
 
 
     <color name="red_50">#FFEBEE</color>
