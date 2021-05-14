@@ -44,6 +44,9 @@ public class LoginManager {
 
     private static String guest_token = "guest_token";
 
+
+    private static  String is_primary_address_available = "is_primary_address_available";
+
     private static String primary_address_id = "primary_address_id";
 
     private static String primary_address = "primary_address";
@@ -104,6 +107,15 @@ public class LoginManager {
         return sharedPreferences.getString(primary_address_id, "NA");
     }
 
+
+    public void setIs_primary_address_available(boolean is_verified){
+        editor.putBoolean(is_primary_address_available, is_verified);
+    }
+
+    public boolean  getIs_primary_address_available(){
+        return sharedPreferences.getBoolean(is_primary_address_available, false);
+    }
+
     public void setPrimaryAddress(String address){
         editor.putString(primary_address, address).commit();
     }
@@ -159,6 +171,8 @@ public class LoginManager {
     }
 
     public String gettoken() {
+
+      //  return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9mcm9udGVuZFwvZ2V0UHJvZHVjdHMiLCJpYXQiOjE2MTg2NTk4MjYsImV4cCI6MTYyMzMyNjg2OCwibmJmIjoxNjIwNzM0ODY4LCJqdGkiOiI5RVR1WWlVODJMT0dUckVlIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.VPXgReY9FhDaYNitX6MK5CO2TLwKtF8NWT4Mwy3XKjA";
         return sharedPreferences.getString(token, "NA");
     }
 

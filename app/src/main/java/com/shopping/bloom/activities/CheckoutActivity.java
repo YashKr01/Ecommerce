@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -27,7 +28,9 @@ import com.shopping.bloom.restService.callback.SimpleClickListener;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.Tools;
 import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
 
 import java.util.ArrayList;
@@ -50,6 +53,8 @@ public class CheckoutActivity extends AppCompatActivity {
     List<CartItem> cartItemList;
     ShoppingBagViewModel viewModel;
     boolean FIRST_TIME = true;
+    private LoginManager loginManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         viewModel = ViewModelProviders.of(this).get(ShoppingBagViewModel.class);
+        loginManager = new LoginManager(CheckoutActivity.this);
         initView();
         setUpRecyclerView();
         subscribeToUI(viewModel.getAllCartItem());
@@ -115,7 +121,18 @@ public class CheckoutActivity extends AppCompatActivity {
         llUseWallet.setOnClickListener(discountClickListener);
         cbUseWallet.setOnClickListener(discountClickListener);
 
-        btPlaceOrder.setOnClickListener(view -> placeOrder());
+        btPlaceOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(loginManager.getIs_primary_address_available()) {
+                    placeOrder();
+                }else{
+             //todo user will go on add address screen with intent flag once he set the address will be return to this screen again
+                    Toast.makeText(CheckoutActivity.this, "No Address" , Toast.LENGTH_SHORT) .show();
+
+                }
+            }
+        });
         cbUseWallet.setOnClickListener(view -> checkNetworkAndFetchData());
     }
 
