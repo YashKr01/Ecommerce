@@ -111,6 +111,7 @@
     <string name="share">Share</string>
     <string name="enter_pincode">Enter Pincode</string>
     <string name="return_policy">Return Policy</string>
+    <string name="invalid_address">Invalid or empty address</string>
 
 
 </resources>

@@ -93,29 +93,59 @@
                 android:paddingVertical="12dp"
                 app:layout_constraintTop_toBottomOf="@id/llShippingMethod">
 
-                <TextView
-                    android:id="@+id/tvHeader2"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/linearLayout5"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/sb_size_18"
-                    android:text="Shipping Adderess"
-                    android:textColor="@color/blue_grey_900"
-                    android:textSize="@dimen/sb_text_size_14"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tvHeader2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/sb_size_18"
+                        android:text="Shipping Adderess"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:layout_width="@dimen/sb_size_0"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/tvChangeAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:layout_marginEnd="@dimen/sb_size_18"
+                        android:gravity="top"
+                        android:padding="@dimen/sb_size_2"
+                        android:text="Change"
+                        android:textColor="@color/grey_500"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvShippingAddress"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/sb_size_8"
+                    android:layout_marginHorizontal="@dimen/sb_size_18"
+                    android:layout_marginTop="@dimen/sb_size_2"
                     android:gravity="center_vertical|start"
-                    android:text="Temporary address"
+                    android:paddingVertical="@dimen/sb_size_4"
+                    android:text="Temporary address\nhfjsdhf"
                     android:textColor="@color/blue_grey_800"
-                    android:textSize="@dimen/sb_text_size_14"
-                    app:layout_constraintStart_toStartOf="@id/tvHeader2"
-                    app:layout_constraintTop_toBottomOf="@id/tvHeader2" />
+                    android:textSize="@dimen/sb_text_size_12"
+                    app:layout_constraintEnd_toEndOf="@+id/linearLayout5"
+                    app:layout_constraintStart_toStartOf="@+id/linearLayout5"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -247,23 +277,47 @@
                     android:id="@+id/llApplyCoupon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:background="?attr/selectableItemBackground"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical|start"
-                        android:paddingVertical="@dimen/sb_size_8"
-                        android:text="Apply Coupon"
-                        android:textColor="@color/blue_grey_900"
-                        android:textSize="@dimen/sb_text_size_14" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvApplyCoupon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical|start"
+                            android:paddingVertical="@dimen/sb_size_8"
+                            android:text="Apply Coupon"
+                            android:textStyle="bold"
+                            android:textColor="@color/blue_grey_900"
+                            android:textSize="@dimen/sb_text_size_14" />
+
+                        <TextView
+                            android:id="@+id/tvRemoveCoupon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top"
+                            android:gravity="top"
+                            android:text="Remove"
+                            android:visibility="gone"
+                            android:paddingVertical="@dimen/sb_size_4"
+                            android:textColor="@color/grey_900"
+                            android:textSize="@dimen/sb_text_size_12"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
                     <ImageView
@@ -271,6 +325,7 @@
                         android:layout_height="@dimen/sb_size_24"
                         android:layout_gravity="center_vertical"
                         android:rotation="90"
+                        android:visibility="gone"
                         android:src="@drawable/ic_arrow_up" />
 
                 </LinearLayout>
@@ -296,12 +351,14 @@
                         android:gravity="center_vertical|start"
                         android:paddingVertical="@dimen/sb_size_8"
                         android:text="Use Wallet"
+                        android:textStyle="bold"
                         android:textColor="@color/blue_grey_900"
                         android:textSize="@dimen/sb_text_size_14" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.AppCompatCheckBox
@@ -335,12 +392,14 @@
                         android:gravity="center_vertical|start"
                         android:paddingVertical="@dimen/sb_size_8"
                         android:text="Gift Card"
+                        android:textStyle="bold"
                         android:textColor="@color/blue_grey_900"
                         android:textSize="@dimen/sb_text_size_14" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1" />
 
                     <ImageView
@@ -549,9 +608,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:elevation="@dimen/sb_size_6"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:elevation="@dimen/sb_size_6"
         android:paddingTop="@dimen/sb_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

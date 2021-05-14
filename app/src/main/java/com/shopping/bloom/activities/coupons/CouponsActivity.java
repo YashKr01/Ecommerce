@@ -1,26 +1,34 @@
 package com.shopping.bloom.activities.coupons;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.shopping.bloom.R;
+import com.shopping.bloom.activities.CheckoutActivity;
 import com.shopping.bloom.adapters.coupons.CouponsViewPagerAdapter;
 import com.shopping.bloom.databinding.ActivityCouponsBinding;
 import com.shopping.bloom.fragment.coupons.ExpiredCouponsFragment;
 import com.shopping.bloom.fragment.coupons.UnusedCouponsFragment;
+import com.shopping.bloom.model.coupons.Coupon;
+import com.shopping.bloom.restService.callback.CouponClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.Objects;
 
-public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, CouponClickListener {
+
+    private static final String TAG = "CouponsActivity";
 
     private ActivityCouponsBinding binding;
     private boolean isViewPagerInitialised = false;
+    private String CALLING_ACTIVITY = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +41,21 @@ public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLa
         } else {
             setupViewPager();
         }
-
+        getIntentData();
         // SWIPE REFRESH LAYOUT
         binding.swipeRefresh.setOnRefreshListener(this);
 
         // TOOLBAR SETUP
         setSupportActionBar(binding.toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
 
-
+    private void getIntentData() {
+        Intent intent = getIntent();
+        String ARG_ACTIVITY_NAME = "calling_activity_name";
+        if (intent != null) {
+            CALLING_ACTIVITY = intent.getStringExtra(ARG_ACTIVITY_NAME);
+        }
     }
 
     private void setupViewPager() {
@@ -75,7 +89,18 @@ public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLa
         } else {
             showNoConnectionLayout(true);
         }
-
         binding.swipeRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onCouponClickListener(Coupon coupon) {
+        Intent returnIntent = new Intent();
+        if (CALLING_ACTIVITY != null && CALLING_ACTIVITY.equals(CheckoutActivity.class.getName())) {
+            Log.d(TAG, "onCouponClickListener: " + coupon.getPromoCode());
+            returnIntent.putExtra("PROMOCODE", coupon.getPromoCode());
+            returnIntent.putExtra("PROMO_OFFER", coupon.getDiscount());
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
     }
 }
