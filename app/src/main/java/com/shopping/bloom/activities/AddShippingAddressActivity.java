@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -71,8 +72,11 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         addShippingAddressViewModel.getMutableLiveData().observe(this, loginResponseModel -> {
             if (loginResponseModel.getSuccess().equals("true")) {
                 Toast.makeText(this, loginResponseModel.getMessage(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MyAddressActivity.class);
-                startActivity(intent);
+
+                //goes to specific activity
+                Intent resultIntent = getIntent();
+
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
 
             }

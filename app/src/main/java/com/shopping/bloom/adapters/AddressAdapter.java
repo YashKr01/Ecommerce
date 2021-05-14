@@ -84,15 +84,18 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
                 public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        addressList.remove(position);
                         if (address.getIs_primary().equals("1")) {
                             loginManager.setPrimary_address_id("NA");
                             loginManager.setPrimaryAddress("NA");
+                            loginManager.setIs_primary_address_available(false);
                             lastSelectedPosition = 0;
-                            if (context instanceof MyAddressActivity) {
-                                ((MyAddressActivity) context).getData(0);
-                            }
+                            System.out.println("lastSelectedPosition in = " + lastSelectedPosition);
+                            notifyDataSetChanged();
+                            setLastSelectedPosition(lastSelectedPosition);
+                            notifyDataSetChanged();
+
                         }
-                        addressList.remove(position);
                         notifyDataSetChanged();
                     }
                 }
@@ -120,16 +123,26 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             holder.radioButton.setChecked(lastSelectedPosition == position);
         } else {
             holder.radioButton.setChecked(address.getIs_primary().equals("1") || addressList.size() == 1);
-            if(address.getIs_primary().equals("1")){
+            if (address.getIs_primary().equals("1")) {
                 loginManager.setPrimary_address_id(address.getId());
-                loginManager.setPrimaryAddress(address.getAddress_name()+","+address.getAddress_line_1()+","+address.getCity()+","+address.getPincode()+","+address.getContact_number());
+                loginManager.setPrimaryAddress(address.getAddress_name() + "," + address.getAddress_line_1() + "," + address.getCity() + "," + address.getPincode() + "," + address.getContact_number());
+                loginManager.setIs_primary_address_available(true);
             }
             if (addressList.size() == 1) {
+                System.out.println("lastSelectedPosition = " + lastSelectedPosition);
                 if (context instanceof MyAddressActivity) {
                     ((MyAddressActivity) context).getData(0);
                 }
             }
         }
+    }
+
+    private void setLastSelectedPosition(int position) {
+        System.out.println("lastselected called" + position);
+        if (context instanceof MyAddressActivity) {
+            ((MyAddressActivity) context).getData(position);
+        }
+        notifyDataSetChanged();
     }
 
     @Override
@@ -165,6 +178,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
                     ((MyAddressActivity) context).getData(lastSelectedPosition);
                 }
             });
+
 
         }
 

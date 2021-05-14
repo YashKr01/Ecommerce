@@ -109,7 +109,7 @@ public class LoginManager {
 
 
     public void setIs_primary_address_available(boolean is_verified){
-        editor.putBoolean(is_primary_address_available, is_verified);
+        editor.putBoolean(is_primary_address_available, is_verified).commit();
     }
 
     public boolean  getIs_primary_address_available(){

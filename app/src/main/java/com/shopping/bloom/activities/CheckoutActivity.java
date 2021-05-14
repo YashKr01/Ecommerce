@@ -1,5 +1,6 @@
 package com.shopping.bloom.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,9 @@ import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.ADD_ADDRESS_ACTIVITY;
+import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class CheckoutActivity extends AppCompatActivity {
 
@@ -127,9 +131,11 @@ public class CheckoutActivity extends AppCompatActivity {
                 if(loginManager.getIs_primary_address_available()) {
                     placeOrder();
                 }else{
-             //todo user will go on add address screen with intent flag once he set the address will be return to this screen again
-                    Toast.makeText(CheckoutActivity.this, "No Address" , Toast.LENGTH_SHORT) .show();
+                    //todo user will go on add address screen with intent flag once he set the address will be return to this screen again
 
+                    Toast.makeText(CheckoutActivity.this, "No Address" , Toast.LENGTH_SHORT) .show();
+                    Intent intent = new Intent(getApplicationContext(), AddShippingAddressActivity.class);
+                    startActivityForResult(intent, ADD_ADDRESS_ACTIVITY);
                 }
             }
         });

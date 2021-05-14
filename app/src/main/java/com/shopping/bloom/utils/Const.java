@@ -10,6 +10,8 @@ public class Const {
     public static final int WRITE_TIMEOUT = 20;
 
     public static final int LOGIN_ACTIVITY = 100;
+    public static final int ADD_ADDRESS_ACTIVITY = 101;
+
 
     public enum SORT_BY {
         NEW_ARRIVAL,
