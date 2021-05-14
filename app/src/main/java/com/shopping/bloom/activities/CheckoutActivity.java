@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.Tools;
 import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
 
 import java.util.ArrayList;
@@ -58,6 +60,8 @@ public class CheckoutActivity extends AppCompatActivity {
     final int REQ_COUPON_CODE = 200;
     String promoCode = null;
     String promoOffer = "";
+    private LoginManager loginManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         viewModel = ViewModelProviders.of(this).get(ShoppingBagViewModel.class);
+        loginManager = new LoginManager(CheckoutActivity.this);
         initView();
         setUpRecyclerView();
         subscribeToUI(viewModel.getAllCartItem());
@@ -131,7 +136,14 @@ public class CheckoutActivity extends AppCompatActivity {
         llUseWallet.setOnClickListener(discountClickListener);
         cbUseWallet.setOnClickListener(discountClickListener);
 
-        btPlaceOrder.setOnClickListener(view -> placeOrder());
+        btPlaceOrder.setOnClickListener(view -> {
+            if(loginManager.getIs_primary_address_available()) {
+                placeOrder();
+            }else{
+                //ToDo: user will go on add address screen with intent flag once he set the address will be return to this screen again
+                Toast.makeText(CheckoutActivity.this, "No Address" , Toast.LENGTH_SHORT) .show();
+            }
+        });
         cbUseWallet.setOnClickListener(view -> checkNetworkAndFetchData());
         tvChangeAddress.setOnClickListener(view -> changeAddress());
         tvRemoveCoupon.setOnClickListener(view -> {
@@ -196,7 +208,7 @@ public class CheckoutActivity extends AppCompatActivity {
         try {
             checkoutData.setAddressID(Integer.parseInt(addressID));
         } catch (NullPointerException e) {
-            Log.d(TAG, "getPostCheckoutData: Invalid address ID unable to parse");
+            Log.d(TAG, "getPostCheckoutData: Invalid address ID, unable to parse");
             return null;
         }
         return checkoutData;

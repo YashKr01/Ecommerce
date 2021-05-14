@@ -75,6 +75,7 @@ public class MyAddressActivity extends AppCompatActivity {
                         LoginManager loginManager = new LoginManager(App.getContext());
                         loginManager.setPrimary_address_id(addressDataResponse.getId());
                         loginManager.setPrimaryAddress(addressDataResponse.getAddress_name()+","+addressDataResponse.getAddress_line_1()+","+addressDataResponse.getCity()+","+addressDataResponse.getPincode()+","+addressDataResponse.getContact_number());
+                        loginManager.setIs_primary_address_available(true);
                         Toast.makeText(MyAddressActivity.this, loginResponseModel.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
