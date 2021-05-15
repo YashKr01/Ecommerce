@@ -68,13 +68,20 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
         parentLayout = (LinearLayout) findViewById(R.id.top_search_layout);
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
-
         for (int i = 0; i < topSearchesList.size(); i++) {
             view = layoutInflater.inflate(R.layout.item_top_searches, parentLayout, false);
             TextView textView = (TextView) view.findViewById(R.id.txt_top_search);
             textView.setText(topSearchesList.get(i));
             parentLayout.addView(textView);
+            textView.setOnClickListener(new DebouncedOnClickListener(200) {
+                @Override
+                public void onDebouncedClick(View v) {
+                    binding.edittextSearch.setText(textView.getText());
+                }
+            });
         }
+
+
 
 
         // initialise list, adapter and recyclerview

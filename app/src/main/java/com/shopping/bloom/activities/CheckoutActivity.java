@@ -37,6 +37,8 @@ import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.ADD_ADDRESS_ACTIVITY;
+
 public class CheckoutActivity extends AppCompatActivity {
 
     private static final String TAG = CheckoutActivity.class.getName();
@@ -119,11 +121,7 @@ public class CheckoutActivity extends AppCompatActivity {
         btPlaceOrder = findViewById(R.id.btPlaceOrder);
         progressBar = findViewById(R.id.rlProgressBar);
 
-        String address = LoginManager.getInstance().getPrimary_address();
-        if (!address.isEmpty() && !address.equals("NA")) {
-            address = address.replaceAll(",", "\n");
-        }
-        shippingAddress.setText(address);
+        setDefaultAddress();
 
         //Attach Click listeners
         pmCard.setOnClickListener(paymentMethod);
@@ -138,8 +136,9 @@ public class CheckoutActivity extends AppCompatActivity {
             if (loginManager.getIs_primary_address_available()) {
                 placeOrder();
             } else {
-                //ToDo: user will go on add address screen with intent flag once he set the address will be return to this screen again
                 Toast.makeText(CheckoutActivity.this, "No Address", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), AddShippingAddressActivity.class);
+                startActivityForResult(intent, ADD_ADDRESS_ACTIVITY);
             }
         });
         cbUseWallet.setOnClickListener(view -> checkNetworkAndFetchData());
@@ -148,6 +147,19 @@ public class CheckoutActivity extends AppCompatActivity {
             applyOrRemoveCoupon(false);
             checkNetworkAndFetchData();
         });
+    }
+
+    private void setDefaultAddress() {
+        address = LoginManager.getInstance().getPrimary_address();
+        addressID = LoginManager.getInstance().getPrimary_address_id();
+        if (address == null || address.isEmpty() ||
+                addressID == null || addressID.isEmpty()) {
+            shippingAddress.setText("ADD ADDRESS");
+            addressID = "";
+            return;
+        }
+        address = address.replaceAll(",", "\n");
+        shippingAddress.setText(address);
     }
 
     private void checkNetworkAndFetchData() {
@@ -159,8 +171,8 @@ public class CheckoutActivity extends AppCompatActivity {
         }
         PostCheckoutData checkoutData = getPostCheckoutData();
         if (checkoutData == null) {
+            Log.d(TAG, "checkNetworkAndFetchData: NULL checkout data");
             showProgressBar(false);
-            Toast.makeText(CheckoutActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
         viewModel.getCheckoutData(checkoutData, responseListener);
@@ -197,6 +209,7 @@ public class CheckoutActivity extends AppCompatActivity {
             useWalletBalance = 1;
         }
         if (addressID == null || addressID.isEmpty() || addressID.equals("NA")) {
+            Log.d(TAG, "getPostCheckoutData: AddressID");
             Toast.makeText(this, getString(R.string.invalid_address), Toast.LENGTH_SHORT)
                     .show();
             return null;

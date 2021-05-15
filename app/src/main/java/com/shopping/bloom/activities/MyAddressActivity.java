@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -25,6 +26,8 @@ import com.shopping.bloom.viewModels.MyAddressViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.ADD_ADDRESS_ACTIVITY;
 
 public class MyAddressActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -107,7 +110,7 @@ public class MyAddressActivity extends AppCompatActivity {
 
     public void addShippingAddress(View view) {
         Intent intent = new Intent(this, AddShippingAddressActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, ADD_ADDRESS_ACTIVITY);
     }
 
     public void getData(int pos) {
@@ -157,4 +160,12 @@ public class MyAddressActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_ADDRESS_ACTIVITY && resultCode == RESULT_OK) {
+            finish();
+            startActivity(getIntent());
+        }
+    }
 }
