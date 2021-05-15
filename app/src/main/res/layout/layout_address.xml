@@ -3,14 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_200">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/grey_100">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sb_size_5"
         android:layout_marginBottom="2.5dp"
-        app:cardElevation="@dimen/sb_size_5"
+        app:cardElevation="@dimen/sb_size_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,7 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/grey_300"
+            android:background="@color/grey_100"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -40,6 +41,7 @@
                     android:src="@drawable/ic_baseline_right_24" />
 
                 <LinearLayout
+                    android:id="@+id/llAddressCard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -51,8 +53,9 @@
                         android:id="@+id/nameTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/sb_size_5"
-                        android:text="lorem epsium"
+                        android:paddingVertical="@dimen/sb_size_5"
+                        android:textStyle="bold"
+                        tools:text="Home/Office"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sb_text_size_16" />
 
@@ -60,41 +63,37 @@
                         android:id="@+id/address1TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/sb_size_5"
-                        android:padding="@dimen/sb_size_5"
-                        android:text="lorem epsium"
+                        android:layout_marginTop="@dimen/sb_size_6"
+                        tools:text="AddressLine 1"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_16" />
+                        android:textSize="@dimen/sb_text_size_14" />
 
                     <TextView
                         android:id="@+id/cityTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/sb_size_5"
-                        android:padding="@dimen/sb_size_5"
-                        android:text="lorem epsium"
+                        android:layout_marginTop="@dimen/sb_size_1"
+                        tools:text="City"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_16" />
+                        android:textSize="@dimen/sb_text_size_14" />
 
                     <TextView
                         android:id="@+id/address2TextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/sb_size_5"
-                        android:padding="@dimen/sb_size_5"
-                        android:text="lorem epsium"
+                        android:layout_marginTop="@dimen/sb_size_1"
+                        android:text="Address Line 2"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_16" />
+                        android:textSize="@dimen/sb_text_size_14" />
 
                     <TextView
                         android:id="@+id/numberTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/sb_size_5"
-                        android:padding="@dimen/sb_size_5"
+                        android:layout_marginTop="@dimen/sb_size_1"
                         android:text="lorem epsium"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sb_text_size_16" />
+                        android:textSize="@dimen/sb_text_size_14" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -102,7 +101,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/sb_size_2"
+                android:layout_marginTop="@dimen/sb_size_1"
                 android:background="@color/white">
 
                 <RadioButton
@@ -117,7 +116,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/selectRadioButton"
-                    android:text="Set as Default Address"
+                    android:text="Set as Default"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sb_text_size_15" />
 
