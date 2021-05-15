@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +32,6 @@ import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.utils.Tools;
 import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
 
 import java.util.ArrayList;
@@ -58,8 +56,11 @@ public class CheckoutActivity extends AppCompatActivity {
     ShoppingBagViewModel viewModel;
     boolean FIRST_TIME = true;
     final int REQ_COUPON_CODE = 200;
+    final int REQ_ADDRESS_CODE = 201;
     String promoCode = null;
     String promoOffer = "";
+    String addressID = "";
+    String address = "";
     private LoginManager loginManager;
 
 
@@ -74,7 +75,6 @@ public class CheckoutActivity extends AppCompatActivity {
         setUpRecyclerView();
         subscribeToUI(viewModel.getAllCartItem());
         cartItemList = new ArrayList<>();
-
     }
 
     private void subscribeToUI(LiveData<List<CartItem>> allCartItem) {
@@ -86,12 +86,10 @@ public class CheckoutActivity extends AppCompatActivity {
                             cartItems.toString());
                     cartItemList = cartItems;
                     adapter.updateList(cartItemList);
-                    if (FIRST_TIME) {
-                        checkNetworkAndFetchData();
-                        FIRST_TIME = !FIRST_TIME;
-                    }
-                } else {
-                    Log.d(TAG, "subscribeToUI: EMPTY");
+                }
+                if (FIRST_TIME) {
+                    checkNetworkAndFetchData();
+                    FIRST_TIME = !FIRST_TIME;
                 }
             } else {
                 Log.d(TAG, "subscribeToUI: NULL");
@@ -137,11 +135,11 @@ public class CheckoutActivity extends AppCompatActivity {
         cbUseWallet.setOnClickListener(discountClickListener);
 
         btPlaceOrder.setOnClickListener(view -> {
-            if(loginManager.getIs_primary_address_available()) {
+            if (loginManager.getIs_primary_address_available()) {
                 placeOrder();
-            }else{
+            } else {
                 //ToDo: user will go on add address screen with intent flag once he set the address will be return to this screen again
-                Toast.makeText(CheckoutActivity.this, "No Address" , Toast.LENGTH_SHORT) .show();
+                Toast.makeText(CheckoutActivity.this, "No Address", Toast.LENGTH_SHORT).show();
             }
         });
         cbUseWallet.setOnClickListener(view -> checkNetworkAndFetchData());
@@ -161,6 +159,8 @@ public class CheckoutActivity extends AppCompatActivity {
         }
         PostCheckoutData checkoutData = getPostCheckoutData();
         if (checkoutData == null) {
+            showProgressBar(false);
+            Toast.makeText(CheckoutActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
         viewModel.getCheckoutData(checkoutData, responseListener);
@@ -196,8 +196,7 @@ public class CheckoutActivity extends AppCompatActivity {
         if (cbUseWallet.isChecked()) {
             useWalletBalance = 1;
         }
-        String addressID = LoginManager.getInstance().getPrimary_address_id();
-        if (addressID.isEmpty() || addressID.equals("NA")) {
+        if (addressID == null || addressID.isEmpty() || addressID.equals("NA")) {
             Toast.makeText(this, getString(R.string.invalid_address), Toast.LENGTH_SHORT)
                     .show();
             return null;
@@ -219,7 +218,6 @@ public class CheckoutActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         productsRecyclerView.setLayoutManager(layoutManager);
         productsRecyclerView.setAdapter(adapter);
-
     }
 
     private void openBottomSheet(List<CartItem> cartItemList) {
@@ -248,6 +246,23 @@ public class CheckoutActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQ_ADDRESS_CODE) {
+            String ARG_ADDRESS_ID = "ADDRESS_ID";
+            String ARG_ADDRESS = "ADDRESS";
+            if (data != null) {
+                address = String.valueOf(data.getStringExtra(ARG_ADDRESS));
+                addressID = String.valueOf(data.getStringExtra(ARG_ADDRESS_ID));
+                if (addressID == null || address == null ||
+                        addressID.isEmpty() || address.isEmpty()) {
+                    showError(REQ_ADDRESS_CODE);
+                    return;
+                }
+                address = address.replaceAll(",", "\n");
+                shippingAddress.setText(address);
+            } else {
+                showError(REQ_ADDRESS_CODE);
+            }
+        }
         if (resultCode == RESULT_OK && requestCode == REQ_COUPON_CODE) {
             if (data != null) {
                 promoCode = data.getStringExtra("PROMOCODE");
@@ -290,7 +305,7 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void applyOrRemoveCoupon(boolean apply) {
-        if(apply) {
+        if (apply) {
             String text = "Promocode " + promoCode + " applied successfully";
             tvCouponText.setText(text);
             tvCouponText.setTextColor(ContextCompat.getColor(this, R.color.green_600));
@@ -312,8 +327,10 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void changeAddress() {
+        String CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, MyAddressActivity.class);
-        startActivity(intent);
+        intent.putExtra(CALLING_ACTIVITY, CheckoutActivity.class.getName());
+        startActivityForResult(intent, REQ_ADDRESS_CODE);
     }
 
     private void showNoInternetScreen(boolean show) {
@@ -321,6 +338,19 @@ public class CheckoutActivity extends AppCompatActivity {
 
         } else {
 
+        }
+    }
+
+    private void showError(int error_code) {
+        switch (error_code) {
+            case REQ_ADDRESS_CODE: {
+                //ToDo
+                break;
+            }
+            case REQ_COUPON_CODE: {
+                //TODO
+                break;
+            }
         }
     }
 

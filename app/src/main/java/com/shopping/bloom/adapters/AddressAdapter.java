@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.shopping.bloom.activities.UpdateAddressActivity;
 import com.shopping.bloom.model.AddressDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
+import com.shopping.bloom.restService.callback.AddressClickListener;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.utils.LoginManager;
@@ -38,11 +40,13 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
     List<AddressDataResponse> addressList;
     int lastSelectedPosition = -1;
     Application application;
+    AddressClickListener mListener;
 
-    public AddressAdapter(Context context, List<AddressDataResponse> addressList, Application application) {
+    public AddressAdapter(Context context, List<AddressDataResponse> addressList, Application application, AddressClickListener clickListener) {
         this.context = context;
         this.addressList = addressList;
         this.application = application;
+        this.mListener = clickListener;
     }
 
     public void setAddressList(List<AddressDataResponse> addressList) {
@@ -65,6 +69,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
         holder.addressLine2TextView.setText(address.getPincode());
         holder.cityTextView.setText(address.getCity());
         holder.numberTextView.setText(address.getContact_number());
+
+        holder.llAddressCard.setOnClickListener(view -> mListener.onAddressClicked(address));
 
 
         LoginManager loginManager = new LoginManager(App.getContext());
@@ -134,8 +140,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        if (this.addressList != null) {
-            return this.addressList.size();
+        if (addressList != null) {
+            return addressList.size();
         }
         return 0;
     }
@@ -145,6 +151,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
                 addressLine2TextView, cityTextView, numberTextView;
         ImageButton imageButton, updateImageButton;
         RadioButton radioButton;
+        LinearLayout llAddressCard;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -157,6 +164,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
             imageButton = itemView.findViewById(R.id.deleteButton);
             updateImageButton = itemView.findViewById(R.id.updateAddress);
             radioButton = itemView.findViewById(R.id.selectRadioButton);
+            llAddressCard = itemView.findViewById(R.id.llAddressCard);
 
             radioButton.setOnClickListener(v -> {
                 lastSelectedPosition = getAdapterPosition();

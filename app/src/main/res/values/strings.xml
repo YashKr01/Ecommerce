@@ -112,6 +112,9 @@
     <string name="enter_pincode">Enter Pincode</string>
     <string name="return_policy">Return Policy</string>
     <string name="invalid_address">Invalid or empty address</string>
+    <string name="title_place_order">Place order</string>
+    <string name="place_order">Place Order</string>
+    <string name="total">Total</string>
 
 
 </resources>

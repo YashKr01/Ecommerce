@@ -94,8 +94,9 @@ public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLa
 
     @Override
     public void onCouponClickListener(Coupon coupon) {
+        if(CALLING_ACTIVITY == null || CALLING_ACTIVITY.isEmpty()) return ;
         Intent returnIntent = new Intent();
-        if (CALLING_ACTIVITY != null && CALLING_ACTIVITY.equals(CheckoutActivity.class.getName())) {
+        if (CALLING_ACTIVITY.equals(CheckoutActivity.class.getName())) {
             Log.d(TAG, "onCouponClickListener: " + coupon.getPromoCode());
             returnIntent.putExtra("PROMOCODE", coupon.getPromoCode());
             returnIntent.putExtra("PROMO_OFFER", coupon.getDiscount());
