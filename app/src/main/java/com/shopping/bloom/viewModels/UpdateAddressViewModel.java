@@ -44,13 +44,14 @@ public class UpdateAddressViewModel extends ViewModel {
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                mutableLiveData.postValue(response.body());
+                if(response.isSuccessful() && response.body() != null){
+                    mutableLiveData.postValue(response.body());
+                }
             }
 
             @Override
             public void onFailure(Call<LoginResponseModel> call, Throwable t) {
-                System.out.println(call.request());
-                System.out.println(t.toString());
+                mutableLiveData.postValue(null);
             }
         });
     }

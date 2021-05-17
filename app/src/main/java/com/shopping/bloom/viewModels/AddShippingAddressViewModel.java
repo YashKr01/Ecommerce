@@ -44,7 +44,9 @@ public class AddShippingAddressViewModel extends ViewModel {
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                mutableLiveData.postValue(response.body());
+                if(response.isSuccessful() && response.body() != null){
+                    mutableLiveData.postValue(response.body());
+                }
             }
 
             @Override

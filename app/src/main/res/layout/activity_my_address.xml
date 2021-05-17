@@ -19,23 +19,52 @@
         app:title="My Address"
         app:titleTextColor="@color/black" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/addShippingAddressButton"
-        android:layout_below="@+id/toolbar"
-        android:layout_marginBottom="@dimen/sb_size_5" />
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true">
 
-    <Button
-        android:id="@+id/addShippingAddressButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:onClick="addShippingAddress"
-        android:layout_marginHorizontal="@dimen/sb_size_20"
-        android:layout_marginBottom="@dimen/sb_size_5"
-        android:text="Add a Shipping Address"
-        android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/relativeLayout">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/addShippingAddressButton"
+                android:layout_marginBottom="@dimen/sb_size_5" />
+
+            <Button
+                android:id="@+id/addShippingAddressButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="@dimen/sb_size_20"
+                android:layout_marginBottom="@dimen/sb_size_5"
+                android:onClick="addShippingAddress"
+                android:text="Add a Shipping Address"
+                android:textStyle="bold" />
+
+            </RelativeLayout>
+            <ViewStub
+                android:id="@+id/vsEmptyScreen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="@dimen/sb_size_4"
+                android:layout="@layout/no_internet_connected"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

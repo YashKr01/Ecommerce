@@ -71,9 +71,7 @@ public class SingleProductViewModel extends ViewModel {
         call.enqueue(new Callback<SingleProductResponse>() {
             @Override
             public void onResponse(Call<SingleProductResponse> call, Response<SingleProductResponse> response) {
-                if (response.body() == null) {
-                    System.out.println("NO DATA");
-                } else {
+                if (response.isSuccessful() && response.body() != null) {
                     mutableLiveData.postValue(response.body().getSingleProductDataResponse());
                 }
             }

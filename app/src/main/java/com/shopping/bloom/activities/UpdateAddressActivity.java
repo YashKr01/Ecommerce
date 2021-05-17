@@ -101,6 +101,8 @@ public class UpdateAddressActivity extends AppCompatActivity {
                     Snackbar.make(parent_view, "City Name is Empty", Snackbar.LENGTH_SHORT).show();
                 } else if (pinCode == null || pinCode.isEmpty()) {
                     Snackbar.make(parent_view, "Pin Code is Empty", Snackbar.LENGTH_SHORT).show();
+                } else if (pinCode.length() != 6) {
+                    Snackbar.make(parent_view, "Pin code length should be 6.", Snackbar.LENGTH_SHORT).show();
                 } else if (number == null || number.isEmpty()) {
                     Snackbar.make(parent_view, "Mobile No. is Empty", Snackbar.LENGTH_SHORT).show();
                 } else if (!numberLength(number)) {

@@ -28,6 +28,8 @@ import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.utils.ShowToast;
 import com.shopping.bloom.viewModels.AccountSecurityViewModel;
 
+import static com.shopping.bloom.utils.Const.OTP_ACTIVITY;
+
 public class AccountSecurityActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -36,6 +38,7 @@ public class AccountSecurityActivity extends AppCompatActivity {
     LoginManager loginManager;
     LinearLayout linearLayout;
     ViewStub viewStub;
+    String email;
     boolean is_email_verified;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -51,6 +54,24 @@ public class AccountSecurityActivity extends AppCompatActivity {
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         accountSecurityViewModel = ViewModelProviders.of(this).get(AccountSecurityViewModel.class);
+
+        accountSecurityViewModel.getMutableLiveData().observe(this, emailVerificationResponse -> {
+            if(emailVerificationResponse != null){
+                String success = emailVerificationResponse.getSuccess();
+                String message = emailVerificationResponse.getMessage();
+                if(success.equals("true")){
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent( this, OtpActivity.class);
+                    intent.putExtra("email",email);
+                    intent.putExtra("activityName", "EmailVerification");
+                    startActivityForResult(intent, OTP_ACTIVITY);
+                }
+                else{
+                    Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         loginManager = new LoginManager(this);
 
         is_email_verified = loginManager.is_email_verified();
@@ -81,8 +102,11 @@ public class AccountSecurityActivity extends AppCompatActivity {
         @Override
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.emailVerifyTextView) {
-                String email = loginManager.getEmailid();
-                emailVerify(email);
+                email = loginManager.getEmailid();
+
+                if(checkNetworkConnectivity()){
+                    emailVerify(email);
+                }
             }
         }
     };
@@ -127,15 +151,18 @@ public class AccountSecurityActivity extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-    private void checkNetworkConnectivity() {
+    private boolean checkNetworkConnectivity() {
+        swipeRefreshLayout.setRefreshing(false);
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
+            return false;
         } else {
             viewStub.setVisibility(View.GONE);
             linearLayout.setVisibility(View.VISIBLE);
+            return true;
         }
-        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     private void setNavigationIcon() {

@@ -27,6 +27,8 @@ import com.shopping.bloom.restService.callback.AddressClickListener;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.utils.LoginManager;
+import com.shopping.bloom.utils.NetworkCheck;
+import com.shopping.bloom.utils.ShowToast;
 
 import java.util.List;
 
@@ -72,56 +74,21 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
 
         holder.llAddressCard.setOnClickListener(view -> mListener.onAddressClicked(address));
 
-
         LoginManager loginManager = new LoginManager(App.getContext());
-        String token;
-
-        if (!loginManager.isLoggedIn()) {
-            token = loginManager.gettoken();
-        } else {
-            token = loginManager.getGuest_token();
-        }
 
         holder.imageButton.setOnClickListener(v -> {
-            ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
-            Call<LoginResponseModel> call = apiService.deleteAddress(address.getId(), "Bearer " + token);
-            call.enqueue(new Callback<LoginResponseModel>() {
-                @Override
-                public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(context, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        addressList.remove(position);
-                        if (address.getIs_primary().equals("1")) {
-                            loginManager.setPrimary_address_id("NA");
-                            loginManager.setPrimaryAddress("NA");
-                            loginManager.setIs_primary_address_available(false);
-                            lastSelectedPosition = 0;
-                            System.out.println("lastSelectedPosition in = " + lastSelectedPosition);
-                            notifyDataSetChanged();
-                            setLastSelectedPosition(lastSelectedPosition);
-                            notifyDataSetChanged();
-
-                        }
-                        notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LoginResponseModel> call, Throwable t) {
-                }
-            });
+            if(NetworkCheck.isConnect(context)){
+                mListener.onAddressDelete(address, position);
+                lastSelectedPosition = 0;
+                setLastSelectedPosition(lastSelectedPosition);
+                notifyDataSetChanged();
+            }else{
+                ShowToast.showToast(context, "No Internet");
+            }
         });
 
         holder.updateImageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, UpdateAddressActivity.class);
-            intent.putExtra("addressName", address.getAddress_name());
-            intent.putExtra("addressLine", address.getAddress_line_1());
-            intent.putExtra("city", address.getCity());
-            intent.putExtra("pinCode", address.getPincode());
-            intent.putExtra("number", address.getContact_number());
-            intent.putExtra("is_primary", address.getIs_primary());
-            intent.putExtra("id", address.getId());
-            context.startActivity(intent);
+            mListener.onAddressUpdate(address);
         });
 
         holder.radioButton.setClickable(addressList.size() != 1);
@@ -144,7 +111,6 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.ViewHold
     }
 
     private void setLastSelectedPosition(int position) {
-        System.out.println("lastselected called" + position);
         if (context instanceof MyAddressActivity) {
             ((MyAddressActivity) context).getData(position);
         }

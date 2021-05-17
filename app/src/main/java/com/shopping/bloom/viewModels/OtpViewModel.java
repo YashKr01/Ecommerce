@@ -61,7 +61,7 @@ public class OtpViewModel extends ViewModel {
             @Override
             public void onResponse(Call<OtpResponseModel> call, Response<OtpResponseModel> response) {
                 System.out.println(response);
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     mutableLiveData.postValue(response.body());
                 }
             }

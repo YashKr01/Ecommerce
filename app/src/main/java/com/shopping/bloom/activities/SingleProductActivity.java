@@ -101,7 +101,7 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> colorList, sizeList, imageList;
     List<RandomImageDataResponse> randomImageList;
     List<String> selectedSizeList, selectedColorList;
-    int pos, check = 1, categoryId;
+    int pos, categoryId;
     LinearLayout linearLayout;
     TextView productName, price, viewReview, colorTextView, slideTextView,
             desc, salePrice, salePercentage, deliverStatusTv;

@@ -52,6 +52,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
             finish();
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +80,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
         loginWithPassViewModel = ViewModelProviders.of(this).get(LoginWithPassViewModel.class);
 
         loginWithPassViewModel.getMobileMutableLiveData().observe(this, loginWithPassResponseModel -> {
-            if(loginWithPassResponseModel != null){
+            if (loginWithPassResponseModel != null) {
                 String success = loginWithPassResponseModel.getSuccess();
                 String message = loginWithPassResponseModel.getMessage();
 
@@ -93,9 +94,9 @@ public class LoginWithPassActivity extends AppCompatActivity {
                     loginManager.settoken(loginWithPassResponseModel.getData().getToken());
                     loginManager.SetLoginStatus(false);
                     String email_verified_at = loginWithPassResponseModel.getData().getUserInfo().getEmail_verified_at();
-                    if(email_verified_at == null || email_verified_at.isEmpty()|| email_verified_at.equals("")){
+                    if (email_verified_at == null || email_verified_at.isEmpty() || email_verified_at.equals("")) {
                         System.out.println("EmailVerified Empty");
-                    }else{
+                    } else {
                         loginManager.setEmail_verified_at(true);
                     }
 
@@ -107,13 +108,13 @@ public class LoginWithPassActivity extends AppCompatActivity {
                 } else {
                     ShowToast.showToast(this, message);
                 }
-            }else{
+            } else {
                 ShowToast.showToast(this, "Failed");
             }
         });
-        
+
         loginWithPassViewModel.getEmailModelMutableLiveData().observe(this, loginWithPassResponseModel -> {
-            if(loginWithPassResponseModel != null){
+            if (loginWithPassResponseModel != null) {
                 String success = loginWithPassResponseModel.getSuccess();
                 String message = loginWithPassResponseModel.getMessage();
 
@@ -127,7 +128,7 @@ public class LoginWithPassActivity extends AppCompatActivity {
                     loginManager.settoken(loginWithPassResponseModel.getData().getToken());
                     loginManager.SetLoginStatus(false);
                     String email_verified_at = loginWithPassResponseModel.getData().getUserInfo().getEmail_verified_at();
-                    if(email_verified_at != null || !email_verified_at.isEmpty()|| !email_verified_at.equals("")){
+                    if (email_verified_at != null || !email_verified_at.isEmpty() || !email_verified_at.equals("")) {
                         loginManager.setEmail_verified_at(true);
                     }
 
@@ -146,30 +147,34 @@ public class LoginWithPassActivity extends AppCompatActivity {
         textView2.setOnClickListener(debouncedOnClickListener);
 
     }
+
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
-            if (v.getId() == R.id.signInButton){
-                signIn();
-            }else if(v.getId() == R.id.textView6){
+            if (v.getId() == R.id.signInButton) {
+                if (checkNetworkConnectivity()) {
+                    signIn();
+                }
+            } else if (v.getId() == R.id.textView6) {
                 signUpActivity();
-            }else if(v.getId() == R.id.loginWithOtpTextView){
+
+            } else if (v.getId() == R.id.loginWithOtpTextView) {
                 loginWithOtpActivity();
             }
         }
     };
 
-    private void checkNetworkConnectivity() {
-
+    private boolean checkNetworkConnectivity() {
+        swipeRefreshLayout.setRefreshing(false);
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
             constraintLayout.setVisibility(View.GONE);
+            return false;
         } else {
             viewStub.setVisibility(View.GONE);
             constraintLayout.setVisibility(View.VISIBLE);
+            return true;
         }
-        swipeRefreshLayout.setRefreshing(false);
-
     }
 
     private void signIn() {

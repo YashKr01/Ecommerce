@@ -43,19 +43,14 @@ public class SplashViewModel extends ViewModel {
         call.enqueue(new Callback<SplashBearerResponse>() {
             @Override
             public void onResponse(Call<SplashBearerResponse> call, Response<SplashBearerResponse> response) {
-                splashDataMutableLiveData.postValue(response.body().getSplashData());
-                String data = response.body().getSplashData().getToken();
-                String d = response.toString();
-
-
-                System.out.println(data);
-                System.out.println(d);
+                if(response.isSuccessful() && response.body() != null){
+                    splashDataMutableLiveData.postValue(response.body().getSplashData());
+                }
             }
 
             @Override
             public void onFailure(Call<SplashBearerResponse> call, Throwable t) {
-                System.out.println(call.request());
-                System.out.println(t.toString());
+                splashDataMutableLiveData.postValue(null);
             }
         });
     }
@@ -70,7 +65,7 @@ public class SplashViewModel extends ViewModel {
                 if (response.code() == 401) {
                     Toast.makeText(application, "Invalid Token", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(response != null){
+                    if(response.isSuccessful() && response != null){
                         refreshTokenResponseMutableLiveData.postValue(response.body());
                     }
                 }
@@ -79,8 +74,7 @@ public class SplashViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<RefreshTokenResponse> call, Throwable t) {
-                System.out.println(call.request());
-                System.out.println(t.toString());
+                refreshTokenResponseMutableLiveData.postValue(null);
             }
         });
     }

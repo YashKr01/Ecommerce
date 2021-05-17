@@ -49,7 +49,7 @@ public class ReviewViewModel extends AndroidViewModel {
             @Override
             public void onResponse(Call<ReviewModel> call, Response<ReviewModel> response) {
 
-                if (response.isSuccessful())
+                if (response.isSuccessful() && response.body() != null)
                     Toast.makeText(application, "Review Posted", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(application, "Couldn't post your review", Toast.LENGTH_SHORT).show();

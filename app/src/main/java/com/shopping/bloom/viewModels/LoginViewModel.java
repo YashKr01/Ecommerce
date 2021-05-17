@@ -41,7 +41,7 @@ public class LoginViewModel extends ViewModel {
         call.enqueue(new Callback<LoginResponseModel>() {
             @Override
             public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     mutableLiveData.postValue(response.body());
                 }
             }
