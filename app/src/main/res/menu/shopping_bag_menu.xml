@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_wishList"
         android:icon="@drawable/ic_wishlist_unselected"
         android:title="@string/wishlist"
         app:showAsAction="ifRoom" />

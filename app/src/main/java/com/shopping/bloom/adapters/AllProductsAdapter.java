@@ -15,13 +15,18 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.shopping.bloom.R;
+import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.ColorImageArray;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.faq.ColorModel;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,9 +39,9 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
 
     private static final String TAG = AllProductsAdapter.class.getName();
     private List<Product> productList;
-    private WishListListener wishListListener;
-    private Context context;
-    private Map<String, String> colorMap = new HashMap<>();
+    private final WishListListener wishListListener;
+    private final Context context;
+    private Map<String, String> colorMap;
     static String DEFAULT_BORDER_COLOR = "#FFFFFF";
     static int COLOR_SELECTOR_ICON_SIZE = 80;
     static int DEFAULT_BORDER_RADIUS = 8;
@@ -45,17 +50,17 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         this.context = context;
         this.wishListListener = wishListListener;
         productList = new ArrayList<>();
-        fillColorHashMap();
+        fillColorHashMap(context);
     }
 
-    private void fillColorHashMap() {
-        colorMap.put("Blue", "#2A93DF");
-        colorMap.put("Red", "#FD5353");
-        colorMap.put("Black", "#000000");
-        colorMap.put("Brown", "#A0552B");
-        colorMap.put("Green", "#11DF3E");
-        colorMap.put("Yellow", "#FAE423");
-        colorMap.put("White", "#E6E6E6");
+    //Get the Color pallet data from the Remote config
+    private void fillColorHashMap(Context context) {
+        colorMap = new HashMap<>();
+        List<ColorModel> colorModels = RemoteConfig.getColorPalletConfig(context).getColorPalletList();
+        Log.d(TAG, "fillColorHashMap: " + colorModels.toString());
+        for (ColorModel colorModel : colorModels) {
+            colorMap.put(colorModel.getName(), colorModel.getHexValue());
+        }
     }
 
     public void updateList(List<Product> products) {
@@ -88,7 +93,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         holder.viewFavorites.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                Log.d(TAG, "onDebouncedClick: ADD to fav");
                 boolean isLiked = product.isInUserWishList();
                 wishListListener.updateWishList(position, !isLiked);
             }
@@ -100,7 +104,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
                 wishListListener.productClicked(product);
             }
         });
-
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -121,8 +124,7 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
             //1. show primary image
             //2. Change wishListIcon (if product is previously added to wishList)
             //3. Populate color option
-            String imageURL = "http://bloomapp.in" + product.getPrimary_image();
-            Log.d(TAG, "setUpData: imageURL " + imageURL);
+            String imageURL = Const.GET_BASE_URL + product.getPrimary_image();
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
             tvPrice.setText(CommonUtils.getSignedAmount(product.getPrice()));
 
@@ -139,7 +141,7 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         }
 
         public void changeImage(Context context, String imagePath) {
-            String imageURL = "http://bloomapp.in" + imagePath;
+            String imageURL = Const.GET_BASE_URL + imagePath;
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
         }
 
@@ -156,17 +158,27 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
          *  @params callback is used to change the image upon clicking the color
          */
         public void addColors(Context context, List<ColorImageArray> colors, Map<String, String> colorMap, ColorClickListener callback) {
-            Log.d(TAG, "addColors: arraySize " + colors.size());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             parentColorsLayout.removeAllViewsInLayout();
             parentColorsLayout.removeAllViews();
             for (ColorImageArray color : colors) {
+                if (!colorMap.containsKey(color.getColor())) {
+                    String colorNotFound = "COLOR NOT found" + color.getColor();
+                    Log.d(TAG, "addColors: " + colorNotFound);
+                    FirebaseCrashlytics.getInstance().log(colorNotFound);
+                    continue;
+                }
                 CircleImageView colorCircle = new CircleImageView(context);
                 params.rightMargin = 28;
                 colorCircle.setLayoutParams(params);
                 colorCircle.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.bg_circle_selector));
-                colorCircle.setColorFilter(Color.parseColor(colorMap.get(color.getColor())), PorterDuff.Mode.SRC_ATOP);
+                try{
+                    colorCircle.setColorFilter(Color.parseColor(colorMap.get(color.getColor())), PorterDuff.Mode.SRC_ATOP);
+                } catch (NullPointerException nullPointerException) {
+                    Log.d(TAG, "addColors: unable to parse the color");
+                    FirebaseCrashlytics.getInstance().log("Unable to parse the color " + colorMap.get(color.getColor()));
+                }
                 colorCircle.getLayoutParams().height = COLOR_SELECTOR_ICON_SIZE;
                 colorCircle.getLayoutParams().width = COLOR_SELECTOR_ICON_SIZE;
                 colorCircle.setBorderWidth(DEFAULT_BORDER_RADIUS);
@@ -216,7 +228,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
                 }
             }
         }
-
     }
 
     @Override

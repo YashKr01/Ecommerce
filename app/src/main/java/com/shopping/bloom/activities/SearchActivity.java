@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.search;
+package com.shopping.bloom.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,8 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.SingleProductActivity;
-import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.adapters.search.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;

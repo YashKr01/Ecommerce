@@ -50,7 +50,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
 
         CommonUtils.loadImageWithGlide(
                 context,
-                Const.GET_CATEGORY_DATA + currentItem.getImagePath(),
+                Const.GET_BASE_URL + currentItem.getImagePath(),
                 holder.imageView,
                 false
         );

@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.wishlist;
+package com.shopping.bloom.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
 import com.shopping.bloom.adapters.wishlist.WishListActivityAdapter;
 import com.shopping.bloom.databinding.ActivityWishListBinding;

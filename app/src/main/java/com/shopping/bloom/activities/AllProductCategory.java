@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -27,7 +28,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
 import com.shopping.bloom.adapters.AllProductsAdapter;
 import com.shopping.bloom.adapters.FilterItemAdapter;
 import com.shopping.bloom.adapters.PaginationListener;
@@ -57,16 +57,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class AllProductCategory extends AppCompatActivity {
-
-
-    //todo end case-> if filters are added and then user select price low to high in that case filters are getting reset: completed
-    // api should be same just price sorting filter should be added in that
-    // later search to be implemented as well
-    // in filer sheet, close button should be clear all button and all filter will be removed on click: completed
-    // later onclick listenr to shopping bag activity
-    //
-
-
     private static final String TAG = AllProductCategory.class.getName();
 
     private ProductsViewModel viewModel;
@@ -114,7 +104,7 @@ public class AllProductCategory extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_product_category);
-
+        Log.d(TAG, "onCreate: ");
         initViews();
         setUpRecycleView();
         getIntentData();
@@ -208,8 +198,20 @@ public class AllProductCategory extends AppCompatActivity {
                 tvCategory.setVisibility(View.GONE);
             }
         } else {
-            Log.d(TAG, "getIntentData: NULL BUNDLE NO DATA RECEIVED");
+            String ARG_LIKED_BUNDLE = "app_liked_bundle";
+            bundle = getIntent().getBundleExtra(ARG_BUNDLE);
+            if(bundle != null) {
+                Log.d(TAG, "getIntentData: NOT NULL");
+            } else {
+                Log.d(TAG, "getIntentData: NULL");
+            }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: ");
     }
 
     private void setUpRecycleView() {
@@ -718,7 +720,7 @@ public class AllProductCategory extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_single_product, menu);
+        inflater.inflate(R.menu.menu_view_category, menu);
         changeCartIcon(EcommerceDatabase.getInstance().cartItemDao().changeCartIcon());
         return super.onPrepareOptionsMenu(menu);
     }
@@ -734,6 +736,9 @@ public class AllProductCategory extends AppCompatActivity {
             return true;
         } else if (ID == R.id.action_cart) {
             startActivity(new Intent(getApplicationContext(), ShoppingBagActivity.class));
+            return true;
+        } else if (ID == R.id.action_search){
+            startActivity(new Intent(this, SearchActivity.class));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

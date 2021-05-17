@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.search.SearchProduct;
 import com.shopping.bloom.restService.callback.SearchProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
@@ -56,7 +55,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ItemViewHo
 
         CommonUtils.loadImageWithGlide(
                 context,
-                Const.GET_CATEGORY_DATA + currentItem.getProductImage(),
+                Const.GET_BASE_URL + currentItem.getProductImage(),
                 holder.imageView,
                 true
         );

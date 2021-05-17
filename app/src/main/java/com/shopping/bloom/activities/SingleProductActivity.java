@@ -52,7 +52,6 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.shopping.bloom.BuildConfig;
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
 import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
 import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
 import com.shopping.bloom.adapters.singleproduct.RandomImageAdapter;
@@ -61,7 +60,6 @@ import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.CartItem;
-import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.ProductVariableResponse;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
@@ -70,7 +68,6 @@ import com.shopping.bloom.model.SingleProductImageResponse;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.AddToCartCallback;
 import com.shopping.bloom.utils.CommonUtils;
-import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -328,7 +325,12 @@ public class SingleProductActivity extends AppCompatActivity {
         btnAddToBag.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
+                //Check for internet connection and then
                 //Check if user is logged in or not
+
+                if(!checkNetworkConnectivity()){
+                    return;
+                }
 
                 /*
                  *   below method returns false if User is logged in :/
@@ -648,15 +650,17 @@ public class SingleProductActivity extends AppCompatActivity {
     }
 
 
-    private void checkNetworkConnectivity() {
+    private boolean checkNetworkConnectivity() {
         if (!NetworkCheck.isConnect(this)) {
             viewStub.setVisibility(View.VISIBLE);
             relativeLayout.setVisibility(View.GONE);
             favLinearLayout.setVisibility(View.GONE);
+            return false;
         } else {
             viewStub.setVisibility(View.GONE);
             relativeLayout.setVisibility(View.VISIBLE);
             favLinearLayout.setVisibility(View.VISIBLE);
+            return true;
         }
     }
 

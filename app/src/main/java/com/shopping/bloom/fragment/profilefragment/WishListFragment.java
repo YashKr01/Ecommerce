@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shopping.bloom.activities.SingleProductActivity;
-import com.shopping.bloom.activities.wishlist.WishListActivity;
+import com.shopping.bloom.activities.WishListActivity;
 import com.shopping.bloom.adapters.profilefragment.WishListAdapter;
 import com.shopping.bloom.databinding.FragmentWishListBinding;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;

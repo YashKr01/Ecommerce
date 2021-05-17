@@ -17,6 +17,7 @@ import com.shopping.bloom.model.newfragment.NewProduct;
 import com.shopping.bloom.model.newfragment.NewProductCategory;
 import com.shopping.bloom.restService.callback.NewProductOnClick;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
         holder.title.setText(currentItem.getCategoryName());
         holder.description.setText(currentItem.getType());
 
-        String imagePath = "http://bloomapp.in" + currentItem.getThumbNail();
+        String imagePath = Const.GET_BASE_URL + currentItem.getThumbNail();
         CommonUtils.loadImageWithGlide(context,
                 imagePath,
                 holder.imageView,

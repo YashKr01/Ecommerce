@@ -115,6 +115,7 @@
     <string name="title_place_order">Place order</string>
     <string name="place_order">Place Order</string>
     <string name="total">Total</string>
+    <string name="can_not_add_more_items">Can not add more item</string>
 
 
 </resources>

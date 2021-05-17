@@ -16,6 +16,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.List;
@@ -44,8 +45,7 @@ public class RandomImageAdapter extends RecyclerView.Adapter<RandomImageAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RandomImageAdapter.ViewHolder holder, int position) {
-        System.out.println("name = " + imageList.get(position).getProduct_name());
-        Glide.with(context).load("http://www.bloomapp.in" + imageList.get(position).getPrimary_image())
+        Glide.with(context).load(Const.GET_BASE_URL + imageList.get(position).getPrimary_image())
                 .placeholder(R.drawable.ic_placeholder_product).into(holder.imageView);
 
         holder.imageView.setOnClickListener(new DebouncedOnClickListener(200) {

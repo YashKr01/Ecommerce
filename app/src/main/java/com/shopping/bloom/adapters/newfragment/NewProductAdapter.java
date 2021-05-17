@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,7 +59,7 @@ public class NewProductAdapter extends RecyclerView.Adapter<NewProductAdapter.Ch
             NewProduct currentItem = list.get(position);
 
             CommonUtils.loadImageWithGlide(context,
-                    Const.GET_CATEGORY_DATA + currentItem.getImagePath(),
+                    Const.GET_BASE_URL + currentItem.getImagePath(),
                     holder.imageView,
                     true);
             holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));

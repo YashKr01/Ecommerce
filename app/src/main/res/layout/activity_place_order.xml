@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.CheckoutActivity">
+    tools:context=".activities.PlaceOrderActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -349,7 +349,6 @@
                     android:id="@+id/llWalletBalance"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 

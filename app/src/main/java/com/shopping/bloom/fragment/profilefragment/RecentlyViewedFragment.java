@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shopping.bloom.activities.SingleProductActivity;
-import com.shopping.bloom.activities.recentlyviewed.RecentlyViewedActivity;
+import com.shopping.bloom.activities.RecentlyViewedActivity;
 import com.shopping.bloom.adapters.profilefragment.RecentlyViewedAdapter;
 import com.shopping.bloom.databinding.FragmentRecentlyViewedBinding;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedItem;

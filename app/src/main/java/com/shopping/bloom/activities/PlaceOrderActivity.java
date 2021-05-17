@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.coupons.CouponsActivity;
 import com.shopping.bloom.adapters.ShoppingProductAdapter;
 import com.shopping.bloom.bottomSheet.CheckoutProductBottomSheet;
 import com.shopping.bloom.model.CartItem;
@@ -39,9 +38,9 @@ import java.util.List;
 
 import static com.shopping.bloom.utils.Const.ADD_ADDRESS_ACTIVITY;
 
-public class CheckoutActivity extends AppCompatActivity {
+public class PlaceOrderActivity extends AppCompatActivity {
 
-    private static final String TAG = CheckoutActivity.class.getName();
+    private static final String TAG = PlaceOrderActivity.class.getName();
 
     TextView tvDiscountPrice, tvSubTotal, tvShippingCharge, tvTotal;
     TextView tvCouponText, tvRemoveCoupon;
@@ -69,10 +68,10 @@ public class CheckoutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_checkout);
+        setContentView(R.layout.activity_place_order);
 
         viewModel = ViewModelProviders.of(this).get(ShoppingBagViewModel.class);
-        loginManager = new LoginManager(CheckoutActivity.this);
+        loginManager = new LoginManager(PlaceOrderActivity.this);
         initView();
         setUpRecyclerView();
         subscribeToUI(viewModel.getAllCartItem());
@@ -136,7 +135,7 @@ public class CheckoutActivity extends AppCompatActivity {
             if (loginManager.getIs_primary_address_available()) {
                 placeOrder();
             } else {
-                Toast.makeText(CheckoutActivity.this, "No Address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlaceOrderActivity.this, "No Address", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), AddShippingAddressActivity.class);
                 startActivityForResult(intent, ADD_ADDRESS_ACTIVITY);
             }
@@ -189,7 +188,7 @@ public class CheckoutActivity extends AppCompatActivity {
         public void onFailed(int errorCode, String errorMessage) {
             showProgressBar(false);
             if (errorCode == 200) {
-                Toast.makeText(CheckoutActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlaceOrderActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     };
@@ -251,7 +250,7 @@ public class CheckoutActivity extends AppCompatActivity {
             String ARG_ACTIVITY_NAME = "calling_activity_name";
             Intent intent = new Intent(this, CouponsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.putExtra(ARG_ACTIVITY_NAME, CheckoutActivity.class.getName());
+            intent.putExtra(ARG_ACTIVITY_NAME, PlaceOrderActivity.class.getName());
             startActivityForResult(intent, REQ_COUPON_CODE);
         }
     };
@@ -259,29 +258,37 @@ public class CheckoutActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQ_ADDRESS_CODE) {
-            String ARG_ADDRESS_ID = "ADDRESS_ID";
-            String ARG_ADDRESS = "ADDRESS";
-            if (data != null) {
-                address = String.valueOf(data.getStringExtra(ARG_ADDRESS));
-                addressID = String.valueOf(data.getStringExtra(ARG_ADDRESS_ID));
-                if (addressID == null || address == null ||
-                        addressID.isEmpty() || address.isEmpty()) {
+        if (requestCode == REQ_ADDRESS_CODE) {
+            if (resultCode == RESULT_CANCELED) {
+                shippingAddress.setText("");
+                return;
+            }
+
+            if (resultCode == RESULT_OK) {
+                String ARG_ADDRESS_ID = "ADDRESS_ID";
+                String ARG_ADDRESS = "ADDRESS";
+                if (data != null) {
+                    address = String.valueOf(data.getStringExtra(ARG_ADDRESS));
+                    addressID = String.valueOf(data.getStringExtra(ARG_ADDRESS_ID));
+                    if (addressID == null || address == null ||
+                            addressID.isEmpty() || address.isEmpty()) {
+                        showError(REQ_ADDRESS_CODE);
+                        return;
+                    }
+                    address = address.replaceAll(",", "\n");
+                    shippingAddress.setText(address);
+                } else {
+                    Log.d(TAG, "onActivityResult: NULL address");
                     showError(REQ_ADDRESS_CODE);
-                    return;
                 }
-                address = address.replaceAll(",", "\n");
-                shippingAddress.setText(address);
-            } else {
-                showError(REQ_ADDRESS_CODE);
             }
         }
         if (resultCode == RESULT_OK && requestCode == REQ_COUPON_CODE) {
             if (data != null) {
                 promoCode = data.getStringExtra("PROMOCODE");
                 promoOffer = String.valueOf(data.getDoubleExtra("PROMO_OFFER", 0));
-                checkNetworkAndFetchData();
                 applyOrRemoveCoupon(true);
+                checkNetworkAndFetchData();
             }
         }
     }
@@ -318,6 +325,11 @@ public class CheckoutActivity extends AppCompatActivity {
     }
 
     private void applyOrRemoveCoupon(boolean apply) {
+        if (!NetworkCheck.isConnect(this)) {
+            Toast.makeText(this, "No internet!!", Toast.LENGTH_SHORT)
+                    .show();
+            apply = false;
+        }
         if (apply) {
             String text = "Promocode " + promoCode + " applied successfully";
             tvCouponText.setText(text);
@@ -342,7 +354,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private void changeAddress() {
         String CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, MyAddressActivity.class);
-        intent.putExtra(CALLING_ACTIVITY, CheckoutActivity.class.getName());
+        intent.putExtra(CALLING_ACTIVITY, PlaceOrderActivity.class.getName());
         startActivityForResult(intent, REQ_ADDRESS_CODE);
     }
 
