@@ -172,8 +172,8 @@ public class LoginManager {
 
     public String gettoken() {
 
-      //  return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9mcm9udGVuZFwvZ2V0UHJvZHVjdHMiLCJpYXQiOjE2MTg2NTk4MjYsImV4cCI6MTYyMzMyNjg2OCwibmJmIjoxNjIwNzM0ODY4LCJqdGkiOiI5RVR1WWlVODJMT0dUckVlIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.VPXgReY9FhDaYNitX6MK5CO2TLwKtF8NWT4Mwy3XKjA";
-        return sharedPreferences.getString(token, "NA");
+          //  return "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9ibG9vbWFwcC5pblwvYXBpXC9mcm9udGVuZFwvZ2V0UHJvZHVjdHMiLCJpYXQiOjE2MTg2NTk4MjYsImV4cCI6MTYyMzMyNjg2OCwibmJmIjoxNjIwNzM0ODY4LCJqdGkiOiI5RVR1WWlVODJMT0dUckVlIiwic3ViIjoxLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.VPXgReY9FhDaYNitX6MK5CO2TLwKtF8NWT4Mwy3XKjA";
+       return sharedPreferences.getString(token, "NA");
     }
 
     public void setGuest_token(String token){

@@ -37,6 +37,7 @@ public class RandomProductAdapter extends RecyclerView.Adapter<RandomProductAdap
         this.loadMoreItems = loadMoreItems;
     }
 
+    //todo remove dummy list and image view image loading
     public void updateList(List<Product> list) {
         if (randomProductList == null) {
             randomProductList = new ArrayList<>(list);

@@ -50,6 +50,7 @@ public class NewAdapter extends RecyclerView.Adapter<NewAdapter.MyViewHolder> {
         holder.title.setText(currentItem.getCategoryName());
         holder.description.setText(currentItem.getType());
 
+        //todo image
         String imagePath = "http://bloomapp.in" + currentItem.getThumbNail();
         CommonUtils.loadImageWithGlide(context,
                 imagePath,

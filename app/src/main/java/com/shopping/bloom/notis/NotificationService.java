@@ -1,4 +1,4 @@
-package com.shopping.bloom.firebaseConfig;
+package com.shopping.bloom.notis;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,6 +14,13 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.shopping.bloom.R;
 
 public class NotificationService extends FirebaseMessagingService {
+
+
+    @Override
+    public void onNewToken(@NonNull String s) {
+        super.onNewToken(s);
+
+    }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {

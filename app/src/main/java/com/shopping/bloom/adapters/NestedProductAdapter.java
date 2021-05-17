@@ -84,6 +84,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
 
         public void setUpData(Context context, SubCategory subCategory) {
             productPrice.setText(subCategory.getCategory_name());
+            //todo change image path
             String imageURL = "http://bloomapp.in" + subCategory.getCategory_thumbnail();
             Log.d(TAG, "onBindViewHolder: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, productImage, false);

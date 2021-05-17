@@ -103,7 +103,7 @@
         </provider>
 
         <service
-            android:name=".firebaseConfig.NotificationService"
+            android:name=".notis.NotificationService"
             android:directBootAware="true"
             android:exported="false">
             <intent-filter>
