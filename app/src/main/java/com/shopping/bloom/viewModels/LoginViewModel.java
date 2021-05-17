@@ -1,22 +1,14 @@
 package com.shopping.bloom.viewModels;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
-import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.shopping.bloom.activities.OtpActivity;
 import com.shopping.bloom.model.LoginModel;
-import com.shopping.bloom.model.RandomImageDataResponse;
-import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.response.LoginResponseModel;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

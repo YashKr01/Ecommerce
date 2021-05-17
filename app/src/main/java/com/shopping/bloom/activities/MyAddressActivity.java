@@ -83,18 +83,15 @@ public class MyAddressActivity extends AppCompatActivity {
 
         myAddressViewModel = ViewModelProviders.of(this).get(MyAddressViewModel.class);
 
-        myAddressViewModel.getMutableLiveData().observe(this, new Observer<List<AddressDataResponse>>() {
-            @Override
-            public void onChanged(List<AddressDataResponse> addressDataResponse) {
-                if (addressDataResponse != null) {
-                    addressList = addressDataResponse;
-                    addressAdapter.setAddressList(addressList);
-                    addressAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(MyAddressActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                }
-
+        myAddressViewModel.getMutableLiveData().observe(this, addressDataResponse -> {
+            if (addressDataResponse != null) {
+                addressList = addressDataResponse;
+                addressAdapter.setAddressList(addressList);
+                addressAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(MyAddressActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
+
         });
         myAddressViewModel.makeApiCall(0, 10, getApplication());
 

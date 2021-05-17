@@ -60,8 +60,8 @@ import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
 import com.shopping.bloom.model.CartItem;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductVariableResponse;
-import com.shopping.bloom.model.RandomImageDataResponse;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.model.SingleProductDescResponse;
 import com.shopping.bloom.model.SingleProductImageResponse;
@@ -96,7 +96,7 @@ public class SingleProductActivity extends AppCompatActivity {
     SizeAdapter sizeAdapter;
     SingleProductDataResponse singleProductDataResponse;
     List<String> colorList, sizeList, imageList;
-    List<RandomImageDataResponse> randomImageList;
+    List<Product> randomImageList;
     List<String> selectedSizeList, selectedColorList;
     int pos, categoryId;
     LinearLayout linearLayout;
