@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.shoppingbag.ShoppingBagActivity">
+    tools:context=".activities.ShoppingBagActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/ToolbarStyle"
         android:layout_width="@dimen/sb_size_0"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:elevation="@dimen/sb_size_6"
-        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,17 +22,34 @@
         android:id="@+id/rlEmptyCart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/white"
         android:clickable="true"
         android:elevation="@dimen/sb_size_4"
         android:gravity="center"
         android:visibility="gone"
-        android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <include layout="@layout/layout_empty_cart" />
+    </RelativeLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/srlNoInternet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:elevation="@dimen/sb_size_4"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <include
-            layout="@layout/layout_empty_cart"/>
-    </RelativeLayout>
+            layout="@layout/no_internet_connected"
+            />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <RelativeLayout
         android:id="@+id/rlProgressBar"
@@ -74,13 +91,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sb_size_50"
                 android:background="@color/blue_100"
+                android:ellipsize="end"
                 android:gravity="center_vertical|start"
+                android:maxLines="1"
+                android:paddingHorizontal="@dimen/sb_size_18"
                 android:text="Temporary Offer"
                 android:textColor="@color/blue_grey_900"
                 android:textSize="@dimen/sb_text_size_14"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:paddingHorizontal="@dimen/sb_size_18"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -89,21 +106,21 @@
                 android:id="@+id/shopping_bag_recycler_view"
                 android:layout_width="@dimen/sb_size_0"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                tools:visibility="gone"
                 android:layout_marginTop="@dimen/sb_size_12"
+                android:clipToPadding="false"
                 android:paddingBottom="@dimen/sb_size_40"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvOffer"
-                tools:listitem="@layout/item_shopping_bag" />
+                tools:listitem="@layout/item_shopping_bag"
+                tools:visibility="gone" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sb_size_8"
                 app:cardElevation="@dimen/sb_size_0"
-                app:layout_constraintTop_toBottomOf="@id/shopping_bag_recycler_view"
-                android:layout_marginTop="@dimen/sb_size_8">
+                app:layout_constraintTop_toBottomOf="@id/shopping_bag_recycler_view">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -114,12 +131,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sb_size_12"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                        android:paddingHorizontal="@dimen/sb_text_size_18"
                         android:text="You might also want to fill this with"
                         android:textColor="@color/blue_grey_900"
-                        android:paddingHorizontal="@dimen/sb_text_size_18"
                         android:textSize="@dimen/sb_size_14"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -128,8 +145,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sb_size_12"
                         android:clipToPadding="false"
-                        app:layout_constraintTop_toBottomOf="@+id/tvDummyText2"
-                        android:paddingBottom="@dimen/sb_size_60"/>
+                        android:paddingBottom="@dimen/sb_size_60"
+                        app:layout_constraintTop_toBottomOf="@+id/tvDummyText2" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -163,8 +180,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/sb_size_10"
-            android:text="$ 500"
             android:layout_marginStart="@dimen/sb_size_4"
+            android:text="$ 500"
             android:textColor="@color/black"
             android:textSize="@dimen/sb_size_16"
             app:layout_constraintBottom_toTopOf="@+id/btCheckOut"
@@ -175,8 +192,8 @@
             android:id="@+id/btCheckOut"
             android:layout_width="match_parent"
             android:layout_height="@dimen/sb_size_45"
-            android:layout_marginBottom="@dimen/sb_size_8"
             android:layout_marginHorizontal="@dimen/sb_size_18"
+            android:layout_marginBottom="@dimen/sb_size_8"
             android:background="@color/grey_900"
             android:gravity="center"
             android:paddingVertical="@dimen/sb_size_8"
@@ -190,16 +207,15 @@
             android:id="@+id/tvApplyCoupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/sb_size_8"
             android:text="Apply coupon code on the next screen"
             android:textColor="@color/blue_grey_900"
-            android:layout_marginBottom="@dimen/sb_size_8"
             android:textSize="@dimen/sb_text_size_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

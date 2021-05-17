@@ -16,6 +16,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class RecommendProductAdapter extends RecyclerView.Adapter<RecommendProdu
         public void setUpData(Context context, Product product) {
             String price = CommonUtils.getSignedAmount(product.getPrice());
             productPrice.setText(price);
-            String imageURL = "http://bloomapp.in" + product.getPrimary_image();
+            String imageURL = Const.GET_BASE_URL + product.getPrimary_image();
             Log.d(TAG, "onBindViewHolder: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, productImage, false);
         }

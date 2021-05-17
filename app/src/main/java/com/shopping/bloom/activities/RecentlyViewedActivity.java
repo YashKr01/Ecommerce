@@ -1,16 +1,14 @@
-package com.shopping.bloom.activities.recentlyviewed;
+package com.shopping.bloom.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.recentlyviewedactivity.RecentlyViewedActivityAdapter;
 import com.shopping.bloom.adapters.wishlist.RecommendationsAdapter;
 import com.shopping.bloom.databinding.ActivityRecentlyViewedBinding;

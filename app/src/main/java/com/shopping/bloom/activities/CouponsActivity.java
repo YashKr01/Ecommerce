@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.coupons;
+package com.shopping.bloom.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.shopping.bloom.activities.CheckoutActivity;
 import com.shopping.bloom.adapters.coupons.CouponsViewPagerAdapter;
 import com.shopping.bloom.databinding.ActivityCouponsBinding;
 import com.shopping.bloom.fragment.coupons.ExpiredCouponsFragment;
@@ -96,7 +95,7 @@ public class CouponsActivity extends AppCompatActivity implements SwipeRefreshLa
     public void onCouponClickListener(Coupon coupon) {
         if(CALLING_ACTIVITY == null || CALLING_ACTIVITY.isEmpty()) return ;
         Intent returnIntent = new Intent();
-        if (CALLING_ACTIVITY.equals(CheckoutActivity.class.getName())) {
+        if (CALLING_ACTIVITY.equals(PlaceOrderActivity.class.getName())) {
             Log.d(TAG, "onCouponClickListener: " + coupon.getPromoCode());
             returnIntent.putExtra("PROMOCODE", coupon.getPromoCode());
             returnIntent.putExtra("PROMO_OFFER", coupon.getDiscount());

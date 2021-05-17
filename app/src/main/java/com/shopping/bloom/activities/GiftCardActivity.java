@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.giftcard;
+package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;

@@ -62,6 +62,7 @@ public interface ApiInterface {
             @Query("category_name") String category_name
     );
 
+    /*USE THIS CLASS FOR FETCHING THE RANDOM PRODUCTS*/
     @GET("/api/frontend/getRandomProducts")
     @Headers("Accept-type: application/json")
     Call<GetProductsResponse> getRandomProducts(

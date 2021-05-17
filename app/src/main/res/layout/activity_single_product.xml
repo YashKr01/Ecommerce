@@ -27,11 +27,6 @@
         android:background="@color/white"
         android:visibility="gone" />
 
-    <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-    <!--        android:id="@+id/swipeRefreshLayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content">-->
-
     <RelativeLayout
         android:id="@+id/hideRelative"
         android:layout_width="match_parent"
@@ -857,7 +852,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </RelativeLayout>
-    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     <LinearLayout
         android:id="@+id/fav_layout"

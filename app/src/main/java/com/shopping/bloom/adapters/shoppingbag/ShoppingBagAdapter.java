@@ -15,6 +15,7 @@ import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.restService.callback.ShoppingBagItemListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
+import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,9 +48,17 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
         holder.setUpData(cartItem, context);
 
         holder.tvAddItem.setOnClickListener((v)->{
+            if(!NetworkCheck.isConnect(context)){
+                mListener.noInternet();
+                return;
+            }
             changeQuantity(position, cartItem, true);
         });
         holder.tvRemoveItem.setOnClickListener((v)->{
+            if(!NetworkCheck.isConnect(context)){
+                mListener.noInternet();
+                return;
+            }
             changeQuantity(position, cartItem, false);
         });
     }
@@ -91,7 +100,7 @@ public class ShoppingBagAdapter extends RecyclerView.Adapter<ShoppingBagAdapter.
         public void setUpData(CartItem item, Context context) {
             CommonUtils.loadImageWithGlide(
                     context,
-                    Const.GET_CATEGORY_DATA + item.getPrimaryImage(),
+                    Const.GET_BASE_URL + item.getPrimaryImage(),
                     imgProductImage,
                     false
             );

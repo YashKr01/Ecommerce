@@ -17,6 +17,7 @@ import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public class RandomProductAdapter extends RecyclerView.Adapter<RandomProductAdap
         public void setUpData(Context context, Product subCategory) {
             String price = CommonUtils.getSignedAmount(subCategory.getPrice());
             productPrice.setText(price);
-            String imageURL = "http://bloomapp.in" + subCategory.getPrimary_image();
+            String imageURL = Const.GET_BASE_URL + subCategory.getPrimary_image();
             Log.d(TAG, "onBindViewHolder: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, productImage, false);
         }

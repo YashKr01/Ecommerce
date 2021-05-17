@@ -64,7 +64,7 @@ public class ShoppingProductAdapter extends RecyclerView.Adapter<ShoppingProduct
         void setUpData(Context context, CartItem item) {
             CommonUtils.loadImageWithGlide(
                     context,
-                    Const.GET_CATEGORY_DATA + item.getPrimaryImage(),
+                    Const.GET_BASE_URL + item.getPrimaryImage(),
                     imgProductImage,
                     false
             );

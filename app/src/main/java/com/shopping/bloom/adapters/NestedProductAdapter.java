@@ -17,6 +17,7 @@ import com.shopping.bloom.model.SubCategory;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
 import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class NestedProductAdapter extends RecyclerView.Adapter<NestedProductAdap
 
         public void setUpData(Context context, SubCategory subCategory) {
             productPrice.setText(subCategory.getCategory_name());
-            String imageURL = "http://bloomapp.in" + subCategory.getCategory_thumbnail();
+            String imageURL = Const.GET_BASE_URL + subCategory.getCategory_thumbnail();
             Log.d(TAG, "onBindViewHolder: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, productImage, false);
         }

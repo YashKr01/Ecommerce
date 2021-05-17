@@ -102,8 +102,7 @@ public class MyAddressActivity extends AppCompatActivity {
 
     private void setNavigationIcon() {
         toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            onBackPressed();
             finish();
         });
     }
@@ -122,23 +121,7 @@ public class MyAddressActivity extends AppCompatActivity {
     private final AddressClickListener clickListener = new AddressClickListener() {
         @Override
         public void onAddressClicked(AddressDataResponse address) {
-            if (CALLING_ACTIVITY == null || CALLING_ACTIVITY.isEmpty()) {
-                return;
-            }
-            String ARG_ADDRESS_ID = "ADDRESS_ID";
-            String ARG_ADDRESS = "ADDRESS";
-            if (CALLING_ACTIVITY.equals(CheckoutActivity.class.getName())) {
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra(ARG_ADDRESS_ID, address.getId());
-                String buildAddress = (address.getAddress_name() + "," +
-                        address.getAddress_line_1() + "," +
-                        address.getCity() + "," +
-                        address.getPincode() + "," +
-                        address.getContact_number());
-                returnIntent.putExtra(ARG_ADDRESS, buildAddress);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
-            }
+            selectAddress(address);
         }
 
         @Override
@@ -161,6 +144,12 @@ public class MyAddressActivity extends AppCompatActivity {
     };
 
     @Override
+    public void onBackPressed() {
+        selectAddress(null);
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_ADDRESS_ACTIVITY && resultCode == RESULT_OK) {
@@ -168,4 +157,31 @@ public class MyAddressActivity extends AppCompatActivity {
             startActivity(getIntent());
         }
     }
+
+    private void selectAddress(AddressDataResponse address) {
+        if (CALLING_ACTIVITY == null || CALLING_ACTIVITY.isEmpty()) {
+            return;
+        }
+        if(address == null) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_CANCELED, returnIntent);
+            finish();
+            return;
+        }
+        String ARG_ADDRESS_ID = "ADDRESS_ID";
+        String ARG_ADDRESS = "ADDRESS";
+        if (CALLING_ACTIVITY.equals(PlaceOrderActivity.class.getName())) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(ARG_ADDRESS_ID, address.getId());
+            String buildAddress = (address.getAddress_name() + "," +
+                    address.getAddress_line_1() + "," +
+                    address.getCity() + "," +
+                    address.getPincode() + "," +
+                    address.getContact_number());
+            returnIntent.putExtra(ARG_ADDRESS, buildAddress);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+    }
+
 }

@@ -331,7 +331,6 @@ public class ShopFragment extends Fragment {
     private final ProductResponseListener recommendProductListener = new ProductResponseListener() {
         @Override
         public void onSuccess(List<Product> products) {
-            Log.d(TAG, "onSuccess: " + products.toString());
             RECOMMEND_PRODUCT_CURRENT_PAGE++;
             recommendProductAdapter.updateList(products);
         }

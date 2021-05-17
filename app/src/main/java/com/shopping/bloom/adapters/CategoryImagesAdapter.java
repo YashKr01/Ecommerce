@@ -14,6 +14,7 @@ import com.shopping.bloom.R;
 import com.shopping.bloom.model.Category;
 import com.shopping.bloom.restService.callback.CategoryImageClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +56,7 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
     @Override
     public void onBindViewHolder(@NonNull CategoryImageViewHolder holder, int position) {
         Category category = getItemAt(position);
-        String IMAGE_URL = "http://bloomapp.in";
+        String IMAGE_URL = Const.GET_BASE_URL;
 
         if(getItemViewType(position) == LARGE_IMAGE) {
             IMAGE_URL = IMAGE_URL + category.getBig_thumbnail();
@@ -77,7 +78,6 @@ public class CategoryImagesAdapter extends RecyclerView.Adapter<CategoryImagesAd
         }
 
         public void setUpData(Context context,String imageUrl) {
-            Log.d(TAG, "onBindViewHolder: imageURL "+ imageUrl);
             CommonUtils.loadImageWithGlide(context, imageUrl, imgCategoryImage, true);
         }
 

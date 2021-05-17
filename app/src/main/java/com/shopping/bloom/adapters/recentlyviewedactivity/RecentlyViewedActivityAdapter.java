@@ -49,7 +49,7 @@ public class RecentlyViewedActivityAdapter extends RecyclerView.Adapter<Recently
         holder.textView.setText(CommonUtils.getSignedAmount(currentItem.getPrice()));
         CommonUtils.loadImageWithGlide(
                 context,
-                Const.GET_CATEGORY_DATA + currentItem.getImagePath(),
+                Const.GET_BASE_URL + currentItem.getImagePath(),
                 holder.imageView,
                 true
         );

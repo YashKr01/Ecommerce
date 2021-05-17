@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.CartItem;
-import com.shopping.bloom.model.Category;
-import com.shopping.bloom.restService.callback.SimpleClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 
@@ -66,7 +64,7 @@ public class ProductsOverViewAdapter extends RecyclerView.Adapter<ProductsOverVi
         void setUpData(Context context, CartItem item) {
             CommonUtils.loadImageWithGlide(
                     context,
-                    Const.GET_CATEGORY_DATA + item.getPrimaryImage(),
+                    Const.GET_BASE_URL + item.getPrimaryImage(),
                     imgProductImage,
                     false
             );

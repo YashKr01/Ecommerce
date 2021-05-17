@@ -7,4 +7,5 @@ public interface ShoppingBagItemListener {
     void removeCartItem(CartItem cartItem);
     void maxItemAdded();
     void updateCartItem(CartItem cartItem);
+    void noInternet();
 }

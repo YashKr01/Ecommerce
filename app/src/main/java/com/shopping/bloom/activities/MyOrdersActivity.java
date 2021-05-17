@@ -1,4 +1,4 @@
-package com.shopping.bloom.activities.myorders;
+package com.shopping.bloom.activities;
 
 import android.os.Bundle;
 import android.view.MenuItem;

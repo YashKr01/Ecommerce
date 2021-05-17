@@ -35,7 +35,6 @@ public class MyOrderDetailsAdapter extends RecyclerView.Adapter<MyOrderDetailsAd
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
-
         Order currentItem = orderList.get(position);
         holder.orderName.setText(currentItem.getOrderName());
         holder.orderPrice.setText(currentItem.getOrderPrice());
@@ -55,14 +54,13 @@ public class MyOrderDetailsAdapter extends RecyclerView.Adapter<MyOrderDetailsAd
     }
 
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder {
+    public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView orderName, orderDate, orderPaymentMethod, orderPrice, orderNumber;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
-
             imageView = itemView.findViewById(R.id.img_product_order);
             orderName = itemView.findViewById(R.id.txt_order_name);
             orderDate = itemView.findViewById(R.id.txt_order_date);

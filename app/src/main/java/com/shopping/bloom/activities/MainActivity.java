@@ -24,12 +24,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
-import com.shopping.bloom.activities.search.SearchActivity;
-import com.shopping.bloom.activities.shoppingbag.ShoppingBagActivity;
-import com.shopping.bloom.activities.wishlist.WishListActivity;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.databinding.ActivityMainBinding;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
+import com.shopping.bloom.utils.LoginManager;
+import com.shopping.bloom.utils.NetworkCheck;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -90,16 +89,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onDestinationChanged: current fragment Id " + destination.getId());
                 //show the searchBar if current fragment is shopFragment or category Fragment
                 if (destination.getId() == R.id.shopFragment) {
-                   changeToolbarImage(1);
+                    changeToolbarImage(1);
                     bottomsheet_int = 1;
                 } else if (destination.getId() == R.id.categoryFragment) {
-                   changeToolbarImage(1);
+                    changeToolbarImage(1);
                     bottomsheet_int = 2;
                 } else if (destination.getId() == R.id.newTrendFragment) {
-                   changeToolbarImage(0);
+                    changeToolbarImage(0);
                     bottomsheet_int = 3;
                 } else if (destination.getId() == R.id.profileFragment) {
-                   changeToolbarImage(2);
+                    changeToolbarImage(2);
                     bottomsheet_int = 4;
                 }
 
@@ -208,17 +207,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void changeCartIcon(LiveData<Integer> cartSize) {
         cartSize.observe(this, integer -> {
-            int  size = 0;
+            int size = 0;
             try {
                 size = integer;
-            } catch ( NullPointerException e) {
+            } catch (NullPointerException e) {
                 size = 0;
                 Log.d(TAG, "onChanged: ");
             }
             Log.d(TAG, "changeCartIcon: menu size " + toolbar.getMenu().size());
             MenuItem cartIcon = toolbar.getMenu().findItem(R.id.action_cart);
-            if(cartIcon != null)  {
-                if(size == 0) {
+            if (cartIcon != null) {
+                if (size == 0) {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
                 } else {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
@@ -231,15 +230,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // @param imageTo pass 1 for default image
-    private void changeToolbarImage(int imageTo){
+    private void changeToolbarImage(int imageTo) {
         int DEFAULT_IMAGE = 1;
-        if(imageTo == DEFAULT_IMAGE) {
+        if (imageTo == DEFAULT_IMAGE) {
             mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.VISIBLE);
             Glide.with(this)
                     .load(R.drawable.ic_bloom)
                     .into(mainView.layoutToolbar.imgToolbarLogo);
             return;
-        } else if(imageTo == 0) {
+        } else if (imageTo == 0) {
             mainView.layoutToolbar.imgToolbarLogo.setVisibility(View.VISIBLE);
             Glide.with(this)
                     .load(R.drawable.ic_bloom_new)
@@ -261,7 +260,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), SearchActivity.class));
             return true;
         } else if (id == R.id.action_cart) {
-            startActivity(new Intent(getApplicationContext(), ShoppingBagActivity.class));
+            if(!NetworkCheck.isConnect(this)){
+                Toast.makeText(this, getString(R.string.no_internet_connected), Toast.LENGTH_SHORT)
+                        .show();
+                return true;
+            }
+            if (!LoginManager.getInstance().isLoggedIn()) {
+                startActivity(new Intent(MainActivity.this, ShoppingBagActivity.class));
+            } else {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
             return true;
         } else {
             return super.onOptionsItemSelected(item);

@@ -20,6 +20,7 @@ import com.shopping.bloom.model.ColorImageArray;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.WishListListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import java.util.ArrayList;
@@ -88,7 +89,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         holder.viewFavorites.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                Log.d(TAG, "onDebouncedClick: ADD to fav");
                 boolean isLiked = product.isInUserWishList();
                 wishListListener.updateWishList(position, !isLiked);
             }
@@ -122,7 +122,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
             //2. Change wishListIcon (if product is previously added to wishList)
             //3. Populate color option
             String imageURL = "http://bloomapp.in" + product.getPrimary_image();
-            Log.d(TAG, "setUpData: imageURL " + imageURL);
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
             tvPrice.setText(CommonUtils.getSignedAmount(product.getPrice()));
 
@@ -139,7 +138,7 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         }
 
         public void changeImage(Context context, String imagePath) {
-            String imageURL = "http://bloomapp.in" + imagePath;
+            String imageURL = Const.GET_BASE_URL + imagePath;
             CommonUtils.loadImageWithGlide(context, imageURL, imgProductImage, true);
         }
 
@@ -156,7 +155,6 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
          *  @params callback is used to change the image upon clicking the color
          */
         public void addColors(Context context, List<ColorImageArray> colors, Map<String, String> colorMap, ColorClickListener callback) {
-            Log.d(TAG, "addColors: arraySize " + colors.size());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             parentColorsLayout.removeAllViewsInLayout();
