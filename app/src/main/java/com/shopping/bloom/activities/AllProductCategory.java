@@ -57,7 +57,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class AllProductCategory extends AppCompatActivity {
-
     private static final String TAG = AllProductCategory.class.getName();
 
     private ProductsViewModel viewModel;

@@ -49,6 +49,7 @@ public class AllProductsAdapter extends RecyclerView.Adapter<AllProductsAdapter.
         fillColorHashMap();
     }
 
+    //todo change this with remote config
     private void fillColorHashMap() {
         colorMap.put("Blue", "#2A93DF");
         colorMap.put("Red", "#FD5353");
