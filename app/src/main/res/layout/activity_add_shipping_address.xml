@@ -19,6 +19,17 @@
         app:title="Shipping Address"
         app:titleTextColor="@color/black" />
 
+    <ViewStub
+        android:id="@+id/vsEmptyScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:elevation="@dimen/sb_size_4"
+        android:layout="@layout/no_internet_connected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -137,8 +148,9 @@
                     android:layout_height="wrap_content"
                     android:hint="Pin code"
                     android:maxLength="6"
+                    android:digits="0987654321"
                     android:theme="@style/MyEditTextTheme"
-                    android:inputType="number" />
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -190,5 +202,6 @@
         </LinearLayout>
 
     </ScrollView>
+
 
 </RelativeLayout>

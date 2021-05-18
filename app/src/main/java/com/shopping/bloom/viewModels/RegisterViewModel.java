@@ -41,7 +41,7 @@ public class RegisterViewModel extends ViewModel {
             @Override
             public void onResponse(Call<RegisterResponseModel> call, Response<RegisterResponseModel> response) {
                 System.out.println(response);
-                if(response.isSuccessful()){
+                if(response.isSuccessful() && response.body() != null){
                     registerLiveData.postValue(response.body());
                 }
                 if(response.code() == 412) {

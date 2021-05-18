@@ -8,9 +8,9 @@ import com.shopping.bloom.model.LoginWithNumberPassModel;
 import com.shopping.bloom.model.OtpModel;
 import com.shopping.bloom.model.PinCodeResponse;
 import com.shopping.bloom.model.ProductIds;
+import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.model.coupons.CouponResponse;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
-import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
@@ -31,7 +31,6 @@ import com.shopping.bloom.restService.response.OtpResponseModel;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.restService.response.PostProductList;
 import com.shopping.bloom.restService.response.PutWishListRequest;
-import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.RegisterResponseModel;
 import com.shopping.bloom.restService.response.SingleProductResponse;
@@ -233,12 +232,6 @@ public interface ApiInterface {
     Call<LoginResponseModel> createUserActivity(
             @Field("product_id") String product_id,
             @Field("category_id") int category_id,
-            @Header("Authorization") String bearer);
-
-    @GET("frontend/getRandomProducts")
-    Call<RandomImageResponse> getRandomImage(
-            @Query("limit") int limit,
-            @Query("pageNo") int pageNo,
             @Header("Authorization") String bearer);
 
     @POST("order/cart")

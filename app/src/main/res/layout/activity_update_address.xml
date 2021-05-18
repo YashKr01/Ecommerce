@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.UpdateAddressActivity">
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,7 +17,6 @@
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
         app:title="Update Shipping Address"
         app:titleTextColor="@color/black" />
-
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -134,8 +134,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Pin code"
+                    android:maxLength="6"
+                    android:digits="0987654321"
                     android:theme="@style/MyEditTextTheme"
-                    android:inputType="number" />
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -154,6 +156,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contact Number"
+                    android:digits="0987654321"
                     android:theme="@style/MyEditTextTheme"
                     android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>

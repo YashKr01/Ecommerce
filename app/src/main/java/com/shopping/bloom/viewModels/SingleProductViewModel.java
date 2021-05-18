@@ -10,13 +10,13 @@ import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.PinCodeResponse;
-import com.shopping.bloom.model.RandomImageDataResponse;
+import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.SingleProductDataResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.AddToCartCallback;
+import com.shopping.bloom.restService.response.GetProductsResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
-import com.shopping.bloom.restService.response.RandomImageResponse;
 import com.shopping.bloom.restService.response.SingleProductResponse;
 import com.shopping.bloom.utils.LoginManager;
 
@@ -30,7 +30,7 @@ public class SingleProductViewModel extends ViewModel {
 
     private final MutableLiveData<SingleProductDataResponse> mutableLiveData;
     private final MutableLiveData<LoginResponseModel> loginResponseModelMutableLiveData;
-    private final MutableLiveData<List<RandomImageDataResponse>> randomImageDataResponseMutableLiveData;
+    private final MutableLiveData<List<Product>> randomImageDataResponseMutableLiveData;
     private final MutableLiveData<PinCodeResponse> pinCodeResponseMutableLiveData;
     private final String token;
 
@@ -48,7 +48,7 @@ public class SingleProductViewModel extends ViewModel {
         pinCodeResponseMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<List<RandomImageDataResponse>> getRandomImageDataResponseMutableLiveData() {
+    public MutableLiveData<List<Product>> getRandomImageDataResponseMutableLiveData() {
         return randomImageDataResponseMutableLiveData;
     }
 
@@ -60,7 +60,7 @@ public class SingleProductViewModel extends ViewModel {
         return mutableLiveData;
     }
 
-    public MutableLiveData<PinCodeResponse> getPinCodeResponseMutableLiveData(){
+    public MutableLiveData<PinCodeResponse> getPinCodeResponseMutableLiveData() {
         return pinCodeResponseMutableLiveData;
     }
 
@@ -71,9 +71,7 @@ public class SingleProductViewModel extends ViewModel {
         call.enqueue(new Callback<SingleProductResponse>() {
             @Override
             public void onResponse(Call<SingleProductResponse> call, Response<SingleProductResponse> response) {
-                if (response.body() == null) {
-                    System.out.println("NO DATA");
-                } else {
+                if (response.isSuccessful() && response.body() != null) {
                     mutableLiveData.postValue(response.body().getSingleProductDataResponse());
                 }
             }
@@ -112,19 +110,19 @@ public class SingleProductViewModel extends ViewModel {
     public void makeApiCallRandomImage(int limit, int pageNo, Application application) {
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
-        Call<RandomImageResponse> call = apiService.getRandomImage(limit, pageNo, "Bearer " + token);
-        call.enqueue(new Callback<RandomImageResponse>() {
+        Call<GetProductsResponse> call = apiService.getRandomProducts("Bearer " + token, pageNo, limit);
+        call.enqueue(new Callback<GetProductsResponse>() {
             @Override
-            public void onResponse(Call<RandomImageResponse> call, Response<RandomImageResponse> response) {
+            public void onResponse(Call<GetProductsResponse> call, Response<GetProductsResponse> response) {
                 if (response.body() == null) {
                     System.out.println("NO DATA");
                 } else {
-                    randomImageDataResponseMutableLiveData.postValue(response.body().getImageDataResponseList());
+                    randomImageDataResponseMutableLiveData.postValue(response.body().getData());
                 }
             }
 
             @Override
-            public void onFailure(Call<RandomImageResponse> call, Throwable t) {
+            public void onFailure(Call<GetProductsResponse> call, Throwable t) {
                 randomImageDataResponseMutableLiveData.postValue(null);
             }
         });

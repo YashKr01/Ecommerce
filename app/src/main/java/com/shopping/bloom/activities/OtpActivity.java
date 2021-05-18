@@ -159,8 +159,13 @@ public class OtpActivity extends AppCompatActivity {
             if (email == null || email.isEmpty()) {
                 ShowToast.showToast(this, "Email is Empty");
             } else {
-                EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
-                otpViewModel.makeApiCallResendEmailOtp(emailVerificationModel, getApplication(), this);
+                if (NetworkCheck.isConnect(this)) {
+                    EmailVerificationModel emailVerificationModel = new EmailVerificationModel(email);
+                    otpViewModel.makeApiCallResendEmailOtp(emailVerificationModel, getApplication(), this);
+                }else {
+                    viewStub.setVisibility(View.VISIBLE);
+                    constraintLayout.setVisibility(View.GONE);
+                }
             }
         } else {
             String mobile_no = getIntent().getStringExtra("mobile_no");

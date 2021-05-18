@@ -1,6 +1,7 @@
 package com.shopping.bloom.viewModels;
 
 import android.app.Application;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,12 +24,14 @@ import retrofit2.Response;
 public class MyAddressViewModel extends ViewModel {
     private final MutableLiveData<List<AddressDataResponse>> mutableLiveData;
     private final MutableLiveData<LoginResponseModel> updateLiveData;
+    private final MutableLiveData<LoginResponseModel> deleteLiveData;
     LoginManager loginManager;
     String token;
 
     public MyAddressViewModel() {
         mutableLiveData = new MutableLiveData<>();
         updateLiveData = new MutableLiveData<>();
+        deleteLiveData = new MutableLiveData<>();
         loginManager = new LoginManager(App.getContext());
 
         if (!loginManager.isLoggedIn()) {
@@ -42,8 +45,12 @@ public class MyAddressViewModel extends ViewModel {
         return mutableLiveData;
     }
 
-    public MutableLiveData<LoginResponseModel> getUpdateLiveData(){
+    public MutableLiveData<LoginResponseModel> getUpdateLiveData() {
         return updateLiveData;
+    }
+
+    public MutableLiveData<LoginResponseModel> getDeleteLiveData() {
+        return deleteLiveData;
     }
 
     public void makeApiCall(int pageNo, int limit, Application application) {
@@ -53,7 +60,7 @@ public class MyAddressViewModel extends ViewModel {
         call.enqueue(new Callback<AddressResponse>() {
             @Override
             public void onResponse(Call<AddressResponse> call, Response<AddressResponse> response) {
-                if(response.isSuccessful())
+                if (response.isSuccessful() && response.body() != null)
                     mutableLiveData.postValue(response.body().getAddressResponseList());
                 else
                     mutableLiveData.postValue(null);
@@ -69,7 +76,7 @@ public class MyAddressViewModel extends ViewModel {
     public void updateAddressApiCall(String id, AddAddressModel addAddressModel, Application application) {
 
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
-        Call<LoginResponseModel> call = apiService.updateAddress(id,addAddressModel.getAddress_name(),
+        Call<LoginResponseModel> call = apiService.updateAddress(id, addAddressModel.getAddress_name(),
                 addAddressModel.getIs_primary(), addAddressModel.getPincode(), addAddressModel.getAddress_line_1(),
                 addAddressModel.getCity(), addAddressModel.getContact_number(), "Bearer " + token);
         call.enqueue(new Callback<LoginResponseModel>() {
@@ -82,6 +89,25 @@ public class MyAddressViewModel extends ViewModel {
             public void onFailure(Call<LoginResponseModel> call, Throwable t) {
                 System.out.println(call.request());
                 System.out.println(t.toString());
+            }
+        });
+    }
+
+    public void delete(AddressDataResponse address, Application application) {
+        ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
+        Call<LoginResponseModel> call = apiService.deleteAddress(address.getId(), "Bearer " + token);
+        call.enqueue(new Callback<LoginResponseModel>() {
+            @Override
+            public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(application.getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    deleteLiveData.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+                deleteLiveData.postValue(null);
             }
         });
     }

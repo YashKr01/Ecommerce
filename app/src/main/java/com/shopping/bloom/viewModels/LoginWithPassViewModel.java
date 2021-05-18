@@ -52,7 +52,7 @@ public class LoginWithPassViewModel extends ViewModel {
             @Override
             public void onResponse(Call<LoginWithPassResponseModel> call, Response<LoginWithPassResponseModel> response) {
 //                System.out.println(response.body().getData().getUserInfo().getEmail());
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     mobileMutableData.postValue(response.body());
                 }
             }

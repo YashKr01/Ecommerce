@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.SingleProductActivity;
+import com.shopping.bloom.firebaseConfig.RemoteConfig;
+import com.shopping.bloom.model.faq.ColorModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import org.w3c.dom.Text;
@@ -43,7 +45,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         this.context = context;
         this.colorList = colorList;
         colorMap = new HashMap<>();
-        fillColorHashMap();
+        fillColorHashMap(context);
     }
 
     public void setColorList(List<String> colorList, boolean clickable) {
@@ -59,14 +61,12 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         return new ViewHolder(view);
     }
 
-    private void fillColorHashMap() {
-        colorMap.put("Blue", "#2A93DF");
-        colorMap.put("Red", "#FD5353");
-        colorMap.put("Black", "#000000");
-        colorMap.put("Brown", "#A0552B");
-        colorMap.put("Green", "#11DF3E");
-        colorMap.put("Yellow", "#FAE423");
-        colorMap.put("White", "#E6E6E6");
+    private void fillColorHashMap(Context context) {
+        colorMap = new HashMap<>();
+        List<ColorModel> colorModels = RemoteConfig.getColorPalletConfig(context).getColorPalletList();
+        for (ColorModel colorModel : colorModels) {
+            colorMap.put(colorModel.getName(), colorModel.getHexValue());
+        }
     }
 
     @Override

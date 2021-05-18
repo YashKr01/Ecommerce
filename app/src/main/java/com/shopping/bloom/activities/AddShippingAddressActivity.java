@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -10,11 +11,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -23,6 +27,7 @@ import com.shopping.bloom.model.AddAddressModel;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
+import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.AddShippingAddressViewModel;
 
 import java.util.ArrayList;
@@ -35,6 +40,9 @@ public class AddShippingAddressActivity extends AppCompatActivity {
     Button button;
     CheckBox checkBox;
     int is_primary = 0;
+    ViewStub viewStub;
+    View inflated;
+    ScrollView scrollView;
     private View parent_view;
     AddAddressModel addressModel;
     AddShippingAddressViewModel addShippingAddressViewModel;
@@ -51,11 +59,24 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         pinCodeEditText = findViewById(R.id.pinCodeTextView);
         contactEditText = findViewById(R.id.numberEditText);
         parent_view = findViewById(android.R.id.content);
+        viewStub = findViewById(R.id.vsEmptyScreen);
+        inflated = viewStub.inflate();
+        scrollView = findViewById(R.id.scrollView);
 
         checkBox = findViewById(R.id.radio);
 
         button = findViewById(R.id.addAddressButton);
         button.setOnClickListener(debouncedOnClickListener);
+
+        System.out.println("check internet = " + checkNetworkConnectivity());
+
+        if (checkNetworkConnectivity()) {
+            scrollView.setVisibility(View.VISIBLE);
+            viewStub.setVisibility(View.GONE);
+        } else {
+            scrollView.setVisibility(View.GONE);
+            viewStub.setVisibility(View.VISIBLE);
+        }
 
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -102,12 +123,38 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                     Snackbar.make(parent_view, "City Name is Empty", Snackbar.LENGTH_SHORT).show();
                 } else if (pinCode == null || pinCode.isEmpty()) {
                     Snackbar.make(parent_view, "Pin Code is Empty", Snackbar.LENGTH_SHORT).show();
+                } else if (pinCode.length() != 6) {
+                    Snackbar.make(parent_view, "Pin code length should be 6.", Snackbar.LENGTH_SHORT).show();
                 } else if (number == null || number.isEmpty()) {
                     Snackbar.make(parent_view, "Mobile No. is Empty", Snackbar.LENGTH_SHORT).show();
                 } else if (!numberLength(number)) {
                     Snackbar.make(parent_view, "Mobile No. length should be 10.", Snackbar.LENGTH_SHORT).show();
                 } else {
-                    addAddress(addressName, addressLine, city, pinCode, number, is_primary);
+                    if (checkNetworkConnectivity()) {
+                        scrollView.setVisibility(View.VISIBLE);
+                        viewStub.setVisibility(View.GONE);
+                        addAddress(addressName, addressLine, city, pinCode, number, is_primary);
+                    } else {
+                        scrollView.setVisibility(View.GONE);
+                        viewStub.setVisibility(View.VISIBLE);
+
+                        //setting up no internet check
+                        TextView textViewVS = inflated.findViewById(R.id.tvSwipeToRefresh);
+                        textViewVS.setText("Click to Refresh");
+                        ConstraintLayout constraintLayout = inflated.findViewById(R.id.constraintLayout);
+                        constraintLayout.setOnClickListener(new DebouncedOnClickListener(150) {
+                            @Override
+                            public void onDebouncedClick(View v) {
+                                if (checkNetworkConnectivity()) {
+                                    scrollView.setVisibility(View.VISIBLE);
+                                    viewStub.setVisibility(View.GONE);
+                                } else {
+                                    scrollView.setVisibility(View.GONE);
+                                    viewStub.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -125,8 +172,11 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         });
     }
 
-
     private boolean numberLength(String number) {
         return number.length() == 10;
+    }
+
+    private boolean checkNetworkConnectivity() {
+        return NetworkCheck.isConnect(this);
     }
 }
