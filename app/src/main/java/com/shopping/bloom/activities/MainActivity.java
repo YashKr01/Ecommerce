@@ -26,11 +26,14 @@ import com.bumptech.glide.Glide;
 import com.shopping.bloom.R;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.databinding.ActivityMainBinding;
+import com.shopping.bloom.restService.response.NotificationResponse;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     private int bottomsheet_int;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
         toolbar = (mainView.layoutToolbar.maintoolbar);
         setSupportActionBar(toolbar);
+
 
         AppBarConfiguration appBarConfiguration =
                 new AppBarConfiguration.Builder(getTopLevelDestinations()).build();
@@ -71,11 +76,26 @@ public class MainActivity extends AppCompatActivity {
 
         View includedLayout = findViewById(R.id.layoutToolbar);
         ImageView imgFav = includedLayout.findViewById(R.id.imgFavourites);
+        ImageView imgNotification = includedLayout.findViewById(R.id.imgMail);
 
         imgFav.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
                 startActivity(new Intent(getApplicationContext(), WishListActivity.class));
+            }
+        });
+        
+        imgNotification.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+
+////                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+////                    notificationResponses = EcommerceDatabase.getInstance().notificationDao().getNotification();
+////                });
+//                Log.d(TAG,"Notification = " + notificationResponses.size());
+////                for(NotificationResponse notificationResponse : notificationResponses){
+////                }
             }
         });
 

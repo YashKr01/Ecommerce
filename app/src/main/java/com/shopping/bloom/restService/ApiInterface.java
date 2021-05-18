@@ -17,6 +17,7 @@ import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.search.SearchResponse;
 import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
+import com.shopping.bloom.restService.response.AddAddressResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.response.GetAvailablePromoResponse;
@@ -153,7 +154,7 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("metadata/createUserAddress")
-    Call<LoginResponseModel> postAddress(
+    Call<AddAddressResponse> postAddress(
             @Field("address_name") String address_name,
             @Field("is_primary") int is_primary,
             @Field("pincode") String pincode,

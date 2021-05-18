@@ -51,6 +51,7 @@ public class LoginManager {
 
     private static String primary_address = "primary_address";
 
+    private static String is_firebase_token_changed = "is_firebase_token_changed";
 
     public static LoginManager getInstance() {
 
@@ -81,6 +82,14 @@ public class LoginManager {
 
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(IS_LOGED_IN, true);
+    }
+
+    public void setIs_firebase_token_changed(boolean isChanged){
+        editor.putBoolean(is_firebase_token_changed, isChanged).commit();
+    }
+
+    public boolean is_firebase_token_changed(){
+        return sharedPreferences.getBoolean(is_firebase_token_changed, false);
     }
 
     public boolean is_email_verified() {
