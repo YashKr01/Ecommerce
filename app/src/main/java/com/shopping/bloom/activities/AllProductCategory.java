@@ -86,6 +86,7 @@ public class AllProductCategory extends AppCompatActivity {
     ProductFilter MAIN_FILTER = new ProductFilter();
     FilterArrayValues filterArrayValues = null;
     SORT_BY DEFAULT_SORT_VALUE = null;
+    final int REQ_SINGLE_PRODUCT = 202;
 
 
     /*
@@ -200,7 +201,7 @@ public class AllProductCategory extends AppCompatActivity {
         } else {
             String ARG_LIKED_BUNDLE = "app_liked_bundle";
             bundle = getIntent().getBundleExtra(ARG_BUNDLE);
-            if(bundle != null) {
+            if (bundle != null) {
                 Log.d(TAG, "getIntentData: NOT NULL");
             } else {
                 Log.d(TAG, "getIntentData: NULL");
@@ -212,6 +213,14 @@ public class AllProductCategory extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: ");
+        if(requestCode == REQ_SINGLE_PRODUCT) {
+            Log.d(TAG, "onActivityResult: ");
+            if(data == null) Log.d(TAG, "onActivityResult: NULL");
+            if(resultCode == RESULT_OK && data != null) {
+                int isLiked = data.getIntExtra("IS_LIKED", 0);
+                Log.d(TAG, "onActivityResult: " + isLiked);
+            }
+        }
     }
 
     private void setUpRecycleView() {
@@ -290,17 +299,17 @@ public class AllProductCategory extends AppCompatActivity {
     private void changeCartIcon(LiveData<Integer> cartSize) {
         cartSize.observe(this, integer -> {
             Log.d(TAG, "changeCartIcon: ");
-            int  size = 0;
+            int size = 0;
             try {
                 size = integer;
-            } catch ( NullPointerException e) {
+            } catch (NullPointerException e) {
                 size = 0;
                 Log.d(TAG, "onChanged: ");
             }
             Log.d(TAG, "changeCartIcon: menu size " + toolbar.getMenu().size());
             MenuItem cartIcon = toolbar.getMenu().findItem(R.id.action_cart);
-            if(cartIcon != null)  {
-                if(size == 0) {
+            if (cartIcon != null) {
+                if (size == 0) {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart));
                 } else {
                     cartIcon.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_cart_red));
@@ -579,8 +588,8 @@ public class AllProductCategory extends AppCompatActivity {
     }
 
     /*
-    *   Update the filter and check for sort by option
-    * */
+     *   Update the filter and check for sort by option
+     * */
     private void updateFilter(SORT_BY sortBy) {
         Log.d(TAG, "updateFilter: updating filter... " + sortBy);
         CURRENT_PAGE = 0;
@@ -650,12 +659,17 @@ public class AllProductCategory extends AppCompatActivity {
         RETRY_ATTEMPT = 0;
     }
 
+
+
     private void openSingleProductActivity(Product product) {
+        String CALLING_ACTIVITY = AllProductCategory.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, SingleProductActivity.class);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
         intent.putExtra("PRODUCT_ID", product.getId());
         intent.putExtra("CATEGORY_ID", PARENT_ID);
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 
     private void showNoInternetImage(boolean show) {
@@ -728,7 +742,7 @@ public class AllProductCategory extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int ID = item.getItemId();
-        if(ID == android.R.id.home) {
+        if (ID == android.R.id.home) {
             // app icon in action bar clicked; go home
             Log.d(TAG, "onBackPressed: uploading...");
             ProductRepository.getInstance().uploadWishListOnServer(this.getApplication(), null);
@@ -737,7 +751,7 @@ public class AllProductCategory extends AppCompatActivity {
         } else if (ID == R.id.action_cart) {
             startActivity(new Intent(getApplicationContext(), ShoppingBagActivity.class));
             return true;
-        } else if (ID == R.id.action_search){
+        } else if (ID == R.id.action_search) {
             startActivity(new Intent(this, SearchActivity.class));
             return true;
         } else {

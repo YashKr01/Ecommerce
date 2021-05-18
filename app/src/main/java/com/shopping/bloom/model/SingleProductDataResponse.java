@@ -51,6 +51,9 @@ public class SingleProductDataResponse {
     @Expose
     List<ProductVariableResponse> productVariableResponses;
 
+    @SerializedName("isInUserWishList")
+    boolean isInWishList;
+
     @SerializedName("product_descriptions")
     @Expose
     List<SingleProductDescResponse> singleProductDescResponseList;
@@ -173,5 +176,13 @@ public class SingleProductDataResponse {
 
     public void setProductVariableResponses(List<ProductVariableResponse> productVariableResponses) {
         this.productVariableResponses = productVariableResponses;
+    }
+
+    public boolean isInWishList() {
+        return isInWishList;
+    }
+
+    public void setInWishList(boolean inWishList) {
+        isInWishList = inWishList;
     }
 }
