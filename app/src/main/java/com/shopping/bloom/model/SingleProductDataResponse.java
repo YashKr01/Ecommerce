@@ -47,6 +47,10 @@ public class SingleProductDataResponse {
     @Expose
     String primary_image;
 
+    @SerializedName("isInUserWishList")
+    @Expose
+    boolean isInUserWishList;
+
     @SerializedName("product_variables")
     @Expose
     List<ProductVariableResponse> productVariableResponses;
@@ -149,6 +153,14 @@ public class SingleProductDataResponse {
 
     public void setAvailable_colors(String available_colors) {
         this.available_colors = available_colors;
+    }
+
+    public boolean isInUserWishList() {
+        return isInUserWishList;
+    }
+
+    public void setInUserWishList(boolean inUserWishList) {
+        isInUserWishList = inUserWishList;
     }
 
     public String getDescription() {

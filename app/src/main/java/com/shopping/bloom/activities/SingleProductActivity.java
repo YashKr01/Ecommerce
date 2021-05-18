@@ -154,7 +154,6 @@ public class SingleProductActivity extends AppCompatActivity {
         //not required with new json response
         EcommerceDatabase.databaseWriteExecutor.execute(() -> {
             wishList = EcommerceDatabase.getInstance().wishListProductDao().getAllItem();
-            System.out.println(wishList);
         });
 
         LoginManager loginManager = new LoginManager(SingleProductActivity.this);
@@ -266,6 +265,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 } else {
                     sizeClickable = true;
                 }
+
                 TextView textView = findViewById(R.id.description);
                 textView.setText(this.singleProductDataResponse.getDescription());
                 list = this.singleProductDataResponse.getSingleProductDescResponseList();
@@ -301,7 +301,14 @@ public class SingleProductActivity extends AppCompatActivity {
                     desc.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_arrow_drop_down_24, 0);
                 }
 
+                //wishlist button from api
+                if(this.singleProductDataResponse.isInUserWishList()){
+                    wishListButton.setVisibility(View.GONE);
+                    selectedWishListButton.setVisibility(View.VISIBLE);
+                }
+
             }
+
         });
 
 
@@ -359,14 +366,14 @@ public class SingleProductActivity extends AppCompatActivity {
 
 
         //not needed will be removed as new json response is there
-        for (String s : wishList) {
-            if (s.equals(String.valueOf(PRODUCT_ID))) {
-                System.out.println("Visible");
-                wishListButton.setVisibility(View.GONE);
-                selectedWishListButton.setVisibility(View.VISIBLE);
-                break;
-            }
-        }
+//        for (String s : wishList) {
+//            if (s.equals(String.valueOf(PRODUCT_ID))) {
+//                System.out.println("Visible");
+//                wishListButton.setVisibility(View.GONE);
+//                selectedWishListButton.setVisibility(View.VISIBLE);
+//                break;
+//            }
+//        }
 
 
         SetupColorAndSizeList();

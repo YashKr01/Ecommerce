@@ -28,7 +28,7 @@ public class NotificationService extends FirebaseMessagingService {
         super.onNewToken(s);
 
         loginManager = new LoginManager(this);
-        loginManager.setIs_primary_address_available(true);
+        loginManager.setIs_firebase_token_changed(true);
 
     }
 
