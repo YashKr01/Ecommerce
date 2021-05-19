@@ -123,6 +123,7 @@
                 app:layout_constraintTop_toBottomOf="@id/shopping_bag_recycler_view">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clHeaderProductSuggestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 

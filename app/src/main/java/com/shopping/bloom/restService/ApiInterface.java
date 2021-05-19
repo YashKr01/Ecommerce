@@ -23,6 +23,7 @@ import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.GetColorAndSizeResponse;
 import com.shopping.bloom.restService.response.GetProductsResponse;
+import com.shopping.bloom.restService.response.GetSingleProductResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.OtpResponseModel;
@@ -257,5 +258,17 @@ public interface ApiInterface {
     @GET("/api/order/getAvailablePromocodes")
     @Headers("Content-type: application/json")
     Call<CouponResponse> getCouponResponse(@Header("Authorization") String authToken);
+
+
+    /*
+    *   Product suggestion below the shopping bag cart items
+    * */
+    @GET("/api/frontend/getSingleChildProducts")
+    @Headers("Accept-type: application/json")
+    Call<GetSingleProductResponse> getSingleProductSuggestion(
+            @Header("Authorization") String authToken,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
+    );
 
 }

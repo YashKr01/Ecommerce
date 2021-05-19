@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.model.SuggestedCartProduct;
+import com.shopping.bloom.model.ProductSuggestion;
+import com.shopping.bloom.restService.callback.SuggestedProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,12 +27,14 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
 
     private static final String TAG = SuggestCartItemAdapter.class.getName();
 
-    private List<SuggestedCartProduct> suggestedCartProducts;
+    private List<ProductSuggestion> suggestedCartProducts;
+    private SuggestedProductClickListener mListener;
     private Context context;
 
-    public SuggestCartItemAdapter(Context context) {
-        suggestedCartProducts = new ArrayList<>();
+    public SuggestCartItemAdapter(Context context, SuggestedProductClickListener listener) {
         this.context = context;
+        mListener = listener;
+        suggestedCartProducts = new ArrayList<>();
     }
 
     @Override
@@ -41,14 +45,25 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull SuggestCartItemAdapter.SuggestedCartItemViewHolder holder, int position) {
-        SuggestedCartProduct product = suggestedCartProducts.get(position);
+        ProductSuggestion product = suggestedCartProducts.get(position);
         holder.setUpData(context, product);
         holder.viewAddToCart.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                Log.d(TAG, "onDebouncedClick: ");
+                Log.d(TAG, "onDebouncedClick: " + position);
+                Log.d(TAG, "onDebouncedClick: " + product.getId());
+                mListener.onProductAdd(product, position);
             }
         });
+    }
+
+    public void removeItem(int position) {
+        if(suggestedCartProducts != null && !suggestedCartProducts.isEmpty()) {
+            if(position < suggestedCartProducts.size()) {
+                suggestedCartProducts.remove(position);
+                notifyDataSetChanged();
+            }
+        }
     }
 
 
@@ -56,6 +71,7 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
         ImageView imgProductImage;
         TextView tvProductName;
         View viewAddToCart;
+
         public SuggestedCartItemViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             viewAddToCart = itemView.findViewById(R.id.viewAddToCart);
@@ -63,22 +79,32 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
             tvProductName = itemView.findViewById(R.id.tvProductName);
         }
 
-
-        public void setUpData(Context context, SuggestedCartProduct product) {
+        public void setUpData(Context context, ProductSuggestion product) {
+            String imageURL = Const.GET_BASE_URL + product.getPrimary_image();
+            if(product.getColorsImageArray() != null && !product.getColorsImageArray().isEmpty()) {
+                imageURL = Const.GET_BASE_URL + product.getColorsImageArray().get(0).getPrimary_image();
+            }
             CommonUtils.loadImageWithGlide(
-                    context, product.getImageUrl(), imgProductImage, false
+                    context, imageURL, imgProductImage, false
             );
-            tvProductName.setText(product.getProductName());
+            String price = "";
+            if (product.is_on_sale.equals("1")) {
+                price = product.sale_price;
+            } else {
+                price = product.price;
+            }
+            tvProductName.setText(price);
         }
     }
 
     @Override
     public int getItemCount() {
+        if(suggestedCartProducts == null) return 0;
         return suggestedCartProducts.size();
     }
 
-    public void updateList(List<SuggestedCartProduct> list) {
-        if(suggestedCartProducts == null) {
+    public void updateList(List<ProductSuggestion> list) {
+        if (suggestedCartProducts == null) {
             suggestedCartProducts = new ArrayList<>(list);
         } else {
             suggestedCartProducts.clear();

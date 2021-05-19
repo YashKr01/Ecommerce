@@ -23,12 +23,15 @@ import com.shopping.bloom.adapters.SuggestCartItemAdapter;
 import com.shopping.bloom.databinding.ActivityShoppingBagBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.CartItem;
+import com.shopping.bloom.model.ColorImagesArray;
 import com.shopping.bloom.model.PostCartProduct;
+import com.shopping.bloom.model.ProductSuggestion;
 import com.shopping.bloom.model.PromoConfig;
 import com.shopping.bloom.model.ResponseCartData;
-import com.shopping.bloom.model.SuggestedCartProduct;
 import com.shopping.bloom.restService.callback.CartValueCallback;
 import com.shopping.bloom.restService.callback.ShoppingBagItemListener;
+import com.shopping.bloom.restService.callback.SingleProductCallback;
+import com.shopping.bloom.restService.callback.SuggestedProductClickListener;
 import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
@@ -46,7 +49,6 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
     private ShoppingBagAdapter cartItemAdapter;
     private SuggestCartItemAdapter suggestCartItemAdapter;
     private AlertDialog.Builder builder;
-    private SwipeRefreshLayout srlNoInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +64,17 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
 
         checkNetworkAndFetchData();
         getPromoOffer();
-        fetchSuggestedProducts();
+        //fetchSuggestedProducts();
         binding.srlNoInternet.setOnRefreshListener(this::checkNetworkAndFetchData);
         binding.btCheckOut.setOnClickListener(view -> gotoCheckOutScreen());
+        binding.srlNoInternet.setOnRefreshListener(()->{
+            if(NetworkCheck.isConnect(this)) {
+                checkNetworkAndFetchData();
+            } else {
+                showOrHideNoInternet(true);
+            }
+            binding.srlNoInternet.setRefreshing(false);
+        });
     }
 
     /*
@@ -78,11 +88,37 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         if (!NetworkCheck.isConnect(this)) return;
         subscribeToUI(viewModel.getAllCartItem());
         getTotalCartItem(viewModel.getTotalCartItems());
+        fetchSuggestedProducts();
     }
 
     private void fetchSuggestedProducts() {
-        // TODO: get product suggestion
-        //viewModel.fetchSuggestedProduct();
+        showProgressBar(true);
+        if(!NetworkCheck.isConnect(this)) {
+            showOrHideNoInternet(true);
+            showProgressBar(false);
+            return;
+        }
+        int pageNo = 0, limit = 20;
+        viewModel.fetchSuggestedProduct(pageNo, limit, new SingleProductCallback() {
+            @Override
+            public void onSuccess(List<ProductSuggestion> productSuggestion) {
+                showProgressBar(false);
+                showOrHideNoInternet(false);
+                if(suggestCartItemAdapter.getItemCount() == 0) {
+                    suggestCartItemAdapter.updateList(productSuggestion);
+                }
+                binding.clHeaderProductSuggestion.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailed(int errorCode, String errorMessage) {
+                if(errorMessage != null)
+                    Log.d(TAG, "onFailed: " + errorMessage);
+                showProgressBar(false);
+                showOrHideNoInternet(false);
+                binding.clHeaderProductSuggestion.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setUpToolBar() {
@@ -114,11 +150,40 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         binding.shoppingBagRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.shoppingBagRecyclerView.setAdapter(cartItemAdapter);
 
-        suggestCartItemAdapter = new SuggestCartItemAdapter(this);
+        suggestCartItemAdapter = new SuggestCartItemAdapter(this, new SuggestedProductClickListener() {
+            @Override
+            public void onProductImageClicked(ProductSuggestion productSuggestion) {
+
+            }
+
+            @Override
+            public void onProductAdd(ProductSuggestion productSuggestion, int position) {
+                if(productSuggestion.colorsImageArray == null || productSuggestion.colorsImageArray.isEmpty()) {
+                    suggestCartItemAdapter.removeItem(position);
+                    return;
+                }
+                ColorImagesArray product = productSuggestion.colorsImageArray.get(0);
+                String parentId = product.getProduct_id();
+                String childId = product.getId();
+                String primaryImage = product.getPrimary_image();
+                String color = product.getColor();
+                String size = product.getSize();
+                String price = product.getPrice();
+                if (product.getIs_on_sale().equals("1")) {
+                    price = product.getSale_price();
+                }
+                String name = productSuggestion.getProduct_name();
+                Log.d(TAG, "addToShoppingBag: product: " + product.toString());
+                CartItem cartItem = new CartItem(parentId, childId, name, primaryImage,
+                        color, size, price, Integer.parseInt(product.getQuantity()));
+
+                viewModel.addToCart(cartItem, Integer.parseInt(product.getQuantity()));
+                suggestCartItemAdapter.removeItem(position);
+            }
+        });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
         binding.rvSuggestionProduct.setLayoutManager(layoutManager);
         binding.rvSuggestionProduct.setAdapter(suggestCartItemAdapter);
-        suggestCartItemAdapter.updateList(getDummyData());
     }
 
     private void subscribeToUI(LiveData<List<CartItem>> liveCartItems) {
@@ -279,13 +344,13 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         }
     }
 
-    private List<SuggestedCartProduct> getDummyData() {
+    /*private List<SuggestedCartProduct> getDummyData() {
         List<SuggestedCartProduct> list = new ArrayList<>();
         for (int i = 0; i < 28; i++) {
             SuggestedCartProduct p1 = new SuggestedCartProduct("", "Dummy Data");
             list.add(p1);
         }
         return list;
-    }
+    }*/
 
 }

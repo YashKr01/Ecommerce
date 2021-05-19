@@ -14,6 +14,7 @@ import com.shopping.bloom.model.PostCartProduct;
 import com.shopping.bloom.model.shoppingbag.ProductEntity;
 import com.shopping.bloom.restService.callback.CartValueCallback;
 import com.shopping.bloom.restService.callback.CheckoutResponseListener;
+import com.shopping.bloom.restService.callback.SingleProductCallback;
 import com.shopping.bloom.restService.response.GetCategoryResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 
@@ -38,6 +39,9 @@ public class ShoppingBagViewModel extends AndroidViewModel {
         repository.getCheckOutResponse(context, checkoutData, listener);
     }
 
+    public void fetchSuggestedProduct(int pageNo, int limit, SingleProductCallback callback) {
+        repository.fetchSingleProductSuggestion(context, pageNo, limit, callback);
+    }
 
 
     /*Room database*/
@@ -62,5 +66,24 @@ public class ShoppingBagViewModel extends AndroidViewModel {
     /*Room database*/
     public LiveData<Integer> getTotalCartItems() {
         return EcommerceDatabase.getInstance().cartItemDao().changeCartIcon();
+    }
+
+    /*
+    *   FIRST CHECK IF THE ITEM ALREADY PRESENT IN THE CART OR NOT
+    *   if already present then check for the quantity
+    * */
+    public void addToCart(CartItem cartItem, int maxQuantity) {
+        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+            List<CartItem> cartItems = EcommerceDatabase.getInstance().cartItemDao()
+                    .getAllProductWith(cartItem.getParentId(), cartItem.getChildId());
+            if (cartItems == null || cartItems.isEmpty()) {
+                EcommerceDatabase.getInstance().cartItemDao().addToCart(cartItem);
+            } else {
+                if (cartItems.get(0).getQuantity() < maxQuantity) {
+                    EcommerceDatabase.getInstance().cartItemDao()
+                            .incrementQuantity(cartItem.getParentId(), cartItem.getChildId());
+                }
+            }
+        });
     }
 }

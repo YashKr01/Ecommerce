@@ -9,9 +9,11 @@ import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
 import com.shopping.bloom.restService.callback.CartValueCallback;
 import com.shopping.bloom.restService.callback.CheckoutResponseListener;
+import com.shopping.bloom.restService.callback.SingleProductCallback;
 import com.shopping.bloom.restService.response.GetAvailablePromoResponse;
 import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
+import com.shopping.bloom.restService.response.GetSingleProductResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.restService.response.PostProductList;
 import com.shopping.bloom.utils.Const;
@@ -69,6 +71,41 @@ public class ShoppingBagRepository {
                 }
             });
         }
+    }
+
+    public void fetchSingleProductSuggestion(Application context, int pageNo, int limit, SingleProductCallback callback) {
+        ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
+        String authToken = getToken();
+        Call<GetSingleProductResponse> responseCall = apiInterface.getSingleProductSuggestion(
+                authToken, pageNo, limit
+        );
+        if(responseCall != null) {
+            responseCall.enqueue(new Callback<GetSingleProductResponse>() {
+                @Override
+                public void onResponse(Call<GetSingleProductResponse> call, Response<GetSingleProductResponse> response) {
+                    if(!response.isSuccessful() || response.body() == null) {
+                        callback.onFailed(-1, "weird error");
+                        return;
+                    }
+                    if(response.code() == Const.SUCCESS) {
+                        GetSingleProductResponse response1 = response.body();
+                        if(response1.data != null &&  response1.success) {
+                            callback.onSuccess(response1.data);
+                        } else {
+                            callback.onFailed(response.code(), response.message());
+                        }
+                    } else {
+                        callback.onFailed(response.code(), response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<GetSingleProductResponse> call, Throwable t) {
+                    callback.onFailed(-1, t.getMessage());
+                }
+            });
+        }
+
     }
 
     /*
