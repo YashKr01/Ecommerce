@@ -66,13 +66,13 @@
                     android:id="@+id/cltFilterSheet"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:elevation="@dimen/sb_size_8"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/transparent_shade"
                     android:clickable="true"
+                    android:elevation="@dimen/sb_size_8"
                     android:focusable="true"
                     android:visibility="gone"
-                    android:background="@color/transparent_shade"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -80,14 +80,14 @@
                         android:id="@+id/tvFilterHeader"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/sb_size_60"
-                        android:text="@string/filter"
-                        android:gravity="center_vertical|start"
-                        android:paddingHorizontal="@dimen/sb_size_18"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         android:layout_marginTop="@dimen/sb_size_18"
                         android:background="@drawable/bg_tv_top_curve_background"
+                        android:gravity="center_vertical|start"
+                        android:paddingHorizontal="@dimen/sb_size_18"
+                        android:text="@string/filter"
+                        android:textColor="@color/black"
                         android:textSize="@dimen/sb_text_size_20"
+                        android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -96,19 +96,19 @@
                         android:id="@+id/imgClose"
                         android:layout_width="@dimen/sb_size_24"
                         android:layout_height="@dimen/sb_size_24"
-                        android:src="@drawable/ic_close"
                         android:layout_marginEnd="@dimen/sb_size_16"
+                        android:contentDescription="@string/close"
+                        android:src="@drawable/ic_close"
                         app:layout_constraintBottom_toTopOf="@+id/separatorLine"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tvFilterHeader"
-                        android:contentDescription="@string/close" />
+                        app:layout_constraintTop_toTopOf="@+id/tvFilterHeader" />
 
                     <View
                         android:id="@+id/separatorLine"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/grey_300"
-                        app:layout_constraintTop_toBottomOf="@id/tvFilterHeader"/>
+                        app:layout_constraintTop_toBottomOf="@id/tvFilterHeader" />
 
                     <LinearLayout
                         android:id="@+id/linearLayout3"
@@ -125,60 +125,76 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="38"
-                            android:elevation="@dimen/sb_size_2">
+                            android:background="@color/grey_50"
+                            android:elevation="@dimen/sb_size_2"
+                            android:orientation="vertical">
 
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/tvCategory"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
+                                android:background="@color/white"
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/category"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvPrice"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
                                 android:background="@color/grey_50"
-                                android:orientation="vertical">
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/price"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16" />
 
-                                <TextView
-                                    android:id="@+id/tvCategory"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/sb_size_50"
-                                    android:background="@color/white"
-                                    android:gravity="start|center_vertical"
-                                    android:paddingHorizontal="@dimen/sb_size_16"
-                                    android:text="@string/category"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_16"
-                                    android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/tvSize"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
+                                android:background="@color/grey_50"
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/size"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16" />
 
-                                <TextView
-                                    android:id="@+id/tvSize"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/sb_size_50"
-                                    android:background="@color/grey_50"
-                                    android:gravity="start|center_vertical"
-                                    android:paddingHorizontal="@dimen/sb_size_16"
-                                    android:text="@string/size"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_16" />
+                            <TextView
+                                android:id="@+id/tvColor"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
+                                android:background="@color/grey_50"
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/color"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16" />
 
-                                <TextView
-                                    android:id="@+id/tvColor"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/sb_size_50"
-                                    android:background="@color/grey_50"
-                                    android:gravity="start|center_vertical"
-                                    android:paddingHorizontal="@dimen/sb_size_16"
-                                    android:text="@string/color"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_16" />
+                            <TextView
+                                android:id="@+id/tvType"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
+                                android:background="@color/grey_50"
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/type"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16" />
 
-                                <TextView
-                                    android:id="@+id/tvType"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/sb_size_50"
-                                    android:background="@color/grey_50"
-                                    android:gravity="start|center_vertical"
-                                    android:paddingHorizontal="@dimen/sb_size_16"
-                                    android:text="@string/type"
-                                    android:textColor="@color/black"
-                                    android:textSize="@dimen/sb_text_size_16" />
-
-                            </LinearLayout>
+                            <TextView
+                                android:id="@+id/tvDiscount"
+                                android:layout_width="match_parent"
+                                android:layout_height="@dimen/sb_size_50"
+                                android:background="@color/grey_50"
+                                android:gravity="start|center_vertical"
+                                android:paddingHorizontal="@dimen/sb_size_16"
+                                android:text="@string/discount"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/sb_text_size_16" />
 
                         </LinearLayout>
 
@@ -197,7 +213,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/grey_300"
-                        app:layout_constraintBottom_toTopOf="@id/lytOptionLayout"/>
+                        app:layout_constraintBottom_toTopOf="@id/lytOptionLayout" />
 
                     <LinearLayout
                         android:id="@+id/lytOptionLayout"
@@ -205,8 +221,8 @@
                         android:layout_height="wrap_content"
                         android:background="@color/white"
                         android:orientation="horizontal"
-                        android:weightSum="100"
                         android:paddingVertical="@dimen/sb_size_4"
+                        android:weightSum="100"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent">
@@ -222,9 +238,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_gravity="center"
+                                android:textStyle="bold"
                                 android:backgroundTint="@color/grey_400"
-                                android:textColor="@color/black"
-                                android:text="@string/clear"/>
+                                android:text="@string/clear"
+                                android:textColor="@color/black" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -236,15 +253,15 @@
                                 android:id="@+id/btApplyFilter"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textStyle="bold"
                                 android:layout_centerInParent="true"
-                                android:paddingHorizontal="@dimen/sb_text_size_22"
+                                android:paddingHorizontal="@dimen/sb_text_size_28"
                                 android:text="@string/apply" />
 
                         </RelativeLayout>
 
 
                     </LinearLayout>
-
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -264,7 +281,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="2"
-                    tools:listitem="@layout/item_view_category" />
+                    tools:listitem="@layout/item_view_category"
+                    tools:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/llFilterParentLayout"
@@ -315,9 +333,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/sb_size_2"
                                 android:text=""
-                                android:visibility="gone"
                                 android:textColor="@color/grey_900"
-                                android:textSize="@dimen/sb_text_size_10" />
+                                android:textSize="@dimen/sb_text_size_10"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -364,11 +382,11 @@
                                 android:id="@+id/tvFilterBy"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:visibility="gone"
                                 android:layout_marginTop="@dimen/sb_size_2"
                                 android:text="@string/no_filter_applied"
                                 android:textColor="@color/grey_900"
-                                android:textSize="@dimen/sb_text_size_10" />
+                                android:textSize="@dimen/sb_text_size_10"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                     </LinearLayout>

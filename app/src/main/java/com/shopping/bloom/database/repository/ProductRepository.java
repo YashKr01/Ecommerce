@@ -60,7 +60,9 @@ public class ProductRepository {
         String authToken = getToken();
         Call<GetProductsResponse> responseCall =
                 apiInterface.getProducts(authToken, categoryId, filter.getSubCategoryIds(), limit, pageNo,
-                        filter.getPriceHtoL(), filter.getColors(), filter.getSizes(), filter.getMostPopular());
+                        filter.getPriceHtoL(), filter.getColors(), filter.getSizes(), filter.getMostPopular(),
+                        filter.getPriceRangeLow(), filter.getPriceRangeHigh(), filter.getSalePercentageRangeLow(),
+                        filter.getSalePercentageRangeHigh());
         
         if (responseCall != null) {
             responseCall.enqueue(new Callback<GetProductsResponse>() {
@@ -111,6 +113,7 @@ public class ProductRepository {
                     if (response.isSuccessful() && response.code() == SUCCESS) {
                         GetColorAndSizeResponse myResponse = response.body();
                         if(myResponse != null && myResponse.isSuccess()){
+                            Log.d(TAG, "Filter data " + myResponse.getFilterArrays().toString());
                             filterListener.fetchOnSuccess(myResponse.getFilterArrays());
                             return ;
                         }

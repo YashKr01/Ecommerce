@@ -34,7 +34,6 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
     private ActivityWishListBinding binding;
 
     private List<WishListData> list;
-    private List<Product> recommendationsItemList;
 
     private WishListActivityAdapter adapter;
     private RecommendationsAdapter recommendationsAdapter;
@@ -69,8 +68,7 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
 
         // setup list,adapter,recyclerview
         list = new ArrayList<>();
-        recommendationsItemList = new ArrayList<>();
-        recommendationsAdapter = new RecommendationsAdapter(recommendationsItemList, this, this);
+        recommendationsAdapter = new RecommendationsAdapter(this, this);
         adapter = new WishListActivityAdapter(this,  this);
 
         binding.recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -148,9 +146,7 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
         @Override
         public void onSuccess(List<Product> products) {
             if (products != null && products.size() > 0) {
-                int oldListSize = recommendationsItemList.size();
-                recommendationsItemList.addAll(products);
-                recommendationsAdapter.notifyItemRangeChanged(oldListSize, recommendationsItemList.size());
+                recommendationsAdapter.updateList(products);
             } else {
                 IS_LAST_PAGE = true;
             }
@@ -158,7 +154,7 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
             IS_LOADING = false;
             binding.progressBar6.setVisibility(View.INVISIBLE);
 
-            if (recommendationsItemList.size() == 0)
+            if (recommendationsAdapter.getItemCount() == 0)
                 binding.txtRecommendedEmptyList.setVisibility(View.VISIBLE);
         }
 

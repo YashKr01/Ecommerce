@@ -93,8 +93,9 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
             list = new ArrayList<>(products);
             notifyDataSetChanged();
         } else {
+            int insertAt = list.size()-1;
             list.addAll(products);
-            notifyItemRangeInserted(list.size()-1, products.size());
+            notifyItemRangeInserted(insertAt, products.size());
         }
     }
 

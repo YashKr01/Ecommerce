@@ -2,6 +2,7 @@ package com.shopping.bloom.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,15 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecentlyViewedActivity extends AppCompatActivity implements RecentlyViewedListener, ProductClickListener, SwipeRefreshLayout.OnRefreshListener {
-
+    private static final String TAG = RecentlyViewedActivity.class.getName();
     private ActivityRecentlyViewedBinding binding;
-    private List<RecentlyViewedItem> recentlyViewedList;
-    private List<Product> recommendationItemList;
     private RecentlyViewedViewModel recentlyViewedViewModel;
     private RecommendationsAdapter recommendationsAdapter;
     private RecentlyViewedActivityAdapter recentlyViewedAdapter;
 
-    private int RECENT_PAGE = 0, PAGE_LIMIT = 30;
+    private int RECENT_PAGE = 0;
+    private final int PAGE_LIMIT = 30;
     private int RECOMMEND_PAGE = 0;
 
     private boolean IS_RECOMMENDED_LAST_PAGE = false, IS_RECOMMENDED_LOADING = false;
@@ -75,9 +75,8 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
 
     private void setUpRecyclerView() {
         // initialise lists,adapters,recycler views
-        recommendationItemList = new ArrayList<>();
         recentlyViewedAdapter = new RecentlyViewedActivityAdapter(this, this);
-        recommendationsAdapter = new RecommendationsAdapter(recommendationItemList, this, this);
+        recommendationsAdapter = new RecommendationsAdapter( this, this);
 
         binding.rvRecentlyView.setNestedScrollingEnabled(false);
         binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -132,18 +131,18 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
         @Override
         public void onSuccess(List<Product> products) {
             if (products != null && products.size() > 0) {
-                int oldListSize = recommendationItemList.size();
-                recommendationItemList.addAll(products);
-                recommendationsAdapter.notifyItemRangeChanged(oldListSize, recommendationItemList.size());
+                recommendationsAdapter.updateList(products);
             } else {
+                Log.d(TAG, "onSuccess: NULL response");
                 IS_RECOMMENDED_LAST_PAGE = true;
             }
 
             IS_RECOMMENDED_LOADING = false;
             binding.progressBar.setVisibility(View.INVISIBLE);
 
-            if (recommendationItemList.size() == 0)
+            if(recommendationsAdapter.getItemCount() == 0){
                 binding.tvEmpty.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override

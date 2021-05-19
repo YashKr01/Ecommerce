@@ -120,6 +120,10 @@
     <string name="remove_coupon">Remove Coupon</string>
     <string name="apply_coupon">Apply Coupon</string>
     <string name="error_no_delivery">Cannot be shipped to your selected delivery location. Please choose a different delivery location.</string>
+    <string name="desc_product_image">product Image</string>
+    <string name="price">Price</string>
+    <string name="discount">Discount</string>
+    <string name="filter_reset">Filter reset</string>
 
 
 </resources>

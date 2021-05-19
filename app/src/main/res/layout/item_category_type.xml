@@ -17,6 +17,7 @@
         android:paddingHorizontal="@dimen/sb_size_16"
         android:paddingVertical="@dimen/sb_size_8"
         android:textSize="@dimen/sb_text_size_14"
+        android:theme="@style/MediumText"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

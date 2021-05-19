@@ -109,7 +109,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imgNewArrival"
                     tools:listitem="@layout/item_product"
-                    tools:visibility="visible" />
+                    tools:visibility="gone" />
 
                 <TextView
                     android:id="@+id/dummyText2"
@@ -128,13 +128,14 @@
                     android:id="@+id/rvProductsCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/sb_size_4"
+                    android:layout_marginVertical="@dimen/sb_size_4"
+                    android:layout_marginHorizontal="@dimen/sb_size_2"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/dummyText2"
-                    tools:listitem="@layout/item_category_image" />
+                     />
 
                 <TextView
                     android:id="@+id/dummyText3"
@@ -223,7 +224,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/sb_size_12"
-                    android:paddingHorizontal="@dimen/sb_size_4"
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/sb_size_30"
                     app:layout_constraintTop_toBottomOf="@id/ll_Offer2" />

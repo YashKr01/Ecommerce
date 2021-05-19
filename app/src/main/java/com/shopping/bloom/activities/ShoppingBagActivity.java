@@ -62,6 +62,7 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
 
         checkNetworkAndFetchData();
         getPromoOffer();
+        fetchSuggestedProducts();
         binding.srlNoInternet.setOnRefreshListener(this::checkNetworkAndFetchData);
         binding.btCheckOut.setOnClickListener(view -> gotoCheckOutScreen());
     }
@@ -77,6 +78,11 @@ public class ShoppingBagActivity extends AppCompatActivity implements ShoppingBa
         if (!NetworkCheck.isConnect(this)) return;
         subscribeToUI(viewModel.getAllCartItem());
         getTotalCartItem(viewModel.getTotalCartItems());
+    }
+
+    private void fetchSuggestedProducts() {
+        // TODO: get product suggestion
+        //viewModel.fetchSuggestedProduct();
     }
 
     private void setUpToolBar() {

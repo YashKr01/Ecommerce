@@ -10,7 +10,7 @@
         android:id="@+id/cvDummy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/sb_size_4"
+        app:cardCornerRadius="@dimen/sb_size_1"
         app:cardElevation="@dimen/sb_size_0"
         android:layout_marginHorizontal="@dimen/sb_size_4"
         app:cardUseCompatPadding="true"
@@ -23,8 +23,9 @@
             android:id="@+id/img_wishlist"
             android:layout_width="160dp"
             android:layout_height="220dp"
-            android:scaleType="center"
-            tools:src="@color/deep_orange_600" />
+            android:scaleType="centerCrop"
+            tools:src="@color/deep_orange_600"
+            android:contentDescription="@string/desc_product_image" />
 
     </androidx.cardview.widget.CardView>
 
@@ -34,13 +35,13 @@
         android:layout_height="wrap_content"
         android:text="1234 $"
         android:ellipsize="end"
-        android:paddingHorizontal="@dimen/sb_size_8"
+        android:paddingHorizontal="@dimen/sb_size_4"
         android:maxLines="1"
         android:textColor="@color/blue_grey_700"
         android:textStyle="bold"
         android:layout_marginBottom="@dimen/sb_size_8"
         android:layout_marginTop="@dimen/sb_size_4"
-        android:textSize="@dimen/sb_text_size_14"
+        android:textSize="@dimen/sb_text_size_15"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/cvDummy"
         app:layout_constraintStart_toStartOf="@id/cvDummy"

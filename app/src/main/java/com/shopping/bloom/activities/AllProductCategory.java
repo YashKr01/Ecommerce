@@ -70,7 +70,7 @@ public class AllProductCategory extends AppCompatActivity {
     private LinearLayout llSort, llFilter;
     private ConstraintLayout cltFilter;
     private TextView tvSortBy;
-    private TextView tvCategory, tvType, tvColor, tvSize;
+    private TextView tvCategory, tvType, tvColor, tvSize, tvDiscount, tvPrice;
 
     private final int START_PAGE = 0;
     private int CURRENT_PAGE = 0;
@@ -81,8 +81,8 @@ public class AllProductCategory extends AppCompatActivity {
     private boolean IS_FILTER_FETCH_COMPLETE = false;
     final int SORT_BOTTOM_SHEET = 0;
     final int FILTER_BOTTOM_SHEET = 1;
-    List<FilterItem> flCategory, flColor, flSize, flType;
-    List<FilterItem> savedCategory, savedColor, savedSize, savedType;
+    List<FilterItem> flCategory, flColor, flSize, flType, flDiscount, flPrice;
+    List<FilterItem> savedCategory, savedColor, savedSize, savedType, savedDiscount, savedPrice;
     ProductFilter MAIN_FILTER = new ProductFilter();
     FilterArrayValues filterArrayValues = null;
     SORT_BY DEFAULT_SORT_VALUE = null;
@@ -136,6 +136,8 @@ public class AllProductCategory extends AppCompatActivity {
         tvType = findViewById(R.id.tvType);
         tvColor = findViewById(R.id.tvColor);
         tvSize = findViewById(R.id.tvSize);
+        tvDiscount = findViewById(R.id.tvDiscount);
+        tvPrice = findViewById(R.id.tvPrice);
 
         //SetUpToolbar
         setSupportActionBar(toolbar);
@@ -149,6 +151,8 @@ public class AllProductCategory extends AppCompatActivity {
         flColor = new ArrayList<>();
         flSize = new ArrayList<>();
         flType = new ArrayList<>();
+        flDiscount = new ArrayList<>();
+        flPrice = new ArrayList<>();
         /*
          *   persistence filter list
          *      when user open the filter bottom sheet
@@ -158,6 +162,8 @@ public class AllProductCategory extends AppCompatActivity {
         savedType = new ArrayList<>();
         savedSize = new ArrayList<>();
         savedColor = new ArrayList<>();
+        savedDiscount = new ArrayList<>();
+        savedPrice = new ArrayList<>();
 
         findViewById(R.id.btClearAll).setOnClickListener(clickListener);
         findViewById(R.id.btApplyFilter).setOnClickListener(clickListener);
@@ -169,6 +175,8 @@ public class AllProductCategory extends AppCompatActivity {
         tvType.setOnClickListener(changeCategory);
         tvColor.setOnClickListener(changeCategory);
         tvSize.setOnClickListener(changeCategory);
+        tvDiscount.setOnClickListener(changeCategory);
+        tvPrice.setOnClickListener(changeCategory);
     }
 
     private void getIntentData() {
@@ -176,7 +184,6 @@ public class AllProductCategory extends AppCompatActivity {
         String ARG_CATEGORY_NAME = "category_name";
         String ARG_SUB_CATEGORY_LIST = "sub_category_list";
         String ARG_BUNDLE = "app_bundle_name";
-
 
         Bundle bundle = getIntent().getBundleExtra(ARG_BUNDLE);
         String parentId;
@@ -186,7 +193,7 @@ public class AllProductCategory extends AppCompatActivity {
 
             parentId = bundle.getString(ARG_CATEGORY_ID, "1");
             PARENT_ID = parentId;
-            String title = bundle.getString(ARG_CATEGORY_NAME, "ECOMMERCE..");
+            String title = bundle.getString(ARG_CATEGORY_NAME, "ECOMMERCE");
             this.setTitle(title);
             flCategory = bundle.getParcelableArrayList(ARG_SUB_CATEGORY_LIST);
             if (flCategory != null && flCategory.size() > 0) {
@@ -213,10 +220,10 @@ public class AllProductCategory extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult: ");
-        if(requestCode == REQ_SINGLE_PRODUCT) {
+        if (requestCode == REQ_SINGLE_PRODUCT) {
             Log.d(TAG, "onActivityResult: ");
-            if(data == null) Log.d(TAG, "onActivityResult: NULL");
-            if(resultCode == RESULT_OK && data != null) {
+            if (data == null) Log.d(TAG, "onActivityResult: NULL");
+            if (resultCode == RESULT_OK && data != null) {
                 int isLiked = data.getIntExtra("IS_LIKED", 0);
                 Log.d(TAG, "onActivityResult: " + isLiked);
             }
@@ -274,6 +281,8 @@ public class AllProductCategory extends AppCompatActivity {
             if (viewId == R.id.btClearAll) {
                 clearAllFilter();
                 updateFilter(DEFAULT_SORT_VALUE);
+                Toast.makeText(AllProductCategory.this, getString(R.string.filter_reset), Toast.LENGTH_SHORT)
+                        .show();
                 //showOrHideSheet(cltFilter, false);
             }
             if (viewId == R.id.btApplyFilter) {
@@ -293,6 +302,8 @@ public class AllProductCategory extends AppCompatActivity {
         filterItemAdapter.clearAllSelection(flSize);
         filterItemAdapter.clearAllSelection(flType);
         filterItemAdapter.clearAllSelection(flColor);
+        filterItemAdapter.clearAllSelection(flDiscount);
+        filterItemAdapter.clearAllSelection(flPrice);
         saveSelectionData();
     }
 
@@ -356,6 +367,22 @@ public class AllProductCategory extends AppCompatActivity {
             createADeepCopy(savedType, flType);
         }
 
+        if (savedPrice.isEmpty()) {
+            for (FilterItem filterItem : flPrice) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedPrice, flPrice);
+        }
+
+        if (savedDiscount.isEmpty()) {
+            for (FilterItem filterItem : flDiscount) {
+                filterItem.setSelected(false);
+            }
+        } else {
+            createADeepCopy(savedDiscount, flDiscount);
+        }
+
         filterItemAdapter.notifyDataSetChanged();
     }
 
@@ -366,6 +393,8 @@ public class AllProductCategory extends AppCompatActivity {
         createADeepCopy(flType, savedType);
         createADeepCopy(flSize, savedSize);
         createADeepCopy(flColor, savedColor);
+        createADeepCopy(flDiscount, savedDiscount);
+        createADeepCopy(flPrice, savedPrice);
     }
 
     private void createADeepCopy(List<FilterItem> from, List<FilterItem> to) {
@@ -397,11 +426,17 @@ public class AllProductCategory extends AppCompatActivity {
             if (viewId == R.id.tvType) {
                 filterItemAdapter.updateList(flType);
             }
+            if (viewId == R.id.tvDiscount) {
+                filterItemAdapter.updateList(flDiscount);
+            }
+            if (viewId == R.id.tvPrice) {
+                filterItemAdapter.updateList(flPrice);
+            }
         }
     };
 
     private void changeSelectedTextTo(int viewId) {
-        int[] ids = {R.id.tvCategory, R.id.tvColor, R.id.tvSize, R.id.tvType};
+        int[] ids = {R.id.tvCategory, R.id.tvColor, R.id.tvSize, R.id.tvType, R.id.tvDiscount, R.id.tvPrice};
         for (int id : ids) {
             TextView textView = findViewById(id);
             if (id == viewId) {
@@ -475,27 +510,124 @@ public class AllProductCategory extends AppCompatActivity {
     private void updateFilterList(FilterArrayValues filterValues) {
         if (filterValues == null) return;
 
-        if (!filterValues.getSizes().isEmpty()) {
+        if (filterValues.getSizes() != null && !filterValues.getSizes().isEmpty()) {
             flSize.clear();
             for (String size : filterValues.getSizes()) {
                 FilterItem item = new FilterItem(size, "", "", false, Const.FILTER.LENGTH);
                 flSize.add(item);
             }
+            tvSize.setVisibility(View.VISIBLE);
+        } else {
+            tvSize.setVisibility(View.GONE);
         }
-        if (filterValues.getTypes() != null && !filterValues.getTypes().isEmpty()) {
+
+        if (filterValues.getTypes() != null && filterValues.getTypes() != null && !filterValues.getTypes().isEmpty()) {
             flType.clear();
             for (String type : filterValues.getTypes()) {
                 FilterItem item = new FilterItem(type, "", "", false, Const.FILTER.TYPE);
                 flType.add(item);
             }
-
+            tvType.setVisibility(View.VISIBLE);
+        } else {
+            tvType.setVisibility(View.GONE);
         }
-        if (!filterValues.getColors().isEmpty()) {
+
+        if (filterValues.getColors() != null && !filterValues.getColors().isEmpty()) {
             flColor.clear();
             for (String color : filterValues.getColors()) {
                 FilterItem item = new FilterItem(color, "", "", false, Const.FILTER.COLOR);
                 flColor.add(item);
             }
+            tvColor.setVisibility(View.VISIBLE);
+        } else {
+            tvColor.setVisibility(View.GONE);
+        }
+
+        int minPrice = -1, maxPrice = -1;
+        int minSale = -1, maxSale = -1;
+        try {
+            float fPriceMin = Float.parseFloat(filterValues.getMinPrice());
+            float fPriceMax = Float.parseFloat(filterValues.getMaxPrice());
+            minPrice = (int) fPriceMin;
+            maxPrice = (int) fPriceMax;
+            float fMinSale = Float.parseFloat(filterValues.getMinSalePercentage());
+            float fMaxSale = Float.parseFloat(filterValues.getMaxSalePercentage());
+            minSale = (int) fMinSale;
+            maxSale = (int) fMaxSale;
+        } catch (NumberFormatException e) {
+            Log.d(TAG, "updateFilterList: Unable to parse the float value to int");
+        }
+
+        if (minPrice != -1 && maxPrice != -1) {
+            tvPrice.setVisibility(View.VISIBLE);
+            createPriceFilterList(minPrice, maxPrice+1);
+            //createPriceFilterList(10, 5000); //FOR testing
+        } else {
+            tvPrice.setVisibility(View.GONE);
+        }
+
+        if (minPrice != -1 && maxPrice != -1) {
+            tvDiscount.setVisibility(View.VISIBLE);
+            createSalePercentageList(minSale, maxSale+1);
+            //createSalePercentageList(10, 50);  //FOR testing
+        } else {
+            tvDiscount.setVisibility(View.GONE);
+        }
+    }
+
+    private void createPriceFilterList(int minPrice, int maxPrice) {
+        final int DIFF = 500;
+        int price = 500;
+        boolean firstTag = true;
+        flPrice.clear();
+        for (; price <= maxPrice; price += DIFF) {
+            String text;
+            if (firstTag) {
+                text = price + " or below";
+                FilterItem filterItem = new FilterItem(text, "0", "10", false, FILTER.PRICE);
+                flPrice.add(filterItem);
+                firstTag = false;
+            } else {
+                int from = price - DIFF;
+                int to = price - 1;
+                text = from + " - " + to;
+                FilterItem filterItem = new FilterItem(text, from + "", to + "", false, FILTER.PRICE);
+                flPrice.add(filterItem);
+            }
+        }
+        if (flPrice.isEmpty()) {
+            tvPrice.setVisibility(View.GONE);
+        } else {
+            tvPrice.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void createSalePercentageList(int min, int max) {
+        final int DIFF = 10;
+        int sale = 10;
+        boolean firstTag = true;
+        flDiscount.clear();
+        for (; sale <= max; sale += DIFF) {
+            String text;
+            if (firstTag) {
+                text = sale + "% and below";
+                FilterItem filterItem = new FilterItem(text, "0", "10", false, FILTER.DISCOUNT);
+                flDiscount.add(filterItem);
+                text = sale + "% and more";
+                FilterItem filterItem2 = new FilterItem(text, "10", max + "", false, FILTER.DISCOUNT);
+                flDiscount.add(filterItem2);
+                firstTag = !firstTag;
+                continue;
+            } else {
+                text = sale + "% or more";
+            }
+            FilterItem filterItem = new FilterItem(text, sale + "", max + "", false, FILTER.DISCOUNT);
+            flDiscount.add(filterItem);
+        }
+        if (flDiscount.isEmpty()) {
+            tvDiscount.setVisibility(View.GONE);
+        } else {
+            tvDiscount.setVisibility(View.VISIBLE);
         }
     }
 
@@ -629,6 +761,18 @@ public class AllProductCategory extends AppCompatActivity {
         if (sortBy == SORT_BY.PRICE_LOW_TO_HIGH) {
             newFilter.setPriceHtoL("0");
         }
+        String priceLow = getMinOrMaxPrice(flPrice, true);
+        String priceHigh = getMinOrMaxPrice(flPrice, false);
+        if (!priceLow.isEmpty() && !priceHigh.isEmpty()) {
+            newFilter.setPriceRangeLow(priceLow);
+            newFilter.setPriceRangeHigh(priceHigh);
+        }
+        String minSalePercentage = getMinOrMaxSalePercentage(flDiscount, true);
+        String maxSalePercentage = getMinOrMaxSalePercentage(flDiscount, false);
+        if (!minSalePercentage.isEmpty() && !maxSalePercentage.isEmpty()) {
+            newFilter.setSalePercentageRangeLow(minSalePercentage);
+            newFilter.setSalePercentageRangeHigh(maxSalePercentage);
+        }
         MAIN_FILTER = newFilter;
         Log.d(TAG, "updateFilter: MAIN filter " + MAIN_FILTER.toString());
         checkNetworkAndFetchData();
@@ -649,6 +793,47 @@ public class AllProductCategory extends AppCompatActivity {
         return CommonUtils.getStringFromList(newList);
     }
 
+    private String getMinOrMaxPrice(List<FilterItem> filterItems, boolean minimum) {
+        if (filterItems == null || filterItems.isEmpty()) return "";
+        if (minimum) {
+            for (FilterItem item : filterItems) {
+                if (item.isSelected()) {
+                    return item.getCategoryId();
+                }
+            }
+        } else {
+            String max = "";
+            for (FilterItem item : filterItems) {
+                if (item.isSelected()) {
+                    max = item.getParentId();
+                }
+            }
+            return max;
+        }
+        return "";
+    }
+
+    private String getMinOrMaxSalePercentage(List<FilterItem> filterItems, boolean minimum) {
+        if (filterItems == null || filterItems.isEmpty()) return "";
+        if (minimum) {
+            for (FilterItem item : filterItems) {
+                if (item.isSelected()) {
+                    return item.getCategoryId();
+                }
+            }
+        } else {
+            String max = "";
+            for (FilterItem item : filterItems) {
+                if (item.isSelected()) {
+                    max = item.getParentId();
+                }
+            }
+            return max;
+        }
+        return "";
+    }
+
+
     // reset filter, set CURRENT PAGE = 0
     private void reset() {
         Toast.makeText(this, "Reset Everything", Toast.LENGTH_SHORT)
@@ -658,7 +843,6 @@ public class AllProductCategory extends AppCompatActivity {
         IS_LAST_PAGE = false;
         RETRY_ATTEMPT = 0;
     }
-
 
 
     private void openSingleProductActivity(Product product) {

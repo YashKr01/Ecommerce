@@ -31,6 +31,8 @@ public class Const {
         LENGTH,
         TYPE,
         COLOR,
-        CATEGORY
+        CATEGORY,
+        DISCOUNT,
+        PRICE
     }
 }

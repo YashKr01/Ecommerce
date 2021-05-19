@@ -7,5 +7,9 @@ data class ProductFilter(
         var mostPopular: String? = null,
         var colors: String? = null,
         var sizes: String? = null,
-        var types: String? = null
+        var types: String? = null,
+        var salePercentageRangeHigh : String? = null,
+        var salePercentageRangeLow : String? = null,
+        var priceRangeLow: String? = null,
+        var priceRangeHigh: String? = null
 )

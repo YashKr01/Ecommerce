@@ -111,7 +111,11 @@ public interface ApiInterface {
             @Query("sortByPrice") String sortByPrice,
             @Query("colors") String colors,
             @Query("sizes") String sizes,
-            @Query("bestSelling") String mostPopular
+            @Query("bestSelling") String mostPopular,
+            @Query("priceRangeLow") String priceLow,
+            @Query("priceRangeHigh") String priceHigh,
+            @Query("salePercentageRangeLow") String salePercentageLow,
+            @Query("salePercentageRangeHigh") String salePercentageHigh
             //TODO: Add one more filter option here New Arrival
     );
 

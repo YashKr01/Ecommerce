@@ -19,12 +19,14 @@ import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.CategoryAdapter;
 import com.shopping.bloom.databinding.FragmentCategoryBinding;
 import com.shopping.bloom.model.Category;
+import com.shopping.bloom.model.FilterItem;
 import com.shopping.bloom.model.SubCategory;
-import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.CategoryClickListener;
+import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.ShopViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryFragment extends Fragment implements CategoryClickListener {
@@ -113,7 +115,7 @@ public class CategoryFragment extends Fragment implements CategoryClickListener 
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
             RETRY_ATTEMPT++;
-            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+            if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
                 checkNetworkAndFetchData();
             } else {
@@ -129,46 +131,49 @@ public class CategoryFragment extends Fragment implements CategoryClickListener 
     @Override
     public void onCategoryClicked(Category categoryCategory) {
         Log.d(TAG, "onProductClick: product clicked " + categoryCategory.toString());
-        gotoAllProductScreen(String.valueOf(categoryCategory.getId()));
+        openAllProductScreen(categoryCategory);
     }
 
     //When particular product image is clicked
     @Override
     public void onSubCategoryClicked(SubCategory product) {
-        Log.d(TAG, "onSubProductClick: "+ product.toString());
-        if(getContext() != null) {
-            gotoAllProductScreen(product);
+        Log.d(TAG, "onSubProductClick: " + product.toString());
+        if (getContext() != null) {
+            openAllProductScreen(product);
         }
     }
 
-   /* @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_settings).setVisible(true);
-        MenuItem item = menu.getItem(0);
-        item.setVisible(false);
-    }
+    private void openAllProductScreen(Category product) {
+        /*
+         *  send the parent ID and subCategory name to populate in
+         *   filter section of the ViewCategory Activity.
+         * */
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_fragment_menu, menu);
-        Log.d(TAG, "onCreateOptionsMenu: category " + menu.getItem(0).getTitle());
-    }*/
-
-    private void gotoAllProductScreen(String categoryId) {
         String ARG_CATEGORY_ID = "category_id";
         String ARG_CATEGORY_NAME = "category_name";
         String ARG_SUB_CATEGORY_LIST = "sub_category_list";
         String ARG_BUNDLE = "app_bundle_name";
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_CATEGORY_ID, categoryId);
-        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, null);
-        bundle.putString(ARG_CATEGORY_NAME, null);
         Intent intent = new Intent(getActivity(), AllProductCategory.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_CATEGORY_ID, String.valueOf(product.getId()));
+        bundle.putString(ARG_CATEGORY_NAME, product.getCategory_name());
+        ArrayList<FilterItem> list = new ArrayList<>();
+        if (product.getSub_category() != null && !product.getSub_category().isEmpty()) {
+            for (int i = 0; i < product.getSub_category().size(); i++) {
+                SubCategory subCategory = product.getSub_category().get(i);
+                FilterItem filterItem = new FilterItem(
+                        subCategory.getCategory_name(),
+                        String.valueOf(subCategory.getId()),
+                        subCategory.getParent_id());
+                list.add(filterItem);
+            }
+            bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, list);
+        }
         intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
 
-    private void gotoAllProductScreen(SubCategory subCategory) {
+    private void openAllProductScreen(SubCategory subCategory) {
         String ARG_CATEGORY_ID = "category_id";
         String ARG_CATEGORY_NAME = "category_name";
         String ARG_SUB_CATEGORY_LIST = "sub_category_list";

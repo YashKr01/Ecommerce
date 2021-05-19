@@ -26,10 +26,10 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     private Context context;
     private ProductClickListener listener;
 
-    public RecommendationsAdapter(List<Product> list, Context context, ProductClickListener recommendedProductClickLister) {
-        this.list = list;
+    public RecommendationsAdapter(Context context, ProductClickListener recommendedProductClickLister) {
         this.context = context;
         this.listener = recommendedProductClickLister;
+        list = new ArrayList<>();
     }
 
     @NonNull
@@ -79,7 +79,19 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
 
     @Override
     public int getItemCount() {
+        if(list == null) return 0;
         return list.size();
+    }
+
+    public void updateList(List<Product > products) {
+        if(list == null || list.isEmpty()) {
+            list = new ArrayList<>(products);
+            notifyDataSetChanged();
+            return;
+        }
+        int insertAt = list.size()-1;
+        list.addAll(products);
+        notifyItemRangeInserted(insertAt, products.size());
     }
 
     public void clearList() {

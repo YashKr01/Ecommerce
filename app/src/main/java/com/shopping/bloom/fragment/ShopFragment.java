@@ -37,9 +37,9 @@ import com.shopping.bloom.model.MainScreenConfig;
 import com.shopping.bloom.model.MainScreenImageModel;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.SubCategory;
+import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.restService.callback.CategoryResponseListener;
 import com.shopping.bloom.restService.callback.LoadMoreItems;
-import com.shopping.bloom.restService.callback.CategoryClickListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.utils.CommonUtils;
@@ -168,7 +168,9 @@ public class ShopFragment extends Fragment {
 
         setUpIndicator();   //View pager Indicators
 
-        if(mainScreenConfig == null) { return; }
+        if (mainScreenConfig == null) {
+            return;
+        }
 
         if (!mainScreenConfig.getViewpager_image().isEmpty()) {
             vpHeaderImages.setAdapter(viewpagerAdapter);
@@ -211,7 +213,7 @@ public class ShopFragment extends Fragment {
 
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if(v.getChildAt(v.getChildCount() - 1) != null) {
+            if (v.getChildAt(v.getChildCount() - 1) != null) {
                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                         scrollY > oldScrollY) {
                     //code to fetch more data for endless scrolling
@@ -224,9 +226,9 @@ public class ShopFragment extends Fragment {
 
     private void gotoProductScreen(Category product) {
         /*
-        *  send the parent ID and subCategory name to populate in
-        *   filter section of the ViewCategory Activity.
-        * */
+         *  send the parent ID and subCategory name to populate in
+         *   filter section of the ViewCategory Activity.
+         * */
 
         String ARG_CATEGORY_ID = "category_id";
         String ARG_CATEGORY_NAME = "category_name";
@@ -237,15 +239,17 @@ public class ShopFragment extends Fragment {
         bundle.putString(ARG_CATEGORY_ID, String.valueOf(product.getId()));
         bundle.putString(ARG_CATEGORY_NAME, product.getCategory_name());
         ArrayList<FilterItem> list = new ArrayList<>();
-        for(int i = 0; i < product.getSub_category().size(); i++){
-            SubCategory subCategory = product.getSub_category().get(i);
-            FilterItem filterItem = new FilterItem(
-                    subCategory.getCategory_name(),
-                    String.valueOf(subCategory.getId()),
-                    subCategory.getParent_id());
-            list.add(filterItem);
+        if (product.getSub_category() != null && !product.getSub_category().isEmpty()) {
+            for (int i = 0; i < product.getSub_category().size(); i++) {
+                SubCategory subCategory = product.getSub_category().get(i);
+                FilterItem filterItem = new FilterItem(
+                        subCategory.getCategory_name(),
+                        String.valueOf(subCategory.getId()),
+                        subCategory.getParent_id());
+                list.add(filterItem);
+            }
+            bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, list);
         }
-        bundle.putParcelableArrayList(ARG_SUB_CATEGORY_LIST, list);
         intent.putExtra(ARG_BUNDLE, bundle);
         startActivity(intent);
     }
@@ -304,7 +308,7 @@ public class ShopFragment extends Fragment {
         public void onFailure(int errorCode, String errorMessage) {
             Log.d(TAG, "onFailure: errorCode" + errorCode + " errorMessage " + errorMessage);
             RETRY_ATTEMPT++;
-            if(RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
+            if (RETRY_ATTEMPT < MAX_RETRY_ATTEMPT) {
                 Log.d(TAG, "onFailure: RETRYING request... " + RETRY_ATTEMPT);
                 checkNetworkAndFetchData();
             } else {
