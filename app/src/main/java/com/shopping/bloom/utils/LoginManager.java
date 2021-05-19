@@ -44,7 +44,6 @@ public class LoginManager {
 
     private static String guest_token = "guest_token";
 
-
     private static  String is_primary_address_available = "is_primary_address_available";
 
     private static String primary_address_id = "primary_address_id";
@@ -52,6 +51,8 @@ public class LoginManager {
     private static String primary_address = "primary_address";
 
     private static String is_firebase_token_changed = "is_firebase_token_changed";
+
+    private static String is_notification_on = "is_notification_on";
 
     public static LoginManager getInstance() {
 
@@ -90,6 +91,14 @@ public class LoginManager {
 
     public boolean is_firebase_token_changed(){
         return sharedPreferences.getBoolean(is_firebase_token_changed, false);
+    }
+
+    public void setIs_notification_on(boolean is_on){
+        editor.putBoolean(is_notification_on, is_on).commit();
+    }
+
+    public boolean is_notification_on(){
+        return sharedPreferences.getBoolean(is_notification_on, true);
     }
 
     public boolean is_email_verified() {

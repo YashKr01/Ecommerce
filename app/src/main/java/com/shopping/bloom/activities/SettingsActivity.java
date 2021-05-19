@@ -28,11 +28,13 @@ import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    TextView nameTextView, emailTextView, addressBookTextView, accountSecurityTextView, connectTextView;
+    TextView nameTextView, emailTextView, addressBookTextView,
+            accountSecurityTextView, connectTextView, notificationTextView;
     LoginManager loginManager;
     LinearLayout linearLayout;
     Toolbar toolbar;
     Button signOutButton;
+    int check = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,14 @@ public class SettingsActivity extends AppCompatActivity {
         addressBookTextView = findViewById(R.id.addressBookTextView);
         accountSecurityTextView = findViewById(R.id.accountSecurityTextView);
         connectTextView = findViewById(R.id.connectTextView);
+        notificationTextView = findViewById(R.id.setNotificationTextView);
 
         signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(debouncedOnClickListener);
         accountSecurityTextView.setOnClickListener(debouncedOnClickListener);
         connectTextView.setOnClickListener(debouncedOnClickListener);
         addressBookTextView.setOnClickListener(debouncedOnClickListener);
+        notificationTextView.setOnClickListener(debouncedOnClickListener);
 
         String name = loginManager.getname();
         String email = loginManager.getEmailid();
@@ -74,6 +78,14 @@ public class SettingsActivity extends AppCompatActivity {
             signOutButton.setVisibility(View.VISIBLE);
             nameTextView.setText(name);
             emailTextView.setText(email);
+        }
+
+        if(loginManager.is_notification_on()){
+            notificationTextView.setText("ON");
+            check = 0;
+        }else{
+            notificationTextView.setText("OFF");
+            check = 1;
         }
 
         TextView txtFeedback = findViewById(R.id.ratingTextView);
@@ -97,9 +109,23 @@ public class SettingsActivity extends AppCompatActivity {
                 connectIntent();
             } else if (v.getId() == R.id.accountSecurityTextView) {
                 accountSecurityIntent();
+            } else if(v.getId() == R.id.setNotificationTextView){
+                setNotification();
             }
         }
     };
+
+    private void setNotification() {
+        if(check == 0){
+            notificationTextView.setText("OFF");
+            loginManager.setIs_notification_on(false);
+            check = 1;
+        }else{
+            notificationTextView.setText("ON");
+            loginManager.setIs_notification_on(true);
+            check = 0;
+        }
+    }
 
 
     public void accountSecurityIntent() {
