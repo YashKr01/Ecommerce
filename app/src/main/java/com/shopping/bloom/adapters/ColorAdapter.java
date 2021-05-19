@@ -3,6 +3,7 @@ package com.shopping.bloom.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,9 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             holder.button.setBackgroundColor(Color.parseColor(color));
         }
 
+        float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
+        float radius15f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15f, context.getResources().getDisplayMetrics());
+
         if (clickable) {
             holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
                 @Override
@@ -75,6 +79,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
                     if (holder.button.isChecked()) {
 
                         holder.cardView.setContentPadding(10, 10, 10, 10);
+                        holder.cardView2.setRadius(radius11f);
                         if (context instanceof SingleProductActivity) {
                             ((SingleProductActivity) context).setViewPagerCurrentItem(position);
                         }
@@ -100,12 +105,13 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         }
 
         if (pos == position) {
-            holder.cardView.setContentPadding(10, 10, 10, 10);
+            holder.cardView.setContentPadding(10, 10 ,10, 10);
+            holder.cardView2.setRadius(radius11f);
             holder.button.setChecked(true);
         } else {
             holder.cardView.setContentPadding(0, 0, 0, 0);
+            holder.cardView2.setRadius(radius15f);
             holder.button.setChecked(false);
-
         }
 
     }
@@ -118,16 +124,15 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         return 0;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox button;
-        CardView cardView;
+        CardView cardView, cardView2;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.colorButton);
             cardView = itemView.findViewById(R.id.cardView);
-
-
+            cardView2 = itemView.findViewById(R.id.cardView2);
         }
 
     }
