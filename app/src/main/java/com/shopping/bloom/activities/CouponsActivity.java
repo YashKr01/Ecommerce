@@ -11,10 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.shopping.bloom.adapters.coupons.CouponsViewPagerAdapter;
+import com.shopping.bloom.adapters.CouponsViewPagerAdapter;
 import com.shopping.bloom.databinding.ActivityCouponsBinding;
-import com.shopping.bloom.fragment.coupons.ExpiredCouponsFragment;
-import com.shopping.bloom.fragment.coupons.UnusedCouponsFragment;
+import com.shopping.bloom.fragment.ExpiredCouponsFragment;
+import com.shopping.bloom.fragment.UnusedCouponsFragment;
 import com.shopping.bloom.model.coupons.Coupon;
 import com.shopping.bloom.restService.callback.CouponClickListener;
 import com.shopping.bloom.utils.NetworkCheck;

@@ -68,7 +68,7 @@
                     android:orientation="vertical">
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recently_viewed_recycler_view"
+                        android:id="@+id/rvRecentlyView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/sb_size_8"
@@ -87,7 +87,7 @@
                         app:tint="@color/grey_500" />
 
                     <TextView
-                        android:id="@+id/txt_recommendations"
+                        android:id="@+id/tvRecommendation"
                         style="@style/BoldText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/txt_empty_list"
+                        android:id="@+id/tvEmpty"
                         style="@style/BoldText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                         android:visibility="gone" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recommended_recycler_view"
+                        android:id="@+id/rvRecommendation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/sb_size_12"

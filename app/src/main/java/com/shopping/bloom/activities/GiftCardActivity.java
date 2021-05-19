@@ -5,8 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.os.Bundle;
 
-import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.giftcard.GiftCardAdapter;
+import com.shopping.bloom.adapters.GiftCardAdapter;
 import com.shopping.bloom.databinding.ActivityGiftCardBinding;
 import com.shopping.bloom.model.giftcard.GiftCard;
 

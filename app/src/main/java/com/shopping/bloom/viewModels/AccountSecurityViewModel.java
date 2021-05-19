@@ -2,18 +2,15 @@ package com.shopping.bloom.viewModels;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.shopping.bloom.activities.OtpActivity;
 import com.shopping.bloom.model.EmailVerificationModel;
-import com.shopping.bloom.restService.response.EmailVerificationResponse;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
-import com.shopping.bloom.restService.response.LoginResponseModel;
+import com.shopping.bloom.restService.response.EmailVerificationResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +28,6 @@ public class AccountSecurityViewModel extends ViewModel {
     }
 
     public void verifyEmailApiCall(EmailVerificationModel emailVerificationModel, Application application, Activity context){
-
         ApiInterface apiService = RetrofitBuilder.getInstance(application).retrofit.create(ApiInterface.class);
         Call<EmailVerificationResponse> call = apiService.sendEmailVerifyData(emailVerificationModel);
         call.enqueue(new Callback<EmailVerificationResponse>() {
@@ -49,7 +45,6 @@ public class AccountSecurityViewModel extends ViewModel {
                 Toast.makeText(context, "Error Occurred", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
 }

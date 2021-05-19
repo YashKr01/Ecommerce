@@ -13,6 +13,11 @@ public class Const {
     public static final int ADD_ADDRESS_ACTIVITY = 101;
     public static final int OTP_ACTIVITY = 102;
 
+    public static final int SUCCESS = 200;
+    public static final int ERROR_NO_ADDRESS_FOUND = 211;
+    public static final int ERROR_INVALID_PROMO_CODE = 212;
+    public static final int ERROR_NO_DELIVERY_AVAILABLE = 213;
+
 
     public enum SORT_BY {
         NEW_ARRIVAL,

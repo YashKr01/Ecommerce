@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.profilefragment.WishListFragment">
+    tools:context=".fragment.WishListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wish_list_recycler_view"
+        android:id="@+id/rvRecyclerView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="false"
@@ -19,7 +19,7 @@
         tools:listitem="@layout/item_wishlist" />
 
     <TextView
-        android:id="@+id/view_more"
+        android:id="@+id/tvViewMore"
         style="@style/BoldText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/txt_empty"
+        android:id="@+id/tvEmpty"
         style="@style/BoldText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         app:layout_goneMarginTop="@dimen/sb_text_size_24" />
 
     <ProgressBar
-        android:id="@+id/progressBar4"
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

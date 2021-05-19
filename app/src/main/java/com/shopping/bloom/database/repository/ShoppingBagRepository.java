@@ -14,6 +14,7 @@ import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.restService.response.PostProductList;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.LoginManager;
 
 import java.util.List;
@@ -83,13 +84,13 @@ public class ShoppingBagRepository {
     public void getCheckOutResponse(Application context, PostCheckoutData checkoutData, CheckoutResponseListener listener) {
         ApiInterface apiInterface = RetrofitBuilder.getInstance(context).getApi();
         String authToken = getToken();
-        Log.d(TAG, "getCartValue: Token " + authToken);
         Call<GetCheckoutResponse> responseCall = apiInterface.getCheckoutResponse(authToken, checkoutData);
         if (responseCall != null) {
             responseCall.enqueue(new Callback<GetCheckoutResponse>() {
                 @Override
                 public void onResponse(Call<GetCheckoutResponse> call, Response<GetCheckoutResponse> response) {
                     if (!response.isSuccessful() || response.body() == null) {
+                        Log.d(TAG, "onResponse: response is unsuccessful " + response.code());
                         listener.onFailed(response.code(), response.message());
                         return;
                     }
@@ -101,6 +102,18 @@ public class ShoppingBagRepository {
                         } else {
                             listener.onFailed(SUCCESS, "Something went wrong");
                         }
+                    } else if (response.code() == Const.ERROR_NO_ADDRESS_FOUND) {
+                        Log.d(TAG, "onResponse: no address found with this address ");
+                        listener.onFailed(response.code(), response.message());
+                    } else if (response.code() == Const.ERROR_INVALID_PROMO_CODE) {
+                        Log.d(TAG, "onResponse: invalid promo code");
+                        listener.onFailed(response.code(), response.message());
+                    } else if (response.code() == Const.ERROR_NO_DELIVERY_AVAILABLE) {
+                        Log.d(TAG, "onResponse: Not Deliverable Pin code");
+                        listener.onFailed(response.code(), response.message());
+                    } else {
+                        Log.d(TAG, "onResponse: Weird error: " + response.code());
+                        listener.onFailed(-1, "Weird error");
                     }
                 }
 

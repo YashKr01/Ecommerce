@@ -17,12 +17,12 @@
         tools:layout="@layout/fragment_category" />
     <fragment
         android:id="@+id/newTrendFragment"
-        android:name="com.shopping.bloom.fragment.newfragment.NewFragment"
+        android:name="com.shopping.bloom.fragment.NewFragment"
         android:label="@string/new_"
         tools:layout="@layout/fragment_new" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.shopping.bloom.fragment.profilefragment.ProfileFragment"
+        android:name="com.shopping.bloom.fragment.ProfileFragment"
         android:label="@string/me"
         tools:layout="@layout/fragment_profile" />
 </navigation>

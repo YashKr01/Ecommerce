@@ -9,15 +9,15 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/ToolbarStyle"
-        android:theme="@style/ToolbarStyle"
         android:layout_width="match_parent"
-        app:title="@string/title_place_order"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
         android:elevation="@dimen/sb_size_6"
+        android:theme="@style/ToolbarStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="@string/title_place_order" />
 
     <RelativeLayout
         android:id="@+id/rlProgressBar"
@@ -26,8 +26,8 @@
         android:background="@color/transparent_shade"
         android:elevation="@dimen/sb_size_8"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         tools:visibility="gone">
 
         <ProgressBar
@@ -159,6 +159,19 @@
                     app:layout_constraintStart_toStartOf="@+id/linearLayout5"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout5" />
 
+                <TextView
+                    android:id="@+id/tvErrorAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/sb_size_18"
+                    android:textColor="@color/red_400"
+                    android:textSize="@dimen/sb_text_size_12"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvShippingAddress"
+                    tools:text="Invalid address"
+                    tools:visibility="visible" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -170,7 +183,7 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="@dimen/sb_size_18"
                 android:paddingVertical="@dimen/sb_size_12"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <TextView
                     android:id="@+id/tvHeader3"
@@ -292,37 +305,17 @@
                     android:orientation="horizontal"
                     android:paddingVertical="@dimen/sb_size_8">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tvApplyCoupon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvApplyCoupon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:gravity="center_vertical|start"
-                            android:paddingVertical="@dimen/sb_size_8"
-                            android:text="Apply Coupon"
-                            android:textStyle="bold"
-                            android:textColor="@color/blue_grey_900"
-                            android:textSize="@dimen/sb_text_size_14" />
-
-                        <TextView
-                            android:id="@+id/tvRemoveCoupon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:gravity="top"
-                            android:text="Remove"
-                            android:visibility="gone"
-                            android:paddingVertical="@dimen/sb_size_4"
-                            android:textColor="@color/grey_900"
-                            android:textSize="@dimen/sb_text_size_12"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical|start"
+                        android:paddingVertical="@dimen/sb_size_8"
+                        android:text="@string/apply_coupon"
+                        android:textColor="@color/blue_grey_900"
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="0dp"
@@ -331,14 +324,28 @@
                         android:layout_weight="1" />
 
                     <ImageView
+                        android:id="@+id/imgRemoveCoupon"
                         android:layout_width="@dimen/sb_size_24"
                         android:layout_height="@dimen/sb_size_24"
                         android:layout_gravity="center_vertical"
-                        android:rotation="90"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_arrow_up" />
+                        android:contentDescription="@string/remove_coupon"
+                        android:src="@drawable/ic_close"
+                        android:visibility="gone" />
+
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvErrorCoupon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red_300"
+                    android:textSize="@dimen/sb_text_size_12"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/tvShippingAddress"
+                    app:layout_constraintTop_toBottomOf="@+id/tvShippingAddress"
+                    tools:text="Cart value must be 999 and above"
+                    tools:visibility="visible" />
 
                 <View
                     android:layout_width="match_parent"
@@ -360,9 +367,9 @@
                         android:gravity="center_vertical|start"
                         android:paddingVertical="@dimen/sb_size_8"
                         android:text="Use Wallet"
-                        android:textStyle="bold"
                         android:textColor="@color/blue_grey_900"
-                        android:textSize="@dimen/sb_text_size_14" />
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="0dp"
@@ -401,9 +408,9 @@
                         android:gravity="center_vertical|start"
                         android:paddingVertical="@dimen/sb_size_8"
                         android:text="Gift Card"
-                        android:textStyle="bold"
                         android:textColor="@color/blue_grey_900"
-                        android:textSize="@dimen/sb_text_size_14" />
+                        android:textSize="@dimen/sb_text_size_14"
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="0dp"
@@ -653,10 +660,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/sb_size_8"
                 android:gravity="center_vertical|start"
-                tools:text="300"
                 android:textColor="@color/blue_grey_900"
                 android:textSize="@dimen/sb_text_size_16"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="300" />
         </LinearLayout>
 
         <Button
@@ -667,8 +674,8 @@
             android:layout_marginVertical="@dimen/sb_size_18"
             android:background="@color/blue_grey_900"
             android:text="@string/place_order"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

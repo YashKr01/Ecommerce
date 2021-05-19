@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.search.SearchAdapter;
+import com.shopping.bloom.adapters.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.search.SearchActivityConfig;
@@ -28,7 +28,7 @@ import com.shopping.bloom.model.search.SearchProduct;
 import com.shopping.bloom.restService.callback.SearchProductClickListener;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.search.SearchViewModel;
+import com.shopping.bloom.viewModels.SearchViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,5 @@
 package com.shopping.bloom.database.dao;
 
-import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.shopping.bloom.model.WishListItem;
-import com.shopping.bloom.model.shoppingbag.ProductEntity;
 
 import java.util.List;
 
