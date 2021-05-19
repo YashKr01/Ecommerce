@@ -17,6 +17,7 @@ import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecommendationsAdapter extends RecyclerView.Adapter<RecommendationsAdapter.ItemViewHolder> {
@@ -79,5 +80,14 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public void clearList() {
+        if(list == null) {
+            list = new ArrayList<>();
+        } else {
+            list.clear();
+        }
+        notifyDataSetChanged();
     }
 }

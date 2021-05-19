@@ -26,7 +26,6 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     private Context context;
     private List<String> colorList;
     private int pos = -1;
-    private int check = 1;
     private boolean clickable;
     private HashMap<String, String> colorMap;
 

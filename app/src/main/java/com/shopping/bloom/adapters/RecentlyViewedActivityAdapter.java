@@ -57,22 +57,6 @@ public class RecentlyViewedActivityAdapter extends RecyclerView.Adapter<Recently
 
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    public void updateList(List<Product> products) {
-        if(list == null) {
-            list = new ArrayList<>(products);
-        } else {
-            list.clear();
-            list.addAll(products);
-        }
-        notifyDataSetChanged();
-    }
-
-
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
@@ -93,5 +77,29 @@ public class RecentlyViewedActivityAdapter extends RecyclerView.Adapter<Recently
                     true
             );
         }
+    }
+
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
+
+    public void updateList(List<Product> products) {
+        if(list == null) {
+            list = new ArrayList<>(products);
+        } else {
+            list.clear();
+            list.addAll(products);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clearList() {
+        if(list == null) {
+            list = new ArrayList<>();
+        } else {
+            list.clear();
+        }
+        notifyDataSetChanged();
     }
 }

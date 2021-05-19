@@ -69,7 +69,18 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
                 listener.onItemClick(currentItem);
             }
         });
+    }
 
+    static class ItemViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView, imgDelete;
+        TextView textView;
+
+        public ItemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.image_wish_list_product);
+            textView = itemView.findViewById(R.id.txt_wish_list_price);
+            imgDelete = itemView.findViewById(R.id.image_delete);
+        }
     }
 
     @Override
@@ -93,17 +104,12 @@ public class WishListActivityAdapter extends RecyclerView.Adapter<WishListActivi
         notifyItemRemoved(position);
     }
 
-
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView, imgDelete;
-        TextView textView;
-
-        public ItemViewHolder(@NonNull View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.image_wish_list_product);
-            textView = itemView.findViewById(R.id.txt_wish_list_price);
-            imgDelete = itemView.findViewById(R.id.image_delete);
+    public void clearList() {
+        if(list == null) {
+            list = new ArrayList<>();
+        } else {
+            list.clear();
         }
+        notifyDataSetChanged();
     }
-
 }

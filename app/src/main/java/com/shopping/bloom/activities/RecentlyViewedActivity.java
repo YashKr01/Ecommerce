@@ -170,23 +170,17 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
 
     @Override
     public void onRefresh() {
-        if (NetworkCheck.isConnect(this)) {
+        if (!NetworkCheck.isConnect(this)) {
+            showNoConnectionLayout(true);
+        } else {
             showNoConnectionLayout(false);
-
             RECOMMEND_PAGE = 0;
             RECENT_PAGE = 0;
-
-            recommendationItemList.clear();
-            recommendationsAdapter.notifyDataSetChanged();
-
-            recentlyViewedList.clear();
-            recentlyViewedAdapter.notifyDataSetChanged();
-
+            recommendationsAdapter.clearList();
+            recentlyViewedAdapter.clearList();
             getRecommendedList();
             getRecentlyViewedList();
-
-        } else showNoConnectionLayout(true);
-
+        }
         binding.swipe.setRefreshing(false);
     }
 

@@ -220,6 +220,7 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
     @Override
     public void onRefresh() {
         if (NetworkCheck.isConnect(this)) {
+            adapter.clearList();
             showNoConnectionLayout(false);
             checkNewtWorkAndFetchData();
         } else {

@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.AddAddressModel;
+import com.shopping.bloom.model.AddressDataResponse;
+import com.shopping.bloom.restService.response.AddAddressResponse;
 import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
@@ -44,6 +46,7 @@ public class AddShippingAddressActivity extends AppCompatActivity {
     View inflated;
     ScrollView scrollView;
     private View parent_view;
+    LoginManager loginManager;
     AddAddressModel addressModel;
     AddShippingAddressViewModel addShippingAddressViewModel;
 
@@ -67,6 +70,8 @@ public class AddShippingAddressActivity extends AppCompatActivity {
 
         button = findViewById(R.id.addAddressButton);
         button.setOnClickListener(debouncedOnClickListener);
+        
+        loginManager = new LoginManager(this);
 
         System.out.println("check internet = " + checkNetworkConnectivity());
 
@@ -90,16 +95,29 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         setNavigationIcon();
 
         addShippingAddressViewModel = ViewModelProviders.of(this).get(AddShippingAddressViewModel.class);
-        addShippingAddressViewModel.getMutableLiveData().observe(this, loginResponseModel -> {
-            if (loginResponseModel.getSuccess().equals("true")) {
-                Toast.makeText(this, loginResponseModel.getMessage(), Toast.LENGTH_SHORT).show();
+        addShippingAddressViewModel.getMutableLiveData().observe(this, addAddressResponse -> {
+            
+            if(addAddressResponse != null){
+                
+                if (addAddressResponse.getSuccess().equals("true")) {
+                    Toast.makeText(this, addAddressResponse.getMessage(), Toast.LENGTH_SHORT).show();
 
-                //goes to specific activity
-                Intent resultIntent = getIntent();
+                    for(AddressDataResponse addressDataResponse : addAddressResponse.getAddressDataResponseList()){
+                        
+                        if(addressDataResponse.getIs_primary().equals("1")){
+                            loginManager.setPrimary_address_id(addressDataResponse.getId());
+                            loginManager.setPrimaryAddress(addressDataResponse.getAddress_name() + "," + addressDataResponse.getAddress_line_1() + "," + addressDataResponse.getCity() + "," + addressDataResponse.getPincode() + "," + addressDataResponse.getContact_number());
+                            loginManager.setIs_primary_address_available(true);
+                        }
+                    }
+                    
+                    //goes to specific activity
+                    Intent resultIntent = getIntent();
 
-                setResult(Activity.RESULT_OK, resultIntent);
-                finish();
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
 
+                }
             }
         });
 
