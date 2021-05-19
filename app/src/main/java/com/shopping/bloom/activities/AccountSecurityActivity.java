@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.shopping.bloom.R;
-import com.shopping.bloom.fragment.changepassword.ChangePasswordFragment;
+import com.shopping.bloom.fragment.ChangePasswordFragment;
 import com.shopping.bloom.model.EmailVerificationModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;

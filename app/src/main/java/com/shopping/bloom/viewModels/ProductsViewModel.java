@@ -1,24 +1,18 @@
 package com.shopping.bloom.viewModels;
 
 import android.app.Application;
-import android.content.Intent;
-import android.telephony.ims.ImsMmTelManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 
-import com.shopping.bloom.App;
 import com.shopping.bloom.database.EcommerceDatabase;
 import com.shopping.bloom.database.dao.WishListProductDao;
 import com.shopping.bloom.database.repository.ProductRepository;
-import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductFilter;
 import com.shopping.bloom.model.WishListItem;
 import com.shopping.bloom.restService.callback.FetchFilterListener;
 import com.shopping.bloom.restService.callback.ProductResponseListener;
 import com.shopping.bloom.restService.callback.WishListUploadedCallback;
-
-import java.util.List;
 
 public class ProductsViewModel extends AndroidViewModel {
 

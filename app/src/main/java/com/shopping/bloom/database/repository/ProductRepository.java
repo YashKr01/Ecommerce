@@ -180,7 +180,6 @@ public class ProductRepository {
                 public void onResponse(Call<PutWishListRequest> call, Response<PutWishListRequest> response) {
                     Log.d(TAG, "onResponse: Removing all the items from the local DB");
                     if (response.isSuccessful() && response.code() == 200) {
-                        deleteAll();
                         if(callback != null) {
                             callback.onUploadSuccessful();
                         }

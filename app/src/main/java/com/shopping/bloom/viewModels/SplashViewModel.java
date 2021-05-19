@@ -1,18 +1,14 @@
 package com.shopping.bloom.viewModels;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.shopping.bloom.activities.MainActivity;
 import com.shopping.bloom.model.SplashData;
 import com.shopping.bloom.restService.ApiInterface;
 import com.shopping.bloom.restService.RetrofitBuilder;
-import com.shopping.bloom.restService.response.LoginWithPassResponseModel;
 import com.shopping.bloom.restService.response.RefreshTokenResponse;
 import com.shopping.bloom.restService.response.SplashBearerResponse;
 

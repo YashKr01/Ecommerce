@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,9 +31,10 @@ import com.shopping.bloom.restService.callback.CheckoutResponseListener;
 import com.shopping.bloom.restService.response.GetCheckoutResponse;
 import com.shopping.bloom.restService.response.PostCheckoutData;
 import com.shopping.bloom.utils.CommonUtils;
+import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
+import com.shopping.bloom.viewModels.ShoppingBagViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,9 @@ public class PlaceOrderActivity extends AppCompatActivity {
     private static final String TAG = PlaceOrderActivity.class.getName();
 
     TextView tvDiscountPrice, tvSubTotal, tvShippingCharge, tvTotal;
-    TextView tvCouponText, tvRemoveCoupon;
+    TextView tvCouponText;
+    TextView tvErrorAddress, tvErrorCoupon;
+    ImageView tvRemoveCoupon;
     TextView tvWalletBalance, shippingAddress, tvDiscountSaved, tvChangeAddress;
     RecyclerView productsRecyclerView;
     LinearLayout llApplyCoupon, llGiftCard, llUseWallet;
@@ -52,6 +57,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
     Button btPlaceOrder;
     RelativeLayout progressBar;
     ShoppingProductAdapter adapter;
+    NestedScrollView mainScrollView;
 
     List<CartItem> cartItemList;
     ShoppingBagViewModel viewModel;
@@ -107,7 +113,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
         shippingAddress = findViewById(R.id.tvShippingAddress);
         tvWalletBalance = findViewById(R.id.tvWalletBalance);
         tvChangeAddress = findViewById(R.id.tvChangeAddress);
-        tvRemoveCoupon = findViewById(R.id.tvRemoveCoupon);
+        tvRemoveCoupon = findViewById(R.id.imgRemoveCoupon);
         tvCouponText = findViewById(R.id.tvApplyCoupon);
         productsRecyclerView = findViewById(R.id.rvShoppingBag);
         llApplyCoupon = findViewById(R.id.llApplyCoupon);
@@ -119,6 +125,9 @@ public class PlaceOrderActivity extends AppCompatActivity {
         cbUseWallet = findViewById(R.id.cbUseWallet);
         btPlaceOrder = findViewById(R.id.btPlaceOrder);
         progressBar = findViewById(R.id.rlProgressBar);
+        mainScrollView = findViewById(R.id.nestedScrollView);
+        tvErrorAddress = findViewById(R.id.tvErrorAddress);
+        tvErrorCoupon = findViewById(R.id.tvErrorCoupon);
 
         setDefaultAddress();
 
@@ -132,6 +141,12 @@ public class PlaceOrderActivity extends AppCompatActivity {
         cbUseWallet.setOnClickListener(discountClickListener);
 
         btPlaceOrder.setOnClickListener(view -> {
+            if (!NetworkCheck.isConnect(this)) {
+                Toast.makeText(PlaceOrderActivity.this, getString(R.string.no_internet_connected), Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            if(!validateData()) return ;
             if (loginManager.getIs_primary_address_available()) {
                 placeOrder();
             } else {
@@ -174,6 +189,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
             showProgressBar(false);
             return;
         }
+        resetError();
         viewModel.getCheckoutData(checkoutData, responseListener);
     }
 
@@ -190,6 +206,10 @@ public class PlaceOrderActivity extends AppCompatActivity {
             if (errorCode == 200) {
                 Toast.makeText(PlaceOrderActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
+            if (errorCode == -1) {
+                //unknown error
+            }
+            showError(errorCode, errorMessage);
         }
     };
 
@@ -272,14 +292,14 @@ public class PlaceOrderActivity extends AppCompatActivity {
                     addressID = String.valueOf(data.getStringExtra(ARG_ADDRESS_ID));
                     if (addressID == null || address == null ||
                             addressID.isEmpty() || address.isEmpty()) {
-                        showError(REQ_ADDRESS_CODE);
+                        showError(REQ_ADDRESS_CODE, "");
                         return;
                     }
                     address = address.replaceAll(",", "\n");
                     shippingAddress.setText(address);
                 } else {
                     Log.d(TAG, "onActivityResult: NULL address");
-                    showError(REQ_ADDRESS_CODE);
+                    showError(REQ_ADDRESS_CODE, "");
                 }
             }
         }
@@ -352,6 +372,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
     }
 
     private void changeAddress() {
+        tvErrorAddress.setVisibility(View.GONE);
         String CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, MyAddressActivity.class);
         intent.putExtra(CALLING_ACTIVITY, PlaceOrderActivity.class.getName());
@@ -366,17 +387,45 @@ public class PlaceOrderActivity extends AppCompatActivity {
         }
     }
 
-    private void showError(int error_code) {
+    private boolean validateData() {
+        return address != null && !address.isEmpty();
+    }
+
+    private void showError(int error_code, String errorMessage) {
         switch (error_code) {
             case REQ_ADDRESS_CODE: {
-                //ToDo
+                Log.d(TAG, "showError:L address error");
                 break;
             }
             case REQ_COUPON_CODE: {
-                //TODO
+                Log.d(TAG, "showError:L invalid coupon code");
+                break;
+            }
+            case Const.ERROR_NO_ADDRESS_FOUND: {
+                Log.d(TAG, "showError: no address found");
+                mainScrollView.smoothScrollTo(0,0);
+                tvErrorAddress.setVisibility(View.VISIBLE);
+                tvErrorAddress.setText("No address found. Try changing the PinCode");
+                break;
+            }
+            case Const.ERROR_INVALID_PROMO_CODE: {
+                Log.d(TAG, "showError: invalid promo code");
+                tvErrorAddress.setVisibility(View.VISIBLE);
+                tvErrorAddress.setText(errorMessage);
+                break;
+            }
+            case Const.ERROR_NO_DELIVERY_AVAILABLE: {
+                Log.d(TAG, "showError: no delivery at this pin code");
+                tvErrorAddress.setVisibility(View.VISIBLE);
+                tvErrorAddress.setText(R.string.error_no_delivery);
                 break;
             }
         }
+    }
+
+    private void resetError() {
+        tvErrorAddress.setVisibility(View.GONE);
+        tvErrorCoupon.setVisibility(View.GONE);
     }
 
 }

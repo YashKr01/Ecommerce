@@ -116,6 +116,10 @@
     <string name="place_order">Place Order</string>
     <string name="total">Total</string>
     <string name="can_not_add_more_items">Can not add more item</string>
+    <string name="tap_to_refresh">Click to Refresh</string>
+    <string name="remove_coupon">Remove Coupon</string>
+    <string name="apply_coupon">Apply Coupon</string>
+    <string name="error_no_delivery">Cannot be shipped to your selected delivery location. Please choose a different delivery location.</string>
 
 
 </resources>

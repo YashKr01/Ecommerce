@@ -11,12 +11,9 @@ import com.shopping.bloom.model.ProductIds;
 import com.shopping.bloom.model.RegistrationModel;
 import com.shopping.bloom.model.coupons.CouponResponse;
 import com.shopping.bloom.model.newfragment.NewProductsResponse;
-import com.shopping.bloom.model.recentlyviewed.RecentlyViewedResponse;
 import com.shopping.bloom.model.review.PostReview;
 import com.shopping.bloom.model.review.ReviewModel;
 import com.shopping.bloom.model.search.SearchResponse;
-import com.shopping.bloom.model.wishlist.WishList;
-import com.shopping.bloom.model.wishlist.recommendations.RecommendationResponse;
 import com.shopping.bloom.restService.response.AddAddressResponse;
 import com.shopping.bloom.restService.response.AddressResponse;
 import com.shopping.bloom.restService.response.EmailVerificationResponse;
@@ -188,10 +185,10 @@ public interface ApiInterface {
             @Header("Authorization") String bearer);
 
     @GET("metadata/getUserWishlist")
-    Call<WishList> getWishList(
-            @Query("pageNo") String pageNo,
-            @Query("limit") String limit,
-            @Header("Authorization") String bearer);
+    Call<GetProductsResponse> getWishList(
+            @Header("Authorization") String bearer,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit);
 
     @GET("frontend/getNewProducts")
     Call<NewProductsResponse> getNewProducts(@Header("Authorization") String bearer);
@@ -203,10 +200,10 @@ public interface ApiInterface {
     );
 
     @GET("metadata/recentlyViewProducts")
-    Call<RecentlyViewedResponse> getRecentlyViewedList(
-            @Query("pageNo") String pageNo,
-            @Query("limit") String limit,
-            @Header("Authorization") String bearer
+    Call<GetProductsResponse> getRecentlyViewedList(
+            @Header("Authorization") String bearer,
+            @Query("pageNo") int pageNo,
+            @Query("limit") int limit
     );
 
     @GET("frontend/checkTokenExpiry")
@@ -218,13 +215,6 @@ public interface ApiInterface {
             @Query("limit") String limit,
             @Query("pageNo") String pageNo,
             @Query("searchTerm") String searchQuery
-    );
-
-    @GET("/api/frontend/getRandomProducts")
-    Call<RecommendationResponse> getRecommendationResponse(
-            @Header("Authorization") String authToken,
-            @Query("limit") String limit,
-            @Query("pageNo") String page
     );
 
     //for category id

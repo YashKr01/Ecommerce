@@ -47,13 +47,12 @@ public class SingleProductDataResponse {
     @Expose
     String primary_image;
 
-    @SerializedName("isInUserWishList")
-    @Expose
-    boolean isInUserWishList;
-
     @SerializedName("product_variables")
     @Expose
     List<ProductVariableResponse> productVariableResponses;
+
+    @SerializedName("isInUserWishList")
+    boolean isInWishList;
 
     @SerializedName("product_descriptions")
     @Expose
@@ -155,14 +154,6 @@ public class SingleProductDataResponse {
         this.available_colors = available_colors;
     }
 
-    public boolean isInUserWishList() {
-        return isInUserWishList;
-    }
-
-    public void setInUserWishList(boolean inUserWishList) {
-        isInUserWishList = inUserWishList;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -185,5 +176,13 @@ public class SingleProductDataResponse {
 
     public void setProductVariableResponses(List<ProductVariableResponse> productVariableResponses) {
         this.productVariableResponses = productVariableResponses;
+    }
+
+    public boolean isInWishList() {
+        return isInWishList;
+    }
+
+    public void setInWishList(boolean inWishList) {
+        isInWishList = inWishList;
     }
 }

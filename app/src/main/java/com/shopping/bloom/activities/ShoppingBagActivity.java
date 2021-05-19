@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.shoppingbag.ShoppingBagAdapter;
-import com.shopping.bloom.adapters.shoppingbag.SuggestCartItemAdapter;
+import com.shopping.bloom.adapters.ShoppingBagAdapter;
+import com.shopping.bloom.adapters.SuggestCartItemAdapter;
 import com.shopping.bloom.databinding.ActivityShoppingBagBinding;
 import com.shopping.bloom.firebaseConfig.RemoteConfig;
 import com.shopping.bloom.model.CartItem;
@@ -32,7 +32,7 @@ import com.shopping.bloom.restService.callback.ShoppingBagItemListener;
 import com.shopping.bloom.restService.response.GetCartValueResponse;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.NetworkCheck;
-import com.shopping.bloom.viewModels.shoppingbag.ShoppingBagViewModel;
+import com.shopping.bloom.viewModels.ShoppingBagViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,9 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.shopping.bloom.adapters.myorders.MyOrdersAdapter;
+import com.shopping.bloom.adapters.MyOrdersAdapter;
 import com.shopping.bloom.databinding.ActivityMyOrdersBinding;
 import com.shopping.bloom.model.myorders.MyOrders;
 import com.shopping.bloom.model.myorders.Order;

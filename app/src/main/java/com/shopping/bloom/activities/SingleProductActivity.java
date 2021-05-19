@@ -52,13 +52,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.shopping.bloom.BuildConfig;
 import com.shopping.bloom.R;
-import com.shopping.bloom.adapters.singleproduct.ColorAdapter;
-import com.shopping.bloom.adapters.singleproduct.ProductDescAdapter;
-import com.shopping.bloom.adapters.singleproduct.RandomImageAdapter;
-import com.shopping.bloom.adapters.singleproduct.SizeAdapter;
-import com.shopping.bloom.adapters.singleproduct.ViewPagerImageAdapter;
+import com.shopping.bloom.adapters.ColorAdapter;
+import com.shopping.bloom.adapters.ProductDescAdapter;
+import com.shopping.bloom.adapters.RandomImageAdapter;
+import com.shopping.bloom.adapters.SizeAdapter;
+import com.shopping.bloom.adapters.ViewPagerImageAdapter;
 import com.shopping.bloom.database.EcommerceDatabase;
-import com.shopping.bloom.fragment.reviewsfragment.ReviewsFragment;
+import com.shopping.bloom.fragment.ReviewsFragment;
 import com.shopping.bloom.model.CartItem;
 import com.shopping.bloom.model.Product;
 import com.shopping.bloom.model.ProductVariableResponse;
@@ -131,6 +131,8 @@ public class SingleProductActivity extends AppCompatActivity {
     List<String> wishList;
     String token;
     WishListItem wishListItem;
+    String CALLING_ACTIVITY = "";
+    boolean isLiked;
 
 
     @Override
@@ -138,12 +140,7 @@ public class SingleProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_product);
 
-        if (getIntent() != null) {
-            PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
-            CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
-        }
-        Log.d("SEND", "onCreate: " + PRODUCT_ID);
-        Log.d("SEND", "onCreate: " + CATEGORY_ID);
+        getIntentData();
 
         initViews();
 
@@ -302,7 +299,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 }
 
                 //wishlist button from api
-                if(this.singleProductDataResponse.isInUserWishList()){
+                if(this.singleProductDataResponse.isInWishList()){
                     wishListButton.setVisibility(View.GONE);
                     selectedWishListButton.setVisibility(View.VISIBLE);
                 }
@@ -324,7 +321,6 @@ public class SingleProductActivity extends AppCompatActivity {
         checkPinCode();
 
         viewReview.setOnClickListener(debouncedOnClickListener);
-
 
         changePinCode.setOnClickListener(debouncedOnClickListener);
         wishListButton.setOnClickListener(debouncedOnClickListener);
@@ -355,7 +351,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
         //setting up no internet check
         TextView textViewVS = inflated.findViewById(R.id.tvSwipeToRefresh);
-        textViewVS.setText("Click to Refresh");
+        textViewVS.setText(getString(R.string.tap_to_refresh));
         ConstraintLayout constraintLayout = inflated.findViewById(R.id.constraintLayout);
         constraintLayout.setOnClickListener(new DebouncedOnClickListener(150) {
             @Override
@@ -375,12 +371,20 @@ public class SingleProductActivity extends AppCompatActivity {
 //            }
 //        }
 
-
         SetupColorAndSizeList();
         GetRecommendProductList();
         CreateUserLogs();
+    }
 
-
+    private void getIntentData() {
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
+        if (getIntent() != null) {
+            CALLING_ACTIVITY = getIntent().getStringExtra(ARG_CALLING_ACTIVITY);
+            PRODUCT_ID = getIntent().getIntExtra("PRODUCT_ID", 1);
+            CATEGORY_ID = getIntent().getStringExtra("CATEGORY_ID");
+        }
+        Log.d("SEND", "onCreate: " + PRODUCT_ID);
+        Log.d("SEND", "onCreate: " + CATEGORY_ID);
     }
 
     @Override
@@ -934,7 +938,18 @@ public class SingleProductActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        Log.d(TAG, "onBackPressed: " + CALLING_ACTIVITY);
+        if(CALLING_ACTIVITY != null && !CALLING_ACTIVITY.isEmpty()) {
+            if(CALLING_ACTIVITY.equals(AllProductCategory.class.getName())) {
+                Log.d(TAG, "onBackPressed: NOT NULL");
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("IS_LIKED", 100);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        } else {
+            super.onBackPressed();
+        }
 
         hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);

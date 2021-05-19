@@ -1,7 +1,6 @@
 package com.shopping.bloom.model.shoppingbag;
 
 import androidx.room.Entity;
-import androidx.room.Insert;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "shopping_bag")
