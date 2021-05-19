@@ -8,24 +8,23 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="@dimen/sb_size_25"
-        android:layout_height="@dimen/sb_size_25"
+        android:layout_width="@dimen/sb_size_30"
+        android:layout_height="@dimen/sb_size_30"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/sb_size_15"
         android:layout_margin="@dimen/sb_size_10"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="@dimen/sb_size_2"
         app:cardBackgroundColor="@color/grey_400"
-        android:paddingHorizontal="@dimen/sb_size_6"
-        app:cardCornerRadius="300dp"
+        app:cardElevation="@dimen/sb_size_0"
+        app:cardCornerRadius="@dimen/sb_size_15"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.cardview.widget.CardView
-            app:cardCornerRadius="300dp"
+            android:id="@+id/cardView2"
+            app:cardCornerRadius="@dimen/sb_size_15"
+            app:cardElevation="@dimen/sb_size_0"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -33,6 +32,7 @@
             android:id="@+id/colorButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="@dimen/sb_size_0"
             android:button="@null"/>
         </androidx.cardview.widget.CardView>
 

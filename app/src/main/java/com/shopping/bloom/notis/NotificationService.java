@@ -26,7 +26,6 @@ public class NotificationService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-
         loginManager = new LoginManager(this);
         loginManager.setIs_firebase_token_changed(true);
 
@@ -36,24 +35,28 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        loginManager = new LoginManager(this);
         setNotificationChannel();
 
         if (remoteMessage.getNotification() != null) {
             String title = remoteMessage.getNotification().getTitle();
             String body = remoteMessage.getNotification().getBody();
 
-            sendNotification(title, body);
+            if (loginManager.is_notification_on()) {
+                
+                sendNotification(title, body);
 
-            String flag = remoteMessage.getData().get("flag");
-            if(flag != null){
-                if(flag.equals("1")){
-                    Date date = new Date();
-                    System.out.println("flag = " + flag);
-                    String dateString = String.valueOf(date);
-                    NotificationModel notificationModel = new NotificationModel(dateString, title, body);
-                    EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-                        EcommerceDatabase.getInstance().notificationDao().insertNotification(notificationModel);
-                    });
+                String flag = remoteMessage.getData().get("flag");
+                if (flag != null) {
+                    if (flag.equals("1")) {
+                        Date date = new Date();
+                        System.out.println("flag = " + flag);
+                        String dateString = String.valueOf(date);
+                        NotificationModel notificationModel = new NotificationModel(dateString, title, body);
+                        EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                            EcommerceDatabase.getInstance().notificationDao().insertNotification(notificationModel);
+                        });
+                    }
                 }
             }
 

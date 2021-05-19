@@ -72,7 +72,7 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
     private void setupRecyclerView() {
         adapter = new RecentlyViewedAdapter(getContext(), this);
         binding.rvRecentlyView.setNestedScrollingEnabled(false);
-        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.rvRecentlyView.setAdapter(adapter);
     }
 
