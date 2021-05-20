@@ -12,6 +12,7 @@ public class Const {
     public static final int LOGIN_ACTIVITY = 100;
     public static final int ADD_ADDRESS_ACTIVITY = 101;
     public static final int OTP_ACTIVITY = 102;
+    public static final int REQ_SINGLE_PRODUCT = 202;
 
     public static final int SUCCESS = 200;
     public static final int ERROR_NO_ADDRESS_FOUND = 211;

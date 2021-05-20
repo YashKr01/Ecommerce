@@ -281,6 +281,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="2"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     tools:listitem="@layout/item_view_category"
                     tools:visibility="gone" />
 

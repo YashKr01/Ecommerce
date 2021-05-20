@@ -38,6 +38,7 @@ public class ReviewsFragment extends Fragment {
     private List<Review> reviewList;
     private ReviewViewModel viewModel;
     private String PRODUCT_ID;
+    private boolean canGiveReview;
     private String LIMIT = "30";
     private String PAGE = "0";
 
@@ -53,6 +54,7 @@ public class ReviewsFragment extends Fragment {
 
         if (getArguments() != null) {
             PRODUCT_ID = getArguments().getString("PRODUCT_ID", "1");
+            canGiveReview = getArguments().getBoolean("canGiveReview", false);
         }
 
         // initialise view model here
@@ -75,7 +77,11 @@ public class ReviewsFragment extends Fragment {
         binding.fabAddReview.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
-                showDialog(getContext());
+                if(canGiveReview){
+                    showDialog(getContext());
+                }else{
+                    Toast.makeText(getContext(), "Can't Post Review", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

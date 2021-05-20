@@ -17,6 +17,7 @@ import com.shopping.bloom.adapters.RecommendationsAdapter;
 import com.shopping.bloom.adapters.WishListActivityAdapter;
 import com.shopping.bloom.databinding.ActivityWishListBinding;
 import com.shopping.bloom.model.Product;
+import com.shopping.bloom.model.wishlist.WishList;
 import com.shopping.bloom.model.wishlist.WishListData;
 import com.shopping.bloom.restService.callback.WishListItemClickListener;
 import com.shopping.bloom.restService.callback.ProductClickListener;
@@ -27,6 +28,8 @@ import com.shopping.bloom.viewModels.WishListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
 
 public class WishListActivity extends AppCompatActivity implements WishListItemClickListener, SwipeRefreshLayout.OnRefreshListener, ProductClickListener {
     private static final String TAG = WishListActivity.class.getName();
@@ -176,9 +179,12 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
 
     @Override
     public void onItemClick(Product wishListItem) {
+        String CALLING_ACTIVITY = WishListActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(WishListActivity.this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", wishListItem.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 
     @Override
@@ -232,8 +238,11 @@ public class WishListActivity extends AppCompatActivity implements WishListItemC
 
     @Override
     public void onProductClicked(Product product) {
+        String CALLING_ACTIVITY = WishListActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

@@ -25,6 +25,8 @@ import com.shopping.bloom.viewModels.RecentlyViewedViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
+
 public class RecentlyViewedActivity extends AppCompatActivity implements RecentlyViewedListener, ProductClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = RecentlyViewedActivity.class.getName();
     private ActivityRecentlyViewedBinding binding;
@@ -103,9 +105,8 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
         @Override
         public void onSuccess(List<Product> products) {
             if (products != null && !products.isEmpty()) {
-                binding.tvEmpty.setVisibility(View.INVISIBLE);
+                binding.tvEmpty.setVisibility(View.GONE);
                 recentlyViewedAdapter.updateList(products);
-                binding.tvEmpty.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -161,9 +162,11 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
 
     @Override
     public void recentItemClick(RecentlyViewedItem item) {
+        String CALLING_ACTIVITY = RecentlyViewedActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(RecentlyViewedActivity.this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", item.getId());
-        startActivity(intent);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 
 
@@ -185,8 +188,11 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
 
     @Override
     public void onProductClicked(Product product) {
+        String CALLING_ACTIVITY = RecentlyViewedActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(RecentlyViewedActivity.this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

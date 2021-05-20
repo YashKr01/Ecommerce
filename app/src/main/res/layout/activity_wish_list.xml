@@ -120,8 +120,6 @@
                         android:id="@+id/recommendation_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/sb_size_12"
-                        android:layout_marginEnd="@dimen/sb_size_12"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                         app:spanCount="2" />
 

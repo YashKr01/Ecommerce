@@ -20,12 +20,12 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:viewBindingIgnore="false">
 
-        <ImageView
+        <com.shopping.bloom.utils.RecommendedImageView
             android:id="@+id/img_wishlist"
             android:layout_width="match_parent"
-            android:layout_height="175dp"
-            android:scaleType="center"
-            tools:src="@color/deep_orange_600" />
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            tools:src="@color/grey_100" />
 
     </androidx.cardview.widget.CardView>
 
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/sb_size_8"
         android:text="123 $"
-        android:paddingHorizontal="8dp"
+        android:paddingHorizontal="4dp"
         android:maxLines="1"
         android:textStyle="bold"
         android:textColor="@color/blue_grey_700"

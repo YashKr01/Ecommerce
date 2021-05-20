@@ -169,6 +169,7 @@ public class MyAddressActivity extends AppCompatActivity {
             intent.putExtra("is_primary", address.getIs_primary());
             intent.putExtra("id", address.getId());
             startActivity(intent);
+            finish();
         }
 
         @Override

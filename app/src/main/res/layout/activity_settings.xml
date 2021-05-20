@@ -182,7 +182,7 @@
                         android:paddingHorizontal="@dimen/sb_size_22"
                         android:text="IN"
                         android:textSize="@dimen/sb_text_size_14"
-                        android:textColor="@color/black"
+                        android:textColor="@color/grey_700"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -218,7 +218,7 @@
                         android:paddingHorizontal="@dimen/sb_size_22"
                         android:text="INR"
                         android:textSize="@dimen/sb_text_size_14"
-                        android:textColor="@color/black"
+                        android:textColor="@color/grey_700"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -252,7 +252,7 @@
                         android:gravity="center|start"
                         android:checked="false"
                         app:thumbTint="@color/blue_600"
-                        android:paddingHorizontal="@dimen/sb_size_22" />
+                        android:paddingHorizontal="@dimen/sb_size_18" />
 
                 </LinearLayout>
 

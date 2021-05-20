@@ -28,6 +28,8 @@ import com.shopping.bloom.viewModels.RecentlyViewedViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
+
 public class RecentlyViewedFragment extends Fragment implements ProductClickListener {
 
     private FragmentRecentlyViewedBinding binding;
@@ -35,7 +37,7 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
     private List<RecentlyViewedItem> list;
     private RecentlyViewedViewModel viewModel;
 
-    private int PAGE_NO = 0, LIMIT = 8;
+    private int PAGE_NO = 0, LIMIT = 6;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +74,7 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
     private void setupRecyclerView() {
         adapter = new RecentlyViewedAdapter(getContext(), this);
         binding.rvRecentlyView.setNestedScrollingEnabled(false);
-        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.rvRecentlyView.setAdapter(adapter);
     }
 
@@ -112,8 +114,11 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
 
     @Override
     public void onProductClicked(Product product) {
+        String CALLING_ACTIVITY = RecentlyViewedFragment.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(getContext(), SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

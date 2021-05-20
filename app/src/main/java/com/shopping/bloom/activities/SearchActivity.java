@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
@@ -33,6 +34,8 @@ import com.shopping.bloom.viewModels.SearchViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
+
 public class SearchActivity extends AppCompatActivity implements SearchProductClickListener {
 
     private ActivitySearchBinding binding;
@@ -44,11 +47,13 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
     private String PAGE = "0";
     private boolean IS_LOADING = false;
     private boolean IS_LAST_PAGE = false;
-    private LinearLayout parentLayout;
+    private FlexboxLayout parentLayout;
     private View noConnectionLayout;
 
     private SearchActivityConfig config;
 
+
+    //todo flexbox ui dependency rajan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +68,7 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
         List<String> topSearchesList = config.getTop_searches();
 
         // setting custom layout of top searches
-        parentLayout = (LinearLayout) findViewById(R.id.top_search_layout);
+        parentLayout = (FlexboxLayout) findViewById(R.id.top_search_layout);
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
         for (int i = 0; i < topSearchesList.size(); i++) {
@@ -258,8 +263,11 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
 
     @Override
     public void onSearchClickListener(SearchProduct searchProduct) {
+        String CALLING_ACTIVITY = SearchActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", searchProduct.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

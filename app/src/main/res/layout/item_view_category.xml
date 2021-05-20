@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.shopping.bloom.utils.RectangleImageView
         android:id="@+id/imgProductImage"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/sb_size_4"
         android:layout_marginVertical="@dimen/sb_size_4"
         android:scaleType="centerCrop"

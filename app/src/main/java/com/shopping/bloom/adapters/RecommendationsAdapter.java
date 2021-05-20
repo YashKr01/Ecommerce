@@ -37,7 +37,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ItemViewHolder(LayoutInflater.from(context).inflate(
-                R.layout.item_recommendation,
+                R.layout.item_product,
                 parent,
                 false
         ));
@@ -57,13 +57,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        RecommendedImageView imageView;
         TextView textView;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.img_recommended_product);
-            textView = itemView.findViewById(R.id.txt_recommended_product_price);
+            imageView = itemView.findViewById(R.id.img_wishlist);
+            textView = itemView.findViewById(R.id.txt_wishlist_name);
         }
 
         void setUpData(Context context, Product product) {

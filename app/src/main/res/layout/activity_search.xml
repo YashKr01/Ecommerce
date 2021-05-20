@@ -24,13 +24,15 @@
             android:paddingStart="@dimen/sb_size_8"
             android:text="@string/hot_search" />
 
-        <LinearLayout
+        <com.google.android.flexbox.FlexboxLayout
             android:id="@+id/top_search_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:flexWrap="wrap"
+            app:alignItems="stretch"
+            app:alignContent="stretch">
 
-        </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
 
 
     </LinearLayout>
@@ -55,7 +57,7 @@
             android:contentDescription="@string/search"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:padding="@dimen/sb_size_8"
-            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+            app:srcCompat="@drawable/ic_back_arrow" />
 
         <EditText
             android:id="@+id/edittext_search"
