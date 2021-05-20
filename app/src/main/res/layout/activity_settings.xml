@@ -76,6 +76,7 @@
                     android:text="Address Book"
                     android:textColor="@color/black"
                     android:textStyle="bold"
+                    android:background="?attr/selectableItemBackground"
                     app:drawableEndCompat="@drawable/ic_baseline_right_24" />
 
                 <View
