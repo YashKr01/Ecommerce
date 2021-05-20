@@ -834,17 +834,24 @@ public class SingleProductActivity extends AppCompatActivity {
             share();
         }
         if (id == R.id.action_cart) {
-            openShoppingBag();
+            checkAndOpenShoppingBagActivity();
         }
 
         return super.onOptionsItemSelected(item);
 
     }
 
-    private void openShoppingBag() {
-        Intent intent = new Intent(this, ShoppingBagActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+    private void checkAndOpenShoppingBagActivity() {
+        if(!NetworkCheck.isConnect(this)) {
+            Toast.makeText(this, getString(R.string.no_internet_connected), Toast.LENGTH_SHORT)
+                    .show();
+            return ;
+        }
+        if (!LoginManager.getInstance().isLoggedIn()) {
+            startActivity(new Intent(this, ShoppingBagActivity.class));
+        } else {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
     }
 
 
