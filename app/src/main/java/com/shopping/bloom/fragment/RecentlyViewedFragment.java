@@ -28,6 +28,8 @@ import com.shopping.bloom.viewModels.RecentlyViewedViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
+
 public class RecentlyViewedFragment extends Fragment implements ProductClickListener {
 
     private FragmentRecentlyViewedBinding binding;
@@ -112,8 +114,11 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
 
     @Override
     public void onProductClicked(Product product) {
+        String CALLING_ACTIVITY = RecentlyViewedFragment.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(getContext(), SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

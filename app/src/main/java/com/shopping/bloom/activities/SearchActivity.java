@@ -33,6 +33,8 @@ import com.shopping.bloom.viewModels.SearchViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
+
 public class SearchActivity extends AppCompatActivity implements SearchProductClickListener {
 
     private ActivitySearchBinding binding;
@@ -258,8 +260,11 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
 
     @Override
     public void onSearchClickListener(SearchProduct searchProduct) {
+        String CALLING_ACTIVITY = SearchActivity.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(this, SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", searchProduct.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

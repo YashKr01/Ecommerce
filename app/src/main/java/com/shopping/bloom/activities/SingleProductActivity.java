@@ -88,7 +88,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
     private static final String TAG = SingleProductActivity.class.getName();
 
-    boolean colorClickable, sizeClickable;
+    boolean colorClickable, sizeClickable, isFragmentOpened = false;
     NestedScrollView scrollView;
     RecyclerView colorRecyclerView, sizeRecyclerView, randomRecyclerView;
     SingleProductViewModel singleProductViewModel;
@@ -206,10 +206,12 @@ public class SingleProductActivity extends AppCompatActivity {
 
                 productVariableResponseList = this.singleProductDataResponse.getProductVariableResponses();
 
-                for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
-                    imageList.add(productVariableResponse.getPrimary_image());
-                    colorList.add(productVariableResponse.getColor());
-                    sizeList.add(productVariableResponse.getSize());
+                if (productVariableResponseList != null) {
+                    for (ProductVariableResponse productVariableResponse : productVariableResponseList) {
+                        imageList.add(productVariableResponse.getPrimary_image());
+                        colorList.add(productVariableResponse.getColor());
+                        sizeList.add(productVariableResponse.getSize());
+                    }
                 }
 
                 String isOnSale = this.singleProductDataResponse.getIs_on_sale();
@@ -239,10 +241,13 @@ public class SingleProductActivity extends AppCompatActivity {
                 selectedColorList.addAll(colorSet);
 
                 if (colorList.size() == 0) {
+                    finish();
                     colorClickable = false;
                     String colors = this.singleProductDataResponse.getAvailable_colors();
-                    String[] colorArray = colors.split(",");
-                    colorList.addAll(Arrays.asList(colorArray));
+                    if (colors != null) {
+                        String[] colorArray = colors.split(",");
+                        colorList.addAll(Arrays.asList(colorArray));
+                    }
 
                 } else {
                     colorClickable = true;
@@ -255,10 +260,13 @@ public class SingleProductActivity extends AppCompatActivity {
                 selectedSizeList.addAll(sizeSet);
 
                 if (sizeList.size() == 0) {
+                    finish();
                     sizeClickable = false;
                     String size = this.singleProductDataResponse.getAvailable_sizes();
-                    String[] sizeArray = size.split(",");
-                    sizeList.addAll(Arrays.asList(sizeArray));
+                    if (size != null) {
+                        String[] sizeArray = size.split(",");
+                        sizeList.addAll(Arrays.asList(sizeArray));
+                    }
                 } else {
                     sizeClickable = true;
                 }
@@ -299,7 +307,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 }
 
                 //wishlist button from api
-                if(this.singleProductDataResponse.isInWishList()){
+                if (this.singleProductDataResponse.isInWishList()) {
                     wishListButton.setVisibility(View.GONE);
                     selectedWishListButton.setVisibility(View.VISIBLE);
                 }
@@ -331,7 +339,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 //Check for internet connection and then
                 //Check if user is logged in or not
 
-                if(!checkNetworkConnectivity()){
+                if (!checkNetworkConnectivity()) {
                     return;
                 }
 
@@ -390,8 +398,8 @@ public class SingleProductActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_ACTIVITY && resultCode == RESULT_OK ){
-    //Todo Do something when user returns from the login Activity
+        if (requestCode == LOGIN_ACTIVITY && resultCode == RESULT_OK) {
+            //Todo Do something when user returns from the login Activity
 
 //            Toast.makeText(this, "Check", Toast.LENGTH_SHORT).show();
         }
@@ -519,17 +527,17 @@ public class SingleProductActivity extends AppCompatActivity {
     private void checkPinCode() {
         singleProductViewModel.getPinCodeResponseMutableLiveData().observe(this, pinCodeResponse -> {
             if (pinCodeResponse != null) {
-                if(pinCodeResponse.getSuccess().equals("false")){
+                if (pinCodeResponse.getSuccess().equals("false")) {
                     deliverStatusTv.setText(pinCodeResponse.getMessage());
                     deliverStatusTv.setTextColor(Color.RED);
                     deliveryStatusIv.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_alert));
-                }else{
+                } else {
                     deliverStatusTv.setText(pinCodeResponse.getMessage());
                     deliverStatusTv.setTextColor(Color.BLACK);
                     deliveryStatusIv.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_group_629));
                 }
 
-            }else{
+            } else {
                 pincodeEditText.setError("Pincode Empty");
                 pincodeEditText.requestFocus();
             }
@@ -608,12 +616,13 @@ public class SingleProductActivity extends AppCompatActivity {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("PRODUCT_ID", String.valueOf(PRODUCT_ID));
+                bundle.putBoolean("canGiveReview", singleProductDataResponse.isCanGiveReview());
 
                 Fragment fragment = new ReviewsFragment();
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
-
+                isFragmentOpened = true;
             } else if (v.getId() == R.id.changePinCode) {
                 String pinCode = pincodeEditText.getText().toString().trim();
                 if (!pinCode.isEmpty()) {
@@ -939,22 +948,40 @@ public class SingleProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed: " + CALLING_ACTIVITY);
-        if(CALLING_ACTIVITY != null && !CALLING_ACTIVITY.isEmpty()) {
-            if(CALLING_ACTIVITY.equals(AllProductCategory.class.getName())) {
+        if (CALLING_ACTIVITY != null && !CALLING_ACTIVITY.isEmpty()) {
+            if (CALLING_ACTIVITY.equals(AllProductCategory.class.getName())) {
                 Log.d(TAG, "onBackPressed: NOT NULL");
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("IS_LIKED", 100);
-                setResult(RESULT_OK, resultIntent);
-                finish();
+
+                if (isFragmentOpened) {
+                    hideLayout();
+                } else {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("IS_LIKED", 100);
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
+            } else {
+                if (isFragmentOpened) {
+                    hideLayout();
+                } else {
+                    Intent resultIntent = new Intent();
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                }
             }
+
         } else {
             super.onBackPressed();
         }
+    }
 
+    private void hideLayout(){
         hideRelativeLayout.setVisibility(View.VISIBLE);
         frameLayout.setVisibility(View.GONE);
         collapsingToolbarLayout.setVisibility(View.VISIBLE);
         favLinearLayout.setVisibility(View.VISIBLE);
+        reviewToolbar.setVisibility(View.GONE);
+        isFragmentOpened = false;
     }
 
     /*
@@ -1024,8 +1051,11 @@ public class SingleProductActivity extends AppCompatActivity {
             onBackPressed();
         });
 
-        reviewToolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
+        reviewToolbar.setNavigationOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                onBackPressed();
+            }
         });
 
         String styledText = "Usually Delivery in <b> 5 days </b>";

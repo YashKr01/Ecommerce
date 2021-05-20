@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private List<String> colorList;
     private int pos = -1;
     private boolean clickable;

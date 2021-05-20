@@ -47,6 +47,10 @@ public class SingleProductDataResponse {
     @Expose
     String primary_image;
 
+    @SerializedName("canGiveReview")
+    @Expose
+    boolean canGiveReview;
+
     @SerializedName("product_variables")
     @Expose
     List<ProductVariableResponse> productVariableResponses;
@@ -112,6 +116,14 @@ public class SingleProductDataResponse {
 
     public void setSingleProductDescResponseList(List<SingleProductDescResponse> singleProductDescResponseList) {
         this.singleProductDescResponseList = singleProductDescResponseList;
+    }
+
+    public boolean isCanGiveReview() {
+        return canGiveReview;
+    }
+
+    public void setCanGiveReview(boolean canGiveReview) {
+        this.canGiveReview = canGiveReview;
     }
 
     public String getPrimary_image() {

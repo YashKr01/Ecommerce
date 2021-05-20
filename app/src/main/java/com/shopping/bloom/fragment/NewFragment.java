@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.activities.RecentlyViewedActivity;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.activities.AllProductCategory;
 import com.shopping.bloom.adapters.NewAdapter;
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
 
 public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, NewProductOnClick {
     private static final String TAG = NewFragment.class.getName();
@@ -189,9 +192,12 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
 
     @Override
     public void newProductListener(NewProduct newProduct) {
+        String CALLING_ACTIVITY = NewFragment.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(getActivity(), SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", newProduct.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 
     @Override

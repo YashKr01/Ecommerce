@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:navigationIcon="@drawable/ic_back_arrow"
         app:title="Reviews"
         app:titleTextColor="@color/black" />
 
@@ -121,6 +121,7 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_marginStart="@dimen/sb_size_20"
                                 android:layout_marginTop="@dimen/sb_size_20"
+                                android:paddingEnd="@dimen/sb_size_5"
                                 android:layout_marginEnd="3dp"
                                 android:layout_toStartOf="@+id/ratingBar4"
                                 android:ellipsize="end"
@@ -479,6 +480,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="start|center"
                                 android:text="Description"
+                                android:background="?attr/selectableItemBackground"
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/sb_text_size_16"
                                 app:drawableEndCompat="@drawable/ic_baseline_arrow_drop_up_24" />
@@ -784,7 +786,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/viewdivider"
-
+                                android:background="?attr/selectableItemBackground"
                                 android:layout_alignParentBottom="true"
                                 android:layout_centerHorizontal="true"
                                 android:layout_marginTop="@dimen/sb_size_8"
@@ -805,7 +807,7 @@
                             android:layout_marginBottom="@dimen/sb_size_60"
                             android:background="@color/white"
                             android:orientation="vertical"
-                            android:paddingHorizontal="@dimen/sb_size_20"
+                            android:paddingHorizontal="@dimen/sb_size_10"
                             android:paddingVertical="@dimen/sb_size_10">
 
                             <TextView

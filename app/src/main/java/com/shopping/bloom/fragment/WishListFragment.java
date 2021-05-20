@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import com.shopping.bloom.activities.RecentlyViewedActivity;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.activities.WishListActivity;
 import com.shopping.bloom.adapters.WishListAdapter;
@@ -25,6 +26,8 @@ import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.WishListViewModel;
 
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
 
 public class WishListFragment extends Fragment implements ProductClickListener {
     private static final String TAG = WishListFragment.class.getName();
@@ -116,8 +119,11 @@ public class WishListFragment extends Fragment implements ProductClickListener {
 
     @Override
     public void onProductClicked(Product product) {
+        String CALLING_ACTIVITY = WishListFragment.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         Intent intent = new Intent(getActivity(), SingleProductActivity.class);
         intent.putExtra("PRODUCT_ID", product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     }
 }

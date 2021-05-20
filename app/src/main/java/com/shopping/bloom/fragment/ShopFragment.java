@@ -25,6 +25,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.activities.AllProductCategory;
+import com.shopping.bloom.activities.RecentlyViewedActivity;
 import com.shopping.bloom.activities.SingleProductActivity;
 import com.shopping.bloom.adapters.CategoryImagesAdapter;
 import com.shopping.bloom.adapters.RandomProductAdapter;
@@ -49,6 +50,8 @@ import com.shopping.bloom.viewModels.ShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.shopping.bloom.utils.Const.REQ_SINGLE_PRODUCT;
 
 public class ShopFragment extends Fragment {
 
@@ -362,10 +365,13 @@ public class ShopFragment extends Fragment {
     };
 
     private final ProductClickListener randomProductClickListener = product -> {
+        String CALLING_ACTIVITY = ShopFragment.class.getName();
+        String ARG_CALLING_ACTIVITY = "CALLING_ACTIVITY";
         String ARG_CATEGORY = "PRODUCT_ID";
         Intent intent = new Intent(getContext(), SingleProductActivity.class);
         intent.putExtra(ARG_CATEGORY, product.getId());
-        startActivity(intent);
+        intent.putExtra(ARG_CALLING_ACTIVITY, CALLING_ACTIVITY);
+        startActivityForResult(intent, REQ_SINGLE_PRODUCT);
     };
 
     @Override
