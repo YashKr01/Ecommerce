@@ -16,6 +16,7 @@ import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
+import com.shopping.bloom.utils.RecommendedImageView;
 
 import java.util.ArrayList;
 import java.util.List;

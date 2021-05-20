@@ -1,9 +1,5 @@
 package com.shopping.bloom.activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,6 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+
 import com.shopping.bloom.R;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
@@ -27,26 +28,27 @@ import com.shopping.bloom.utils.LoginManager;
 import static com.shopping.bloom.utils.Const.LOGIN_ACTIVITY;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String TAG = SettingsActivity.class.getName();
 
     TextView nameTextView, emailTextView, addressBookTextView,
-            accountSecurityTextView, connectTextView, notificationTextView;
-    LoginManager loginManager;
+            accountSecurityTextView, connectTextView;
+    SwitchCompat swToggleNotification;
     LinearLayout linearLayout;
     Toolbar toolbar;
-    Button signOutButton;
-    int check = 0;
+    TextView signOutButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        loginManager = new LoginManager(this);
+        initViews();
+        setUpNameAndMail();
+    }
 
+    private void initViews() {
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(v -> {
-            setNavigationOnClick();
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
         linearLayout = findViewById(R.id.idLinearLayout);
 
         nameTextView = findViewById(R.id.name);
@@ -54,15 +56,33 @@ public class SettingsActivity extends AppCompatActivity {
         addressBookTextView = findViewById(R.id.addressBookTextView);
         accountSecurityTextView = findViewById(R.id.accountSecurityTextView);
         connectTextView = findViewById(R.id.connectTextView);
-        notificationTextView = findViewById(R.id.setNotificationTextView);
-
+        //notificationTextView = findViewById(R.id.setNotificationTextView);
+        swToggleNotification = findViewById(R.id.switchNotification);
         signOutButton = findViewById(R.id.signOutButton);
+
+
+        //Attach click listener
         signOutButton.setOnClickListener(debouncedOnClickListener);
         accountSecurityTextView.setOnClickListener(debouncedOnClickListener);
         connectTextView.setOnClickListener(debouncedOnClickListener);
         addressBookTextView.setOnClickListener(debouncedOnClickListener);
-        notificationTextView.setOnClickListener(debouncedOnClickListener);
 
+        swToggleNotification.setOnClickListener(view -> {
+            boolean isChecked = swToggleNotification.isChecked();
+            setNotification(isChecked);
+        });
+
+        findViewById(R.id.ratingTextView).setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                showFeedbackDialog(SettingsActivity.this);
+            }
+        });
+
+    }
+
+    private void setUpNameAndMail() {
+        LoginManager loginManager = LoginManager.getInstance();
         String name = loginManager.getname();
         String email = loginManager.getEmailid();
 
@@ -80,21 +100,7 @@ public class SettingsActivity extends AppCompatActivity {
             emailTextView.setText(email);
         }
 
-        if(loginManager.is_notification_on()){
-            notificationTextView.setText("ON");
-            check = 0;
-        }else{
-            notificationTextView.setText("OFF");
-            check = 1;
-        }
-
-        TextView txtFeedback = findViewById(R.id.ratingTextView);
-        txtFeedback.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                showDialog(SettingsActivity.this);
-            }
-        });
+        swToggleNotification.setChecked(loginManager.is_notification_on());
 
     }
 
@@ -102,60 +108,47 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.signOutButton) {
-                signOut();
+                showSignOutDialog();
             } else if (v.getId() == R.id.addressBookTextView) {
-                addressBookIntent();
+                openAddressBook();
             } else if (v.getId() == R.id.connectTextView) {
-                connectIntent();
+                openContactUsActivity();
             } else if (v.getId() == R.id.accountSecurityTextView) {
-                accountSecurityIntent();
-            } else if(v.getId() == R.id.setNotificationTextView){
-                setNotification();
+                openAccountSecurityActivity();
             }
         }
     };
 
-    private void setNotification() {
-        if(check == 0){
-            notificationTextView.setText("OFF");
-            loginManager.setIs_notification_on(false);
-            check = 1;
-        }else{
-            notificationTextView.setText("ON");
-            loginManager.setIs_notification_on(true);
-            check = 0;
-        }
+    private void setNotification(boolean notificationState) {
+        LoginManager loginManager = new LoginManager(this);
+        loginManager.setIs_notification_on(notificationState);
     }
 
 
-    public void accountSecurityIntent() {
+    public void openAccountSecurityActivity() {
+        LoginManager loginManager = LoginManager.getInstance();
         if (loginManager.isLoggedIn()) {
-            Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Log in Required", Toast.LENGTH_LONG).show();
             new Handler().postDelayed(() -> {
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivityForResult(intent, LOGIN_ACTIVITY);
             }, 1500);
         } else {
-            intent(AccountSecurityActivity.class);
+            gotoScreen(AccountSecurityActivity.class);
         }
-
     }
 
-    private void setNavigationOnClick() {
-        intent(MainActivity.class);
-        finish();
+    public void openContactUsActivity() {
+        gotoScreen(ConnectToUsActivity.class);
     }
 
-    public void connectIntent() {
-        intent(ConnectToUsActivity.class);
-    }
-
-    private void intent(Class<?> className) {
+    private void gotoScreen(Class<?> className) {
         Intent intent = new Intent(this, className);
         startActivity(intent);
     }
 
-    public void addressBookIntent() {
+    public void openAddressBook() {
+        LoginManager loginManager = LoginManager.getInstance();
         if (loginManager.isLoggedIn()) {
             Toast.makeText(this, "You should be logged in", Toast.LENGTH_LONG).show();
             new Handler().postDelayed(() -> {
@@ -163,18 +156,19 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivityForResult(intent, LOGIN_ACTIVITY);
             }, 1500);
         } else {
-            intent(MyAddressActivity.class);
+            gotoScreen(MyAddressActivity.class);
         }
     }
 
-    public void signOut() {
+    public void showSignOutDialog() {
+        LoginManager loginManager = LoginManager.getInstance();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Sign Out?");
-        builder.setMessage("Do You Want To Sign Out?");
-        builder.setPositiveButton("Sign Out", (dialog, which) -> {
+        builder.setTitle("Sign out?");
+        builder.setMessage("Do You Want To Sign out?");
+        builder.setPositiveButton("Sign out", (dialog, which) -> {
             loginManager.SetLoginStatus(true);
             loginManager.removeSharedPreference();
-            intent(MainActivity.class);
+            gotoScreen(MainActivity.class);
             finish();
         });
         builder.setNegativeButton("Cancel", null);
@@ -184,14 +178,14 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_ACTIVITY && resultCode == Activity.RESULT_OK){
+        if (requestCode == LOGIN_ACTIVITY && resultCode == Activity.RESULT_OK) {
             finish();
             startActivity(getIntent());
         }
     }
 
     // show custom dialog
-    private void showDialog(Context context) {
+    private void showFeedbackDialog(Context context) {
 
         Dialog dialog = new Dialog(context);
         dialog.setCancelable(false);

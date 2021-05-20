@@ -115,10 +115,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvRecommendation"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/sb_size_12"
-                        android:layout_marginEnd="@dimen/sb_size_12"
-                        android:clipToPadding="false" />
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 

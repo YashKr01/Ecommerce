@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/img_recommended_product"
-        android:layout_width="@dimen/sb_size_80"
-        android:layout_height="120dp"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:contentDescription="@string/recommended_product"
@@ -26,6 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sb_size_2"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textSize="@dimen/sb_text_size_12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/img_recommended_product"

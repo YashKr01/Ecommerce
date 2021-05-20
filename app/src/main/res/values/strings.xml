@@ -124,6 +124,19 @@
     <string name="price">Price</string>
     <string name="discount">Discount</string>
     <string name="filter_reset">Filter reset</string>
+    <string name="info">Info</string>
+    <string name="user_setting">User setting</string>
+    <string name="more">More</string>
+    <string name="contact_us">Contact us</string>
+    <string name="about">About</string>
+    <string name="country_region">Country / Region</string>
+    <string name="account_security">Account Security</string>
+    <string name="payment_options">Payment Options</string>
+    <string name="sign_out">Sign out</string>
+    <string name="email_verification">Email Verification</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="customer_service">Customer Service</string>
+    <string name="service_records">Service Records</string>
 
 
 </resources>
