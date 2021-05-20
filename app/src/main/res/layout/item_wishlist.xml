@@ -3,33 +3,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clProductRootView"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_marginHorizontal="@dimen/sb_size_2"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvDummy"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/sb_size_8"
         app:cardElevation="@dimen/sb_size_0"
         app:cardUseCompatPadding="true"
+        app:layout_constraintHeight_max="wrap"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:viewBindingIgnore="false">
 
-        <ImageView
+        <com.shopping.bloom.utils.RectangleImageView
             android:id="@+id/img_recently_viewed"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="wrap_content"
             android:background="@null"
             android:paddingHorizontal="2.5dp"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:contentDescription="@string/wish_list_image"
             android:focusable="true"
-            android:scaleType="centerCrop"
+            android:scaleType="center"
             android:src="@color/grey_300"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -43,7 +45,7 @@
         android:layout_marginBottom="@dimen/sb_size_8"
         android:fontFamily="@font/gotham_font"
         android:textColor="@color/grey_900"
-        android:textSize="@dimen/sb_text_size_15"
+        android:textSize="@dimen/sb_text_size_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/cvDummy"
         app:layout_constraintStart_toStartOf="@id/cvDummy"

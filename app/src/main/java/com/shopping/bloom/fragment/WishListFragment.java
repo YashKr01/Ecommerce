@@ -75,7 +75,7 @@ public class WishListFragment extends Fragment implements ProductClickListener {
             return;
         }
         binding.progressBar.setVisibility(View.VISIBLE);
-        viewModel.getWishList(0, 8, listener);
+        viewModel.getWishList(0, 6, listener);
     }
 
     private final ProductResponseListener listener = new ProductResponseListener() {

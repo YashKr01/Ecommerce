@@ -75,7 +75,7 @@ class CommonUtils {
 
         @JvmStatic
         fun getStringFromList(input: List<String>) : String {
-            if (input == null || input.isEmpty()) return ""
+            if (input.isEmpty()) return ""
             val sb = StringBuilder()
             for (i in input.indices) {
                 sb.append(input.get(i))

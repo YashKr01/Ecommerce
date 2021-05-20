@@ -49,6 +49,8 @@ public class NewFragment extends Fragment implements SwipeRefreshLayout.OnRefres
     private String imagePath1;
     private String imagePath2;
 
+    //todo need to see api working
+
     public NewFragment() {
         // Required empty public constructor
     }

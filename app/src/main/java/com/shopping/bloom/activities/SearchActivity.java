@@ -49,6 +49,8 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
 
     private SearchActivityConfig config;
 
+
+    //todo flexbox ui dependency rajan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -35,7 +35,7 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
     private List<RecentlyViewedItem> list;
     private RecentlyViewedViewModel viewModel;
 
-    private int PAGE_NO = 0, LIMIT = 8;
+    private int PAGE_NO = 0, LIMIT = 6;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,7 +72,7 @@ public class RecentlyViewedFragment extends Fragment implements ProductClickList
     private void setupRecyclerView() {
         adapter = new RecentlyViewedAdapter(getContext(), this);
         binding.rvRecentlyView.setNestedScrollingEnabled(false);
-        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        binding.rvRecentlyView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         binding.rvRecentlyView.setAdapter(adapter);
     }
 
