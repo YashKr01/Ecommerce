@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.adapters.SearchAdapter;
 import com.shopping.bloom.databinding.ActivitySearchBinding;
@@ -46,7 +47,7 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
     private String PAGE = "0";
     private boolean IS_LOADING = false;
     private boolean IS_LAST_PAGE = false;
-    private LinearLayout parentLayout;
+    private FlexboxLayout parentLayout;
     private View noConnectionLayout;
 
     private SearchActivityConfig config;
@@ -65,7 +66,7 @@ public class SearchActivity extends AppCompatActivity implements SearchProductCl
         List<String> topSearchesList = config.getTop_searches();
 
         // setting custom layout of top searches
-        parentLayout = (LinearLayout) findViewById(R.id.top_search_layout);
+        parentLayout = (FlexboxLayout) findViewById(R.id.top_search_layout);
         LayoutInflater layoutInflater = getLayoutInflater();
         View view;
         for (int i = 0; i < topSearchesList.size(); i++) {

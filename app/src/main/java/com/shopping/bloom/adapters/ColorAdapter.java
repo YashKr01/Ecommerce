@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -28,6 +29,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     private List<String> colorList;
     private int pos = -1;
     private boolean clickable;
+    private String selectedColor;
     private HashMap<String, String> colorMap;
 
     public ColorAdapter(Context context, List<String> colorList) {
@@ -40,6 +42,12 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     public void setColorList(List<String> colorList, boolean clickable) {
         this.colorList = colorList;
         this.clickable = clickable;
+        notifyDataSetChanged();
+    }
+
+    public void getSelectedColor(String selectedColor) {
+        pos = -1;
+        this.selectedColor = selectedColor;
         notifyDataSetChanged();
     }
 
@@ -72,40 +80,52 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
         float radius15f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15f, context.getResources().getDisplayMetrics());
 
-        if (clickable) {
-            holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
-                @Override
-                public void onDebouncedClick(View v) {
-                    if (holder.button.isChecked()) {
+//        if(selectedColor != null) {
+//            if (selectedColor.equals(color)) {
+//                holder.button.setChecked(true);
+//                holder.cardView.setContentPadding(10, 10, 10, 10);
+//                holder.cardView2.setRadius(radius11f);
+//                pos = position;
+//                notifyDataSetChanged();
+//            }
+//        }else {
 
-                        holder.cardView.setContentPadding(10, 10, 10, 10);
-                        holder.cardView2.setRadius(radius11f);
-                        if (context instanceof SingleProductActivity) {
-                            ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+            if (clickable) {
+                holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
+                    @Override
+                    public void onDebouncedClick(View v) {
+                        if (holder.button.isChecked()) {
+
+                            holder.cardView.setContentPadding(10, 10, 10, 10);
+                            holder.cardView2.setRadius(radius11f);
+                            if (context instanceof SingleProductActivity) {
+                                ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+                            }
+                            pos = position;
+
+
+                        } else {
+                            holder.cardView.setContentPadding(0, 0, 0, 0);
+                            if (context instanceof SingleProductActivity) {
+                                ((SingleProductActivity) context).setViewPagerCurrentItem(-1);
+                            }
+                            pos = -1;
                         }
-                        pos = position;
-                    } else {
-                        holder.cardView.setContentPadding(0, 0, 0, 0);
-                        if (context instanceof SingleProductActivity) {
-                            ((SingleProductActivity) context).setViewPagerCurrentItem(-1);
-                        }
-                        pos = -1;
+                        notifyDataSetChanged();
                     }
-                    notifyDataSetChanged();
-                }
-            });
+                });
 
-        } else {
-            if (colorList.size() == 1) {
-                if (context instanceof SingleProductActivity) {
-                    ((SingleProductActivity) context).setViewPagerCurrentItem(0);
+            } else {
+                if (colorList.size() == 1) {
+                    if (context instanceof SingleProductActivity) {
+                        ((SingleProductActivity) context).setViewPagerCurrentItem(0);
+                    }
+                    pos = 0;
                 }
-                pos = 0;
             }
-        }
 
         if (pos == position) {
-            holder.cardView.setContentPadding(10, 10 ,10, 10);
+            holder.cardView.setContentPadding(10, 10, 10, 10);
             holder.cardView2.setRadius(radius11f);
             holder.button.setChecked(true);
         } else {
@@ -124,7 +144,7 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         return 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         CheckBox button;
         CardView cardView, cardView2;
 
@@ -133,6 +153,19 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             button = itemView.findViewById(R.id.colorButton);
             cardView = itemView.findViewById(R.id.cardView);
             cardView2 = itemView.findViewById(R.id.cardView2);
+
+            float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
+            if(selectedColor != null) {
+                if (selectedColor.equals(colorList.get(getAdapterPosition()))) {
+                    button.setChecked(true);
+                    cardView.setContentPadding(10, 10, 10, 10);
+                    cardView2.setRadius(radius11f);
+                    pos = getAdapterPosition();
+                    notifyDataSetChanged();
+                }
+            }else{
+                Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }

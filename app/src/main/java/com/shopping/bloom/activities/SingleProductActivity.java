@@ -686,13 +686,8 @@ public class SingleProductActivity extends AppCompatActivity {
 
     public void setViewPagerCurrentItem(Integer pos) {
         try {
-            System.out.println("color pos = " + pos);
-            System.out.println("color size = " + selectedColorList.size());
-            System.out.println("color size2 = " + colorList.size());
-            Log.d("colorsize", "activiy = " + pos.toString());
             if (pos != -1) {
                 SELECTED_COLOR = colorList.get(pos).trim();
-                System.out.println("color = " + SELECTED_COLOR);
                 if (!SELECTED_COLOR.isEmpty()) {
                     colorTextView.setVisibility(View.VISIBLE);
                     colorTextView.setText("Color: ".concat(SELECTED_COLOR));
@@ -743,8 +738,10 @@ public class SingleProductActivity extends AppCompatActivity {
                         sizeClickable = true;
                     }
 
-                    sizeAdapter.setSizeList(sizeList, sizeClickable);
                     sizeAdapter.notifyDataSetChanged();
+                    sizeAdapter.setSizeList(sizeList, sizeClickable);
+                    colorAdapter.getSelectedColor(SELECTED_COLOR);
+                    colorAdapter.notifyDataSetChanged();
                 }
             } else {
                 viewPager.setCurrentItem(0, true);
@@ -770,6 +767,8 @@ public class SingleProductActivity extends AppCompatActivity {
                 sizeAdapter.setSizeList(sizeList, sizeClickable);
                 sizeAdapter.notifyDataSetChanged();
 
+                colorAdapter.getSelectedColor(SELECTED_COLOR);
+                colorAdapter.notifyDataSetChanged();
 
             }
         } catch (Exception ignored) {
@@ -825,6 +824,8 @@ public class SingleProductActivity extends AppCompatActivity {
             colorAdapter.setColorList(colorList, colorClickable);
             colorAdapter.notifyDataSetChanged();
 
+            colorAdapter.getSelectedColor(SELECTED_COLOR);
+            colorAdapter.notifyDataSetChanged();
 
         } catch (Exception ignored) {
         }
