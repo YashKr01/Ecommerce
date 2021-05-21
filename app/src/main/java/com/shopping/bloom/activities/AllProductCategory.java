@@ -318,7 +318,7 @@ public class AllProductCategory extends AppCompatActivity {
                 updateFilter(SORT_BY.FILTERS);
                 showOrHideSheet(cltFilter, false);
             }
-            if (viewId == R.id.imgClose) {
+            if (viewId == R.id.tvClose) {
                 showOrHideSheet(cltFilter, false);
             }
         }
