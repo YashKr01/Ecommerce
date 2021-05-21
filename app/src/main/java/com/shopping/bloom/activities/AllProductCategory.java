@@ -165,9 +165,9 @@ public class AllProductCategory extends AppCompatActivity {
         savedDiscount = new ArrayList<>();
         savedPrice = new ArrayList<>();
 
-        findViewById(R.id.btClearAll).setOnClickListener(clickListener);
-        findViewById(R.id.btApplyFilter).setOnClickListener(clickListener);
-        findViewById(R.id.imgClose).setOnClickListener(clickListener);
+        findViewById(R.id.tvClearAll).setOnClickListener(clickListener);
+        findViewById(R.id.tvApplyFilter).setOnClickListener(clickListener);
+        findViewById(R.id.tvClose).setOnClickListener(clickListener);
         llSort.setOnClickListener(clickListener);
         llFilter.setOnClickListener(clickListener);
 
@@ -199,11 +199,12 @@ public class AllProductCategory extends AppCompatActivity {
             if (flCategory != null && flCategory.size() > 0) {
                 changeSelectedTextTo(tvCategory.getId());
                 filterItemAdapter.updateList(flCategory);
-                tvCategory.setVisibility(View.VISIBLE);
+                findViewById(R.id.llCategory).setVisibility(View.VISIBLE);
             } else {
+                flCategory = new ArrayList<>();
                 changeSelectedTextTo(tvSize.getId());
                 filterItemAdapter.updateList(flSize);
-                tvCategory.setVisibility(View.GONE);
+                findViewById(R.id.llCategory).setVisibility(View.GONE);
             }
         } else {
             String ARG_LIKED_BUNDLE = "app_liked_bundle";
@@ -237,7 +238,9 @@ public class AllProductCategory extends AppCompatActivity {
         rvProducts.setHasFixedSize(true);
         rvProducts.setAdapter(productAdapter);
 
-        filterItemAdapter = new FilterItemAdapter(this);
+        filterItemAdapter = new FilterItemAdapter(this, (filterItem) -> {
+            changeBackground();
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvFilter.setHasFixedSize(true);
         rvFilter.setLayoutManager(linearLayoutManager);
@@ -266,6 +269,29 @@ public class AllProductCategory extends AppCompatActivity {
 
     }
 
+    /*
+    *   Change the background color of the apply filter button
+    * */
+    private void changeBackground() {
+        if(isFilterAdded()) {
+            findViewById(R.id.tvClearAll).setVisibility(View.VISIBLE);
+            findViewById(R.id.tvApplyFilter).setBackgroundColor(ContextCompat.getColor(this, R.color.blue_grey_900));
+        } else {
+            findViewById(R.id.tvClearAll).setVisibility(View.GONE);
+            findViewById(R.id.tvApplyFilter).setBackgroundColor(ContextCompat.getColor(this, R.color.grey_400));
+        }
+    }
+
+    private boolean isFilterAdded() {
+        for (FilterItem filterItem : flPrice) { if(filterItem.isSelected()) return true; }
+        for (FilterItem filterItem : flDiscount) { if(filterItem.isSelected()) return true; }
+        for (FilterItem filterItem : flType) { if(filterItem.isSelected()) return true; }
+        for (FilterItem filterItem : flSize) { if(filterItem.isSelected()) return true; }
+        for (FilterItem filterItem : flCategory) { if(filterItem.isSelected()) return true; }
+        for (FilterItem filterItem : flColor) { if(filterItem.isSelected()) return true; }
+        return false;
+    }
+
     private final DebouncedOnClickListener clickListener = new DebouncedOnClickListener(200) {
         @Override
         public void onDebouncedClick(View v) {
@@ -276,16 +302,17 @@ public class AllProductCategory extends AppCompatActivity {
             }
             if (viewId == R.id.llFilterLayout) {
                 updateSelection();
+                changeBackground();
                 openBottomSheet(FILTER_BOTTOM_SHEET);
             }
-            if (viewId == R.id.btClearAll) {
+            if (viewId == R.id.tvClearAll) {
                 clearAllFilter();
                 updateFilter(DEFAULT_SORT_VALUE);
                 Toast.makeText(AllProductCategory.this, getString(R.string.filter_reset), Toast.LENGTH_SHORT)
                         .show();
                 //showOrHideSheet(cltFilter, false);
             }
-            if (viewId == R.id.btApplyFilter) {
+            if (viewId == R.id.tvApplyFilter) {
                 //save list data
                 saveSelectionData();
                 updateFilter(SORT_BY.FILTERS);
@@ -305,6 +332,7 @@ public class AllProductCategory extends AppCompatActivity {
         filterItemAdapter.clearAllSelection(flDiscount);
         filterItemAdapter.clearAllSelection(flPrice);
         saveSelectionData();
+        changeBackground();
     }
 
     private void changeCartIcon(LiveData<Integer> cartSize) {
@@ -437,15 +465,23 @@ public class AllProductCategory extends AppCompatActivity {
 
     private void changeSelectedTextTo(int viewId) {
         int[] ids = {R.id.tvCategory, R.id.tvColor, R.id.tvSize, R.id.tvType, R.id.tvDiscount, R.id.tvPrice};
+        int[] selectedLineIds = {R.id.lineCategorySelected, R.id.lineColorSelected,
+                R.id.lineSizeSelected, R.id.lineTypeSelected, R.id.lineDiscountSelected,
+                R.id.linePriceSelected};
+        int idx = 0;
         for (int id : ids) {
             TextView textView = findViewById(id);
+            View selectedLine = findViewById(selectedLineIds[idx]);
             if (id == viewId) {
                 textView.setTypeface(Typeface.DEFAULT_BOLD);
                 textView.setBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                selectedLine.setVisibility(View.VISIBLE);
             } else {
                 textView.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
                 textView.setBackgroundColor(ContextCompat.getColor(this, R.color.grey_50));
+                selectedLine.setVisibility(View.INVISIBLE);
             }
+            idx++;
         }
     }
 
@@ -516,9 +552,9 @@ public class AllProductCategory extends AppCompatActivity {
                 FilterItem item = new FilterItem(size, "", "", false, Const.FILTER.LENGTH);
                 flSize.add(item);
             }
-            tvSize.setVisibility(View.VISIBLE);
+            findViewById(R.id.llSize).setVisibility(View.VISIBLE);
         } else {
-            tvSize.setVisibility(View.GONE);
+            findViewById(R.id.llSize).setVisibility(View.GONE);
         }
 
         if (filterValues.getTypes() != null && filterValues.getTypes() != null && !filterValues.getTypes().isEmpty()) {
@@ -527,9 +563,9 @@ public class AllProductCategory extends AppCompatActivity {
                 FilterItem item = new FilterItem(type, "", "", false, Const.FILTER.TYPE);
                 flType.add(item);
             }
-            tvType.setVisibility(View.VISIBLE);
+            findViewById(R.id.llType).setVisibility(View.VISIBLE);
         } else {
-            tvType.setVisibility(View.GONE);
+            findViewById(R.id.llType).setVisibility(View.GONE);
         }
 
         if (filterValues.getColors() != null && !filterValues.getColors().isEmpty()) {
@@ -538,9 +574,10 @@ public class AllProductCategory extends AppCompatActivity {
                 FilterItem item = new FilterItem(color, "", "", false, Const.FILTER.COLOR);
                 flColor.add(item);
             }
-            tvColor.setVisibility(View.VISIBLE);
+            findViewById(R.id.llColor).setVisibility(View.VISIBLE);
         } else {
             tvColor.setVisibility(View.GONE);
+            findViewById(R.id.llColor).setVisibility(View.GONE);
         }
 
         int minPrice = -1, maxPrice = -1;
@@ -596,9 +633,9 @@ public class AllProductCategory extends AppCompatActivity {
             }
         }
         if (flPrice.isEmpty()) {
-            tvPrice.setVisibility(View.GONE);
+            findViewById(R.id.llPrice).setVisibility(View.GONE);
         } else {
-            tvPrice.setVisibility(View.VISIBLE);
+            findViewById(R.id.llPrice).setVisibility(View.VISIBLE);
         }
     }
 
@@ -625,9 +662,9 @@ public class AllProductCategory extends AppCompatActivity {
             flDiscount.add(filterItem);
         }
         if (flDiscount.isEmpty()) {
-            tvDiscount.setVisibility(View.GONE);
+            findViewById(R.id.llDiscount).setVisibility(View.GONE);
         } else {
-            tvDiscount.setVisibility(View.VISIBLE);
+            findViewById(R.id.llDiscount).setVisibility(View.VISIBLE);
         }
     }
 
@@ -838,6 +875,7 @@ public class AllProductCategory extends AppCompatActivity {
     private void reset() {
         Toast.makeText(this, "Reset Everything", Toast.LENGTH_SHORT)
                 .show();
+        clearAllFilter();
         MAIN_FILTER = new ProductFilter();
         CURRENT_PAGE = START_PAGE;
         IS_LAST_PAGE = false;

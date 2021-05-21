@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.FilterItem;
+import com.shopping.bloom.restService.callback.FilterClickListener;
 import com.shopping.bloom.restService.callback.FilterItemClicked;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 
@@ -22,12 +23,16 @@ import java.util.List;
 public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.CategoryTypesViewHolder> {
     private static final String TAG = FilterItemAdapter.class.getName();
 
-    private List<FilterItem> filterItemList;
     Context context;
+    private final FilterClickListener mListener;
+    private List<FilterItem> filterItemList;
+    private final List<FilterItem> selectedFilterItems;
 
-    public FilterItemAdapter(Context context) {
+    public FilterItemAdapter(Context context, FilterClickListener clickListener) {
         this.context = context;
         filterItemList = new ArrayList<>();
+        selectedFilterItems = new ArrayList<>();
+        mListener = clickListener;
     }
 
     @NonNull
@@ -49,6 +54,12 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
             public void onDebouncedClick(View v) {
                 boolean isSelected = filterItemList.get(position).isSelected();
                 filterItemList.get(position).setSelected(!isSelected);
+                if(!isSelected) {
+                    selectedFilterItems.add(filterItem);
+                } else {
+                    selectedFilterItems.remove(filterItem);
+                }
+                mListener.onFilterApplied(filterItem);
                 holder.changeBackground(!isSelected);
             }
         });
@@ -92,6 +103,7 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
         for (int i = 0; i < filterItemList.size(); i++) {
             filterItemList.get(i).setSelected(false);
         }
+        selectedFilterItems.clear();
         notifyDataSetChanged();
     }
 
@@ -100,6 +112,7 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
         for (int i = 0; i < filterItems.size(); i++) {
             filterItems.get(i).setSelected(false);
         }
+        selectedFilterItems.clear();
         notifyDataSetChanged();
     }
 
@@ -114,5 +127,9 @@ public class FilterItemAdapter extends RecyclerView.Adapter<FilterItemAdapter.Ca
         return filterItemList.size();
     }
 
+    public boolean isAnyFilterItemIsSelected() {
+        if(selectedFilterItems == null) return false;
+        return !selectedFilterItems.isEmpty();
+    }
 
 }

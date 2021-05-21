@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.shopping.bloom.R;
+import com.shopping.bloom.model.ColorImagesArray;
 import com.shopping.bloom.model.ProductSuggestion;
 import com.shopping.bloom.restService.callback.SuggestedProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
@@ -58,8 +59,8 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
     }
 
     public void removeItem(int position) {
-        if(suggestedCartProducts != null && !suggestedCartProducts.isEmpty()) {
-            if(position < suggestedCartProducts.size()) {
+        if (suggestedCartProducts != null && !suggestedCartProducts.isEmpty()) {
+            if (position < suggestedCartProducts.size()) {
                 suggestedCartProducts.remove(position);
                 notifyDataSetChanged();
             }
@@ -80,26 +81,30 @@ public class SuggestCartItemAdapter extends RecyclerView.Adapter<SuggestCartItem
         }
 
         public void setUpData(Context context, ProductSuggestion product) {
-            String imageURL = Const.GET_BASE_URL + product.getPrimary_image();
-            if(product.getColorsImageArray() != null && !product.getColorsImageArray().isEmpty()) {
-                imageURL = Const.GET_BASE_URL + product.getColorsImageArray().get(0).getPrimary_image();
+            ColorImagesArray subProduct;
+            if (product.getColorsImageArray() != null && !product.getColorsImageArray().isEmpty()) {
+                subProduct = product.colorsImageArray.get(0);
+            } else {
+                Log.d(TAG, "setUpData: INVALID PRODUCT");
+                return;
             }
+            String imageURL = Const.GET_BASE_URL + subProduct.getPrimary_image();
             CommonUtils.loadImageWithGlide(
                     context, imageURL, imgProductImage, false
             );
-            String price = "";
-            if (product.is_on_sale.equals("1")) {
-                price = product.sale_price;
-            } else {
-                price = product.price;
+            subProduct = product.colorsImageArray.get(0);
+            String price = subProduct.getPrice();
+            if (subProduct.getIs_on_sale().equals("1")) {
+                price = subProduct.getSale_price();
             }
             tvProductName.setText(price);
+
         }
     }
 
     @Override
     public int getItemCount() {
-        if(suggestedCartProducts == null) return 0;
+        if (suggestedCartProducts == null) return 0;
         return suggestedCartProducts.size();
     }
 

@@ -78,7 +78,7 @@
     <string name="view_more">View More</string>
     <string name="wish_list_image">wish list image</string>
     <string name="clear">CLEAR ALL</string>
-    <string name="apply">Apply</string>
+    <string name="apply_filter">Apply Filter</string>
 
     <string name="rupee">\u20B9</string>
     <string name="no_items_here">No Items Here</string>
@@ -123,7 +123,7 @@
     <string name="desc_product_image">product Image</string>
     <string name="price">Price</string>
     <string name="discount">Discount</string>
-    <string name="filter_reset">Filter reset</string>
+    <string name="filter_reset">Reset filters</string>
     <string name="info">Info</string>
     <string name="user_setting">User setting</string>
     <string name="more">More</string>
