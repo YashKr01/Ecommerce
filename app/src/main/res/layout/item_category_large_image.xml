@@ -15,10 +15,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <com.shopping.bloom.utils.CustomImageView
             android:id="@+id/imgCategoryImage"
             android:layout_width="match_parent"
-            android:layout_height="225dp"
+            android:layout_height="wrap_content"
+            app:height_proportion="1.22"
             android:background="@color/blue_grey_900"
             android:contentDescription="@string/desc_category_image"
             android:scaleType="centerCrop"

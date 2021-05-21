@@ -105,9 +105,8 @@ public class RecentlyViewedActivity extends AppCompatActivity implements Recentl
         @Override
         public void onSuccess(List<Product> products) {
             if (products != null && !products.isEmpty()) {
-                binding.tvEmpty.setVisibility(View.INVISIBLE);
+                binding.tvEmpty.setVisibility(View.GONE);
                 recentlyViewedAdapter.updateList(products);
-                binding.tvEmpty.setVisibility(View.INVISIBLE);
             }
         }
 

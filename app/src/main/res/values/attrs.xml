@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Custom ImageView attribute
+    For CustomImageView class
+-->
+<resources>
+    <declare-styleable name="CustomImageView">
+        <attr name="height_proportion" format="float" />
+    </declare-styleable>
+</resources>

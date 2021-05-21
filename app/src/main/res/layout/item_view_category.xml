@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.shopping.bloom.utils.RectangleImageView
+    <com.shopping.bloom.utils.CustomImageView
         android:id="@+id/imgProductImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/sb_size_4"
         android:layout_marginVertical="@dimen/sb_size_4"
         android:scaleType="centerCrop"
+        app:height_proportion="1.3"
         android:background="@color/blue_grey_900"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +36,6 @@
         android:text="₹ 1000"
         android:textColor="@color/blue_grey_700"
         android:textSize="@dimen/sb_text_size_14"
-        android:fontFamily="@font/gothamblack"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/imgProductImage"
         app:layout_constraintStart_toStartOf="@+id/imgProductImage"

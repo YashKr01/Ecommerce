@@ -57,63 +57,23 @@ public class ProfileFragment extends Fragment {
         //Changing textView text if user is Logged in
         setName();
 
-
         binding.nestscrollview.setNestedScrollingEnabled(true);
 
         // Setup ViewPager Adapter
         setViewPagerAdapter();
-
-        // Setting up tabLayout and viewpager
         setViewPager();
 
-        binding.imgCoupons.setOnClickListener(new DebouncedOnClickListener(1000) {
-            @Override
-            public void onDebouncedClick(View v) {
-                startActivity(new Intent(getContext(), CouponsActivity.class));
-            }
-        });
+        binding.llUnpaid.setOnClickListener(orderClickListener);
+        binding.llProcessing.setOnClickListener(orderClickListener);
+        binding.llShipping.setOnClickListener(orderClickListener);
+        binding.llReturn.setOnClickListener(orderClickListener);
 
-        /**
-         *  Orders On click and sending header for recyclerview scroll
-         */
+        binding.llCoupon.setOnClickListener(couponOfferClickListener);
+        binding.llGiftCard.setOnClickListener(couponOfferClickListener);
+        binding.llPoints.setOnClickListener(couponOfferClickListener);
+        binding.llWallet.setOnClickListener(couponOfferClickListener);
 
-        binding.imgUnpaid.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                sendIntent(0);
-            }
-        });
-        binding.imgProcessing.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                sendIntent(1);
-            }
-        });
-        binding.imgShipped.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                sendIntent(2);
-            }
-        });
-        binding.imgReturns.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                sendIntent(3);
-            }
-        });
-        binding.imgSupport.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                startActivity(new Intent(getContext(), ConnectToUsActivity.class));
-            }
-        });
-
-        binding.imgGiftCard.setOnClickListener(new DebouncedOnClickListener(200) {
-            @Override
-            public void onDebouncedClick(View v) {
-                startActivity(new Intent(getContext(), GiftCardActivity.class));
-            }
-        });
+        binding.llSupport.setOnClickListener(orderClickListener);
 
         return binding.getRoot();
     }
@@ -141,6 +101,51 @@ public class ProfileFragment extends Fragment {
         viewPagerAdapter.addFragment(new WishListFragment(), "WishList");
         viewPagerAdapter.addFragment(new RecentlyViewedFragment(), "Recently Viewed");
     }
+
+    private final DebouncedOnClickListener couponOfferClickListener = new DebouncedOnClickListener(200) {
+        @Override
+        public void onDebouncedClick(View v) {
+            int ID = v.getId();
+            if(ID == R.id.llCoupon) {
+                startActivity(new Intent(getContext(), CouponsActivity.class));
+                return;
+            }
+            if(ID == R.id.llPoints) {
+
+            }
+            if(ID == R.id.llWallet) {
+
+            }
+            if(ID == R.id.llGiftCard) {
+                startActivity(new Intent(getContext(), GiftCardActivity.class));
+            }
+        }
+    };
+
+    private final DebouncedOnClickListener orderClickListener = new DebouncedOnClickListener(200) {
+        @Override
+        public void onDebouncedClick(View v) {
+            int ID = v.getId();
+            if(ID == R.id.llUnpaid) {
+                sendIntent(0);
+                return;
+            }
+            if(ID == R.id.llProcessing) {
+                sendIntent(1);
+                return;
+            }
+            if(ID == R.id.llShipping) {
+                sendIntent(2);
+                return;
+            }
+            if(ID == R.id.llReturn) {
+                sendIntent(3);
+            }
+            if(ID == R.id.llSupport) {
+                startActivity(new Intent(getContext(), ConnectToUsActivity.class));
+            }
+        }
+    };
 
     private void sendIntent(Integer integer) {
         Intent intent = new Intent(getActivity(), MyOrdersActivity.class);

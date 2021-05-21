@@ -807,13 +807,13 @@
                             android:layout_marginBottom="@dimen/sb_size_60"
                             android:background="@color/white"
                             android:orientation="vertical"
-                            android:paddingHorizontal="@dimen/sb_size_10"
                             android:paddingVertical="@dimen/sb_size_10">
 
                             <TextView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="@dimen/sb_size_10"
+                                android:paddingHorizontal="@dimen/sb_size_10"
                                 android:text="Recommendations For You"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"

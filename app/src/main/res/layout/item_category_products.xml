@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="@dimen/sb_size_6"
-    android:layout_marginHorizontal="@dimen/sb_text_size_12"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_marginHorizontal="@dimen/sb_text_size_6"
+    android:layout_marginVertical="@dimen/sb_size_4"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tvProductCategory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/sb_size_10"
+        android:layout_marginTop="@dimen/sb_size_12"
+        android:paddingHorizontal="@dimen/sb_size_10"
         android:text="DummyCategory"
-        android:paddingHorizontal="@dimen/sb_size_20"
         android:textColor="@color/blue_grey_900"
         android:textSize="@dimen/sb_text_size_22"
         android:textStyle="bold"
@@ -31,7 +31,7 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/item_product"
-        app:layout_constraintTop_toBottomOf="@+id/tvProductCategory" />
+        app:layout_constraintTop_toBottomOf="@+id/tvProductCategory"
+        tools:listitem="@layout/item_product" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

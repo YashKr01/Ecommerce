@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +15,7 @@ import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
+import com.shopping.bloom.utils.CustomImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ItemViewHolder(LayoutInflater.from(context).inflate(
-                R.layout.item_recommendation,
+                R.layout.item_product,
                 parent,
                 false
         ));
@@ -56,13 +56,13 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        CustomImageView imageView;
         TextView textView;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.img_recommended_product);
-            textView = itemView.findViewById(R.id.txt_recommended_product_price);
+            imageView = itemView.findViewById(R.id.img_wishlist);
+            textView = itemView.findViewById(R.id.txt_wishlist_name);
         }
 
         void setUpData(Context context, Product product) {
