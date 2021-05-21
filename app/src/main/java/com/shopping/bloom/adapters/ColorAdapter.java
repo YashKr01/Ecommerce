@@ -46,7 +46,6 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
     }
 
     public void getSelectedColor(String selectedColor) {
-        pos = -1;
         this.selectedColor = selectedColor;
         notifyDataSetChanged();
     }
@@ -80,49 +79,40 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
         float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
         float radius15f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15f, context.getResources().getDisplayMetrics());
 
-//        if(selectedColor != null) {
-//            if (selectedColor.equals(color)) {
-//                holder.button.setChecked(true);
-//                holder.cardView.setContentPadding(10, 10, 10, 10);
-//                holder.cardView2.setRadius(radius11f);
-//                pos = position;
-//                notifyDataSetChanged();
-//            }
-//        }else {
-
-            if (clickable) {
-                holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
-                    @Override
-                    public void onDebouncedClick(View v) {
-                        if (holder.button.isChecked()) {
-
-                            holder.cardView.setContentPadding(10, 10, 10, 10);
-                            holder.cardView2.setRadius(radius11f);
-                            if (context instanceof SingleProductActivity) {
-                                ((SingleProductActivity) context).setViewPagerCurrentItem(position);
-                            }
-                            pos = position;
-
-
-                        } else {
-                            holder.cardView.setContentPadding(0, 0, 0, 0);
-                            if (context instanceof SingleProductActivity) {
-                                ((SingleProductActivity) context).setViewPagerCurrentItem(-1);
-                            }
-                            pos = -1;
-                        }
-                        notifyDataSetChanged();
-                    }
-                });
-
-            } else {
-                if (colorList.size() == 1) {
-                    if (context instanceof SingleProductActivity) {
-                        ((SingleProductActivity) context).setViewPagerCurrentItem(0);
-                    }
-                    pos = 0;
+        if (selectedColor != null) {
+            for (int i = 0; i < colorList.size(); i++) {
+                if (selectedColor.equals(colorList.get(i))) {
+                    System.out.println("POSITION = " + i);
+                    holder.cardView.setContentPadding(10, 10, 10, 10);
+                    holder.cardView2.setRadius(radius11f);
+                    holder.button.setChecked(false);
+                    pos = i;
                 }
             }
+        }
+        holder.button.setOnClickListener(new DebouncedOnClickListener(200) {
+            @Override
+            public void onDebouncedClick(View v) {
+                if (holder.button.isChecked()) {
+
+                    holder.cardView.setContentPadding(10, 10, 10, 10);
+                    holder.cardView2.setRadius(radius11f);
+                    if (context instanceof SingleProductActivity) {
+                        ((SingleProductActivity) context).setViewPagerCurrentItem(position);
+                    }
+                    pos = position;
+
+                } else {
+                    holder.cardView.setContentPadding(0, 0, 0, 0);
+                    if (context instanceof SingleProductActivity) {
+                        ((SingleProductActivity) context).setViewPagerCurrentItem(-1);
+                    }
+                    pos = -1;
+                }
+                notifyDataSetChanged();
+            }
+        });
+
 
         if (pos == position) {
             holder.cardView.setContentPadding(10, 10, 10, 10);
@@ -153,19 +143,27 @@ public class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.ViewHolder> 
             button = itemView.findViewById(R.id.colorButton);
             cardView = itemView.findViewById(R.id.cardView);
             cardView2 = itemView.findViewById(R.id.cardView2);
+//            float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
+//            if(selectedColor != null){
+//                for(int i = 0; i<colorList.size(); i++){
+//                    if(selectedColor.equals(colorList.get(i))){
+//                        System.out.println("POSITION = " + i);
+//                        cardView.setContentPadding(10, 10, 10, 10);
+//                        cardView2.setRadius(radius11f);
+//                        button.setChecked(true);
+//                    }
+//                }
+//            }
 
-            float radius11f = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 11f, context.getResources().getDisplayMetrics());
-            if(selectedColor != null) {
-                if (selectedColor.equals(colorList.get(getAdapterPosition()))) {
-                    button.setChecked(true);
-                    cardView.setContentPadding(10, 10, 10, 10);
-                    cardView2.setRadius(radius11f);
-                    pos = getAdapterPosition();
-                    notifyDataSetChanged();
-                }
-            }else{
-                Toast.makeText(context, "Empty", Toast.LENGTH_SHORT).show();
-            }
+//            if(selectedColor != null) {
+//                System.out.println("SELECTED COLOR = " + selectedColor);
+//                if (selectedColor.equals(color)) {
+//                    holder.button.setChecked(true);
+//                    holder.cardView.setContentPadding(10, 10, 10, 10);
+//                    holder.cardView2.setRadius(radius11f);
+//                    pos = position;
+//                }
+//            }
         }
 
     }

@@ -87,6 +87,7 @@ public class ProfileFragment extends Fragment {
         String name = loginManager.getname();
         if (!loginManager.getEmailid().equals("NA")) {
             binding.textView.setText("Hello, " + name);
+            binding.textView.setClickable(false);
         } else { //OnClickListener on textView when user isn't logged in
             binding.textView.setText(getString(R.string.sign_in_register));
             binding.textView.setOnClickListener(v -> {
