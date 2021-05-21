@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,7 @@ import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
-import com.shopping.bloom.utils.RecommendedImageView;
+import com.shopping.bloom.utils.CustomImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class RecommendationsAdapter extends RecyclerView.Adapter<Recommendations
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        RecommendedImageView imageView;
+        CustomImageView imageView;
         TextView textView;
 
         public ItemViewHolder(@NonNull View itemView) {

@@ -84,8 +84,8 @@
                     android:layout_marginHorizontal="@dimen/sb_size_22"
                     android:paddingTop="@dimen/sb_size_16"
                     android:paddingBottom="@dimen/sb_size_4"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:textColor="@color/blue_800"/>
+                    android:textSize="@dimen/sb_text_size_18"
+                    android:textColor="@color/brown_800"/>
 
                 <TextView
                     android:id="@+id/addressBookTextView"
@@ -153,8 +153,8 @@
                     android:layout_marginHorizontal="@dimen/sb_size_22"
                     android:paddingTop="@dimen/sb_size_16"
                     android:paddingBottom="@dimen/sb_size_4"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:textColor="@color/blue_800"/>
+                    android:textSize="@dimen/sb_text_size_18"
+                    android:textColor="@color/brown_800"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -251,7 +251,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|start"
                         android:checked="false"
-                        app:thumbTint="@color/blue_600"
+                        app:trackTint="@color/red_200"
+                        app:thumbTint="@color/red_400"
                         android:paddingHorizontal="@dimen/sb_size_18" />
 
                 </LinearLayout>
@@ -277,8 +278,8 @@
                     android:layout_marginHorizontal="@dimen/sb_size_22"
                     android:paddingTop="@dimen/sb_size_16"
                     android:paddingBottom="@dimen/sb_size_4"
-                    android:textSize="@dimen/sb_text_size_16"
-                    android:textColor="@color/blue_800"/>
+                    android:textSize="@dimen/sb_text_size_18"
+                    android:textColor="@color/brown_800"/>
 
                 <TextView
                     android:id="@+id/ratingTextView"

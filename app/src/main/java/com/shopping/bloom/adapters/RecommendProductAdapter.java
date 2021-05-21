@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,7 +16,7 @@ import com.shopping.bloom.model.Product;
 import com.shopping.bloom.restService.callback.ProductClickListener;
 import com.shopping.bloom.utils.CommonUtils;
 import com.shopping.bloom.utils.Const;
-import com.shopping.bloom.utils.RecommendedImageView;
+import com.shopping.bloom.utils.CustomImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +66,7 @@ public class RecommendProductAdapter extends RecyclerView.Adapter<RecommendProdu
     }
 
     public static class RecommendProductViewHolder extends RecyclerView.ViewHolder {
-        RecommendedImageView productImage;
+        CustomImageView productImage;
         TextView productPrice;      //could be product name
         ConstraintLayout rootView;
 
