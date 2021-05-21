@@ -740,8 +740,8 @@ public class SingleProductActivity extends AppCompatActivity {
 
                     sizeAdapter.notifyDataSetChanged();
                     sizeAdapter.setSizeList(sizeList, sizeClickable);
-                    colorAdapter.getSelectedColor(SELECTED_COLOR);
-                    colorAdapter.notifyDataSetChanged();
+//                    colorAdapter.getSelectedColor(SELECTED_COLOR);
+//                    colorAdapter.notifyDataSetChanged();
                 }
             } else {
                 viewPager.setCurrentItem(0, true);
@@ -767,8 +767,8 @@ public class SingleProductActivity extends AppCompatActivity {
                 sizeAdapter.setSizeList(sizeList, sizeClickable);
                 sizeAdapter.notifyDataSetChanged();
 
-                colorAdapter.getSelectedColor(SELECTED_COLOR);
-                colorAdapter.notifyDataSetChanged();
+//                colorAdapter.getSelectedColor(SELECTED_COLOR);
+//                colorAdapter.notifyDataSetChanged();
 
             }
         } catch (Exception ignored) {
@@ -800,7 +800,7 @@ public class SingleProductActivity extends AppCompatActivity {
                 } else {
                     colorClickable = true;
                 }
-
+                colorAdapter.getSelectedColor(SELECTED_COLOR);
             } else {
                 colorTextView.setVisibility(View.GONE);
                 colorList.clear();
@@ -819,13 +819,14 @@ public class SingleProductActivity extends AppCompatActivity {
                 } else {
                     colorClickable = true;
                 }
+                colorAdapter.getSelectedColor(null);
 
             }
+            colorAdapter.notifyDataSetChanged();
             colorAdapter.setColorList(colorList, colorClickable);
             colorAdapter.notifyDataSetChanged();
 
-            colorAdapter.getSelectedColor(SELECTED_COLOR);
-            colorAdapter.notifyDataSetChanged();
+
 
         } catch (Exception ignored) {
         }

@@ -3,43 +3,42 @@ package com.shopping.bloom.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.shopping.bloom.R;
 import com.shopping.bloom.model.AddAddressModel;
 import com.shopping.bloom.model.AddressDataResponse;
-import com.shopping.bloom.restService.response.AddAddressResponse;
-import com.shopping.bloom.restService.response.LoginResponseModel;
 import com.shopping.bloom.utils.DebouncedOnClickListener;
 import com.shopping.bloom.utils.LoginManager;
 import com.shopping.bloom.utils.NetworkCheck;
 import com.shopping.bloom.viewModels.AddShippingAddressViewModel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AddShippingAddressActivity extends AppCompatActivity {
 
-    EditText addressNameEditText, addressLineEditText, cityEditText, pinCodeEditText, contactEditText;
+    EditText fullName, addressNameEditText, addressLineEditText, cityEditText, pinCodeEditText, contactEditText;
+    TextInputLayout nameTextInputLayout, addressTextInputLayout2, cityTextInputLayout3,
+            pinTextInputLayout4, numberTextInputLayout5, fullNameTextInputLayout;
     Toolbar toolbar;
-    Button button;
+    Button button, cancelButton;
     CheckBox checkBox;
     int is_primary = 0;
     ViewStub viewStub;
@@ -65,15 +64,23 @@ public class AddShippingAddressActivity extends AppCompatActivity {
         viewStub = findViewById(R.id.vsEmptyScreen);
         inflated = viewStub.inflate();
         scrollView = findViewById(R.id.scrollView);
+        fullName = findViewById(R.id.fullNameEditText);
 
         checkBox = findViewById(R.id.radio);
 
-        button = findViewById(R.id.addAddressButton);
-        button.setOnClickListener(debouncedOnClickListener);
-        
-        loginManager = new LoginManager(this);
+        fullNameTextInputLayout = findViewById(R.id.fullNameTextInputLayout);
+        nameTextInputLayout = findViewById(R.id.textInputLayout2);
+        addressTextInputLayout2 = findViewById(R.id.textInputLayout3);
+        cityTextInputLayout3 = findViewById(R.id.textInputLayout4);
+        pinTextInputLayout4 = findViewById(R.id.textInputLayout5);
+        numberTextInputLayout5 = findViewById(R.id.textInputLayout6);
 
-        System.out.println("check internet = " + checkNetworkConnectivity());
+        button = findViewById(R.id.addAddressButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        button.setOnClickListener(debouncedOnClickListener);
+        cancelButton.setOnClickListener(debouncedOnClickListener);
+
+        loginManager = new LoginManager(this);
 
         if (checkNetworkConnectivity()) {
             scrollView.setVisibility(View.VISIBLE);
@@ -91,26 +98,27 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             }
         });
 
+
         button.setOnClickListener(debouncedOnClickListener);
         setNavigationIcon();
 
         addShippingAddressViewModel = ViewModelProviders.of(this).get(AddShippingAddressViewModel.class);
         addShippingAddressViewModel.getMutableLiveData().observe(this, addAddressResponse -> {
-            
-            if(addAddressResponse != null){
-                
+
+            if (addAddressResponse != null) {
+
                 if (addAddressResponse.getSuccess().equals("true")) {
                     Toast.makeText(this, addAddressResponse.getMessage(), Toast.LENGTH_SHORT).show();
 
-                    for(AddressDataResponse addressDataResponse : addAddressResponse.getAddressDataResponseList()){
-                        
-                        if(addressDataResponse.getIs_primary().equals("1")){
+                    for (AddressDataResponse addressDataResponse : addAddressResponse.getAddressDataResponseList()) {
+
+                        if (addressDataResponse.getIs_primary().equals("1")) {
                             loginManager.setPrimary_address_id(addressDataResponse.getId());
                             loginManager.setPrimaryAddress(addressDataResponse.getAddress_name() + "," + addressDataResponse.getAddress_line_1() + "," + addressDataResponse.getCity() + "," + addressDataResponse.getPincode() + "," + addressDataResponse.getContact_number());
                             loginManager.setIs_primary_address_available(true);
                         }
                     }
-                    
+
                     //goes to specific activity
                     Intent resultIntent = getIntent();
 
@@ -121,33 +129,62 @@ public class AddShippingAddressActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     private final DebouncedOnClickListener debouncedOnClickListener = new DebouncedOnClickListener(150) {
         @Override
         public void onDebouncedClick(View v) {
             if (v.getId() == R.id.addAddressButton) {
+                String name = fullName.getText().toString().trim();
                 String addressName = addressNameEditText.getText().toString().trim();
                 String addressLine = addressLineEditText.getText().toString().trim();
                 String city = cityEditText.getText().toString().trim();
                 String pinCode = pinCodeEditText.getText().toString().trim();
                 String number = contactEditText.getText().toString().trim();
 
-                if (addressName == null || addressName.isEmpty()) {
-                    Snackbar.make(parent_view, "Address Name is Empty", Snackbar.LENGTH_SHORT).show();
-                } else if (addressLine == null || addressLine.isEmpty()) {
-                    Snackbar.make(parent_view, "Address Line is Empty", Snackbar.LENGTH_SHORT).show();
-                } else if (city == null || city.isEmpty()) {
-                    Snackbar.make(parent_view, "City Name is Empty", Snackbar.LENGTH_SHORT).show();
-                } else if (pinCode == null || pinCode.isEmpty()) {
-                    Snackbar.make(parent_view, "Pin Code is Empty", Snackbar.LENGTH_SHORT).show();
+                if (name.isEmpty()) {
+                    fullNameTextInputLayout.setErrorEnabled(true);
+                    fullNameTextInputLayout.setError("Please Enter Full Name");
+                } else if (addressName.isEmpty()) {
+                    nameTextInputLayout.setErrorEnabled(true);
+                    nameTextInputLayout.setError("Please Enter Address Name");
+                } else if (addressLine.isEmpty()) {
+                    addressTextInputLayout2.setErrorEnabled(true);
+                    addressTextInputLayout2.setError("Please Enter Address");
+                } else if (city.isEmpty()) {
+                    cityTextInputLayout3.setErrorEnabled(true);
+                    cityTextInputLayout3.setError("Please Enter City Name");
+                } else if (pinCode.isEmpty()) {
+                    pinTextInputLayout4.setErrorEnabled(true);
+                    pinTextInputLayout4.setError("Please Enter Pin code");
                 } else if (pinCode.length() != 6) {
-                    Snackbar.make(parent_view, "Pin code length should be 6.", Snackbar.LENGTH_SHORT).show();
-                } else if (number == null || number.isEmpty()) {
-                    Snackbar.make(parent_view, "Mobile No. is Empty", Snackbar.LENGTH_SHORT).show();
+                    pinTextInputLayout4.setErrorEnabled(true);
+                    pinTextInputLayout4.setError("Incorrect Pin");
+                } else if (number.isEmpty()) {
+                    numberTextInputLayout5.setErrorEnabled(true);
+                    numberTextInputLayout5.setError("Please Enter your contact details");
                 } else if (!numberLength(number)) {
-                    Snackbar.make(parent_view, "Mobile No. length should be 10.", Snackbar.LENGTH_SHORT).show();
+                    numberTextInputLayout5.setErrorEnabled(true);
+                    numberTextInputLayout5.setError("Incorrect Contact Number");
                 } else {
+                    fullNameTextInputLayout.setErrorEnabled(false);
+                    fullNameTextInputLayout.setError(null);
+
+                    nameTextInputLayout.setErrorEnabled(false);
+                    nameTextInputLayout.setError(null);
+
+                    addressTextInputLayout2.setErrorEnabled(false);
+                    addressTextInputLayout2.setError(null);
+
+                    cityTextInputLayout3.setErrorEnabled(false);
+                    cityTextInputLayout3.setError(null);
+
+                    pinTextInputLayout4.setErrorEnabled(false);
+                    pinTextInputLayout4.setError(null);
+
+                    numberTextInputLayout5.setErrorEnabled(false);
+                    numberTextInputLayout5.setError(null);
                     if (checkNetworkConnectivity()) {
                         scrollView.setVisibility(View.VISIBLE);
                         viewStub.setVisibility(View.GONE);
@@ -174,6 +211,8 @@ public class AddShippingAddressActivity extends AppCompatActivity {
                         });
                     }
                 }
+            }else if(v.getId() == R.id.cancelButton){
+                finish();
             }
         }
     };
