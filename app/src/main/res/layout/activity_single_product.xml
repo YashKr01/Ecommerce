@@ -875,16 +875,16 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_wishlist_product" />
 
-        <ImageButton
-            android:id="@+id/selectWishListButton"
-            android:layout_width="@dimen/sb_size_35"
-            android:layout_height="@dimen/sb_size_35"
-            android:layout_gravity="center|start"
-            android:layout_marginEnd="@dimen/sb_size_10"
-            android:background="@android:color/white"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_wishlist_background"
-            android:visibility="gone" />
+<!--        <ImageButton-->
+<!--            android:id="@+id/selectWishListButton"-->
+<!--            android:layout_width="@dimen/sb_size_35"-->
+<!--            android:layout_height="@dimen/sb_size_35"-->
+<!--            android:layout_gravity="center|start"-->
+<!--            android:layout_marginEnd="@dimen/sb_size_10"-->
+<!--            android:background="@android:color/white"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:src="@drawable/ic_wishlist_background"-->
+<!--            android:visibility="gone" />-->
 
         <Button
             android:id="@+id/btn_add_to_bag"

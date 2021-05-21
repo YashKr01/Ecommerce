@@ -119,7 +119,7 @@ public class SingleProductActivity extends AppCompatActivity {
     private String CATEGORY_ID;
     Button changePinCode;
     Dialog dialog;
-    ImageButton wishListButton, selectedWishListButton;
+    ImageButton wishListButton;
     ImageView deliveryStatusIv;
     Button btnAddToBag;
     RandomImageAdapter randomImageAdapter;
@@ -308,8 +308,13 @@ public class SingleProductActivity extends AppCompatActivity {
 
                 //wishlist button from api
                 if (this.singleProductDataResponse.isInWishList()) {
-                    wishListButton.setVisibility(View.GONE);
-                    selectedWishListButton.setVisibility(View.VISIBLE);
+                    isLiked = true;
+                }
+
+                if(isLiked){
+                    wishListButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_wishlist_background));
+                }else{
+                    wishListButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_wishlist_product));
                 }
 
             }
@@ -332,7 +337,7 @@ public class SingleProductActivity extends AppCompatActivity {
 
         changePinCode.setOnClickListener(debouncedOnClickListener);
         wishListButton.setOnClickListener(debouncedOnClickListener);
-        selectedWishListButton.setOnClickListener(debouncedOnClickListener);
+//        selectedWishListButton.setOnClickListener(debouncedOnClickListener);
         btnAddToBag.setOnClickListener(new DebouncedOnClickListener(200) {
             @Override
             public void onDebouncedClick(View v) {
@@ -628,19 +633,23 @@ public class SingleProductActivity extends AppCompatActivity {
                 if (!pinCode.isEmpty()) {
                     singleProductViewModel.checkPinCode(pinCode, getApplication());
                 }
-            } else if (v.getId() == R.id.wishListButton) {
-                selectedWishListButton.setVisibility(View.VISIBLE);
-                wishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-                    EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
-                });
-            } else if (v.getId() == R.id.selectWishListButton) {
-                wishListButton.setVisibility(View.VISIBLE);
-                selectedWishListButton.setVisibility(View.GONE);
-                EcommerceDatabase.databaseWriteExecutor.execute(() -> {
-                    EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);
-                });
             }
+            else if (v.getId() == R.id.wishListButton) {
+                if(isLiked){
+                    isLiked = false;
+                    wishListButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_wishlist_product));
+                    EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                        EcommerceDatabase.getInstance().wishListProductDao().delete(wishListItem);
+                    });
+                }else{
+                    isLiked = true;
+                    wishListButton.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_wishlist_background));
+                    EcommerceDatabase.databaseWriteExecutor.execute(() -> {
+                        EcommerceDatabase.getInstance().wishListProductDao().addToWishList(wishListItem);
+                    });
+                }
+            }
+//
         }
     };
 
@@ -1029,7 +1038,6 @@ public class SingleProductActivity extends AppCompatActivity {
         slideTextView = findViewById(R.id.slideTextView);
         changePinCode = findViewById(R.id.changePinCode);
         wishListButton = findViewById(R.id.wishListButton);
-        selectedWishListButton = findViewById(R.id.selectWishListButton);
         randomRecyclerView = findViewById(R.id.randomRecyclerView);
         progressBar = findViewById(R.id.progressBar);
         hideRelativeLayout = findViewById(R.id.hideRelative);
